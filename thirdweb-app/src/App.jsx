@@ -1,13 +1,19 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-
+import Home from "./pages/Home";
+import CreateProject from './pages/CreateProject/CreateProject';
+import ProjectList from './pages/ProjectList/ProjectList';
 // import { Sidebar, Navbar } from './components';
 // import { CampaignDetails, CreateCampaign, Home, Profile } from './pages';
 
 const App = () => {
   return (
     <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
-      <h1>hello</h1>
+      {/* <h1>hello</h1> */}
+      <Routes>
+          <Route path="/home" element={<ProjectList />} />
+          <Route path="//create-project" element={<CreateProject />} />
+        </Routes>
       {/* example */}
       {/* <div className="sm:flex hidden mr-10 relative">
         <Sidebar />

@@ -9,6 +9,8 @@
     "deploy": "yarn build && npx thirdweb@latest upload dist"
   },
   "dependencies": {
+    "@mui/icons-material": "^5.14.15",
+    "@mui/material": "^5.14.15",
     "@thirdweb-dev/react": "^4",
     "@thirdweb-dev/sdk": "^4",
     "ethers": "^5",
