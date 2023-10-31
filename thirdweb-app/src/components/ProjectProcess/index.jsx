@@ -1,5 +1,7 @@
 import React from 'react';
 import { Col, Row, DatePicker } from 'antd';
+import { useState } from 'react';
+import { useEffect } from 'react';
 import moment from 'moment';
 
 const ProjectProcess = () => {
@@ -9,25 +11,31 @@ const ProjectProcess = () => {
   const imagesPerRow = totalImages / rows;
 
   const imageArray = new Array(totalImages).fill('https://www.greenqueen.com.hk/wp-content/uploads/2020/12/Veganic-Farming.png');
-  const [selectedDate, setSelectedDate] = useState(null);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
 
   // Tạo ngày hôm nay bằng thư viện moment
-  const today = moment();
+  const [selectedDate, setSelectedDate] = useState('');
+
+  useEffect(() => {
+    const today = new Date(); // Lấy ngày hôm nay
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Thêm số 0 phía trước nếu cần
+    const day = today.getDate().toString().padStart(2, '0'); // Thêm số 0 phía trước nếu cần
+    const formattedDate = `${year}-${month}-${day}`;
+
+    setSelectedDate(formattedDate);
+  }, []);
 
   return (
     <>
       <Row>
         <Col span={24}>
-        <DatePicker
-            placeholder={today.format('YYYY-MM-DD')} // Sử dụng ngày hôm nay làm giá trị placeholder
-            defaultValue={today} // Đặt giá trị mặc định cho DatePicker
-            format="YYYY-MM-DD" // Định dạng ngày
-            onChange={handleDateChange}
-          />
+        <input
+          type="date"
+          id="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
         </Col>
       </Row>
       <Row>
