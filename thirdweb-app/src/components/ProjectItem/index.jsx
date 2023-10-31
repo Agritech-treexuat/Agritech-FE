@@ -1,7 +1,7 @@
 // src/components/ProjectItem.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './ProjectItem.css'; // Tạo một tệp CSS riêng cho component này
+import './style.css'; // Tạo một tệp CSS riêng cho component này
 
 const ProjectItem = ({ project }) => {
   return (

@@ -1,8 +1,8 @@
 // src/components/ProjectList.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import ProjectItem from '../../components/ProjectItem/ProjectItem';
-import './ProjectList.css';
+import ProjectItem from '../../components/ProjectItem';
+import './style.css';
 
 const ProjectList = () => {
   const [searchQuery, setSearchQuery] = useState('');

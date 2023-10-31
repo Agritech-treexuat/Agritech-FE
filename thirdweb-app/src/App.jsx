@@ -1,34 +1,25 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Home from "./pages/Home";
-import CreateProject from './pages/CreateProject/CreateProject';
-import ProjectList from './pages/ProjectList/ProjectList';
-// import { Sidebar, Navbar } from './components';
-// import { CampaignDetails, CreateCampaign, Home, Profile } from './pages';
+import CreateProject from './pages/CreateProject';
+import ProjectList from './pages/ProjectList';
+import MainLayout from './components/layout/MainLayout'
+import AppLayout from './components/layout/AppLayout';
+import LoginPage from './pages/LoginPage';
+import ProjectDetail from './pages/ProjectDetail';
 
 const App = () => {
   return (
-    <div className="relative sm:-8 p-4 bg-[#13131a] min-h-screen flex flex-row">
-      {/* <h1>hello</h1> */}
+    <div>
       <Routes>
-          <Route path="/home" element={<ProjectList />} />
-          <Route path="//create-project" element={<CreateProject />} />
-        </Routes>
-      {/* example */}
-      {/* <div className="sm:flex hidden mr-10 relative">
-        <Sidebar />
-      </div>
-
-      <div className="flex-1 max-sm:w-full max-w-[1280px] mx-auto sm:pr-5">
-        <Navbar />
-
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/create-campaign" element={<CreateCampaign />} />
-          <Route path="/campaign-details/:id" element={<CampaignDetails />} />
-        </Routes>
-      </div> */}
+        <Route element={<AppLayout />}>
+          <Route index element={<LoginPage />} path="login" />
+        </Route>
+        <Route element={<MainLayout />}>
+          <Route index element={<ProjectList />} path="home" />
+          <Route element={<CreateProject />} path="create-project" />
+          <Route element={<ProjectDetail />} path="project" />
+        </Route>
+      </Routes>
     </div>
   )
 }
