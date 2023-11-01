@@ -3,6 +3,7 @@ import { Tabs } from 'antd';
 import { useParams } from 'react-router-dom';
 import ProjectInput from '../../components/ProjectInput';
 import ProjectProcess from '../../components/ProjectProcess';
+import ProjectOutput from '../../components/ProjectOutput';
 const onChange = (key) => {
   console.log(key);
 };
@@ -38,7 +39,7 @@ const ProjectDetail = () => {
     {
       key: '3',
       label: 'Tab 3',
-      children: 'Content of Tab Pane 3',
+      children: <ProjectOutput />,
     },
   ];
   return (
