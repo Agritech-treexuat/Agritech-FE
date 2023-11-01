@@ -17,7 +17,7 @@ const App = () => {
         <Route element={<MainLayout />}>
           <Route index element={<ProjectList />} path="home" />
           <Route element={<CreateProject />} path="create-project" />
-          <Route element={<ProjectDetail />} path="project" />
+          <Route element={<ProjectDetail />} path="project/:id" />
         </Route>
       </Routes>
     </div>

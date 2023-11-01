@@ -17,6 +17,7 @@
     "@thirdweb-dev/sdk": "^4",
     "antd": "^5.10.3",
     "ethers": "^5",
+    "moment": "^2.29.4",
     "react": "^18.2",
     "react-dom": "^18.2",
     "react-router-dom": "^6.17.0"

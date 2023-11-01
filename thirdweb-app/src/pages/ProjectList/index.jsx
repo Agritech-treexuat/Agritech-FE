@@ -44,7 +44,9 @@ const ProjectList = () => {
       </Link>
       <div className="project-grid">
         {filteredProjects.map((project) => (
-          <ProjectItem key={project.id} project={project} />
+          <Link to={`/project/${project.id}`} key={project.id}>
+            <ProjectItem project={project} />
+          </Link>
         ))}
       </div>
 

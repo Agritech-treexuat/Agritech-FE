@@ -1,0 +1,19 @@
+.output-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin: 10px 0;
+}
+
+.output-item > p {
+  margin: 10px;
+}
+
+.output-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
