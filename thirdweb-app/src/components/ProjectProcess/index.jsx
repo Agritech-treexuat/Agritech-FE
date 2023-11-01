@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import ProcessList from '../ProcessList';
 import AddProcessPopUp from '../AddProcessPopup';
+import ExpectList from '../ExpectList';
+import AddExpectPopup from '../AddExpectPopup';
 
 const ProjectProcess = () => {
   const totalImages = 24;
@@ -21,9 +23,30 @@ const ProjectProcess = () => {
       note: 'Áp dụng theo hướng dẫn.',
     },
     {
+      date: '2023-06-15',
+      type: 'BVTV',
+      name: 'BVTV Y',
+      amount: '10 kg',
+      note: 'Do cay bi sau benh',
+    },
+    {
       date: '2023-10-20',
       type: 'tưới nước',
       note: 'Tưới nước hàng ngày.',
+    },
+    // Thêm các quá trình khác vào danh sách
+  ];
+
+  const expects = [
+    {
+      date: '2023-10-15',
+      amount: '50 kg',
+      note: '',
+    },
+    {
+      date: '2023-06-15',
+      amount: '40 kg',
+      note: 'Do cay bi sau benh',
     },
     // Thêm các quá trình khác vào danh sách
   ];
@@ -45,6 +68,22 @@ const ProjectProcess = () => {
   return (
     <>
       <Row>
+        <Col span={12}>
+        <div>
+          <h1>List of Processes</h1>
+          <ProcessList processes={processes} />
+          <AddProcessPopUp />
+        </div>
+        </Col>
+        <Col span={12}>
+          <div>
+            <h1>List of Expect</h1>
+            <ExpectList expects={expects} />
+            <AddExpectPopup />
+          </div>
+        </Col>
+      </Row>
+      <Row>
         <Col span={24}>
         <input
           type="date"
@@ -55,15 +94,9 @@ const ProjectProcess = () => {
         </Col>
       </Row>
       <Row>
-        <Col span={8}>
-        <div>
-          <h1>List of Processes</h1>
-          <ProcessList processes={processes} />
-          <AddProcessPopUp />
-        </div>
+        <Col span={24}>
+        <h2> Thoi tiet hom nay nang, 30 do, do am la 100</h2>
         </Col>
-        <Col span={8}>col-8</Col>
-        <Col span={8}>col-8</Col>
       </Row>
       {Array.from({ length: rows }, (_, rowIndex) => (
         <Row key={rowIndex}>
