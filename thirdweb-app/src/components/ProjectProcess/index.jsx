@@ -2,7 +2,8 @@ import React from 'react';
 import { Col, Row, DatePicker } from 'antd';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import moment from 'moment';
+import ProcessList from '../ProcessList';
+import AddProcessPopUp from '../AddProcessPopup';
 
 const ProjectProcess = () => {
   const totalImages = 24;
@@ -11,6 +12,21 @@ const ProjectProcess = () => {
   const imagesPerRow = totalImages / rows;
 
   const imageArray = new Array(totalImages).fill('https://www.greenqueen.com.hk/wp-content/uploads/2020/12/Veganic-Farming.png');
+  const processes = [
+    {
+      date: '2023-10-15',
+      type: 'phân bón',
+      name: 'Phân bón X',
+      amount: '50 kg',
+      note: 'Áp dụng theo hướng dẫn.',
+    },
+    {
+      date: '2023-10-20',
+      type: 'tưới nước',
+      note: 'Tưới nước hàng ngày.',
+    },
+    // Thêm các quá trình khác vào danh sách
+  ];
 
 
   // Tạo ngày hôm nay bằng thư viện moment
@@ -39,7 +55,13 @@ const ProjectProcess = () => {
         </Col>
       </Row>
       <Row>
-        <Col span={8}>col-8</Col>
+        <Col span={8}>
+        <div>
+          <h1>List of Processes</h1>
+          <ProcessList processes={processes} />
+          <AddProcessPopUp />
+        </div>
+        </Col>
         <Col span={8}>col-8</Col>
         <Col span={8}>col-8</Col>
       </Row>
