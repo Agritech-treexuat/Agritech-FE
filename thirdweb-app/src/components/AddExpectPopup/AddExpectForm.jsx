@@ -65,11 +65,6 @@ const AddExpectForm = ({ handleCloseForm }) => {
       <Form.Item
         name="note"
         label="Note"
-        rules={[
-          {
-            required: true,
-          },
-        ]}
       >
         <Input />
       </Form.Item>
