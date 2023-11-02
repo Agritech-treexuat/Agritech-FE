@@ -15,6 +15,7 @@ const api = async (url, method, body) => {
         body: JSON.stringify(body)
     };
 
+    console.log("request: ", LINK + url)
     let response = await fetch(LINK + url, requestOptions);
     let result = await response.json();
     result.status = response.status;

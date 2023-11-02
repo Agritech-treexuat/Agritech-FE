@@ -2,6 +2,8 @@ import axios from 'axios';
 import { baseUrl } from './baseUrl';
 import token from '../../utils/token'
 
+console.log("Base: ", baseUrl)
+
 const privateHttp = axios.create({
   baseURL: baseUrl,
   headers: {
@@ -12,8 +14,9 @@ const privateHttp = axios.create({
 privateHttp.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
+    console.log("token: ", token)
     if (token) {
-      config.headers['x-access-token'] = `${token}`;
+      config.headers['x-access-token'] = token;
     }
     return config;
   },
