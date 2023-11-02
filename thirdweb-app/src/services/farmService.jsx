@@ -19,6 +19,13 @@ const FARM = {
     console.log("result: ", result)
     return result;
   },
+
+  getProjects: (farmId) => {
+    return publicHttp({
+      method: 'GET',
+      url: `/farm/${farmId}/projects`,
+    });
+  }
 }
 
 export default FARM;
