@@ -1,5 +1,5 @@
 import React from 'react';
-import ProcessItem from '../ProcessItem'; // Import ProcessItem component
+import ProcessItem from '../ProcessItem';
 
 const ProcessList = ({ processes }) => {
   return (

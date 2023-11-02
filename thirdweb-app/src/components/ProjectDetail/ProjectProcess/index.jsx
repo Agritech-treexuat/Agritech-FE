@@ -2,10 +2,10 @@ import React from 'react';
 import { Col, Row, DatePicker } from 'antd';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import ProcessList from '../ProcessList';
-import AddProcessPopUp from '../AddProcessPopup';
-import ExpectList from '../ExpectList';
-import AddExpectPopup from '../AddExpectPopup';
+import ProcessList from '../Process/ProcessList'
+import AddProcessPopUp from '../Process/AddProcessPopup'
+import ExpectList from '../Expect/ExpectList'
+import AddExpectPopup from '../Expect/AddExpectPopup'
 
 const ProjectProcess = () => {
   const totalImages = 24;
