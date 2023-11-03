@@ -56,6 +56,18 @@ const FARM = {
     .catch((err) => {
       return err;
     });
+  },
+
+  getInit: async (projectId) => {
+    return await privateHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/input`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
   }
 }
 
