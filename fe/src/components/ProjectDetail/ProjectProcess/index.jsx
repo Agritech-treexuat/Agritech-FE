@@ -6,6 +6,8 @@ import ProcessList from '../Process/ProcessList'
 import AddProcessPopUp from '../Process/AddProcessPopup'
 import ExpectList from '../Expect/ExpectList'
 import AddExpectPopup from '../Expect/AddExpectPopup'
+import { Image } from 'antd';
+import './style.css'
 
 const ProjectProcess = () => {
   const totalImages = 24;
@@ -107,14 +109,9 @@ const ProjectProcess = () => {
             return imageUrl ? (
               <Col span={24 / imagesPerRow} key={colIndex} style={{ padding: 4 }}>
                 <div style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
-                  <img
+                  <Image
+                    class={'process-img'}
                     src={imageUrl}
-                    alt={`Image ${index + 1}`}
-                    style={{
-                      position: 'absolute',
-                      width: '100%',
-                      height: '100%',
-                    }}
                     onError={(e) => {
                       e.target.style.display = 'none'; // Ẩn hình ảnh nếu URL không hợp lệ
                     }}
