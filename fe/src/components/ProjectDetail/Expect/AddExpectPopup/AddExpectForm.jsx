@@ -29,6 +29,7 @@ const AddExpectForm = ({ handleCloseForm }) => {
 
   const onFinish = (values) => {
     console.log("Values: ", values);
+    
     const updatedValue = { ...values, time: values.date };
     delete updatedValue.date;
     console.log(updatedValue);
