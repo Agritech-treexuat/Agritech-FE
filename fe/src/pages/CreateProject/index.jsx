@@ -4,79 +4,193 @@ import { useParams } from 'react-router-dom';
 import './style.css'
 import { useStateContext } from '../../context';
 import CustomButton from '../../components/CustomButton';
+import { Button, Form, Input, InputNumber, Select, Upload } from 'antd';
+import { useRef } from 'react';
+import { UploadOutlined } from '@ant-design/icons';
+import FARM from '../../services/farmService';
+const { Option } = Select;
 
 const CreateProject = () => {
-  const { id } = useParams();
-  const [startDate, setStartDate] = useState('');
-  const [selectedSeed, setSelectedSeed] = useState('');
-  const [amount, setAmount] = useState('');
-  const [image, setImage] = useState('');
-  const [expected, setExpected] = useState('');
   const { createProject, connect, address } = useStateContext();
+  const farmId = localStorage.getItem('id')
+  const layout = {
+    labelCol: {
+      span: 8,
+    },
+    wrapperCol: {
+      span: 16,
+    },
+  };
+
+  const tailLayout = {
+    wrapperCol: {
+      offset: 8,
+      span: 16,
+    },
+  };
+
+  const normFile = (e) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+
+  const formRef = useRef(null);
+
+  const onFinish = (values) => {
+    console.log(values);
+    if(address) handleSave(values)
+    else connect();
+  };
 
   // Mock seed data
   const seeds = ['Seed A', 'Seed B', 'Seed C', 'Seed D'];
 
-  const handleSave = async () => {
+  const handleSave = async (values) => {
     // Handle project creation and data submission here
     console.log("address: ", address)
-    console.log("data: ", startDate, selectedSeed, amount, image, expected)
-    const input = startDate + " - " + selectedSeed + " - " + amount + " - " + image + " - " + expected;
-    await createProject(selectedSeed, input)
+    // console.log("data: ", startDate, selectedSeed, amount, image, expected)
+    const input = values.date + values.amount + values.name + values.upload + values.expected
+    const receip = await createProject(values.seed, input)
+    const txhash = receip.transactionHash
+    console.log("tx hash: ", txhash)
+    handleInit(values, txhash)
   };
+
+  const handleInit = async (values, txhash) => {
+    try {
+      const data = {
+        'name': values.name,
+        'input': {
+          'tx': txhash,
+          "initDate": values.date,
+          "seed": values.seed,
+          "amount": values.amount,  // Số lượng
+          "images": values.images
+        }
+      }
+      const res = await FARM.initProject(data)
+      console.log("res: ", res)
+      const newPrj = res.data.project
+      handleAddExpect(values, newPrj._id, txhash)
+    } catch (error) {
+        console.error(error?.response?.data?.message);
+    }
+  }
+
+  const handleAddExpect = async (values, projectId, txhash) => {
+    try {
+      const data = {
+        "tx": txhash,
+        "amount": values.expected,
+        "note": "init project expected",
+        "time": values.date
+      }
+      const res = await FARM.addExpect(data, projectId)
+      console.log("res: ", res)
+    } catch (error) {
+        console.error(error?.response?.data?.message);
+    }
+  }
 
   return (
     <div className="create-project-container">
       <h1>Create Project</h1>
-      <label htmlFor="start-date">Start Date:</label>
-      <input
-        type="date"
-        id="start-date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-      />
-      <label htmlFor="select-seed">Select Seed:</label>
-      <select
-        id="select-seed"
-        value={selectedSeed}
-        onChange={(e) => setSelectedSeed(e.target.value)}
+      <Form
+      {...layout}
+      ref={formRef}
+      name="control-ref"
+      onFinish={onFinish}
+      style={{
+        maxWidth: 600,
+      }}
+    >
+      {/* date */}
+      <Form.Item
+        name="date"
+        label="Date"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
       >
-        <option value="">Select Seed</option>
-        {seeds.map((seed, index) => (
-          <option key={index} value={seed}>
-            {seed}
-          </option>
-        ))}
-      </select>
-      <label htmlFor="amount">Amount:</label>
-      <input
-        type="number"
-        id="amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <label htmlFor="image">Image:</label>
-      <input
-        type="file"
-        id="image"
-        accept="image/*"
-        onChange={(e) => setImage(e.target.value)}
-      />
-      <label htmlFor="expected">Expected:</label>
-      <input
-        type="text"
-        id="expected"
-        value={expected}
-        onChange={(e) => setExpected(e.target.value)}
-      />
-      <CustomButton
-        btnType="button"
-        title={address ? 'Create' : 'Connect'}
-        handleClick={() => {
-          if(address) handleSave()
-          else connect();
-        }}
-      />
+        <Input type="date" />
+      </Form.Item>
+      {/* name */}
+      <Form.Item
+        name="name"
+        label="Name"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+        <Input/>
+      </Form.Item>
+      {/* seed */}
+      <Form.Item
+        name="seed"
+        label="Seed"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+        <Select placeholder="Select a seed">
+          {seeds.map((seed) => (
+                <Option key={seed} value={seed}>
+                  {seed}
+                </Option>
+              ))}
+        </Select>
+      </Form.Item>
+      {/* amount */}
+      <Form.Item
+        name="amount"
+        label="Amount"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+        <InputNumber defaultValue={3} />
+      </Form.Item>
+
+      <Form.Item
+        name="upload"
+        label="Upload"
+        valuePropName="fileList"
+        getValueFromEvent={normFile}
+      >
+        <Upload name="logo" action="/upload.do" listType="picture">
+          <Button icon={<UploadOutlined />}>Click to upload</Button>
+        </Upload>
+      </Form.Item>
+      {/* expected */}
+      <Form.Item
+        name="expected"
+        label="Expected"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+        <InputNumber defaultValue={30} />
+      </Form.Item>
+      {/* submit button */}
+      <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit">
+        {address ? 'Create' : 'Connect'}
+        </Button>
+      </Form.Item>
+    </Form>
     </div>
   );
 };

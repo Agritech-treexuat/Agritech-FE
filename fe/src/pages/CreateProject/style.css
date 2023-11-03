@@ -35,3 +35,7 @@
 .create-project-container button:hover {
   background-color: #45a049;
 }
+
+#components-form-demo-control-ref .ant-btn {
+  margin-right: 8px;
+}

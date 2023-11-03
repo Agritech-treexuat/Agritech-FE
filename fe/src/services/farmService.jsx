@@ -30,6 +30,32 @@ const FARM = {
     .catch((err) => {
       return err;
     });
+  },
+
+  initProject: async (data) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/initProject`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  addExpect: async (data, projectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/addExpect/${projectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
   }
 }
 
