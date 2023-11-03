@@ -3,9 +3,10 @@ import FARM from '../../../services/farmService';
 import { useParams } from 'react-router';
 import { useEffect } from 'react';
 import {Image} from 'antd';
+import Loading from '../../../pages/Loading';
 
 const ProjectInput = () => {
-  const [initData, setInitData] = useState({})
+  const [initData, setInitData] = useState(null)
   const projectID = useParams()
   console.log("params: ", projectID)
 
@@ -16,38 +17,43 @@ const ProjectInput = () => {
       setInitData(data.data.input)
     }
     fetchData();
+    console.log("Init data: ", initData)
   }, []);
 
   return (
     <div>
-      <h2>Project Input</h2>
-      <div>
-        <label>Transaction hash: </label>
-        <span>{initData.tx}</span>
-      </div>
-      <div>
-        <label>Start Date: </label>
-        <span>{initData.initDate}</span>
-      </div>
-      <div>
-        <label>Selected Seed: </label>
-        <span>{initData.seed}</span>
-      </div>
-      <div>
-        <label>Amount: </label>
-        <span>{initData.amount}</span>
-      </div>
-      <div>
-        <label>Image: </label>
-        {initData.images.length == 0 ? initData.images.map((image) => <span>
-          <Image
-          class={'process-img'}
-          src={image}
-          onError={(e) => {
-            e.target.style.display = 'none'; // Ẩn hình ảnh nếu URL không hợp lệ
-          }}
-        /></span>) : <span>No image</span>}
-      </div>
+      {initData ?
+      (<div>
+        <h2>Project Input</h2>
+        <div>
+          <label>Transaction hash: </label>
+          <span>{initData.tx}</span>
+        </div>
+        <div>
+          <label>Start Date: </label>
+          <span>{initData.initDate}</span>
+        </div>
+        <div>
+          <label>Selected Seed: </label>
+          <span>{initData.seed}</span>
+        </div>
+        <div>
+          <label>Amount: </label>
+          <span>{initData.amount}</span>
+        </div>
+        <div>
+          <label>Image: </label>
+          {initData.images.length == 0 ? initData.images.map((image) => <span>
+            <Image
+            class={'process-img'}
+            src={image}
+            onError={(e) => {
+              e.target.style.display = 'none'; // Ẩn hình ảnh nếu URL không hợp lệ
+            }}
+          /></span>) : <span>No image</span>}
+        </div>
+      </div>) : <Loading />
+      }
     </div>
   );
 };
