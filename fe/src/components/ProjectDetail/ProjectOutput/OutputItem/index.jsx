@@ -10,7 +10,7 @@ const getBase64 = (file) =>
   });
 
 const OutputItem = ({ output }) => {
-  const { date, amount, amount_perOne, images } = output;
+  const { time, amount, amount_perOne, images } = output;
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -32,7 +32,7 @@ const OutputItem = ({ output }) => {
 
   return (
     <div className="output-item">
-      <p>Date: {date}</p>
+      <p>Date: {time}</p>
       <p>Amount: {amount}</p>
       <p>Amount per one: {amount_perOne}</p>
       <Upload

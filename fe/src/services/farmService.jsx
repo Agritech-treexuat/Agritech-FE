@@ -71,6 +71,19 @@ const FARM = {
     });
   },
 
+  addOutput: async (data, projectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/addOutput/${projectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
   getInit: async (projectId) => {
     return await publicHttp({
       method: 'GET',
@@ -99,6 +112,18 @@ const FARM = {
     return await publicHttp({
       method: 'GET',
       url: `/farm/project/${projectId}/expect`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getOutput: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/output`,
     }).then((res) => {
       return res;
     })
