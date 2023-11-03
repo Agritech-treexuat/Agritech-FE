@@ -58,10 +58,47 @@ const FARM = {
     });
   },
 
-  getInit: async (projectId) => {
+  addProcess: async (data, projectId) => {
     return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/addProcess/${projectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getInit: async (projectId) => {
+    return await publicHttp({
       method: 'GET',
       url: `/farm/project/${projectId}/input`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getProcess: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/process`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getExpect: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/expect`,
     }).then((res) => {
       return res;
     })

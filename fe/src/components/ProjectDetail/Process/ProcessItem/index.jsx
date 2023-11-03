@@ -2,11 +2,11 @@ import React from 'react';
 import './style.css'
 
 const ProcessItem = ({ process }) => {
-  const { date, type } = process;
+  const { time, type } = process;
 
   return (
     <div className="process-item">
-      <p>Date: {date}</p>
+      <p>Date: {time}</p>
       <p>Type: {type}</p>
       {type === 'phân bón' || type === 'BVTV' ? (
         <div>

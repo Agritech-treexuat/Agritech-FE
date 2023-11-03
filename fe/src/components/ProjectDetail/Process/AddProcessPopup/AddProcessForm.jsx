@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button, Form, Input, Select } from 'antd';
+import FARM from '../../../../services/farmService'
+import { useParams } from 'react-router';
 import './style.css';
 const { Option } = Select;
 
@@ -23,12 +25,35 @@ const fertilizers = ["NHK", "Kali", "Other name"];
 const bvtvs = ["BVTV1", "BVTV2", "Other name"];
 
 const AddProcessForm = ({ handleCloseForm }) => {
+  const params = useParams()
   const formRef = React.useRef(null);
 
   const onFinish = (values) => {
-    console.log(values);
-    handleCloseForm();
+    console.log("Values: ", values);
+    if ('other name' in values) {
+      values.name = values['other name'];
+    }
+    const updatedValue = { ...values, time: values.date };
+    delete updatedValue.date;
+    console.log(updatedValue);
+    const data = {
+      "tx": "b",
+      ...updatedValue
+    }
+    handleSubmitProcess(data, params.id)
   };
+
+  const handleSubmitProcess = async (data, projectId )=> {
+    try {
+      console.log("data to send: ", data, projectId)
+      const res = await FARM.addProcess(data, projectId);
+      console.log("res: ", res)
+      handleCloseForm();
+    } catch (error) {
+        console.error(error?.response?.data?.message);
+    }
+  }
+
 
   return (
     <Form

@@ -7,55 +7,24 @@ import AddProcessPopUp from '../Process/AddProcessPopup'
 import ExpectList from '../Expect/ExpectList'
 import AddExpectPopup from '../Expect/AddExpectPopup'
 import { Image } from 'antd';
+import FARM from '../../../services/farmService';
+import { useParams } from 'react-router';
 import './style.css'
+import Loading from '../../../pages/Loading';
 
 const ProjectProcess = () => {
   const totalImages = 24;
   const rows = 4;
   const cols = 6;
   const imagesPerRow = totalImages / rows;
+  const projectID = useParams()
 
   const imageArray = new Array(totalImages).fill('https://www.greenqueen.com.hk/wp-content/uploads/2020/12/Veganic-Farming.png');
-  const processes = [
-    {
-      date: '2023-10-15',
-      type: 'phân bón',
-      name: 'Phân bón X',
-      amount: '50 kg',
-      note: 'Áp dụng theo hướng dẫn.',
-    },
-    {
-      date: '2023-06-15',
-      type: 'BVTV',
-      name: 'BVTV Y',
-      amount: '10 kg',
-      note: 'Do cay bi sau benh',
-    },
-    {
-      date: '2023-10-20',
-      type: 'tưới nước',
-      note: 'Tưới nước hàng ngày.',
-    },
-    // Thêm các quá trình khác vào danh sách
-  ];
-
-  const expects = [
-    {
-      date: '2023-10-15',
-      amount: '50 kg',
-      note: '',
-    },
-    {
-      date: '2023-06-15',
-      amount: '40 kg',
-      note: 'Do cay bi sau benh',
-    },
-    // Thêm các quá trình khác vào danh sách
-  ];
-
 
   // Tạo ngày hôm nay bằng thư viện moment
   const [selectedDate, setSelectedDate] = useState('');
+  const [processData, setProcessData] = useState([])
+  const [expectData, setExpectData] = useState([])
 
   useEffect(() => {
     const today = new Date(); // Lấy ngày hôm nay
@@ -67,21 +36,45 @@ const ProjectProcess = () => {
     setSelectedDate(formattedDate);
   }, []);
 
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getProcess(projectID.id)
+      console.log("Data: ", data.data)
+      setProcessData(data.data.processes)
+    }
+    fetchData();
+    console.log("Process data: ", processData)
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getExpect(projectID.id)
+      console.log("Data: ", data.data)
+      setExpectData(data.data.expects)
+    }
+    fetchData();
+    console.log("Expect data: ", expectData)
+  }, []);
+
   return (
     <>
       <Row>
         <Col span={12}>
         <div>
           <h1>List of Processes</h1>
-          <ProcessList processes={processes} />
-          <AddProcessPopUp />
+          {processData? <>
+            <AddProcessPopUp />
+            <ProcessList processes={processData} />
+          </> : <Loading />}
         </div>
         </Col>
         <Col span={12}>
           <div>
             <h1>List of Expect</h1>
-            <ExpectList expects={expects} />
-            <AddExpectPopup />
+            {processData? <>
+              <AddExpectPopup />
+              <ExpectList expects={expectData} />
+            </> : <Loading />}
           </div>
         </Col>
       </Row>

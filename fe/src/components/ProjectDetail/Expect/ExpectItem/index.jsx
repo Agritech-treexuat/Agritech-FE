@@ -2,11 +2,11 @@ import React from 'react';
 import './style.css'
 
 const ExpectItem = ({ expect }) => {
-  const { date, amount, note,  } = expect;
+  const { time, amount, note,  } = expect;
 
   return (
     <div className="expect-item">
-      <p>Date: {date}</p>
+      <p>Date: {time}</p>
       <p>Expect: {amount}</p>
       <p>Note: {note}</p>
     </div>
