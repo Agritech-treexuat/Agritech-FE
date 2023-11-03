@@ -2,29 +2,33 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ProjectItem from '../../components/ProjectItem';
+import useProjectList from './useProjectList';
 import './style.css';
 
 const ProjectList = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const { data } = useProjectList();
+  const projects = data?.projects
+  console.log("Projects: ", projects)
 
   // Mock project data
-  const projects = [
-    {
-      id: 1,
-      title: 'Project 1',
-      seed: 'Seed A',
-      startDate: '2023-10-01',
-      image: 'project1.jpg',
-    },
-    {
-      id: 2,
-      title: 'Project 2',
-      seed: 'Seed B',
-      startDate: '2023-10-05',
-      image: 'project2.jpg',
-    },
-    // Add more project data here
-  ];
+  // const projects = [
+  //   {
+  //     id: 1,
+  //     title: 'Project 1',
+  //     seed: 'Seed A',
+  //     startDate: '2023-10-01',
+  //     image: 'project1.jpg',
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Project 2',
+  //     seed: 'Seed B',
+  //     startDate: '2023-10-05',
+  //     image: 'project2.jpg',
+  //   },
+  //   // Add more project data here
+  // ];
 
   const filteredProjects = projects.filter((project) =>
     project.title.toLowerCase().includes(searchQuery.toLowerCase())
