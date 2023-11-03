@@ -8,35 +8,13 @@ import { Button, Form, Input, InputNumber, Select, Upload } from 'antd';
 import { useRef } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
 import FARM from '../../services/farmService';
+import { redirect } from "react-router-dom";
+import { layout, tailLayout, normFile } from './helper'
 const { Option } = Select;
 
 const CreateProject = () => {
   const { createProject, connect, address } = useStateContext();
   const farmId = localStorage.getItem('id')
-  const layout = {
-    labelCol: {
-      span: 8,
-    },
-    wrapperCol: {
-      span: 16,
-    },
-  };
-
-  const tailLayout = {
-    wrapperCol: {
-      offset: 8,
-      span: 16,
-    },
-  };
-
-  const normFile = (e) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
-
   const formRef = useRef(null);
 
   const onFinish = (values) => {
@@ -90,6 +68,7 @@ const CreateProject = () => {
       }
       const res = await FARM.addExpect(data, projectId)
       console.log("res: ", res)
+      return redirect('/home')
     } catch (error) {
         console.error(error?.response?.data?.message);
     }
