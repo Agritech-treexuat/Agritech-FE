@@ -39,6 +39,7 @@ const CreateProject = () => {
 
   const handleInit = async (values, txhash) => {
     try {
+      const images = values.upload.map((upload) => upload.name)
       const data = {
         'name': values.name,
         'input': {
@@ -46,7 +47,7 @@ const CreateProject = () => {
           "initDate": values.date,
           "seed": values.seed,
           "amount": values.amount,  // Số lượng
-          "images": values.images
+          "images": images
         }
       }
       const res = await FARM.initProject(data)
