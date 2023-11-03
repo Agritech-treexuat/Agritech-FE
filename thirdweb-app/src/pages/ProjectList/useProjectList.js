@@ -24,27 +24,23 @@ export default function useProjectList() {
     };
   }, []);
 
-  const handleFetch = async (farmId) => {
-    const data = await FARM.getProjects(farmId)
-    console.log("dtaa: ", data)
-    const data2 = parseData(data.data)
-    console.log("2: ", data2)
+  // const handleFetch = async (farmId) => {
+  //   const data = await FARM.getProjects(farmId)
+  //   console.log("dtaa: ", data)
+  //   const data2 = parseData(data.data)
+  //   console.log("2: ", data2)
 
-    return data2
-  }
+  //   return data2
+  // }
 
 
-  // const { data, isSuccess, isLoading } = useQuery({
-  //   queryKey: ['projects', farmId],
-  //   queryFn: () => FARM.getProjects(farmId),
-  //   staleTime: 10 * 1000,
-  //   select: (data) => parseData(data.data),
-  //   enabled: !!farmId,
-  // });
-
-  const data = handleFetch(farmId)
+  const { data, isSuccess, isLoading } = useQuery({
+    queryKey: ['projects', farmId],
+    queryFn: () => FARM.getProjects(farmId),
+    select: (data) => parseData(data.data)
+  });
 
   return {
-    data
+    data, isSuccess, isLoading
   };
 }

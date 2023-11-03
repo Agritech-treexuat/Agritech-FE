@@ -20,7 +20,7 @@ const FARM = {
     return result;
   },
 
-  getProjects: (farmId) => {
+  getProjects: async (farmId) => {
     return publicHttp({
       method: 'GET',
       url: `/farm/${farmId}/projects`,

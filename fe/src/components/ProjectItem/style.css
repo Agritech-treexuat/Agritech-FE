@@ -1,0 +1,11 @@
+/* src/components/ProjectItem.css */
+.project-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+}
+
+.bold-text {
+  font-weight: bold;
+}
