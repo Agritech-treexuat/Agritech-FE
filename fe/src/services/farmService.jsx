@@ -130,6 +130,18 @@ const FARM = {
     .catch((err) => {
       return err;
     });
+  },
+
+  getImage: async (projectId, selectedDate) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/image/?date=${selectedDate}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
   }
 }
 

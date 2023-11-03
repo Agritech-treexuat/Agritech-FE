@@ -25,6 +25,7 @@ const ProjectProcess = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [processData, setProcessData] = useState([])
   const [expectData, setExpectData] = useState([])
+  const [imageData, setImageData] = useState([])
 
   useEffect(() => {
     const today = new Date(); // Lấy ngày hôm nay
@@ -55,6 +56,21 @@ const ProjectProcess = () => {
     fetchData();
     console.log("Expect data: ", expectData)
   }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      console.log("date: ", selectedDate)
+      if(selectedDate)
+      {
+        const data = await FARM.getImage(projectID.id, selectedDate)
+        console.log("Data img: ", data.data)
+        setImageData(data.data.images)
+      }
+    }
+    fetchData();
+    console.log("image data: ", imageData)
+  }, [selectedDate]);
+
 
   return (
     <>
@@ -93,28 +109,34 @@ const ProjectProcess = () => {
         <h2> Thoi tiet hom nay nang, 30 do, do am la 100</h2>
         </Col>
       </Row>
-      {Array.from({ length: rows }, (_, rowIndex) => (
-        <Row key={rowIndex}>
-          {Array.from({ length: cols }, (_, colIndex) => {
-            const index = rowIndex * cols + colIndex;
-            const imageUrl = imageArray[index];
+      {
+        imageData ?
+        Array.from({ length: rows }, (_, rowIndex) => (
+          <Row key={rowIndex}>
+            {Array.from({ length: cols }, (_, colIndex) => {
+              const index = rowIndex * cols + colIndex;
+              let imageUrl='https://www.greenqueen.com.hk/wp-content/uploads/2020/12/Veganic-Farming.png'
+              if(index < imageData.length)
+                {
+                  imageUrl = imageData[index]?.imageUrl;
+                  console.log("Image url: ", imageUrl, index)
+                }
+              console.log(imageUrl, index)
 
-            return imageUrl ? (
-              <Col span={24 / imagesPerRow} key={colIndex} style={{ padding: 4 }}>
-                <div style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
-                  <Image
-                    class={'process-img'}
-                    src={imageUrl}
-                    onError={(e) => {
-                      e.target.style.display = 'none'; // Ẩn hình ảnh nếu URL không hợp lệ
-                    }}
-                  />
-                </div>
-              </Col>
-            ) : null;
-          })}
-        </Row>
-      ))}
+              return imageUrl ? (
+                <Col span={24 / imagesPerRow} key={colIndex} style={{ padding: 4 }}>
+                  <div style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
+                    <Image
+                      class={'process-img'}
+                      src={imageUrl}
+                    />
+                  </div>
+                </Col>
+              ) : null;
+            })}
+          </Row>
+        )) : <Loading />
+      }
     </>
   );
 };
