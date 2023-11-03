@@ -1,38 +1,30 @@
 // src/components/ProjectList.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ProjectItem from '../../components/ProjectItem';
 import useProjectList from './useProjectList';
 import './style.css';
+import FARM from '../../services/farmService';
+import parseData from './helper'
 
 const ProjectList = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const { data } = useProjectList();
-  const projects = data?.projects
-  console.log("Projects: ", projects)
+  const [projects, setProjects] = useState([])
+  const farmId = localStorage.getItem('id')
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getProjects(farmId)
+      console.log("Data: ", data.data)
 
-  // Mock project data
-  // const projects = [
-  //   {
-  //     id: 1,
-  //     title: 'Project 1',
-  //     seed: 'Seed A',
-  //     startDate: '2023-10-01',
-  //     image: 'project1.jpg',
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Project 2',
-  //     seed: 'Seed B',
-  //     startDate: '2023-10-05',
-  //     image: 'project2.jpg',
-  //   },
-  //   // Add more project data here
-  // ];
+      setProjects(parseData(data.data).projects)
+      console.log("Projects: ", projects)
+    }
+    fetchData();
+  }, []);
 
-  const filteredProjects = projects.filter((project) =>
+  const filteredProjects = projects.length != 0 ? projects.filter((project) =>
     project.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   return (
     <div>

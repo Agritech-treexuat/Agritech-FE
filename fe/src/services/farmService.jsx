@@ -21,9 +21,14 @@ const FARM = {
   },
 
   getProjects: async (farmId) => {
-    return publicHttp({
+    return await publicHttp({
       method: 'GET',
       url: `/farm/${farmId}/projects`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
     });
   }
 }
