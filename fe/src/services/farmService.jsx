@@ -169,6 +169,19 @@ const FARM = {
       return err;
     });
   },
+
+  editOutput: async (data, projectId, outputId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/editOutput/${projectId}/${outputId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;

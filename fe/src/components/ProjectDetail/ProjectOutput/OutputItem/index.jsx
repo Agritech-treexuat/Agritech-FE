@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import './style.css'
 import { Modal, Upload } from 'antd';
+import UpdateOutputPopup from '../UpdateOutputPopup';
+import EditOutputHistory from '../EditOutputHistory';
+import {Image} from 'antd';
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -11,6 +14,7 @@ const getBase64 = (file) =>
 
 const OutputItem = ({ output }) => {
   const { time, amount, amount_perOne, images } = output;
+  console.log("images: ", images)
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -35,7 +39,7 @@ const OutputItem = ({ output }) => {
       <p>Date: {time}</p>
       <p>Amount: {amount}</p>
       <p>Amount per one: {amount_perOne}</p>
-      <Upload
+      {/* <Upload
         action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture-card"
         fileList={images}
@@ -51,7 +55,16 @@ const OutputItem = ({ output }) => {
           }}
           src={previewImage}
         />
-      </Modal>
+      </Modal> */}
+      {
+        images ? images.map((image) => <span>
+          <Image
+          class={'process-img'}
+          src={image}
+        /></span>) : <span>No image</span>
+      }
+      <UpdateOutputPopup output={output}/>
+      <> {output.isEdited ? <EditOutputHistory output={output}/> : <></>}</>
     </div>
   );
 };

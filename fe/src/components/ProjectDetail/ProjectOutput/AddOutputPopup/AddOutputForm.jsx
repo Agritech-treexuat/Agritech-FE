@@ -30,6 +30,12 @@ const normFile = (e) => {
 };
 
 const AddOutputForm = ({ handleCloseForm }) => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
+  const date = today.getDate().toString().padStart(2, '0');
+
+  const currentDate = `${year}-${month}-${date}`;
   const formRef = useRef(null);
   const params = useParams()
 
@@ -62,6 +68,13 @@ const AddOutputForm = ({ handleCloseForm }) => {
     <Form
       {...layout}
       ref={formRef}
+      initialValues={
+        {
+          'date': currentDate,
+          'amount': 1000,
+          'amount per one': 10
+        }
+      }
       name="control-ref"
       onFinish={onFinish}
       style={{
@@ -90,7 +103,7 @@ const AddOutputForm = ({ handleCloseForm }) => {
           },
         ]}
       >
-        <InputNumber defaultValue={3} />
+        <InputNumber />
       </Form.Item>
       {/* amount per one */}
       <Form.Item
@@ -102,7 +115,7 @@ const AddOutputForm = ({ handleCloseForm }) => {
           },
         ]}
       >
-        <InputNumber defaultValue={3} />
+        <InputNumber />
       </Form.Item>
 
       <Form.Item
