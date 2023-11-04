@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { Button, Modal, Form, Input, Select } from 'antd';
-import AddExpectForm from './AddExpectForm';
 
-const AddExpectPopup = () => {
+import React, { useState } from 'react';
+import { Button, Modal} from 'antd';
+import UpdateExpectForm from './UpdateExpectForm';
+
+const UpdateExpectPopup = ({expect}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
   };
   const handleOk = () => {
     setIsModalOpen(false);
+
   };
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -16,12 +18,12 @@ const AddExpectPopup = () => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Add expect
+        Update Expect
       </Button>
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
-        <AddExpectForm handleCloseForm={handleOk}/>
+      <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
+        <UpdateExpectForm handleCloseForm={handleOk} expect = {expect}/>
       </Modal>
     </>
   );
 };
-export default AddExpectPopup;
+export default UpdateExpectPopup;

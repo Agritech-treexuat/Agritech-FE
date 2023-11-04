@@ -156,6 +156,19 @@ const FARM = {
       return err;
     });
   },
+
+  editExpect: async (data, projectId, expectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/editExpect/${projectId}/${expectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;

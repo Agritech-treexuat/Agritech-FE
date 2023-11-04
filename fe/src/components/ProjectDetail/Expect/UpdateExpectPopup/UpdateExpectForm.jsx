@@ -1,9 +1,8 @@
 import React from 'react';
-import { Button, Form, Input, InputNumber, Select } from 'antd';
-import './style.css';
+import { Button, Form, Input, Select, InputNumber } from 'antd';
 import FARM from '../../../../services/farmService'
 import { useParams } from 'react-router';
-import { useStateContext } from '../../../../context';
+import './style.css';
 const { Option } = Select;
 
 const layout = {
@@ -22,20 +21,29 @@ const tailLayout = {
   },
 };
 
-const AddExpectForm = ({ handleCloseForm }) => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
-  const date = today.getDate().toString().padStart(2, '0');
+const testForm = null;
 
-  const currentDate = `${year}-${month}-${date}`;
-  const formRef = React.useRef(null);
+const UpdateExpectForm = ({ handleCloseForm, expect }) => {
   const params = useParams()
-  const { insertExpect, connect, address } = useStateContext();
+  const dateObj = new Date(expect.time);
+
+  const yearData = dateObj.getFullYear();
+  const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+  const dateData = dateObj.getDate().toString().padStart(2, '0');
+
+  const formattedDate = `${yearData}-${monthData}-${dateData}`;
+  const formRef = React.useRef(null);
+  const initValue = {
+    'date': formattedDate,
+    'amount': expect.amount,
+    'note': expect.note
+  };
 
   const onFinish = (values) => {
     console.log("Values: ", values);
-
+    if ('other name' in values) {
+      values.name = values['other name'];
+    }
     const updatedValue = { ...values, time: values.date };
     delete updatedValue.date;
     console.log(updatedValue);
@@ -43,13 +51,13 @@ const AddExpectForm = ({ handleCloseForm }) => {
       "tx": "b",
       ...updatedValue
     }
-    handleSubmitExpect(data, params.id)
+    handleSubmitexpect(data, params.id, expect._id)
   };
 
-  const handleSubmitExpect = async (data, projectId )=> {
+  const handleSubmitexpect = async (data, projectId, expectId )=> {
     try {
       console.log("data to send: ", data, projectId)
-      const res = await FARM.addExpect(data, projectId);
+      const res = await FARM.editExpect(data, projectId, expectId);
       console.log("res: ", res)
       handleCloseForm();
     } catch (error) {
@@ -57,19 +65,14 @@ const AddExpectForm = ({ handleCloseForm }) => {
     }
   }
 
+
   return (
     <Form
       {...layout}
       ref={formRef}
-      initialValues={
-        {
-          'date': currentDate,
-          'amount': 1000,
-          'note': ''
-        }
-      }
       name="control-ref"
       onFinish={onFinish}
+      initialValues={initValue}
       style={{
         maxWidth: 600,
       }}
@@ -115,4 +118,4 @@ const AddExpectForm = ({ handleCloseForm }) => {
   );
 };
 
-export default AddExpectForm;
+export default UpdateExpectForm;
