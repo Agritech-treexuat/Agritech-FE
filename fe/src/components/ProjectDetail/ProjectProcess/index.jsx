@@ -26,6 +26,9 @@ const ProjectProcess = () => {
   const [processData, setProcessData] = useState([])
   const [expectData, setExpectData] = useState([])
   const [imageData, setImageData] = useState([])
+  const [weatherData, setWeatherData] = useState(null)
+  const location = 'hà nội'
+  const apid = 'fd3455621595a002c80c20ef925cfe5f'
 
   useEffect(() => {
     const today = new Date(); // Lấy ngày hôm nay
@@ -71,6 +74,22 @@ const ProjectProcess = () => {
     console.log("image data: ", imageData)
   }, [selectedDate]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apid}&units=metric&lang=vi`);
+        const data = await response.json();
+        console.log("json: ", data)
+
+        setWeatherData(data);
+      } catch (error) {
+        console.error(error)
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   return (
     <>
@@ -106,7 +125,11 @@ const ProjectProcess = () => {
       </Row>
       <Row>
         <Col span={24}>
-        <h2> Thoi tiet hom nay nang, 30 do, do am la 100</h2>
+        <div>
+          {weatherData? <>
+            <h2> Thoi tiet hom nay {weatherData.weather[0].description}, {weatherData.main.temp} do C, do am la {weatherData.main.humidity}%, toc do gio la {weatherData.wind.speed} m/s</h2>
+          </> : <Loading />}
+        </div>
         </Col>
       </Row>
       {
@@ -119,9 +142,7 @@ const ProjectProcess = () => {
               if(index < imageData.length)
                 {
                   imageUrl = imageData[index]?.imageUrl;
-                  console.log("Image url: ", imageUrl, index)
                 }
-              console.log(imageUrl, index)
 
               return imageUrl ? (
                 <Col span={24 / imagesPerRow} key={colIndex} style={{ padding: 4 }}>
