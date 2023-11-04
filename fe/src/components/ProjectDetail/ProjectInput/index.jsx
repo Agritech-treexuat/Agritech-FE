@@ -4,6 +4,8 @@ import { useParams } from 'react-router';
 import { useEffect } from 'react';
 import {Image} from 'antd';
 import Loading from '../../../pages/Loading';
+import UpdateInputPopup from './UpdateInputPopup';
+import EditInputHistory from './EditInputHistory';
 
 const ProjectInput = () => {
   const [initData, setInitData] = useState(null)
@@ -43,14 +45,13 @@ const ProjectInput = () => {
         </div>
         <div>
           <label>Image: </label>
-          {initData.images.length == 0 ? initData.images.map((image) => <span>
+          {initData.images.length > 0 ? initData.images.map((image) => <span>
             <Image
             class={'process-img'}
             src={image}
-            onError={(e) => {
-              e.target.style.display = 'none'; // Ẩn hình ảnh nếu URL không hợp lệ
-            }}
           /></span>) : <span>No image</span>}
+          <UpdateInputPopup input={initData}/>
+      <> {initData.isEdited ? <EditInputHistory input={initData}/> : <></>}</>
         </div>
       </div>) : <Loading />
       }
