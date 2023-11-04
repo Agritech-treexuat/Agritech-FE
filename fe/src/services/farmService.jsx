@@ -142,7 +142,20 @@ const FARM = {
     .catch((err) => {
       return err;
     });
-  }
+  },
+
+  editProcess: async (data, projectId, processId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/editProcess/${projectId}/${processId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;
