@@ -195,6 +195,18 @@ const FARM = {
       return err;
     });
   },
+
+  exportQR: async (projectId, outputId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/exportQR/${projectId}/${outputId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;

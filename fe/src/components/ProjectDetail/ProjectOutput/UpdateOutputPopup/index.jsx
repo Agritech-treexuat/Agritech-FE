@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button, Modal} from 'antd';
 import UpdateOutputForm from './UpdateOutputForm';
 
-const UpdateOutputPopup = ({output}) => {
+const UpdateOutputPopup = ({output, disabled}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -17,7 +17,7 @@ const UpdateOutputPopup = ({output}) => {
   };
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button type="primary" onClick={showModal} disabled={disabled}>
         Update Output
       </Button>
       <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
