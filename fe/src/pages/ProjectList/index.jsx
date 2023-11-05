@@ -7,6 +7,12 @@ import './style.css';
 import FARM from '../../services/farmService';
 import parseData from './helper'
 import Loading from '../Loading'
+import { Input } from 'antd';
+import { Col, Row } from 'antd';
+import { Button, Flex } from 'antd';
+
+
+
 
 const ProjectList = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,22 +38,28 @@ const ProjectList = () => {
       {projects ?
       (<div>
         <h1>Project List</h1>
-        <input
-          type="text"
-          placeholder="Search projects"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <Link to="/create-project">
-          <button>Create New</button>
-        </Link>
-        <div className="project-grid">
+        <Row>
+          <Col span={8}>
+          <Input placeholder="Search projects" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+          </Col>
+          <Col span={1}></Col>
+          <Col span={6}>
+            <Link to="/create-project">
+              <Flex gap="small" wrap="wrap">
+                <Button style={{marginRight: "6px"}} type="primary">Create New</Button>
+              </Flex>
+            </Link>
+        </Col>
+        </Row>
+        <Row className="project-grid">
           {filteredProjects.map((project) => (
+            <Col span={4}>
             <Link to={`/project/${project.id}`} key={project.id}>
               <ProjectItem project={project} />
             </Link>
+            </Col>
           ))}
-        </div>
+        </Row>
     </div>) : <Loading />
       }
     </div>

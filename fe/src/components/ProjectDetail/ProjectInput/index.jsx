@@ -6,6 +6,8 @@ import {Image} from 'antd';
 import Loading from '../../../pages/Loading';
 import UpdateInputPopup from './UpdateInputPopup';
 import EditInputHistory from './EditInputHistory';
+import { Col, Row } from 'antd';
+
 
 const ProjectInput = () => {
   const [initData, setInitData] = useState(null)
@@ -26,7 +28,14 @@ const ProjectInput = () => {
     <div>
       {initData ?
       (<div>
-        <h2>Project Input</h2>
+        <Row >
+        <Col span={4}><h2 style={{margin: "0px"}}>Project Input</h2></Col>
+        <Col span={2}></Col>
+        <Col span={18} style={{display: "flex", justifyContent:"flex-end"}}>
+          <UpdateInputPopup input={initData}/>
+      <> {initData.isEdited ? <EditInputHistory input={initData}/> : <></>}</>
+          </Col>
+        </Row>
         <div>
           <label>Transaction hash: </label>
           <span>{initData.tx}</span>
@@ -44,14 +53,13 @@ const ProjectInput = () => {
           <span>{initData.amount}</span>
         </div>
         <div>
-          <label>Image: </label>
-          {initData.images.length > 0 ? initData.images.map((image) => <span>
-            <Image
-            class={'process-img'}
+          <label>Image: </label> <br />
+          <Row>
+          {initData.images.length > 0 ? initData.images.map((image) => <Col span={6}>
+            <Image style={{width: "100%"}}
             src={image}
-          /></span>) : <span>No image</span>}
-          <UpdateInputPopup input={initData}/>
-      <> {initData.isEdited ? <EditInputHistory input={initData}/> : <></>}</>
+          /></Col>) : <span>No image</span>}
+          </Row>
         </div>
       </div>) : <Loading />
       }

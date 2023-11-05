@@ -1,6 +1,2 @@
 /* CSS */
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Sắp xếp thành 4 cột */
-  gap: 20px; /* Khoảng cách giữa các phần tử */
-}
+

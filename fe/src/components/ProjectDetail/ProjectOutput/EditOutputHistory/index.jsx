@@ -38,7 +38,7 @@ const EditOutputHistory = ({output}) => {
       <Button type="primary" onClick={showModal}>
         Edit history
       </Button>
-      <Modal title="Edit history" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+      <Modal title="Edit history" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null} style={{width: "fit-content"}}>
         {output.historyOutput.map((output) => (
         <div className="output-item">
           <p>Date: {output.time}</p>

@@ -17,7 +17,7 @@ const UpdateInputPopup = ({input}) => {
   };
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button style={{marginRight: "6px"}} type="primary" onClick={showModal}>
         Update Input
       </Button>
       <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
