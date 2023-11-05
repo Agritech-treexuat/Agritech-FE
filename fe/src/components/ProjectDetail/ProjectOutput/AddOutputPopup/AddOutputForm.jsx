@@ -52,7 +52,7 @@ const AddOutputForm = ({ handleCloseForm }) => {
       ...updatedValue,
       "exportQR": false
     }
-    const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0);
+    const totalNppAmount = values.npp ? values.npp.reduce((total, item) => total + item.amount, 0) : 0;
 
     if (values.amount >= totalNppAmount) {
       handleSubmitOutput(data, params.id)
@@ -73,6 +73,20 @@ const AddOutputForm = ({ handleCloseForm }) => {
         console.error(error?.response?.data?.message);
     }
   }
+
+  const uploadProps = {
+    name: 'logo',
+    action: 'http://35.247.150.142:8080/upload/error', // URL của API upload
+    method: 'post',
+    accept: 'image/*',
+    onChange(info) {
+      if (info.file.status === 'done') {
+        console.log(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        console.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
 
   return (
     <Form
@@ -134,9 +148,9 @@ const AddOutputForm = ({ handleCloseForm }) => {
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
-        <Upload name="logo" action="/upload.do" listType="picture">
-          <Button icon={<UploadOutlined />}>Click to upload</Button>
-        </Upload>
+        <Upload {...uploadProps} listType="picture">
+        <Button icon={<UploadOutlined />}>Click to upload</Button>
+      </Upload>
       </Form.Item>
       {/* List npp */}
       <Form.List name="npp">
