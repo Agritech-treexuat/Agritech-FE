@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Upload } from 'antd';
+import { Button, Modal, Upload, Image } from 'antd';
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -44,22 +44,24 @@ const EditOutputHistory = ({output}) => {
           <p>Date: {output.time}</p>
           <p>Amount: {output.amount}</p>
           <p>Amount per one: {output.amount_perOne}</p>
-          <Upload
-            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-            listType="picture-card"
-            fileList={output.images}
-            onPreview={handlePreview}
-          >
-          </Upload>
-          <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancelImage}>
-            <img
-              alt="example"
-              style={{
-                width: '100%',
-              }}
-              src={previewImage}
-            />
-          </Modal>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {
+              output.images ? output.images.map((image) => <span>
+                <Image
+                class={'process-img'}
+                src={image}
+              /></span>) : <span>No image</span>
+            }
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {
+              output.npp ? output.npp.map((npp_item) => <div>
+                <p>NPP: {npp_item.name} with amount: {npp_item.amount}</p>
+                </div>) : <span>No npp</span>
+            }
+          </div>
+          <p>Modified at: {output.modified_at}</p>
         </div>
       ))}
       </Modal>

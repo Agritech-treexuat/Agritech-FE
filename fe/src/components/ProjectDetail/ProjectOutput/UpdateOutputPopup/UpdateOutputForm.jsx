@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Form, Input, Select, InputNumber, Upload } from 'antd';
+import { Button, Form, Input, Select, InputNumber, Upload, Space } from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { UploadOutlined } from '@ant-design/icons';
 import FARM from '../../../../services/farmService'
 import { useParams } from 'react-router';
@@ -45,7 +46,8 @@ const UpdateOutputForm = ({ handleCloseForm, output }) => {
     'date': formattedDate,
     'amount': output.amount,
     'amount per one': output.amount_perOne,
-    'upload': output.images
+    'upload': output.images,
+    'npp': output.npp
   };
 
   const onFinish = (values) => {
@@ -61,7 +63,14 @@ const UpdateOutputForm = ({ handleCloseForm, output }) => {
       "tx": "b",
       ...updatedValue
     }
-    handleSubmitOutput(data, params.id, output._id)
+    const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0);
+    if (values.amount >= totalNppAmount) {
+      handleSubmitOutput(data, params.id, output._id)
+      // handleSubmitOutput(data, params.id);
+    } else {
+      alert("Output is not valid. The total 'amount' should be greater than or equal to the sum of 'npp' amounts.");
+      // Hiển thị thông báo hoặc thực hiện các xử lý khác tại đây nếu cần.
+    }
   };
 
   const handleSubmitOutput = async (data, projectId, outputId )=> {
@@ -134,6 +143,54 @@ const UpdateOutputForm = ({ handleCloseForm, output }) => {
           <Button icon={<UploadOutlined />}>Click to upload</Button>
         </Upload>
       </Form.Item>
+      {/* list npp */}
+      <Form.List name="npp">
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, ...restField }) => (
+              <Space
+                key={key}
+                style={{
+                  display: 'flex',
+                  marginBottom: 8,
+                }}
+                align="baseline"
+              >
+                <Form.Item
+                  {...restField}
+                  name={[name, 'name']}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Missing name',
+                    },
+                  ]}
+                >
+                  <Input placeholder="NPP Name" />
+                </Form.Item>
+                <Form.Item
+                  {...restField}
+                  name={[name, 'amount']}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Missing amount',
+                    },
+                  ]}
+                >
+                  <InputNumber />
+                </Form.Item>
+                <MinusCircleOutlined onClick={() => remove(name)} />
+              </Space>
+            ))}
+            <Form.Item>
+              <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                Add NPP
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
