@@ -5,6 +5,7 @@ import UpdateOutputPopup from '../UpdateOutputPopup';
 import EditOutputHistory from '../EditOutputHistory';
 import {Image} from 'antd';
 import FARM from '../../../../services/farmService';
+import {formatDate} from '../../../../utils/helpers'
 import { useParams } from 'react-router';
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -56,29 +57,29 @@ const OutputItem = ({ output, setOutputData }) => {
 
   return (
     <div className="output-item">
-      <p>Date: {time}</p>
-      <p>Amount: {amount}</p>
-      <p>Amount per one: {amount_perOne}</p>
+      <p>Thời gian: {formatDate(time)}</p>
+      <p>Lượng: {amount}</p>
+      <p>Lượng trên 1 sản phẩm: {amount_perOne}</p>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {
           images ? images.map((image) => <span>
             <Image
             class={'process-img'}
             src={image}
-          /></span>) : <span>No image</span>
+          /></span>) : <span>Không có ảnh</span>
         }
       </div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {
           npp ? npp.map((npp_item) => <div>
-            <p>NPP: {npp_item.name} with amount: {npp_item.amount}</p>
-            </div>) : <span>No npp</span>
+            <p>NPP: {npp_item.name} cùng lượng {npp_item.amount}</p>
+            </div>) : <span>Không có npp</span>
         }
       </div>
       <UpdateOutputPopup output={output} disabled={output.exportQR} setOutputData={setOutputData}/>
       <> {output.isEdited ? <EditOutputHistory output={output}/> : <></>}</>
       <Button type="primary" onClick={handleQR} disabled={output.exportQR}>
-        Export QR
+      Xuất QR
       </Button>
     </div>
   );

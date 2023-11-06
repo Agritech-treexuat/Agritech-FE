@@ -13,17 +13,17 @@ const ProjectDetail = () => {
   const items = [
     {
       key: '1',
-      label: 'Tab 1',
+      label: 'Đầu vào',
       children: <ProjectInput />,
     },
     {
       key: '2',
-      label: 'Tab 2',
+      label: 'Quá trình canh tác',
       children: <ProjectProcess />,
     },
     {
       key: '3',
-      label: 'Tab 3',
+      label: 'Đầu ra',
       children: <ProjectOutput />,
     },
   ];

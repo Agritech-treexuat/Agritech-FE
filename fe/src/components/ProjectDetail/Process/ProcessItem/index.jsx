@@ -4,48 +4,32 @@ import { Button, Popover } from 'antd';
 import AddProcessPopUp from '../AddProcessPopup';
 import UpdateProcessPopup from '../UpdateProcessPopup';
 import EditHistory from '../EditHistory';
+import {formatDate} from '../../../../utils/helpers'
 
 const ProcessItem = ({ process, setProcessData }) => {
   const { time, type } = process;
-  console.log("Process: ", process)
-
-  const content = (process) => {
-    return (
-      process.historyProcess.map((process) => (
-        <div className="process-item">
-          <p>Tx: {process.tx}</p>
-          <p>Date: {process.time}</p>
-          <p>Type: {process.type}</p>
-          {process.type === 'phân bón' || process.type === 'BVTV' ? (
-            <div>
-              <p>Name: {process.name}</p>
-              <p>Amount: {process.amount}</p>
-              <p>Note: {process.note}</p>
-            </div>
-          ) : (
-            <p>Note: {process.note}</p>
-          )}
-          <p>Modified at: {process.modified_at}</p>
-        </div>
-      ))
-  )};
+  console.log("Process: ", process, formatDate(process.time))
 
   return (
+    <div style={{marginRight: "15px"}}>
     <div className="process-item">
       <p>Tx: {process.tx}</p>
-      <p>Date: {time}</p>
-      <p>Type: {type}</p>
+      <p>Thời gian: {formatDate(time)}</p>
+      <p>Loại canh tác: {type}</p>
       {type === 'phân bón' || type === 'BVTV' ? (
         <div>
-          <p>Name: {process.name}</p>
-          <p>Amount: {process.amount}</p>
-          <p>Note: {process.note}</p>
+          <p>Tên: {process.name}</p>
+          <p>Lượng: {process.amount}</p>
+          <p>Ghi chú: {process.note}</p>
         </div>
       ) : (
-        <p>Note: {process.note}</p>
+        <p>Ghi chú: {process.note}</p>
       )}
+    </div>
+    <div style={{marginBottom: "30px"}}>
       <UpdateProcessPopup process={process} setProcessData={setProcessData}/>
-      <> {process.isEdited ? <EditHistory process={process}/> : <></>}</>
+        <> {process.isEdited ? <EditHistory process={process}/> : <></>}</>
+    </div>
     </div>
   );
 };

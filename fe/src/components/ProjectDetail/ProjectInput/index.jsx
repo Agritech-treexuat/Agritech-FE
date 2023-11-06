@@ -7,7 +7,7 @@ import Loading from '../../../pages/Loading';
 import UpdateInputPopup from './UpdateInputPopup';
 import EditInputHistory from './EditInputHistory';
 import { Col, Row } from 'antd';
-
+import { formatDate } from '../../../utils/helpers';
 
 const ProjectInput = () => {
   const [initData, setInitData] = useState(null)
@@ -29,7 +29,7 @@ const ProjectInput = () => {
       {initData ?
       (<div>
         <Row >
-        <Col span={4}><h2 style={{margin: "0px"}}>Project Input</h2></Col>
+        <Col span={4}><h2 style={{margin: "0px"}}>Thông tin khởi tạo</h2></Col>
         <Col span={2}></Col>
         <Col span={18} style={{display: "flex", justifyContent:"flex-end"}}>
           <UpdateInputPopup input={initData} setInitData={setInitData}/>
@@ -41,24 +41,24 @@ const ProjectInput = () => {
           <span>{initData.tx}</span>
         </div>
         <div>
-          <label>Start Date: </label>
-          <span>{initData.initDate}</span>
+          <label>Ngày bắt đầu: </label>
+          <span>{formatDate(initData.initDate)}</span>
         </div>
         <div>
-          <label>Selected Seed: </label>
+          <label>Hạt giống: </label>
           <span>{initData.seed}</span>
         </div>
         <div>
-          <label>Amount: </label>
+          <label>Lượng: </label>
           <span>{initData.amount}</span>
         </div>
         <div>
-          <label>Image: </label> <br />
+          <label>Ảnh: </label> <br />
           <Row>
           {initData.images.length > 0 ? initData.images.map((image) => <Col span={6}>
             <Image style={{width: "100%"}}
             src={image}
-          /></Col>) : <span>No image</span>}
+          /></Col>) : <span>Không có ảnh</span>}
           </Row>
         </div>
       </div>) : <Loading />

@@ -96,16 +96,16 @@ const ProjectProcess = () => {
       <Row>
         <Col span={12}>
         <div>
-          <h1>List of Processes</h1>
+          <h1>Các hoạt động canh tác</h1>
           {processData? <>
-            <AddProcessPopUp setProcessData={setProcessData}/>
+            <AddProcessPopUp setProcessData={setProcessData} />
             <ProcessList processes={processData} setProcessData={setProcessData}/>
           </> : <Loading />}
         </div>
         </Col>
         <Col span={12}>
           <div>
-            <h1>List of Expect</h1>
+            <h1>Các dự kiến sản lượng </h1>
             {processData? <>
               <AddExpectPopup setExpectData={setExpectData}/>
               <ExpectList expects={expectData} setExpectData={setExpectData}/>
@@ -127,7 +127,7 @@ const ProjectProcess = () => {
         <Col span={24}>
         <div>
           {weatherData? <>
-            <h2> Thoi tiet hom nay {weatherData.weather[0].description}, {weatherData.main.temp} do C, do am la {weatherData.main.humidity}%, toc do gio la {weatherData.wind.speed} m/s</h2>
+            <h2> Thời tiết hôm nay {weatherData.weather[0].description}, {weatherData.main.temp} độ C, độ ẩm là {weatherData.main.humidity}%, tốc độ gió là {weatherData.wind.speed} m/s</h2>
           </> : <Loading />}
         </div>
         </Col>

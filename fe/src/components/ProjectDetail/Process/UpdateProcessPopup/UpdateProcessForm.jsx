@@ -135,7 +135,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       {/* date */}
       <Form.Item
         name="date"
-        label="Date"
+        label="Thời gian"
         rules={[
           {
             required: true,
@@ -147,14 +147,14 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       {/* type */}
       <Form.Item
         name="type"
-        label="Type"
+        label="Loại canh tác"
         rules={[
           {
             required: true,
           },
         ]}
       >
-        <Select placeholder="Select a type">
+        <Select placeholder="Chọn loại">
           <Option value="phân bón">Phân bón</Option>
           <Option value="BVTV">BVTV</Option>
           <Option value="other">Other</Option>
@@ -171,14 +171,14 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
               {/* name */}
               <Form.Item
                 name="name"
-                label="Name"
+                label="Tên"
                 rules={[
                   {
                     required: true,
                   },
                 ]}
               >
-                <Select placeholder="Select a name">
+                <Select placeholder="Chọn tên">
                   {getFieldValue('type') === 'phân bón'
                     ? fertilizers.map((fertilizer) => (
                         <Option key={fertilizer} value={fertilizer}>
@@ -202,7 +202,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                   getFieldValue('name') === 'Other name' ? (
                     <Form.Item
                       name="other name"
-                      label="OtherName"
+                      label="Tên khác"
                       rules={[
                         {
                           required: true,
@@ -217,7 +217,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
               {/* amount */}
               <Form.Item
                 name="amount"
-                label="Amount"
+                label="Lượng"
                 rules={[
                   {
                     required: true,
@@ -229,7 +229,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
               {/* note */}
               <Form.Item
                 name="note"
-                label="Note"
+                label="Ghi chú"
               >
                 <Input />
               </Form.Item>
@@ -238,7 +238,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
             // note
             <Form.Item
               name="note"
-              label="Note"
+              label="Ghi chú"
             >
               <Input />
             </Form.Item>
@@ -248,7 +248,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-          Update
+        Cập nhật 
         </Button>
       </Form.Item>
     </Form>

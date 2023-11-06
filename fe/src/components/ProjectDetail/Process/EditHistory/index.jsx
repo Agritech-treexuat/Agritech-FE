@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Divider } from 'antd';
+import { formatDate, formatDateTime } from '../../../../utils/helpers';
 const EditHistory = ({process}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -14,25 +15,27 @@ const EditHistory = ({process}) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Edit history
+      Lịch sử chỉnh sửa
       </Button>
-      <Modal title="Edit history" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+      <Modal title="Lịch sử chỉnh sửa" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         {process.historyProcess.map((process) => (
-        <div className="process-item">
+          <>
+          <Divider>Chỉnh sửa lúc:  {formatDateTime(process.modified_at)}</Divider>
+        <div style={{width: "fit-content", marginRight: "10px"}}>
           <p>Tx: {process.tx}</p>
-          <p>Date: {process.time}</p>
-          <p>Type: {process.type}</p>
+          <p>Thời gian: {formatDate(process.time)}</p>
+          <p>Loại canh tác: {process.type}</p>
           {process.type === 'phân bón' || process.type === 'BVTV' ? (
             <div>
-              <p>Name: {process.name}</p>
-              <p>Amount: {process.amount}</p>
-              <p>Note: {process.note}</p>
+              <p>Tên: {process.name}</p>
+              <p>Lượng: {process.amount}</p>
+              <p>Ghi chú: {process.note}</p>
             </div>
           ) : (
-            <p>Note: {process.note}</p>
+            <p>Ghi chú: {process.note}</p>
           )}
-          <p>Modified at: {process.modified_at}</p>
         </div>
+        </>
       ))}
       </Modal>
     </>

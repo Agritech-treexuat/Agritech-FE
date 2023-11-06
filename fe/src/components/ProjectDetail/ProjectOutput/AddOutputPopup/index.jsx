@@ -16,9 +16,9 @@ const AddOutputPopup = ({setOutputData}) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Add output
+      Thêm đầu ra
       </Button>
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null} >
+      <Modal title="Thêm đầu ra" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null} >
         <AddOutputForm handleCloseForm={handleOk} setOutputData={setOutputData}/>
       </Modal>
     </>

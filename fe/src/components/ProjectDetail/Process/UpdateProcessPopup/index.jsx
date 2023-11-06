@@ -17,9 +17,9 @@ const UpdateProcessPopup = ({process, setProcessData}) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Update Process
+      Chỉnh sửa
       </Button>
-      <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
+      <Modal  title="Chỉnh sửa quá trình" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
         <UpdateProcessForm handleCloseForm={handleOk} process = {process} setProcessData={setProcessData}/>
       </Modal>
     </>

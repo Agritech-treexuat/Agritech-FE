@@ -16,10 +16,10 @@ const AddProcessPopUp = ({setProcessData}) => {
   };
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Add Process
+      <Button type="primary" onClick={showModal} style={{marginBottom: "15px"}}>
+      Thêm hoạt động
       </Button>
-      <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
+      <Modal  title="Thêm hoạt động " open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
         <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData}/>
       </Modal>
     </>

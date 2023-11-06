@@ -15,10 +15,10 @@ const AddExpectPopup = ({setExpectData}) => {
   };
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Add expect
+      <Button type="primary" onClick={showModal} style={{marginBottom: "15px"}}>
+      Thêm dự kiến
       </Button>
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+      <Modal title="Thêm dự kiến" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         <AddExpectForm handleCloseForm={handleOk} setExpectData={setExpectData}/>
       </Modal>
     </>

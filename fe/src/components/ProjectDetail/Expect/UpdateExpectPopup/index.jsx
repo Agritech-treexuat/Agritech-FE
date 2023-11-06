@@ -18,7 +18,7 @@ const UpdateExpectPopup = ({expect, setExpectData}) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Update Expect
+      Chỉnh sửa 
       </Button>
       <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
         <UpdateExpectForm handleCloseForm={handleOk} expect = {expect} setExpectData={setExpectData}/>

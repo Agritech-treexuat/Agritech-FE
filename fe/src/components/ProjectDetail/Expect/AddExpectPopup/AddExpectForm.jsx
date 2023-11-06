@@ -78,7 +78,7 @@ const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
       {/* date */}
       <Form.Item
         name="date"
-        label="Date"
+        label="Thời gian"
         rules={[
           {
             required: true,
@@ -90,7 +90,7 @@ const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
       {/* amount */}
       <Form.Item
         name="amount"
-        label="Amount"
+        label="Lượng"
         rules={[
           {
             required: true,
@@ -102,14 +102,14 @@ const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
       {/* note */}
       <Form.Item
         name="note"
-        label="Note"
+        label="Ghi chú"
       >
         <Input />
       </Form.Item>
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-          Submit
+        Thêm 
         </Button>
       </Form.Item>
     </Form>

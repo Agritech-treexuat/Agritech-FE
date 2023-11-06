@@ -89,7 +89,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
       {/* date */}
       <Form.Item
         name="date"
-        label="Date"
+        label="Thời gian"
         rules={[
           {
             required: true,
@@ -101,15 +101,15 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
       {/* type */}
       <Form.Item
         name="type"
-        label="Type"
+        label="Loại canh tác"
         rules={[
           {
             required: true,
           },
         ]}
       >
-        <Select placeholder="Select a type">
-          <Option value="phân bón">Phân bón</Option>
+        <Select placeholder="Chọn loại ">
+          <Option value="phân bón">Phân Bón</Option>
           <Option value="BVTV">BVTV</Option>
           <Option value="other">Other</Option>
         </Select>
@@ -125,7 +125,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
               {/* name */}
               <Form.Item
                 name="name"
-                label="Name"
+                label="Tên"
                 rules={[
                   {
                     required: true,
@@ -156,7 +156,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
                   getFieldValue('name') === 'Other name' ? (
                     <Form.Item
                       name="other name"
-                      label="OtherName"
+                      label="Tên khác"
                       rules={[
                         {
                           required: true,
@@ -171,7 +171,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
               {/* amount */}
               <Form.Item
                 name="amount"
-                label="Amount"
+                label="Lượng"
                 rules={[
                   {
                     required: true,
@@ -183,7 +183,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
               {/* note */}
               <Form.Item
                 name="note"
-                label="Note"
+                label="Ghi chú"
               >
                 <Input />
               </Form.Item>
@@ -192,7 +192,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
             // note
             <Form.Item
               name="note"
-              label="Note"
+              label="Ghi chú"
             >
               <Input />
             </Form.Item>
@@ -202,7 +202,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-          Submit
+        Thêm
         </Button>
       </Form.Item>
     </Form>

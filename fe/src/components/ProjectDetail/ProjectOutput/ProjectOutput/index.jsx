@@ -25,12 +25,12 @@ const ProjectOutput = () => {
     <div>
       {
         outputData ? <>
+        <AddOutputPopup setOutputData={setOutputData}/>
         {
           outputData.map((output, index) => (
             <OutputItem key={index} output={output} setOutputData={setOutputData}/>
           ))
         }
-        <AddOutputPopup setOutputData={setOutputData}/>
         </> : <Loading />
         }
     </div>

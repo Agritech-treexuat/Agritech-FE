@@ -18,9 +18,9 @@ const UpdateOutputPopup = ({output, disabled, setOutputData}) => {
   return (
     <>
       <Button type="primary" onClick={showModal} disabled={disabled}>
-        Update Output
+      Chỉnh sửa
       </Button>
-      <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
+      <Modal  title="Chỉnh sửa đầu ra" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
         <UpdateOutputForm handleCloseForm={handleOk} output = {output} setOutputData={setOutputData}/>
       </Modal>
     </>

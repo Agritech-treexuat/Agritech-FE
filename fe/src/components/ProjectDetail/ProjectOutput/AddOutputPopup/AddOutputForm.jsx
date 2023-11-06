@@ -58,7 +58,7 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
       handleSubmitOutput(data, params.id)
       // handleSubmitOutput(data, params.id);
     } else {
-      alert("Output is not valid. The total 'amount' should be greater than or equal to the sum of 'npp' amounts.");
+      alert("Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế");
       // Hiển thị thông báo hoặc thực hiện các xử lý khác tại đây nếu cần.
     }
   };
@@ -109,7 +109,7 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
       {/* date */}
       <Form.Item
         name="date"
-        label="Date"
+        label="Thời gian"
         rules={[
           {
             required: true,
@@ -121,7 +121,7 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
       {/* amount */}
       <Form.Item
         name="amount"
-        label="Amount"
+        label="Lượng"
         rules={[
           {
             required: true,
@@ -133,7 +133,7 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
       {/* amount per one */}
       <Form.Item
         name="amount per one"
-        label="Amount per one"
+        label="Lượng/sản phẩm"
         rules={[
           {
             required: true,
@@ -145,12 +145,12 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
 
       <Form.Item
         name="upload"
-        label="Upload"
+        label="Ảnh"
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
         <Upload {...uploadProps} listType="picture">
-        <Button icon={<UploadOutlined />}>Click to upload</Button>
+        <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
       </Upload>
       </Form.Item>
       {/* List npp */}
@@ -195,7 +195,7 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
             ))}
             <Form.Item>
               <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                Add NPP
+              Thêm nhà phân phối
               </Button>
             </Form.Item>
           </>
@@ -204,7 +204,7 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-          Submit
+        Thêm
         </Button>
       </Form.Item>
     </Form>
