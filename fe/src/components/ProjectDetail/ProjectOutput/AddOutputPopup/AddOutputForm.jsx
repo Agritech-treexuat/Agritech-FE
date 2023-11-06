@@ -30,7 +30,7 @@ const normFile = (e) => {
   return e?.fileList;
 };
 
-const AddOutputForm = ({ handleCloseForm }) => {
+const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
   const today = new Date();
   const year = today.getFullYear();
   const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
@@ -68,6 +68,7 @@ const AddOutputForm = ({ handleCloseForm }) => {
       console.log("data to send: ", data, projectId)
       const res = await FARM.addOutput(data, projectId);
       console.log("res: ", res)
+      setOutputData(res.data.updatedProjectOutput)
       handleCloseForm();
     } catch (error) {
         console.error(error?.response?.data?.message);

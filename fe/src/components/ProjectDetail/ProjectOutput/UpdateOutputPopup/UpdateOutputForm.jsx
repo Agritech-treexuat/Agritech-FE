@@ -32,7 +32,7 @@ const normFile = (e) => {
 
 const testForm = null;
 
-const UpdateOutputForm = ({ handleCloseForm, output }) => {
+const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
   const params = useParams()
   const dateObj = new Date(output.time);
 
@@ -78,6 +78,7 @@ const UpdateOutputForm = ({ handleCloseForm, output }) => {
       console.log("data to send: ", data, projectId)
       const res = await FARM.editOutput(data, projectId, outputId);
       console.log("res: ", res)
+      setOutputData(res.data.updatedOutput)
       handleCloseForm();
     } catch (error) {
         console.error(error?.response?.data?.message);

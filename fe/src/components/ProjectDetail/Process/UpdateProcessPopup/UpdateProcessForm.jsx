@@ -26,7 +26,7 @@ const testForm = null;
 const fertilizers = ["NHK", "Kali", "Other name"];
 const bvtvs = ["BVTV1", "BVTV2", "Other name"];
 
-const UpdateProcessForm = ({ handleCloseForm, process }) => {
+const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
   const today = new Date();
   const year = today.getFullYear();
   const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
@@ -112,6 +112,7 @@ const UpdateProcessForm = ({ handleCloseForm, process }) => {
       console.log("data to send: ", data, projectId)
       const res = await FARM.editProcess(data, projectId, processId);
       console.log("res: ", res)
+      setProcessData(res.data.updatedProcess)
       handleCloseForm();
     } catch (error) {
         console.error(error?.response?.data?.message);

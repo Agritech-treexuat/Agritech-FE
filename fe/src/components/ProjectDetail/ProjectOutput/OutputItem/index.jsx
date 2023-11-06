@@ -14,7 +14,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const OutputItem = ({ output }) => {
+const OutputItem = ({ output, setOutputData }) => {
   const { time, amount, amount_perOne, images, npp } = output;
   console.log("images: ", images)
   const params = useParams()
@@ -47,6 +47,7 @@ const OutputItem = ({ output }) => {
       console.log("data to send: ", projectId, outputId)
       const res = await FARM.exportQR(projectId, outputId);
       console.log("res export qr: ", res)
+      setOutputData(res.data.projectOutput)
       alert("Eport QR thanh cong")
     } catch (error) {
         console.error(error?.response?.data?.message);
@@ -74,9 +75,9 @@ const OutputItem = ({ output }) => {
             </div>) : <span>No npp</span>
         }
       </div>
-      <UpdateOutputPopup output={output} disabled={output.exportQR}/>
+      <UpdateOutputPopup output={output} disabled={output.exportQR} setOutputData={setOutputData}/>
       <> {output.isEdited ? <EditOutputHistory output={output}/> : <></>}</>
-      <Button type="primary" onClick={handleQR}>
+      <Button type="primary" onClick={handleQR} disabled={output.exportQR}>
         Export QR
       </Button>
     </div>

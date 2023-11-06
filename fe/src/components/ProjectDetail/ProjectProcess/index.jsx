@@ -98,8 +98,8 @@ const ProjectProcess = () => {
         <div>
           <h1>List of Processes</h1>
           {processData? <>
-            <AddProcessPopUp />
-            <ProcessList processes={processData} />
+            <AddProcessPopUp setProcessData={setProcessData}/>
+            <ProcessList processes={processData} setProcessData={setProcessData}/>
           </> : <Loading />}
         </div>
         </Col>
@@ -107,8 +107,8 @@ const ProjectProcess = () => {
           <div>
             <h1>List of Expect</h1>
             {processData? <>
-              <AddExpectPopup />
-              <ExpectList expects={expectData} />
+              <AddExpectPopup setExpectData={setExpectData}/>
+              <ExpectList expects={expectData} setExpectData={setExpectData}/>
             </> : <Loading />}
           </div>
         </Col>

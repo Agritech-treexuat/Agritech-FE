@@ -32,7 +32,7 @@ const normFile = (e) => {
 const testForm = null;
 const seeds = ['Seed A', 'Seed B', 'Seed C', 'Seed D'];
 
-const UpdateInputForm = ({ handleCloseForm, input }) => {
+const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
   const params = useParams()
   console.log("input form: ", input)
   const dateObj = new Date(input.initDate);
@@ -70,6 +70,7 @@ const UpdateInputForm = ({ handleCloseForm, input }) => {
       console.log("data to send: ", data, projectId)
       const res = await FARM.editInput(data, projectId);
       console.log("res: ", res)
+      setInitData(res.data.updatedInput)
       handleCloseForm();
     } catch (error) {
         console.error(error?.response?.data?.message);

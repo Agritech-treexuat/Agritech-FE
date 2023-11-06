@@ -3,7 +3,7 @@ import './style.css'
 import EditExpectHistory from '../EditExpectHistory';
 import UpdateExpectPopup from '../UpdateExpectPopup';
 
-const ExpectItem = ({ expect }) => {
+const ExpectItem = ({ expect, setExpectData }) => {
   const { tx, time, amount, note,  } = expect;
 
   return (
@@ -14,7 +14,7 @@ const ExpectItem = ({ expect }) => {
         <p>Expect: {amount}</p>
         <p>Note: {note}</p>
       </div>
-      <UpdateExpectPopup expect={expect}/>
+      <UpdateExpectPopup expect={expect} setExpectData={setExpectData}/>
       <> {expect.isEdited ? <EditExpectHistory expect={expect}/> : <></>}</>
     </>
   );

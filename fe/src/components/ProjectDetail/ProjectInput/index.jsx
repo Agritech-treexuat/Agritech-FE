@@ -32,7 +32,7 @@ const ProjectInput = () => {
         <Col span={4}><h2 style={{margin: "0px"}}>Project Input</h2></Col>
         <Col span={2}></Col>
         <Col span={18} style={{display: "flex", justifyContent:"flex-end"}}>
-          <UpdateInputPopup input={initData}/>
+          <UpdateInputPopup input={initData} setInitData={setInitData}/>
       <> {initData.isEdited ? <EditInputHistory input={initData}/> : <></>}</>
           </Col>
         </Row>

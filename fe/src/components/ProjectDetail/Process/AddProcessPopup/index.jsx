@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal, Form, Input, Select } from 'antd';
 import AddProcessForm from './AddProcessForm';
 
-const AddProcessPopUp = () => {
+const AddProcessPopUp = ({setProcessData}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -20,7 +20,7 @@ const AddProcessPopUp = () => {
         Add Process
       </Button>
       <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
-        <AddProcessForm handleCloseForm={handleOk}/>
+        <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData}/>
       </Modal>
     </>
   );

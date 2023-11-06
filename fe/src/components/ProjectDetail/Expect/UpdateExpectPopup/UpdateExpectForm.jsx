@@ -23,7 +23,7 @@ const tailLayout = {
 
 const testForm = null;
 
-const UpdateExpectForm = ({ handleCloseForm, expect }) => {
+const UpdateExpectForm = ({ handleCloseForm, expect, setExpectData }) => {
   const params = useParams()
   const dateObj = new Date(expect.time);
 
@@ -55,6 +55,7 @@ const UpdateExpectForm = ({ handleCloseForm, expect }) => {
       console.log("data to send: ", data, projectId)
       const res = await FARM.editExpect(data, projectId, expectId);
       console.log("res: ", res)
+      setExpectData(res.data.updatedExpect)
       handleCloseForm();
     } catch (error) {
         console.error(error?.response?.data?.message);

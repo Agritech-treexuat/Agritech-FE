@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button, Modal} from 'antd';
 import UpdateExpectForm from './UpdateExpectForm';
 
-const UpdateExpectPopup = ({expect}) => {
+const UpdateExpectPopup = ({expect, setExpectData}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -21,7 +21,7 @@ const UpdateExpectPopup = ({expect}) => {
         Update Expect
       </Button>
       <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
-        <UpdateExpectForm handleCloseForm={handleOk} expect = {expect}/>
+        <UpdateExpectForm handleCloseForm={handleOk} expect = {expect} setExpectData={setExpectData}/>
       </Modal>
     </>
   );

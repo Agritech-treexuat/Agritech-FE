@@ -22,7 +22,7 @@ const tailLayout = {
   },
 };
 
-const AddExpectForm = ({ handleCloseForm }) => {
+const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
   const today = new Date();
   const year = today.getFullYear();
   const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
@@ -51,6 +51,7 @@ const AddExpectForm = ({ handleCloseForm }) => {
       console.log("data to send: ", data, projectId)
       const res = await FARM.addExpect(data, projectId);
       console.log("res: ", res)
+      setExpectData(res.data.updatedProjectExpect)
       handleCloseForm();
     } catch (error) {
         console.error(error?.response?.data?.message);

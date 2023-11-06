@@ -5,7 +5,7 @@ import AddProcessPopUp from '../AddProcessPopup';
 import UpdateProcessPopup from '../UpdateProcessPopup';
 import EditHistory from '../EditHistory';
 
-const ProcessItem = ({ process }) => {
+const ProcessItem = ({ process, setProcessData }) => {
   const { time, type } = process;
   console.log("Process: ", process)
 
@@ -44,7 +44,7 @@ const ProcessItem = ({ process }) => {
       ) : (
         <p>Note: {process.note}</p>
       )}
-      <UpdateProcessPopup process={process}/>
+      <UpdateProcessPopup process={process} setProcessData={setProcessData}/>
       <> {process.isEdited ? <EditHistory process={process}/> : <></>}</>
     </div>
   );
