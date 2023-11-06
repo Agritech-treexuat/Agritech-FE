@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import './style.css'
-import { Modal, Upload } from 'antd';
+import { Button, Modal, Upload } from 'antd';
+import UpdateOutputPopup from '../UpdateOutputPopup';
+import EditOutputHistory from '../EditOutputHistory';
+import {Image} from 'antd';
+import FARM from '../../../../services/farmService';
+import { useParams } from 'react-router';
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -9,8 +14,10 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const OutputItem = ({ output }) => {
-  const { date, amount, amount_perOne, images } = output;
+const OutputItem = ({ output, setOutputData }) => {
+  const { time, amount, amount_perOne, images, npp } = output;
+  console.log("images: ", images)
+  const params = useParams()
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -30,28 +37,49 @@ const OutputItem = ({ output }) => {
     console.log("file list: ", fileList)
   };
 
+  const handleQR = () => {
+    // Xử lý logic xuất QR code ở đây
+    handleExportQR(params.id, output._id)
+  };
+
+  const handleExportQR = async (projectId, outputId)=> {
+    try {
+      console.log("data to send: ", projectId, outputId)
+      const res = await FARM.exportQR(projectId, outputId);
+      console.log("res export qr: ", res)
+      setOutputData(res.data.projectOutput)
+      alert("Eport QR thanh cong")
+    } catch (error) {
+        console.error(error?.response?.data?.message);
+    }
+  }
+
   return (
     <div className="output-item">
-      <p>Date: {date}</p>
+      <p>Date: {time}</p>
       <p>Amount: {amount}</p>
       <p>Amount per one: {amount_perOne}</p>
-      <Upload
-        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-        listType="picture-card"
-        fileList={images}
-        onPreview={handlePreview}
-        onChange={handleChange}
-      >
-      </Upload>
-      <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-        <img
-          alt="example"
-          style={{
-            width: '100%',
-          }}
-          src={previewImage}
-        />
-      </Modal>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {
+          images ? images.map((image) => <span>
+            <Image
+            class={'process-img'}
+            src={image}
+          /></span>) : <span>No image</span>
+        }
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {
+          npp ? npp.map((npp_item) => <div>
+            <p>NPP: {npp_item.name} with amount: {npp_item.amount}</p>
+            </div>) : <span>No npp</span>
+        }
+      </div>
+      <UpdateOutputPopup output={output} disabled={output.exportQR} setOutputData={setOutputData}/>
+      <> {output.isEdited ? <EditOutputHistory output={output}/> : <></>}</>
+      <Button type="primary" onClick={handleQR} disabled={output.exportQR}>
+        Export QR
+      </Button>
     </div>
   );
 };

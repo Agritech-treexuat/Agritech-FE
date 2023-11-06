@@ -56,7 +56,157 @@ const FARM = {
     .catch((err) => {
       return err;
     });
-  }
+  },
+
+  addProcess: async (data, projectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/addProcess/${projectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  addOutput: async (data, projectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/addOutput/${projectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getInit: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/input`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getProcess: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/process`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getExpect: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/expect`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getOutput: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/output`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getImage: async (projectId, selectedDate) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/project/${projectId}/image/?date=${selectedDate}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  editProcess: async (data, projectId, processId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/editProcess/${projectId}/${processId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  editExpect: async (data, projectId, expectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/editExpect/${projectId}/${expectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  editOutput: async (data, projectId, outputId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/editOutput/${projectId}/${outputId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  editInput: async (data, projectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/editInput/${projectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  exportQR: async (projectId, outputId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/project/exportQR/${projectId}/${outputId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;

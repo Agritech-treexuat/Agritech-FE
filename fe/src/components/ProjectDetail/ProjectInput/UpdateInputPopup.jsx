@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Modal, Form, Input, Select } from 'antd';
-import AddProcessForm from './AddProcessForm';
+import { Button, Modal} from 'antd';
+import UpdateInputForm from './UpdateInputForm';
 
-const AddProcessPopUp = ({setProcessData}) => {
+const UpdateInputPopup = ({input, setInitData}) => {
+  console.log("input pop up: ", input)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -16,13 +17,13 @@ const AddProcessPopUp = ({setProcessData}) => {
   };
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Add Process
+      <Button style={{marginRight: "6px"}} type="primary" onClick={showModal}>
+        Update Input
       </Button>
       <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
-        <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData}/>
+        <UpdateInputForm handleCloseForm={handleOk} input = {input} setInitData={setInitData}/>
       </Modal>
     </>
   );
 };
-export default AddProcessPopUp;
+export default UpdateInputPopup;

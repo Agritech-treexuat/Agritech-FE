@@ -1,52 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import OutputItem from '../OutputItem'; // Import ProcessItem component
 import AddOutputPopup from '../AddOutputPopup';
+import FARM from '../../../../services/farmService';
+import { useParams } from 'react-router';
+import Loading from '../../../../pages/Loading';
+import { useEffect } from 'react';
+
 
 const ProjectOutput = () => {
-  const outputs = [
-    {
-      "tx": "aancbcb",
-      "amount": 1000000000000000,
-      "amount_perOne": "10",
-      "images": [{
-        uid: '-2',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-      {
-        uid: '-3',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }],
-      "date": "2024-05-04"
-    },
-    {
-      "tx": "hhhhbcb",
-      "amount": 99900000000,
-      "amount_perOne": "100",
-      "images": [{
-        uid: '-2',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-      {
-        uid: '-3',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }],
-      "date": "2024-05-04"
-  }
-  ]
+  const [outputData, setOutputData] = useState([])
+  const params = useParams()
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getOutput(params.id)
+      console.log("Data: ", data.data)
+      setOutputData(data.data.outputs)
+    }
+    fetchData();
+    console.log("Output data: ", outputData)
+  }, []);
+
   return (
     <div>
-      {outputs.map((output, index) => (
-        <OutputItem key={index} output={output} />
-      ))}
-      <AddOutputPopup />
+      {
+        outputData ? <>
+        {
+          outputData.map((output, index) => (
+            <OutputItem key={index} output={output} setOutputData={setOutputData}/>
+          ))
+        }
+        <AddOutputPopup setOutputData={setOutputData}/>
+        </> : <Loading />
+        }
     </div>
   );
 };

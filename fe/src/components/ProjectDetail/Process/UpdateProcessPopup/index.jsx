@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Button, Modal, Form, Input, Select } from 'antd';
-import AddExpectForm from './AddExpectForm';
+import UpdateProcessForm from './UpdateProcessForm';
 
-const AddExpectPopup = ({setExpectData}) => {
+const UpdateProcessPopup = ({process, setProcessData}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
   };
   const handleOk = () => {
     setIsModalOpen(false);
+
   };
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -16,12 +17,12 @@ const AddExpectPopup = ({setExpectData}) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Add expect
+        Update Process
       </Button>
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
-        <AddExpectForm handleCloseForm={handleOk} setExpectData={setExpectData}/>
+      <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
+        <UpdateProcessForm handleCloseForm={handleOk} process = {process} setProcessData={setProcessData}/>
       </Modal>
     </>
   );
 };
-export default AddExpectPopup;
+export default UpdateProcessPopup;

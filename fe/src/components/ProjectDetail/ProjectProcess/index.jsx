@@ -6,54 +6,29 @@ import ProcessList from '../Process/ProcessList'
 import AddProcessPopUp from '../Process/AddProcessPopup'
 import ExpectList from '../Expect/ExpectList'
 import AddExpectPopup from '../Expect/AddExpectPopup'
+import { Image } from 'antd';
+import FARM from '../../../services/farmService';
+import { useParams } from 'react-router';
+import './style.css'
+import Loading from '../../../pages/Loading';
 
 const ProjectProcess = () => {
   const totalImages = 24;
   const rows = 4;
   const cols = 6;
   const imagesPerRow = totalImages / rows;
+  const projectID = useParams()
 
   const imageArray = new Array(totalImages).fill('https://www.greenqueen.com.hk/wp-content/uploads/2020/12/Veganic-Farming.png');
-  const processes = [
-    {
-      date: '2023-10-15',
-      type: 'phân bón',
-      name: 'Phân bón X',
-      amount: '50 kg',
-      note: 'Áp dụng theo hướng dẫn.',
-    },
-    {
-      date: '2023-06-15',
-      type: 'BVTV',
-      name: 'BVTV Y',
-      amount: '10 kg',
-      note: 'Do cay bi sau benh',
-    },
-    {
-      date: '2023-10-20',
-      type: 'tưới nước',
-      note: 'Tưới nước hàng ngày.',
-    },
-    // Thêm các quá trình khác vào danh sách
-  ];
-
-  const expects = [
-    {
-      date: '2023-10-15',
-      amount: '50 kg',
-      note: '',
-    },
-    {
-      date: '2023-06-15',
-      amount: '40 kg',
-      note: 'Do cay bi sau benh',
-    },
-    // Thêm các quá trình khác vào danh sách
-  ];
-
 
   // Tạo ngày hôm nay bằng thư viện moment
   const [selectedDate, setSelectedDate] = useState('');
+  const [processData, setProcessData] = useState([])
+  const [expectData, setExpectData] = useState([])
+  const [imageData, setImageData] = useState([])
+  const [weatherData, setWeatherData] = useState(null)
+  const location = 'hà nội'
+  const apid = 'fd3455621595a002c80c20ef925cfe5f'
 
   useEffect(() => {
     const today = new Date(); // Lấy ngày hôm nay
@@ -65,21 +40,76 @@ const ProjectProcess = () => {
     setSelectedDate(formattedDate);
   }, []);
 
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getProcess(projectID.id)
+      console.log("Data: ", data.data)
+      setProcessData(data.data.processes)
+    }
+    fetchData();
+    console.log("Process data: ", processData)
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getExpect(projectID.id)
+      console.log("Data: ", data.data)
+      setExpectData(data.data.expects)
+    }
+    fetchData();
+    console.log("Expect data: ", expectData)
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      console.log("date: ", selectedDate)
+      if(selectedDate)
+      {
+        const data = await FARM.getImage(projectID.id, selectedDate)
+        console.log("Data img: ", data.data)
+        setImageData(data.data.images)
+      }
+    }
+    fetchData();
+    console.log("image data: ", imageData)
+  }, [selectedDate]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apid}&units=metric&lang=vi`);
+        const data = await response.json();
+        console.log("json: ", data)
+
+        setWeatherData(data);
+      } catch (error) {
+        console.error(error)
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
   return (
     <>
       <Row>
         <Col span={12}>
         <div>
           <h1>List of Processes</h1>
-          <ProcessList processes={processes} />
-          <AddProcessPopUp />
+          {processData? <>
+            <AddProcessPopUp setProcessData={setProcessData}/>
+            <ProcessList processes={processData} setProcessData={setProcessData}/>
+          </> : <Loading />}
         </div>
         </Col>
         <Col span={12}>
           <div>
             <h1>List of Expect</h1>
-            <ExpectList expects={expects} />
-            <AddExpectPopup />
+            {processData? <>
+              <AddExpectPopup setExpectData={setExpectData}/>
+              <ExpectList expects={expectData} setExpectData={setExpectData}/>
+            </> : <Loading />}
           </div>
         </Col>
       </Row>
@@ -95,36 +125,39 @@ const ProjectProcess = () => {
       </Row>
       <Row>
         <Col span={24}>
-        <h2> Thoi tiet hom nay nang, 30 do, do am la 100</h2>
+        <div>
+          {weatherData? <>
+            <h2> Thoi tiet hom nay {weatherData.weather[0].description}, {weatherData.main.temp} do C, do am la {weatherData.main.humidity}%, toc do gio la {weatherData.wind.speed} m/s</h2>
+          </> : <Loading />}
+        </div>
         </Col>
       </Row>
-      {Array.from({ length: rows }, (_, rowIndex) => (
-        <Row key={rowIndex}>
-          {Array.from({ length: cols }, (_, colIndex) => {
-            const index = rowIndex * cols + colIndex;
-            const imageUrl = imageArray[index];
+      {
+        imageData ?
+        Array.from({ length: rows }, (_, rowIndex) => (
+          <Row key={rowIndex}>
+            {Array.from({ length: cols }, (_, colIndex) => {
+              const index = rowIndex * cols + colIndex;
+              let imageUrl='https://www.greenqueen.com.hk/wp-content/uploads/2020/12/Veganic-Farming.png'
+              if(index < imageData.length)
+                {
+                  imageUrl = imageData[index]?.imageUrl;
+                }
 
-            return imageUrl ? (
-              <Col span={24 / imagesPerRow} key={colIndex} style={{ padding: 4 }}>
-                <div style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
-                  <img
-                    src={imageUrl}
-                    alt={`Image ${index + 1}`}
-                    style={{
-                      position: 'absolute',
-                      width: '100%',
-                      height: '100%',
-                    }}
-                    onError={(e) => {
-                      e.target.style.display = 'none'; // Ẩn hình ảnh nếu URL không hợp lệ
-                    }}
-                  />
-                </div>
-              </Col>
-            ) : null;
-          })}
-        </Row>
-      ))}
+              return imageUrl ? (
+                <Col span={24 / imagesPerRow} key={colIndex} style={{ padding: 4 }}>
+                  <div style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}>
+                    <Image
+                      class={'process-img'}
+                      src={imageUrl}
+                    />
+                  </div>
+                </Col>
+              ) : null;
+            })}
+          </Row>
+        )) : <Loading />
+      }
     </>
   );
 };

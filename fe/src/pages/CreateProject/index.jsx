@@ -30,7 +30,8 @@ const CreateProject = () => {
     // Handle project creation and data submission here
     console.log("address: ", address)
     // console.log("data: ", startDate, selectedSeed, amount, image, expected)
-    const input = values.date + values.amount + values.name + values.upload + values.expected
+    const images = values.upload.map((upload) => upload.name)
+    const input = values.date + values.amount + values.name + images + values.expected
     const receip = await createProject(values.seed, input)
     const txhash = receip.transactionHash
     console.log("tx hash: ", txhash)
@@ -39,6 +40,7 @@ const CreateProject = () => {
 
   const handleInit = async (values, txhash) => {
     try {
+      const images = values.upload.map((upload) => upload.name)
       const data = {
         'name': values.name,
         'input': {
@@ -46,7 +48,7 @@ const CreateProject = () => {
           "initDate": values.date,
           "seed": values.seed,
           "amount": values.amount,  // Số lượng
-          "images": values.images
+          "images": images
         }
       }
       const res = await FARM.initProject(data)
