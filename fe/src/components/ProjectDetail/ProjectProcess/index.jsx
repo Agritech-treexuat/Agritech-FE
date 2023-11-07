@@ -2,10 +2,8 @@ import React from 'react';
 import { Col, Row, DatePicker } from 'antd';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import ProcessList from '../Process/ProcessList'
-import AddProcessPopUp from '../Process/AddProcessPopup'
-import ExpectList from '../Expect/ExpectList'
-import AddExpectPopup from '../Expect/AddExpectPopup'
+import ProcessList from './Process/ProcessList'
+import AddProcessPopUp from './Process/AddProcessPopup'
 import { Image } from 'antd';
 import FARM from '../../../services/farmService';
 import { useParams } from 'react-router';
@@ -24,7 +22,6 @@ const ProjectProcess = () => {
   // Tạo ngày hôm nay bằng thư viện moment
   const [selectedDate, setSelectedDate] = useState('');
   const [processData, setProcessData] = useState([])
-  const [expectData, setExpectData] = useState([])
   const [imageData, setImageData] = useState([])
   const [weatherData, setWeatherData] = useState(null)
   const location = 'hà nội'
@@ -48,16 +45,6 @@ const ProjectProcess = () => {
     }
     fetchData();
     console.log("Process data: ", processData)
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await FARM.getExpect(projectID.id)
-      console.log("Data: ", data.data)
-      setExpectData(data.data.expects)
-    }
-    fetchData();
-    console.log("Expect data: ", expectData)
   }, []);
 
   useEffect(() => {
@@ -94,7 +81,7 @@ const ProjectProcess = () => {
   return (
     <>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
         <div>
           <h1>Các hoạt động canh tác</h1>
           {processData? <>
@@ -102,15 +89,6 @@ const ProjectProcess = () => {
             <ProcessList processes={processData} setProcessData={setProcessData}/>
           </> : <Loading />}
         </div>
-        </Col>
-        <Col span={12}>
-          <div>
-            <h1>Các dự kiến sản lượng </h1>
-            {processData? <>
-              <AddExpectPopup setExpectData={setExpectData}/>
-              <ExpectList expects={expectData} setExpectData={setExpectData}/>
-            </> : <Loading />}
-          </div>
         </Col>
       </Row>
       <Row>

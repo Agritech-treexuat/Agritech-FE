@@ -4,7 +4,7 @@ import { Button, Popover } from 'antd';
 import AddProcessPopUp from '../AddProcessPopup';
 import UpdateProcessPopup from '../UpdateProcessPopup';
 import EditHistory from '../EditHistory';
-import {formatDate} from '../../../../utils/helpers'
+import {formatDate} from '../../../../../utils/helpers'
 
 const ProcessItem = ({ process, setProcessData }) => {
   const { time, type } = process;

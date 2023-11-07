@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, Divider } from 'antd';
-import { formatDate, formatDateTime } from '../../../../utils/helpers';
+import { formatDate, formatDateTime } from '../../../../../utils/helpers';
 const EditHistory = ({process}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
