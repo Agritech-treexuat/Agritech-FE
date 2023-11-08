@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tabs } from 'antd';
 import { useParams } from 'react-router-dom';
-import {ProjectOutput, ProjectProcess, ProjectInput} from '../../components';
+import {ProjectOutput, ProjectProcess, ProjectInput, ProjectExpect} from '../../components';
 const onChange = (key) => {
   console.log(key);
 };
@@ -13,17 +13,22 @@ const ProjectDetail = () => {
   const items = [
     {
       key: '1',
-      label: 'Tab 1',
+      label: 'Đầu vào',
       children: <ProjectInput />,
     },
     {
       key: '2',
-      label: 'Tab 2',
+      label: 'Quá trình canh tác',
       children: <ProjectProcess />,
     },
     {
       key: '3',
-      label: 'Tab 3',
+      label: 'Dự kiến',
+      children: <ProjectExpect />,
+    },
+    {
+      key: '4',
+      label: 'Đầu ra',
       children: <ProjectOutput />,
     },
   ];

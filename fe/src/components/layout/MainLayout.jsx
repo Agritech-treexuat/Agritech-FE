@@ -8,25 +8,22 @@ import {
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+
 const { Header, Content, Footer, Sider } = Layout;
-function getItem(label, key, icon, children) {
+function getItem(label, key, icon, link) {
   return {
     key,
     icon,
-    children,
+    link,
     label,
   };
 }
 const items = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('User', 'sub1', <UserOutlined />, [
-    getItem('Tom', '3'),
-    getItem('Bill', '4'),
-    getItem('Alex', '5'),
-  ]),
-  getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-  getItem('Files', '9', <FileOutlined />),
+  getItem('Quản lý trang trại', '1', <DesktopOutlined />, '/home'),
+  getItem('Manage Plant', '2', <TeamOutlined />, '/manage-plant'),
+  getItem('Profile', '3', <UserOutlined />, '/profile'),
+  getItem('Log out', '4', <FileOutlined />),
 ];
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -41,7 +38,15 @@ const App = () => {
     >
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" >
+          {items.map((item) => (
+            <Menu.Item key={item.key}>
+            {item.icon}
+            <span>{item.label}</span>
+            <Link to={item.link}/>
+        </Menu.Item>
+          ))}
+        </Menu>
       </Sider>
       <Layout>
         <Content
@@ -49,14 +54,6 @@ const App = () => {
             margin: '0 16px',
           }}
         >
-          <Breadcrumb
-            style={{
-              margin: '16px 0',
-            }}
-          >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
           <div
             style={{
               padding: 24,

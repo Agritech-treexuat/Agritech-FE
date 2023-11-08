@@ -18,9 +18,9 @@ const UpdateInputPopup = ({input, setInitData}) => {
   return (
     <>
       <Button style={{marginRight: "6px"}} type="primary" onClick={showModal}>
-        Update Input
+      Chỉnh sửa
       </Button>
-      <Modal  title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
+      <Modal  title="Chỉnh sửa đầu vào" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
         <UpdateInputForm handleCloseForm={handleOk} input = {input} setInitData={setInitData}/>
       </Modal>
     </>

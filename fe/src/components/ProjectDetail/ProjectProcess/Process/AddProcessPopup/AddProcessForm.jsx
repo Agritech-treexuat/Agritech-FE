@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Form, Input, Select } from 'antd';
-import FARM from '../../../../services/farmService'
+import FARM from '../../../../../services/farmService'
 import { useParams } from 'react-router';
 import './style.css';
 const { Option } = Select;
@@ -26,7 +26,7 @@ const testForm = null;
 const fertilizers = ["NHK", "Kali", "Other name"];
 const bvtvs = ["BVTV1", "BVTV2", "Other name"];
 
-const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
+const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
   const today = new Date();
   const year = today.getFullYear();
   const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
@@ -35,61 +35,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
   const currentDate = `${year}-${month}-${date}`;
   console.log("Today: ", currentDate)
   const params = useParams()
-  const dateObj = new Date(process.time);
-
-  const yearData = dateObj.getFullYear();
-  const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-  const dateData = dateObj.getDate().toString().padStart(2, '0');
-
-  const formattedDate = `${yearData}-${monthData}-${dateData}`;
   const formRef = React.useRef(null);
-  let initValue = {
-    'date': formattedDate,
-    'type': process.type,
-    'note': process.note
-  };
-
-  if (process.type === 'phân bón') {
-    if (fertilizers.includes(process.name)) {
-      initValue = {
-        'date': formattedDate,
-        'type': process.type,
-        'name': process.name,
-        'amount': process.amount,
-        'note': process.note
-      };
-    } else {
-      initValue = {
-        'date': formattedDate,
-        'type': process.type,
-        'name': 'Other name',
-        'other name': process.name,
-        'amount': process.amount,
-        'note': process.note
-      };
-    }
-  } else if (process.type === 'BVTV') {
-    if (bvtvs.includes(process.name)) {
-      initValue = {
-        'date': formattedDate,
-        'type': process.type,
-        'name': process.name,
-        'amount': process.amount,
-        'note': process.note
-      };
-    } else {
-      initValue = {
-        'date': formattedDate,
-        'type': process.type,
-        'name': 'Other name',
-        'other name': process.name,
-        'amount': process.amount,
-        'note': process.note
-      };
-    }
-  }
-  console.log("process: ", process)
-  console.log("init: ", initValue)
 
   const onFinish = (values) => {
     console.log("Values: ", values);
@@ -104,15 +50,15 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       ...updatedValue
     }
     console.log("test form: ", testForm)
-    handleSubmitProcess(data, params.id, process._id)
+    handleSubmitProcess(data, params.id)
   };
 
-  const handleSubmitProcess = async (data, projectId, processId )=> {
+  const handleSubmitProcess = async (data, projectId )=> {
     try {
       console.log("data to send: ", data, projectId)
-      const res = await FARM.editProcess(data, projectId, processId);
+      const res = await FARM.addProcess(data, projectId);
       console.log("res: ", res)
-      setProcessData(res.data.updatedProcess)
+      setProcessData(res.data.updatedProjectProcess)
       handleCloseForm();
     } catch (error) {
         console.error(error?.response?.data?.message);
@@ -127,7 +73,15 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       ref={formRef}
       name="control-ref"
       onFinish={onFinish}
-      initialValues={initValue}
+      initialValues={
+        {
+          'date': currentDate,
+          'type': "BVTV",
+          'name': 'Kali',
+          'amount': 1000,
+          'note': '',
+        }
+      }
       style={{
         maxWidth: 600,
       }}
@@ -135,7 +89,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       {/* date */}
       <Form.Item
         name="date"
-        label="Date"
+        label="Thời gian"
         rules={[
           {
             required: true,
@@ -147,15 +101,15 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       {/* type */}
       <Form.Item
         name="type"
-        label="Type"
+        label="Loại canh tác"
         rules={[
           {
             required: true,
           },
         ]}
       >
-        <Select placeholder="Select a type">
-          <Option value="phân bón">Phân bón</Option>
+        <Select placeholder="Chọn loại ">
+          <Option value="phân bón">Phân Bón</Option>
           <Option value="BVTV">BVTV</Option>
           <Option value="other">Other</Option>
         </Select>
@@ -171,7 +125,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
               {/* name */}
               <Form.Item
                 name="name"
-                label="Name"
+                label="Tên"
                 rules={[
                   {
                     required: true,
@@ -202,7 +156,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                   getFieldValue('name') === 'Other name' ? (
                     <Form.Item
                       name="other name"
-                      label="OtherName"
+                      label="Tên khác"
                       rules={[
                         {
                           required: true,
@@ -217,7 +171,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
               {/* amount */}
               <Form.Item
                 name="amount"
-                label="Amount"
+                label="Lượng"
                 rules={[
                   {
                     required: true,
@@ -229,7 +183,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
               {/* note */}
               <Form.Item
                 name="note"
-                label="Note"
+                label="Ghi chú"
               >
                 <Input />
               </Form.Item>
@@ -238,7 +192,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
             // note
             <Form.Item
               name="note"
-              label="Note"
+              label="Ghi chú"
             >
               <Input />
             </Form.Item>
@@ -248,11 +202,11 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-          Update
+        Thêm
         </Button>
       </Form.Item>
     </Form>
   );
 };
 
-export default UpdateProcessForm;
+export default AddProcessForm;

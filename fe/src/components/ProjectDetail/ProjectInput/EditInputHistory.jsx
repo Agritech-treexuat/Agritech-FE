@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Modal, Upload, Image } from 'antd';
+import { Button, Modal, Upload, Image, Divider } from 'antd';
+import { formatDate, formatDateTime } from '../../../utils/helpers';
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -36,38 +37,35 @@ const EditInputHistory = ({input}) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Edit history
+      Lịch sử chỉnh sửa
       </Button>
-      <Modal title="Edit history" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+      <Modal title="Lịch sử chỉnh sửa" style={{ width: "fit-content"}} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         {input.historyInput.map((input) => (
-        <div className="input-item">
+        <div style={{ width: "fit-content"}}>
+          <Divider>Chỉnh sửa lúc: {formatDateTime(input.modified_at)}</Divider>
           <div>
             <label>Transaction hash: </label>
             <span>{input.tx}</span>
           </div>
           <div>
-            <label>Start Date: </label>
-            <span>{input.initDate}</span>
+            <label>Ngày bắt đầu: </label>
+            <span>{formatDate(input.initDate)}</span>
           </div>
           <div>
-            <label>Selected Seed: </label>
+            <label>Hạt giống: </label>
             <span>{input.seed}</span>
           </div>
           <div>
-            <label>Amount: </label>
+            <label>Lượng: </label>
             <span>{input.amount}</span>
           </div>
           <div>
-            <label>Image: </label>
+            <label>Ảnh: </label>
             {input.images.length > 0 ? input.images.map((image) => <span>
               <Image
               class={'process-img'}
               src={image}
-            /></span>) : <span>No image</span>}
-          </div>
-          <div>
-            <label>Modified at: </label>
-            <span>{input.modified_at}</span>
+            /></span>) : <span>Không có ảnh</span>}
           </div>
         </div>
       ))}

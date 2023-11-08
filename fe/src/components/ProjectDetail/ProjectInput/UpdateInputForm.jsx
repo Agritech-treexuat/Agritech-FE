@@ -92,7 +92,7 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
       {/* date */}
       <Form.Item
         name="date"
-        label="Date"
+        label="Ngày bắt đầu"
         rules={[
           {
             required: true,
@@ -104,7 +104,7 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
       {/* seed */}
       <Form.Item
         name="seed"
-        label="Seed"
+        label="Hạt giống"
         rules={[
           {
             required: true,
@@ -122,7 +122,7 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
       {/* amount */}
       <Form.Item
         name="amount"
-        label="Amount"
+        label="Lượng"
         rules={[
           {
             required: true,
@@ -134,18 +134,18 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
 
       <Form.Item
         name="upload"
-        label="Upload"
+        label="Ảnh"
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
         <Upload name="logo" action="/upload.do" listType="picture">
-          <Button icon={<UploadOutlined />}>Click to upload</Button>
+          <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
         </Upload>
       </Form.Item>
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-          Submit
+        Cập nhật
         </Button>
       </Form.Item>
     </Form>

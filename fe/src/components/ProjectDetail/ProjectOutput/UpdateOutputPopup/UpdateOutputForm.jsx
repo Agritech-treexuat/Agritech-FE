@@ -68,7 +68,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
       handleSubmitOutput(data, params.id, output._id)
       // handleSubmitOutput(data, params.id);
     } else {
-      alert("Output is not valid. The total 'amount' should be greater than or equal to the sum of 'npp' amounts.");
+      alert("Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế");
       // Hiển thị thông báo hoặc thực hiện các xử lý khác tại đây nếu cần.
     }
   };
@@ -100,7 +100,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
       {/* date */}
       <Form.Item
         name="date"
-        label="Date"
+        label="Thời gian"
         rules={[
           {
             required: true,
@@ -112,7 +112,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
       {/* amount */}
       <Form.Item
         name="amount"
-        label="Amount"
+        label="Lượng"
         rules={[
           {
             required: true,
@@ -124,7 +124,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
       {/* amount per one */}
       <Form.Item
         name="amount per one"
-        label="Amount per one"
+        label="Lượng/sản phẩm"
         rules={[
           {
             required: true,
@@ -136,12 +136,12 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
 
       <Form.Item
         name="upload"
-        label="Upload"
+        label="Ảnh"
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
         <Upload name="logo" action="/upload.do" listType="picture">
-          <Button icon={<UploadOutlined />}>Click to upload</Button>
+          <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
         </Upload>
       </Form.Item>
       {/* list npp */}
@@ -163,7 +163,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
                   rules={[
                     {
                       required: true,
-                      message: 'Missing name',
+                      message: 'Thiếu tên',
                     },
                   ]}
                 >
@@ -175,7 +175,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
                   rules={[
                     {
                       required: true,
-                      message: 'Missing amount',
+                      message: 'Thiếu lượng',
                     },
                   ]}
                 >
@@ -186,7 +186,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
             ))}
             <Form.Item>
               <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                Add NPP
+              Thêm nhà phân phối
               </Button>
             </Form.Item>
           </>
@@ -195,7 +195,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-          Submit
+        Cập nhật
         </Button>
       </Form.Item>
     </Form>

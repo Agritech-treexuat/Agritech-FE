@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Modal, Upload, Image } from 'antd';
+import { Button, Modal, Upload, Image, Divider } from 'antd';
+import { formatDate, formatDateTime } from '../../../../utils/helpers';
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -36,33 +37,37 @@ const EditOutputHistory = ({output}) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Edit history
+      Lịch sử chỉnh sửa
       </Button>
-      <Modal title="Edit history" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null} style={{width: "fit-content"}}>
+      <Modal title="Lịch sử chỉnh sửa" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         {output.historyOutput.map((output) => (
-        <div className="output-item">
-          <p>Date: {output.time}</p>
-          <p>Amount: {output.amount}</p>
-          <p>Amount per one: {output.amount_perOne}</p>
+          <>
+          <Divider>Chỉnh sửa lúc:  {formatDateTime(output.modified_at)}</Divider>
+        <div style={{width: "fit-content", marginRight: "10px"}}>
+          <p>Tx: {output.tx}</p>
+          <p>Thời gian: {output.time}</p>
+          <p>Lượng: {output.amount}</p>
+          <p>Lượng trên 1 sản phẩm: {output.amount_perOne}</p>
+
+          <div>
+            {
+              output.npp ? output.npp.map((npp_item) => <div>
+                <p>NPP: {npp_item.name} with amount: {npp_item.amount}</p>
+                </div>) : <span>Không có npp</span>
+            }
+          </div>
+
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {
               output.images ? output.images.map((image) => <span>
                 <Image
                 class={'process-img'}
                 src={image}
-              /></span>) : <span>No image</span>
+              /></span>) : <span>Không có ảnh</span>
             }
           </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {
-              output.npp ? output.npp.map((npp_item) => <div>
-                <p>NPP: {npp_item.name} with amount: {npp_item.amount}</p>
-                </div>) : <span>No npp</span>
-            }
-          </div>
-          <p>Modified at: {output.modified_at}</p>
         </div>
+        </>
       ))}
       </Modal>
     </>
