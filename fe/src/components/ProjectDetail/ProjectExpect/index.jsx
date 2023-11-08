@@ -1,5 +1,4 @@
 import React from 'react';
-import ExpectItem from './ExpectItem';
 import { useState, useEffect } from 'react';
 import FARM from '../../../services/farmService';
 import Loading from '../../../pages/Loading';

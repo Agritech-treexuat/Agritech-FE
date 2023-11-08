@@ -1,5 +1,4 @@
 import React from 'react';
-import ProcessItem from '../ProcessItem';
 import EditHistory from '../EditHistory';
 import UpdateProcessPopup from '../UpdateProcessPopup';
 import { Space, Table, Tag } from 'antd';

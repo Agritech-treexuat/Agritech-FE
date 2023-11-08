@@ -1,11 +1,8 @@
 // expect
 export { default as ProjectExpect } from './ProjectDetail/ProjectExpect'
 export { default as AddExpectPopup } from './ProjectDetail/ProjectExpect/AddExpectPopup'
-export { default as ExpectItem } from './ProjectDetail/ProjectExpect/ExpectItem'
-export { default as ExpectList } from './ProjectDetail/ProjectExpect/ExpectList'
 // process
 export { default as AddProcessPopup } from './ProjectDetail/ProjectProcess/Process/AddProcessPopup'
-export { default as ProcessItem } from './ProjectDetail/ProjectProcess/Process/ProcessItem'
 export { default as ProcessList } from './ProjectDetail/ProjectProcess/Process/ProcessList'
 // project input
 export { default as ProjectInput } from './ProjectDetail/ProjectInput'
