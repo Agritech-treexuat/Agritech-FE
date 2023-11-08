@@ -96,7 +96,11 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
     if ('other name' in values) {
       values.name = values['other name'];
     }
-    const updatedValue = { ...values, time: values.date };
+    let updatedValue = { ...values, time: values.date };
+    if(updatedValue.type == 'other') {
+      updatedValue.name = ''
+      updatedValue.amount = ''
+    }
     delete updatedValue.date;
     console.log(updatedValue);
     const data = {
