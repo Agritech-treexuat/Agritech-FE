@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Select, Space, InputNumber } from 'antd';
 import FARM from '../../../../../services/farmService'
 import { useParams } from 'react-router';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import './style.css';
 const { Option } = Select;
 
@@ -49,44 +50,13 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
     'note': process.note
   };
 
-  if (process.type === 'phân bón') {
-    if (fertilizers.includes(process.name)) {
-      initValue = {
-        'date': formattedDate,
-        'type': process.type,
-        'name': process.name,
-        'amount': process.amount,
-        'note': process.note
-      };
-    } else {
-      initValue = {
-        'date': formattedDate,
-        'type': process.type,
-        'name': 'Other name',
-        'other name': process.name,
-        'amount': process.amount,
-        'note': process.note
-      };
-    }
-  } else if (process.type === 'BVTV') {
-    if (bvtvs.includes(process.name)) {
-      initValue = {
-        'date': formattedDate,
-        'type': process.type,
-        'name': process.name,
-        'amount': process.amount,
-        'note': process.note
-      };
-    } else {
-      initValue = {
-        'date': formattedDate,
-        'type': process.type,
-        'name': 'Other name',
-        'other name': process.name,
-        'amount': process.amount,
-        'note': process.note
-      };
-    }
+  if (process.type === 'phân bón'||process.type === 'BVTV') {
+    initValue = {
+      'date': formattedDate,
+      'type': process.type,
+      'cultivativeItems': process.cultivativeItems,
+      'note': process.note
+    };
   }
   console.log("process: ", process)
   console.log("init: ", initValue)
@@ -173,63 +143,66 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
           getFieldValue('type') === 'phân bón' || getFieldValue('type') === 'BVTV' ? (
             <div>
               {/* name */}
-              <Form.Item
-                name="name"
-                label="Tên"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Select placeholder="Chọn tên">
-                  {getFieldValue('type') === 'phân bón'
-                    ? fertilizers.map((fertilizer) => (
-                        <Option key={fertilizer} value={fertilizer}>
-                          {fertilizer}
-                        </Option>
-                      ))
-                    : bvtvs.map((bv) => (
-                        <Option key={bv} value={bv}>
-                          {bv}
-                        </Option>
-                      ))
-                    }
-                </Select>
-              </Form.Item>
-              {/* when have other name */}
-              <Form.Item
-                noStyle
-                shouldUpdate={(prevValues2, currentValues2) => prevValues2.name !== currentValues2.name}
-              >
-                {({ getFieldValue }) => (
-                  getFieldValue('name') === 'Other name' ? (
-                    <Form.Item
-                      name="other name"
-                      label="Tên khác"
-                      rules={[
-                        {
-                          required: true,
-                        },
-                      ]}
-                    >
-                      <Input />
+              <Form.List name="cultivativeItems">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }) => (
+                      <Space
+                        key={key}
+                        style={{
+                          display: 'flex',
+                          marginBottom: 8,
+                        }}
+                        align="baseline"
+                      >
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'name']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Missing name',
+                            },
+                          ]}
+                        >
+                          <Select placeholder="Select a name">
+                            {getFieldValue('type') === 'phân bón'
+                              ? fertilizers.map((fertilizer) => (
+                                  <Option key={fertilizer} value={fertilizer}>
+                                    {fertilizer}
+                                  </Option>
+                                ))
+                              : bvtvs.map((bv) => (
+                                  <Option key={bv} value={bv}>
+                                    {bv}
+                                  </Option>
+                                ))
+                              }
+                          </Select>
+                        </Form.Item>
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'amount_per_ha']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Missing amount per ha',
+                            },
+                          ]}
+                        >
+                          <InputNumber />
+                        </Form.Item>
+                        <MinusCircleOutlined onClick={() => remove(name)} />
+                      </Space>
+                    ))}
+                    <Form.Item>
+                      <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                      Thêm cụ thể
+                      </Button>
                     </Form.Item>
-                  ) : null
+                  </>
                 )}
-              </Form.Item>
-              {/* amount */}
-              <Form.Item
-                name="amount"
-                label="Lượng"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+              </Form.List>
               {/* note */}
               <Form.Item
                 name="note"

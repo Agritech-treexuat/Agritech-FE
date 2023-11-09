@@ -10,21 +10,32 @@ const { Column, ColumnGroup } = Table;
 const ProcessList = ({ processes, setProcessData }) => {
   return (
     <div>
-      {processes? (
+      {processes ? (
         <Table dataSource={processes}>
           <Column title="Tx" dataIndex="tx" key="tx" />
           <Column
             title="Thời gian"
             key="time"
-            render={(_, processes) =>
-              <p>
-                {formatDate(processes.time)}
-              </p>
-            }
+            render={(_, process) => (
+              <p>{formatDate(process.time)}</p>
+            )}
           />
           <Column title="Loại canh tác" dataIndex="type" key="type" />
-          <Column title="Tên" dataIndex="name" key="name" />
-          <Column title="Lượng" dataIndex="amount" key="amount" />
+
+          <Column
+            title="Cụ thể"
+            key="cultivativeItems"
+            render={(_, process) => (
+              <ul>
+                {process.cultivativeItems.map((item, index) => (
+                  <li key={index}>
+                    <strong>{item.name}:</strong> {item.amount_per_ha}
+                  </li>
+                ))}
+              </ul>
+            )}
+          />
+
           <Column title="Ghi chú" dataIndex="note" key="note" />
 
           <Column
@@ -32,13 +43,15 @@ const ProcessList = ({ processes, setProcessData }) => {
             key="action"
             render={(_, process) => (
               <Space size="middle">
-                <UpdateProcessPopup process={process} setProcessData={setProcessData}/>
-                <> {process.isEdited ? <EditHistory process={process}/> : <></>}</>
+                <UpdateProcessPopup process={process} setProcessData={setProcessData} />
+                {process.isEdited ? <EditHistory process={process} /> : null}
               </Space>
             )}
           />
         </Table>
-        ) : <Loading />}
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 };

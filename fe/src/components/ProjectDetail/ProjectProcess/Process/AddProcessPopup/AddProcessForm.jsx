@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Select, Space, InputNumber } from 'antd';
 import FARM from '../../../../../services/farmService'
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router';
 import './style.css';
 const { Option } = Select;
@@ -49,7 +50,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
       "tx": "b",
       ...updatedValue
     }
-    console.log("test form: ", testForm)
+    console.log("test form: ", data)
     handleSubmitProcess(data, params.id)
   };
 
@@ -122,53 +123,66 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
         {({ getFieldValue }) => (
           getFieldValue('type') === 'phân bón' || getFieldValue('type') === 'BVTV' ? (
             <div>
-              {/* name */}
-              <Form.Item
-                name="name"
-                label="Tên"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Select placeholder="Select a name">
-                  {getFieldValue('type') === 'phân bón'
-                    ? fertilizers.map((fertilizer) => (
-                        <Option key={fertilizer} value={fertilizer}>
-                          {fertilizer}
-                        </Option>
-                      ))
-                    : bvtvs.map((bv) => (
-                        <Option key={bv} value={bv}>
-                          {bv}
-                        </Option>
-                      ))
-                    }
-                </Select>
-              </Form.Item>
-              {/* when have other name */}
-              <Form.Item
-                noStyle
-                shouldUpdate={(prevValues2, currentValues2) => prevValues2.name !== currentValues2.name}
-              >
-                {({ getFieldValue }) => (
-                  getFieldValue('name') === 'Other name' ? (
-                    <Form.Item
-                      name="other name"
-                      label="Tên khác"
-                      rules={[
-                        {
-                          required: true,
-                        },
-                      ]}
-                    >
-                      <Input />
+              <Form.List name="cultivativeItems">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }) => (
+                      <Space
+                        key={key}
+                        style={{
+                          display: 'flex',
+                          marginBottom: 8,
+                        }}
+                        align="baseline"
+                      >
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'name']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Missing name',
+                            },
+                          ]}
+                        >
+                          <Select placeholder="Select a name">
+                            {getFieldValue('type') === 'phân bón'
+                              ? fertilizers.map((fertilizer) => (
+                                  <Option key={fertilizer} value={fertilizer}>
+                                    {fertilizer}
+                                  </Option>
+                                ))
+                              : bvtvs.map((bv) => (
+                                  <Option key={bv} value={bv}>
+                                    {bv}
+                                  </Option>
+                                ))
+                              }
+                          </Select>
+                        </Form.Item>
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'amount_per_ha']}
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Missing amount per ha',
+                            },
+                          ]}
+                        >
+                          <InputNumber />
+                        </Form.Item>
+                        <MinusCircleOutlined onClick={() => remove(name)} />
+                      </Space>
+                    ))}
+                    <Form.Item>
+                      <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                      Thêm cụ thể
+                      </Button>
                     </Form.Item>
-                  ) : null
+                  </>
                 )}
-              </Form.Item>
-              {/* amount */}
+              </Form.List>
               <Form.Item
                 name="amount"
                 label="Lượng"
