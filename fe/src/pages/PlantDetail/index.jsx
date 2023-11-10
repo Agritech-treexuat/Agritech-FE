@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Collapse, Button, Input, Card, Divider } from 'antd';
 import { useParams } from 'react-router-dom';
+import FARM from '../../services/farmService';
+import Loading from '../Loading';
 
 const { Panel } = Collapse;
 
@@ -51,39 +53,61 @@ const data = [
 const PlantDetail = () => {
   const [search, setSearch] = useState('');
   const params = useParams();
+  console.log("params:" , params)
+  const farmId = localStorage.getItem('id')
+  const [plans, setPlans] = useState([])
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getPlans(farmId, params.id)
+      console.log("Data plant: ", data)
+      if(data.data)
+        setPlans(data.data.plans)
+    }
+    fetchData();
+    console.log("Output data: ", plans)
+  }, []);
 
   return (
     <div>
-      <h1>Thông tin cây trồng {params.id}</h1>
-      <Input
-        placeholder="Tìm kiếm"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ width: '200px', marginBottom: '16px' }}
-      />
-      <Button type="primary" style={{ marginLeft: '16px' }}>
-        Tạo mới
-      </Button>
-      {data.map((item) => (
-        <Card key={item.seed.id} style={{ marginTop: '16px' }}>
-          <h2>{item.seed.name}</h2>
-          <Collapse>
-          <Panel
-                header={`Seed ${item.seed.name}`}
-              >
-                <Button type="primary">Chỉnh sửa</Button>
-            {item.plantCultivates.map((cultivate) => (
-              <>
-                <Divider></Divider>
-                <p>Amount per kg: {cultivate.amount_per_kg}</p>
-                <p>Time: {cultivate.time}</p>
-                <p>Note: {cultivate.note}</p>
-              </>
-            ))}
-            </Panel>
-          </Collapse>
-        </Card>
-      ))}
+      {plans ? <>
+        <h1>Thông tin cây trồng {params.id}</h1>
+          <Input
+            placeholder="Tìm kiếm"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ width: '200px', marginBottom: '16px' }}
+          />
+          <Button type="primary" style={{ marginLeft: '16px' }}>
+            Tạo mới
+          </Button>
+          {plans.map((item) => (
+            <Card style={{ marginTop: '16px' }}>
+              <h2>{item.seed}</h2>
+              <Collapse>
+              <Panel
+                    header='Quy trình chi tiết'
+                  >
+                    <Button type="primary">Chỉnh sửa</Button>
+                {item.plan.map((cultivate) => (
+                  <>
+                  <Divider><h3>Time: {cultivate.time}</h3></Divider>
+                  <h3>Note: {cultivate.note}</h3>
+                  <h3>Type: {cultivate.cultivativeItems[0].type}</h3>
+                    {cultivate.cultivativeItems.map((cultivativeItem) => (
+                      <>
+                      <Divider></Divider>
+                        <p>Name: {cultivativeItem.name}</p>
+                        <p>Amount per ha: {cultivativeItem.amount_per_ha}</p>
+                      </>
+                    ))}
+                  </>
+                ))}
+                </Panel>
+              </Collapse>
+            </Card>
+          ))}
+      </> : <Loading />}
     </div>
   );
 };

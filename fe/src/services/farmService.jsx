@@ -244,6 +244,18 @@ const FARM = {
       return err;
     });
   },
+
+  getPlans: async (farmId, plantId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/planInFarmFromPlant/${farmId}/${plantId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;
