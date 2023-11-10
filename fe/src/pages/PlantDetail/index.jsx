@@ -3,52 +3,10 @@ import { Collapse, Button, Input, Card, Divider } from 'antd';
 import { useParams } from 'react-router-dom';
 import FARM from '../../services/farmService';
 import Loading from '../Loading';
+import AddPlanPopup from '../../components/ManagePlant/AddPlanPopup';
+import AddTemplatePopup from '../../components/ManagePlant/AddTemplatePopup';
 
 const { Panel } = Collapse;
-
-const data = [
-  {
-    seed: {
-      id: '1',
-      name: 'Seed 1',
-    },
-    plantCultivates: [
-      {
-        id: '1',
-        amount_per_kg: 5,
-        time: '2023-10-01',
-        note: 'Note 1',
-      },
-      {
-        id: '2',
-        amount_per_kg: 10,
-        time: '2023-10-05',
-        note: 'Note 2',
-      },
-    ],
-  },
-  {
-    seed: {
-      id: '2',
-      name: 'Seed 2',
-    },
-    plantCultivates: [
-      {
-        id: '3',
-        amount_per_kg: 7,
-        time: '2023-10-10',
-        note: 'Note 3',
-      },
-      {
-        id: '4',
-        amount_per_kg: 12,
-        time: '2023-10-15',
-        note: 'Note 4',
-      },
-    ],
-  },
-  // Add more data as needed
-];
 
 const PlantDetail = () => {
   const [search, setSearch] = useState('');
@@ -56,6 +14,26 @@ const PlantDetail = () => {
   console.log("params:" , params)
   const farmId = localStorage.getItem('id')
   const [plans, setPlans] = useState([])
+  const [allSeedByPlant, setAllSeedByPlant] = useState([])
+
+  const [open, setOpen] = useState(false);
+  const [openTemplate, setOpenTemplate] = useState(false);
+  const onCreate = (values) => {
+    console.log('Received values of form: ', values);
+    setOpen(false);
+    if(values.template == 'none'){
+      // do something
+    } else {
+      // load template
+    }
+    setOpenTemplate(true)
+  };
+
+  const onCreateTemplate = (values) => {
+    console.log('Received values of form: ', values);
+
+    setOpenTemplate(false)
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -68,6 +46,17 @@ const PlantDetail = () => {
     console.log("Output data: ", plans)
   }, []);
 
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getAllSeedByPlantId(params.id)
+      console.log("Data plant: ", data)
+      if(data.data)
+        setAllSeedByPlant(data.data.seeds)
+    }
+    fetchData();
+    console.log("Output data: ", allSeedByPlant)
+  }, []);
+
   return (
     <div>
       {plans ? <>
@@ -78,9 +67,31 @@ const PlantDetail = () => {
             onChange={(e) => setSearch(e.target.value)}
             style={{ width: '200px', marginBottom: '16px' }}
           />
-          <Button type="primary" style={{ marginLeft: '16px' }}>
-            Tạo mới
-          </Button>
+          <div>
+            <Button
+              type="primary"
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
+              New Collection
+            </Button>
+            <AddPlanPopup
+              open={open}
+              onCreate={onCreate}
+              onCancel={() => {
+                setOpen(false);
+              }}
+              allSeedByPlant={allSeedByPlant}
+            />
+            <AddTemplatePopup
+              open={openTemplate}
+              onCreate={onCreateTemplate}
+              onCancel={() => {
+                setOpenTemplate(false);
+              }}
+            />
+          </div>
           {plans.map((item) => (
             <Card style={{ marginTop: '16px' }}>
               <h2>{item.seed}</h2>

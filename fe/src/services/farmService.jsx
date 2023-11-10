@@ -256,6 +256,18 @@ const FARM = {
       return err;
     });
   },
+
+  getAllSeedByPlantId: async (plantId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/seeds/${plantId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;
