@@ -28,7 +28,7 @@ const AddPlantPopup = ({ open, onCreate, onCancel, allPlants }) => {
         layout="vertical"
       >
         <Form.Item
-          name="name"
+          name="_id"
           label="Tên"
           rules={[
             {
@@ -38,7 +38,7 @@ const AddPlantPopup = ({ open, onCreate, onCancel, allPlants }) => {
         >
           <Select placeholder="Chọn tên">
             {allPlants.map((plant) => (
-                  <Option key={plant.id} value={plant.name}>
+                  <Option key={plant.id} value={plant._id}>
                     {plant.name}
                   </Option>
                 ))

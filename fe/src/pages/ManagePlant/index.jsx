@@ -1,100 +1,42 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {Row, Col, Input, Button, Flex} from 'antd'
 import { Link } from 'react-router-dom';
 import Loading from '../Loading';
 import { Card } from 'antd';
 import { AddPlantPopup } from '../../components';
+import FARM from '../../services/farmService';
+import { useParams } from 'react-router';
+
 const { Meta } = Card;
 const ManagePlant = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [plants, setPlants] = useState([]);
+  const [allPlants, setAllPlants] = useState([]);
+
   // const [plants, setPlants] = useState([])
   const farmId = localStorage.getItem('id')
 
-  const plants = [
-    {
-      "id": "01",
-      "name": "Rau cau",
-      "image": "https://www.thuocdantoc.org/wp-content/uploads/2019/11/rau-cai-canh.jpg"
-    },
-    {
-      "id": "02",
-      "name": "Rau 2",
-      "image": "https://www.thuocdantoc.org/wp-content/uploads/2019/11/rau-cai-canh.jpg"
-    },
-    {
-      "id": "03",
-      "name": "Rau 3",
-      "image": "https://www.thuocdantoc.org/wp-content/uploads/2019/11/rau-cai-canh.jpg"
-    },
-    {
-      "id": "04",
-      "name": "Rau 4",
-      "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-2.jpg"
-    },
-    {
-      "id": "05",
-      "name": "Rau 5",
-      "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-1.jpg"
-    },
-    {
-      "id": "06",
-      "name": "Rau 6",
-      "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-1.jpg"
-    },
-    {
-      "id": "07",
-      "name": "Rau 7",
-      "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-1.jpg"
-    },
-    {
-      "id": "08",
-      "name": "Rau 8",
-      "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-1.jpg"
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getPlant(farmId)
+      console.log("Data plant: ", data)
+      setPlants(data.data.plants)
     }
-  ]
-  const allPlants = [
-    {
-    "id": "01",
-    "name": "Rau cau",
-    "image": "https://www.thuocdantoc.org/wp-content/uploads/2019/11/rau-cai-canh.jpg"
-  },
-  {
-    "id": "02",
-    "name": "Rau 2",
-    "image": "https://www.thuocdantoc.org/wp-content/uploads/2019/11/rau-cai-canh.jpg"
-  },
-  {
-    "id": "03",
-    "name": "Rau 3",
-    "image": "https://www.thuocdantoc.org/wp-content/uploads/2019/11/rau-cai-canh.jpg"
-  },
-  {
-    "id": "04",
-    "name": "Rau 4",
-    "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-2.jpg"
-  },
-  {
-    "id": "05",
-    "name": "Rau 5",
-    "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-1.jpg"
-  },
-  {
-    "id": "06",
-    "name": "Rau 6",
-    "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-1.jpg"
-  },
-  {
-    "id": "07",
-    "name": "Rau 7",
-    "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-1.jpg"
-  },
-  {
-    "id": "08",
-    "name": "Rau 8",
-    "image": "https://st.quantrimang.com/photos/image/2020/11/11/rau-cai-1.jpg"
-  }
-  ]
+    fetchData();
+    console.log("Output data: ", plants)
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getAllPlant()
+      console.log("Data: ", data.data)
+      setAllPlants(data.data.plants)
+    }
+    fetchData();
+    console.log("Output data: ", allPlants)
+  }, []);
+
   const filteredPlants = plants.length != 0 ? plants.filter((plant) =>
     plant.name.toLowerCase().includes(searchQuery.toLowerCase())
   ) : [];
@@ -102,8 +44,28 @@ const ManagePlant = () => {
   const [open, setOpen] = useState(false);
   const onCreate = (values) => {
     console.log('Received values of form: ', values);
-    setOpen(false);
+    const data = {
+      "plantId": values._id
+    }
+    handleSubmitPlant(data)
   };
+
+  const handleSubmitPlant = async (data)=> {
+    try {
+      console.log("data to send: ", data)
+      const res = await FARM.addPlant(data);
+      console.log("res: ", res)
+      if(res.response.data.message=='EXISTED_TREE') {
+        alert("Cây đã tồn tại")
+      }
+      else{
+        setPlants(res.data.plants)
+        setOpen(false);
+      }
+    } catch (error) {
+        console.error(error?.response?.data?.message);
+    }
+  }
 
 
   return (
@@ -140,7 +102,7 @@ const ManagePlant = () => {
         <Row className="plant-grid">
           {filteredPlants.map((plant) => (
             <Col span={4}>
-              <Link to={`/plant/${plant.id}`} key={plant.id}>
+              <Link to={`/plant/${plant._id}`} key={plant._id}>
                 <Card
                   hoverable
                   style={{

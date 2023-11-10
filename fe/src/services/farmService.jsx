@@ -207,6 +207,43 @@ const FARM = {
       return err;
     });
   },
+
+  getAllPlant: async () => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plants`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getPlant: async (farmId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/plant/${farmId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  addPlant: async (data) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/plant`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;
