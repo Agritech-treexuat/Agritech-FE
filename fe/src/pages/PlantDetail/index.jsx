@@ -18,29 +18,70 @@ const PlantDetail = () => {
 
   const [open, setOpen] = useState(false);
   const [openTemplate, setOpenTemplate] = useState(false);
-  const onCreate = (values) => {
+  const [defaultTemplate, setDefaultTemplate] = useState([])
+  const [seed, setSeed] = useState(null)
+  const [fetilizer, setFetilizer] = useState([])
+  const [BVTV, setBVTV] = useState([])
+
+  const onCreate = async (values) => {
     console.log('Received values of form: ', values);
     setOpen(false);
-    if(values.template == 'none'){
-      // do something
+    if(values.template == 'default'){
+      await loadDefaultTemplate(values.seed)
     } else {
-      // load template
+      setDefaultTemplate([])
     }
+    setSeed(values.seed)
+    loadCultivates()
     setOpenTemplate(true)
   };
 
   const onCreateTemplate = (values) => {
-    console.log('Received values of form: ', values);
-
+    console.log('Received values of form 2: ', values);
+    const data = {
+      plantId: params.id,
+      seed: seed,
+      plan: values.items
+    }
+    submitTemplate(data)
     setOpenTemplate(false)
   };
 
+  const loadDefaultTemplate = async (seed) => {
+    const data = await FARM.getPlanFromSeed(seed)
+    console.log("data: ", data)
+    setDefaultTemplate(data.data.plantCultivates.plan)
+  }
+
+  const loadCultivates = async () => {
+    const data = await FARM.getCultivative()
+    const fetilizer = [];
+    const BVTV = [];
+
+    data.data.cultivatives.forEach(cultivative => {
+      if (cultivative.type === 'phân bón') {
+        fetilizer.push(cultivative);
+      } else if (cultivative.type === 'BVTV') {
+        BVTV.push(cultivative);
+      }
+    });
+
+    setFetilizer(fetilizer)
+    setBVTV(BVTV)
+    console.log("cul: ", fetilizer, BVTV)
+  }
+
+  const submitTemplate = async (data) => {
+    const new_data = await FARM.addPlantCultivates(data)
+    const newPlans = [...plans, new_data.data.plantCultivate]
+    setPlans(newPlans)
+  }
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getPlans(farmId, params.id)
-      console.log("Data plant: ", data)
+      console.log("Data plant new: ", data)
       if(data.data)
-        setPlans(data.data.plans)
+        setPlans(data.data.plantCultivates)
     }
     fetchData();
     console.log("Output data: ", plans)
@@ -90,6 +131,9 @@ const PlantDetail = () => {
               onCancel={() => {
                 setOpenTemplate(false);
               }}
+              defaultTemplate={defaultTemplate}
+              fetilizer={fetilizer}
+              BVTV={BVTV}
             />
           </div>
           {plans.map((item) => (
@@ -104,7 +148,7 @@ const PlantDetail = () => {
                   <>
                   <Divider><h3>Time: {cultivate.time}</h3></Divider>
                   <h3>Note: {cultivate.note}</h3>
-                  <h3>Type: {cultivate.cultivativeItems[0].type}</h3>
+                  <h3>Type: {cultivate.type}</h3>
                     {cultivate.cultivativeItems.map((cultivativeItem) => (
                       <>
                       <Divider></Divider>

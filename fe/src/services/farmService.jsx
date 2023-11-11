@@ -268,6 +268,43 @@ const FARM = {
       return err;
     });
   },
+
+  getPlanFromSeed: async (seed) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plantCultivates/654a33952ad2c3b38560ce52/${seed}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  addPlantCultivates: async (data) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/plantCultivates`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getCultivative: async () => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/cultivative`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;
