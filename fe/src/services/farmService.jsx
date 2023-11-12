@@ -294,6 +294,19 @@ const FARM = {
     });
   },
 
+  updatePlantCultivates: async (data) => {
+    return await privateHttp({
+      method: 'PUT',
+      url: `/farm/plantCultivates`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
   getCultivative: async () => {
     return await publicHttp({
       method: 'GET',

@@ -5,6 +5,7 @@ import FARM from '../../services/farmService';
 import Loading from '../Loading';
 import AddPlanPopup from '../../components/ManagePlant/AddPlanPopup';
 import AddTemplatePopup from '../../components/ManagePlant/AddTemplatePopup';
+import UpdateTemplatePopup from '../../components/ManagePlant/UpdateTemplatePopup';
 
 const { Panel } = Collapse;
 
@@ -18,6 +19,7 @@ const PlantDetail = () => {
 
   const [open, setOpen] = useState(false);
   const [openTemplate, setOpenTemplate] = useState(false);
+  const [openUpdateTemplate, setOpenUpdateTemplate] = useState(false);
   const [defaultTemplate, setDefaultTemplate] = useState([])
   const [seed, setSeed] = useState(null)
   const [fetilizer, setFetilizer] = useState([])
@@ -47,6 +49,17 @@ const PlantDetail = () => {
     setOpenTemplate(false)
   };
 
+  const onUpdateTemplate = (values, plantCultivateId) => {
+    console.log('Received values of form 23 ', values);
+    const data = {
+      plantCultivateId: plantCultivateId,
+      plan: values.items
+    }
+    console.log("data to send: ", data)
+    updateTemplate(data)
+    setOpenUpdateTemplate(false)
+  };
+
   const loadDefaultTemplate = async (seed) => {
     const data = await FARM.getPlanFromSeed(seed)
     console.log("data: ", data)
@@ -74,6 +87,14 @@ const PlantDetail = () => {
   const submitTemplate = async (data) => {
     const new_data = await FARM.addPlantCultivates(data)
     const newPlans = [...plans, new_data.data.plantCultivate]
+    setPlans(newPlans)
+  }
+
+  const updateTemplate = async (data) => {
+    const new_data = await FARM.updatePlantCultivates(data)
+    const newPlans = plans.map((item) =>
+      item._id === new_data.data.plantCultivate._id ? new_data.data.plantCultivate : item
+    )
     setPlans(newPlans)
   }
   useEffect(() => {
@@ -143,7 +164,26 @@ const PlantDetail = () => {
               <Panel
                     header='Quy trình chi tiết'
                   >
-                    <Button type="primary">Chỉnh sửa</Button>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        loadCultivates();
+                        setOpenUpdateTemplate(true);
+                      }}
+                    >
+                      Update
+                    </Button>
+                    <UpdateTemplatePopup
+                      open={openUpdateTemplate}
+                      onCreate={onUpdateTemplate}
+                      onCancel={() => {
+                        setOpenUpdateTemplate(false);
+                      }}
+                      template={item.plan}
+                      fetilizer={fetilizer}
+                      BVTV={BVTV}
+                      plantCultivateId={item._id}
+                    />
                 {item.plan.map((cultivate) => (
                   <>
                   <Divider><h3>Time: {cultivate.time}</h3></Divider>
