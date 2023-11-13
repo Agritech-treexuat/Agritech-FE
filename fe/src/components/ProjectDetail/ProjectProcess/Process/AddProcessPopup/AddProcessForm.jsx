@@ -27,7 +27,7 @@ const testForm = null;
 const fertilizers = ["NHK", "Kali", "Other name"];
 const bvtvs = ["BVTV1", "BVTV2", "Other name"];
 
-const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
+const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
   const today = new Date();
   const year = today.getFullYear();
   const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
@@ -37,6 +37,19 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
   console.log("Today: ", currentDate)
   const params = useParams()
   const formRef = React.useRef(null);
+  let initValue = {
+    'date': currentDate
+  }
+
+  if(process){
+    initValue = {
+      'date': currentDate,
+      'type': process.type,
+      'cultivativeItems': process.cultivativeItems,
+      'note': process.time + '-' + process.note
+    };
+    console.log("init: ", initValue)
+  }
 
   const onFinish = (values) => {
     console.log("Values: ", values);
@@ -75,13 +88,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
       name="control-ref"
       onFinish={onFinish}
       initialValues={
-        {
-          'date': currentDate,
-          'type': "BVTV",
-          'name': 'Kali',
-          'amount': 1000,
-          'note': '',
-        }
+        initValue
       }
       style={{
         maxWidth: 600,
@@ -183,17 +190,6 @@ const AddProcessForm = ({ handleCloseForm, setProcessData }) => {
                   </>
                 )}
               </Form.List>
-              <Form.Item
-                name="amount"
-                label="Lượng"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
               {/* note */}
               <Form.Item
                 name="note"

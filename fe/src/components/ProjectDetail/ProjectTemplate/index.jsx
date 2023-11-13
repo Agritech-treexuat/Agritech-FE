@@ -10,11 +10,11 @@ import { ConsoleSqlOutlined } from '@ant-design/icons';
 const { Panel } = Collapse;
 
 const ProjectTemplate = () => {
-  const [projectTemplate, setProjectTemplate] = useState([])
   const params = useParams()
   const [search, setSearch] = useState('');
   console.log("params:" , params)
   const farmId = localStorage.getItem('id')
+  const [projectTemplate, setProjectTemplate] = useState([])
   const [plans, setPlans] = useState([])
   const [allSeedByPlant, setAllSeedByPlant] = useState([])
 
@@ -22,10 +22,9 @@ const ProjectTemplate = () => {
   const [openTemplate, setOpenTemplate] = useState(false);
   const [openUpdateTemplate, setOpenUpdateTemplate] = useState(false);
   const [defaultTemplate, setDefaultTemplate] = useState([])
-  const [farmTemplate, setFarmTemplate] = useState([])
-  const [seed, setSeed] = useState(null)
   const [fetilizer, setFetilizer] = useState([])
   const [BVTV, setBVTV] = useState([])
+  console.log("prj: ", projectTemplate)
 
   const onCreate = async (values) => {
     console.log('Received values of form: ', values);
@@ -46,8 +45,11 @@ const ProjectTemplate = () => {
 
   const onCreateTemplate = (values) => {
     console.log('Received values of form 2: ', values);
+    const data = {
+      plan: values.items
+    }
 
-    submitTemplate(values.items, params.id)
+    submitTemplate(data, params.id)
     setOpenTemplate(false)
   };
 
@@ -106,12 +108,14 @@ const ProjectTemplate = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getPlanFromProject(params.id)
-      console.log("Data here: ", data.data.plan)
-      setProjectTemplate(data.data.plan)
-      console.log("prj: ", projectTemplate)
+      if(data.data) {
+        console.log("Data here: ", data.data.plan)
+        setProjectTemplate([...data.data.plan])
+      }
     }
     fetchData();
-    
+    console.log("heree: ", projectTemplate)
+
   }, []);
 
   return (
@@ -150,7 +154,7 @@ const ProjectTemplate = () => {
               <Panel
                     header='Quy trình chi tiết'
                   >
-                    <Button
+                    {/* <Button
                       type="primary"
                       onClick={() => {
                         loadCultivates();
@@ -158,8 +162,8 @@ const ProjectTemplate = () => {
                       }}
                     >
                       Update
-                    </Button>
-                    <UpdateTemplateProjectPopup
+                    </Button> */}
+                    {/* <UpdateTemplateProjectPopup
                       open={openUpdateTemplate}
                       onCreate={onUpdateTemplate}
                       onCancel={() => {
@@ -168,7 +172,7 @@ const ProjectTemplate = () => {
                       template={projectTemplate}
                       fetilizer={fetilizer}
                       BVTV={BVTV}
-                    />
+                    /> */}
                 {projectTemplate.map((cultivate) => (
                   <>
                   <Divider><h3>Time: {cultivate.time}</h3></Divider>
