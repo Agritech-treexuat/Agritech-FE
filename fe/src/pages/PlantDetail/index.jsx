@@ -61,7 +61,7 @@ const PlantDetail = () => {
   };
 
   const loadDefaultTemplate = async (seed) => {
-    const data = await FARM.getPlanFromSeed(seed)
+    const data = await FARM.getPlanFromSeed('654a33952ad2c3b38560ce52',seed)
     console.log("data: ", data)
     setDefaultTemplate(data.data.plantCultivates.plan)
   }

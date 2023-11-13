@@ -4,7 +4,9 @@ import FARM from '../../../services/farmService';
 import { useParams } from 'react-router-dom';
 import AddPlanProjectPopup from './AddPlanProjectPopup';
 import AddTemplateProjectPopup from './AddTemplateProjectPopup';
+import AddTemplatePopup from '../../ManagePlant/AddTemplatePopup'
 import UpdateTemplateProjectPopup from './UpdateTemplateProjectPopup';
+import { ConsoleSqlOutlined } from '@ant-design/icons';
 const { Panel } = Collapse;
 
 const ProjectTemplate = () => {
@@ -20,6 +22,7 @@ const ProjectTemplate = () => {
   const [openTemplate, setOpenTemplate] = useState(false);
   const [openUpdateTemplate, setOpenUpdateTemplate] = useState(false);
   const [defaultTemplate, setDefaultTemplate] = useState([])
+  const [farmTemplate, setFarmTemplate] = useState([])
   const [seed, setSeed] = useState(null)
   const [fetilizer, setFetilizer] = useState([])
   const [BVTV, setBVTV] = useState([])
@@ -29,8 +32,10 @@ const ProjectTemplate = () => {
     setOpen(false);
     if(values.template == 'default'){
       // load from farm admin
+      loadDefaultTemplate('seed rau cai A')
     } else if(values.template == 'farm') {
       // load from farm
+      loadFarmTemplate('seed rau cai A')
     }
     else {
       setDefaultTemplate([])
@@ -41,7 +46,8 @@ const ProjectTemplate = () => {
 
   const onCreateTemplate = (values) => {
     console.log('Received values of form 2: ', values);
-    // submitTemplate(data)
+
+    submitTemplate(values.items, params.id)
     setOpenTemplate(false)
   };
 
@@ -53,7 +59,13 @@ const ProjectTemplate = () => {
   };
 
   const loadDefaultTemplate = async (seed) => {
-    const data = await FARM.getPlanFromSeed(seed)
+    const data = await FARM.getPlanFromSeed('654a33952ad2c3b38560ce52', seed)
+    console.log("data: ", data)
+    setDefaultTemplate(data.data.plantCultivates.plan)
+  }
+
+  const loadFarmTemplate = async (seed) => {
+    const data = await FARM.getPlanFromSeed(farmId, seed)
     console.log("data: ", data)
     setDefaultTemplate(data.data.plantCultivates.plan)
   }
@@ -76,10 +88,11 @@ const ProjectTemplate = () => {
     console.log("cul: ", fetilizer, BVTV)
   }
 
-  const submitTemplate = async (data) => {
-    const new_data = await FARM.addPlantCultivates(data)
-    const newPlans = [...plans, new_data.data.plantCultivate]
-    setPlans(newPlans)
+  const submitTemplate = async (data, projectId) => {
+    const new_data = await FARM.addPlantCultivatesToProject(data, projectId)
+    console.log("new data: ", new_data.data.updatedProjectPlan)
+    setProjectTemplate(new_data.data.updatedProjectPlan)
+    console.log("new prj t: ", projectTemplate)
   }
 
   const updateTemplate = async (data) => {
@@ -93,11 +106,14 @@ const ProjectTemplate = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getPlanFromProject(params.id)
-      console.log("Data: ", data.data)
+      console.log("Data here: ", data.data.plan)
       setProjectTemplate(data.data.plan)
+      console.log("prj: ", projectTemplate)
     }
     fetchData();
+    
   }, []);
+
   return (
     <>
     <div>
@@ -153,7 +169,7 @@ const ProjectTemplate = () => {
                       fetilizer={fetilizer}
                       BVTV={BVTV}
                     />
-                {projectTemplate.plan.map((cultivate) => (
+                {projectTemplate.map((cultivate) => (
                   <>
                   <Divider><h3>Time: {cultivate.time}</h3></Divider>
                   <h3>Note: {cultivate.note}</h3>

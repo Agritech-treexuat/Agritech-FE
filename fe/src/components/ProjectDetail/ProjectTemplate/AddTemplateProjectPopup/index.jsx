@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Radio, Select } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Input, Space, Typography } from 'antd';
@@ -8,6 +8,11 @@ const AddTemplateProjectPopup = ({ open, onCreate, onCancel, defaultTemplate, fe
   const [form] = Form.useForm();
   console.log("default: ", defaultTemplate)
   console.log("fe: ", fetilizer, BVTV)
+  useEffect(() => {
+    form.setFieldsValue({
+      items: defaultTemplate,
+    })
+   }, [form, defaultTemplate])
   // const fetilizer_name = fetilizer.map((fetilizer_item) => fetilizer_item.name)
   const BVTV_name = BVTV.map((BVTV_item) => {
     return {

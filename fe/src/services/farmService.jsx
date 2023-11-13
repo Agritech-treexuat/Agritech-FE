@@ -269,10 +269,10 @@ const FARM = {
     });
   },
 
-  getPlanFromSeed: async (seed) => {
+  getPlanFromSeed: async (farmId, seed) => {
     return await publicHttp({
       method: 'GET',
-      url: `/plantCultivates/654a33952ad2c3b38560ce52/${seed}`,
+      url: `/plantCultivates/${farmId}/${seed}`,
     }).then((res) => {
       return res;
     })
@@ -323,6 +323,19 @@ const FARM = {
     return await publicHttp({
       method: 'GET',
       url: `/farm/plan/${projectId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  addPlantCultivatesToProject: async (data, projectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/addPlantCultivate/${projectId}`,
+      data
     }).then((res) => {
       return res;
     })
