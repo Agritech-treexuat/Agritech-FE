@@ -207,6 +207,142 @@ const FARM = {
       return err;
     });
   },
+
+  getAllPlant: async () => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plants`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getPlant: async (farmId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/plant/${farmId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  addPlant: async (data) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/plant`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getPlans: async (farmId, plantId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/planInFarmFromPlant/${farmId}/${plantId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getAllSeedByPlantId: async (plantId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/seeds/${plantId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getPlanFromSeed: async (farmId, seed) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plantCultivates/${farmId}/${seed}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  addPlantCultivates: async (data) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/plantCultivates`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  updatePlantCultivates: async (data) => {
+    return await privateHttp({
+      method: 'PUT',
+      url: `/farm/plantCultivates`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getCultivative: async () => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/cultivative`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getPlanFromProject: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/farm/plan/${projectId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  addPlantCultivatesToProject: async (data, projectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/addPlantCultivate/${projectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;

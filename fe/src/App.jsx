@@ -9,6 +9,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import Auth from './hooks/auth';
 import Profile from './pages/Profile';
 import ManagePlant from './pages/ManagePlant';
+import PlantDetail from './pages/PlantDetail';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           <Route index element={<Auth path={"login"}>{<ManagePlant />}</Auth>} path="manage-plant" />
           <Route element={<Auth path={"/login"}>{<CreateProject />}</Auth>} path="create-project" />
           <Route element={<Auth path={"/login"}>{<ProjectDetail />}</Auth>} path="project/:id" />
+          <Route element={<Auth path={"/login"}>{<PlantDetail />}</Auth>} path="plant/:id" />
         </Route>
       </Routes>
     </div>

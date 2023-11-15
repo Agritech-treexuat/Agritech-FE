@@ -27,8 +27,11 @@ const EditHistory = ({process}) => {
           <p>Loại canh tác: {process.type}</p>
           {process.type === 'phân bón' || process.type === 'BVTV' ? (
             <div>
-              <p>Tên: {process.name}</p>
-              <p>Lượng: {process.amount}</p>
+              {process.cultivativeItems.map((item) => (
+                <ul>
+                  <li>Tên: {item.name}, Lượng per ha: {item.amount_per_ha}</li>
+                </ul>
+              ))}
               <p>Ghi chú: {process.note}</p>
             </div>
           ) : (

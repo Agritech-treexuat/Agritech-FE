@@ -15,3 +15,7 @@ export { default as ProjectProcess } from './ProjectDetail/ProjectProcess'
 // other
 export { default as ProjectItem } from './ProjectItem'
 export { default as CustomButton } from './CustomButton'
+// add plant AddPlantPopup
+export { default as AddPlantPopup } from './ManagePlant/AddPlantPopup'
+// project template
+export { default as ProjectTemplate } from './ProjectDetail/ProjectTemplate'
