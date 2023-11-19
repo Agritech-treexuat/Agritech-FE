@@ -36,6 +36,9 @@ const FARM = {
     return await privateHttp({
       method: 'POST',
       url: `/farm/initProject`,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
       data
     }).then((res) => {
       return res;
