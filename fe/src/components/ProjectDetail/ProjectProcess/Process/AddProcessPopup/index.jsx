@@ -8,8 +8,7 @@ const AddProcessPopUp = ({setProcessData}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState([false, false]);
   const [isModalOpen3, setIsModalOpen3] = useState(false);
-  const [isModalOpen4, setIsModalOpen4] = useState(false);
-  console.log("modal: ", isModalOpen, isModalOpen2, isModalOpen3, isModalOpen4)
+  console.log("modal: ", isModalOpen, isModalOpen2, isModalOpen3)
   const [projectTemplate, setProjectTemplate] = useState([])
   const params = useParams()
 
@@ -31,16 +30,14 @@ const AddProcessPopUp = ({setProcessData}) => {
     setIsModalOpen(true);
   };
   const handleOk = () => {
-    setIsModalOpen(false);
     setIsModalOpen2([false, false])
     setIsModalOpen3(false)
-    setIsModalOpen4(false)
+    setIsModalOpen(false);
   };
   const handleCancel = () => {
-    setIsModalOpen(false);
     setIsModalOpen2([false, false])
     setIsModalOpen3(false)
-    setIsModalOpen4(false)
+    setIsModalOpen(false);
   };
 
   // const [isModalOpen2, setIsModalOpen2] = useState(false);
@@ -70,15 +67,6 @@ const AddProcessPopUp = ({setProcessData}) => {
     setIsModalOpen3(false);
   };
 
-  const showModal4 = () => {
-    setIsModalOpen4(true);
-  };
-  const handleOk4 = () => {
-    setIsModalOpen4(false);
-  };
-  const handleCancel4 = () => {
-    setIsModalOpen4(false);
-  };
   return (
     <>
       <Button type="primary" onClick={showModal} style={{marginBottom: "15px"}}>
@@ -91,27 +79,23 @@ const AddProcessPopUp = ({setProcessData}) => {
             <Button type="primary" onClick={() => toggleModal2(index, true)} >
             {item.time + '-' + item.type + '-' +item.cultivativeItems.map((cul_item) => cul_item.name + '-' +cul_item.amount_per_ha)}
             </Button>
+
+          </>)}
+          </> : <>
+          </>
+        }
+        <Button type="primary" onClick={showModal3}>
+          None
+        </Button>
+      </Modal>
+      {projectTemplate.map((item, index) => <>
             <Modal title="Basic Modal" open={isModalOpen2[index]} onOk={() => toggleModal2(index, false)} onCancel={() => toggleModal2(index, false)}>
               <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData} process={item}/>
             </Modal>
           </>)}
-          <Button type="primary" onClick={showModal3}>
-              None
-            </Button>
-            <Modal title="Basic Modal" open={isModalOpen3} onOk={handleOk3} onCancel={handleCancel3}>
-              <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData}  process={null}/>
-            </Modal>
-          </> : <>
-          <Button type="primary" onClick={showModal4}>
-              None
-            </Button>
-            <Modal title="Basic Modal" open={isModalOpen4} onOk={handleOk4} onCancel={handleCancel4}>
-              <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData} process={null}/>
-            </Modal>
-          </>
-        }
-
-      </Modal>
+      <Modal title="Basic Modal" open={isModalOpen3} onOk={handleOk3} onCancel={handleCancel3}>
+          <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData}  process={null}/>
+        </Modal>
     </>
   );
 };
