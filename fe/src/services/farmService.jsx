@@ -346,6 +346,19 @@ const FARM = {
       return err;
     });
   },
+
+  updatePlantCultivatesToProject: async (data, projectId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/addPlantCultivate/${projectId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default FARM;

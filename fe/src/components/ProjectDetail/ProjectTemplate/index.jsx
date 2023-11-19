@@ -55,8 +55,11 @@ const ProjectTemplate = () => {
 
   const onUpdateTemplate = (values, plantCultivateId) => {
     console.log('Received values of form 23 ', values);
+    const data = {
+      'plan': values.items
+    }
     // console.log("data to send: ", data)
-    // updateTemplate(data)
+    updateTemplate(data, params.id)
     setOpenUpdateTemplate(false)
   };
 
@@ -97,12 +100,15 @@ const ProjectTemplate = () => {
     console.log("new prj t: ", projectTemplate)
   }
 
-  const updateTemplate = async (data) => {
-    const new_data = await FARM.updatePlantCultivates(data)
-    const newPlans = plans.map((item) =>
-      item._id === new_data.data.plantCultivate._id ? new_data.data.plantCultivate : item
-    )
-    setPlans(newPlans)
+  const updateTemplate = async (data, projectId) => {
+    console.log("data send: ", data)
+    const new_data = await FARM.updatePlantCultivatesToProject(data, projectId)
+    console.log("res new data: ", new_data)
+    // const newPlans = plans.map((item) =>
+    //   item._id === new_data.data.plantCultivate._id ? new_data.data.plantCultivate : item
+    // )
+    // setPlans(newPlans)
+    setProjectTemplate(new_data.data.updatedProjectPlan)
   }
 
   useEffect(() => {
@@ -126,6 +132,7 @@ const ProjectTemplate = () => {
         onClick={() => {
           setOpen(true);
         }}
+        disabled={projectTemplate? true: false}
       >
         New Collection
       </Button>
@@ -148,13 +155,9 @@ const ProjectTemplate = () => {
         BVTV={BVTV}
       />
     </div>
-    {projectTemplate? <h1>Khong co</h1> :
+    {projectTemplate ?
     <Card style={{ marginTop: '16px' }}>
-              <Collapse>
-              <Panel
-                    header='Quy trình chi tiết'
-                  >
-                    {/* <Button
+                    <Button
                       type="primary"
                       onClick={() => {
                         loadCultivates();
@@ -162,8 +165,8 @@ const ProjectTemplate = () => {
                       }}
                     >
                       Update
-                    </Button> */}
-                    {/* <UpdateTemplateProjectPopup
+                    </Button>
+                    <UpdateTemplateProjectPopup
                       open={openUpdateTemplate}
                       onCreate={onUpdateTemplate}
                       onCancel={() => {
@@ -172,7 +175,7 @@ const ProjectTemplate = () => {
                       template={projectTemplate}
                       fetilizer={fetilizer}
                       BVTV={BVTV}
-                    /> */}
+                    />
                 {projectTemplate.map((cultivate) => (
                   <>
                   <Divider><h3>Time: {cultivate.time}</h3></Divider>
@@ -187,9 +190,7 @@ const ProjectTemplate = () => {
                     ))}
                   </>
                 ))}
-                </Panel>
-              </Collapse>
-            </Card>
+            </Card> : <h1>Khong co</h1>
 }
     </>
   )
