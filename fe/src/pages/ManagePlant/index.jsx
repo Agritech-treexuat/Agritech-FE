@@ -55,7 +55,7 @@ const ManagePlant = () => {
       console.log("data to send: ", data)
       const res = await FARM.addPlant(data);
       console.log("res: ", res)
-      if(res.response.data.message=='EXISTED_TREE') {
+      if(res.response && res.response.data.message=='EXISTED_TREE') {
         alert("Cây đã tồn tại")
       }
       else{

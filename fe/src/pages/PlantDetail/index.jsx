@@ -26,7 +26,7 @@ const PlantDetail = () => {
   const [BVTV, setBVTV] = useState([])
 
   const onCreate = async (values) => {
-    console.log('Received values of form: ', values);
+    console.log('Received values of form 222: ', values);
     setOpen(false);
     if(values.template == 'default'){
       await loadDefaultTemplate(values.seed)
@@ -61,7 +61,7 @@ const PlantDetail = () => {
   };
 
   const loadDefaultTemplate = async (seed) => {
-    const data = await FARM.getPlanFromSeed('654a33952ad2c3b38560ce52',seed)
+    const data = await FARM.getPlanFromSeed('65597fd0e13d6f181d5e4af0',seed)
     console.log("data: ", data)
     setDefaultTemplate(data.data.plantCultivates.plan)
   }
