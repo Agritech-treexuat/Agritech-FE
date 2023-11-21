@@ -16,6 +16,8 @@ const CreateProject = () => {
   const { createProject, connect, address } = useStateContext();
   const farmId = localStorage.getItem('id')
   const formRef = useRef(null);
+  const [fileList, setFileList] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   const onFinish = (values) => {
     console.log(values);
@@ -30,10 +32,9 @@ const CreateProject = () => {
     // Handle project creation and data submission here
     console.log("address: ", address)
     // console.log("data: ", startDate, selectedSeed, amount, image, expected)
-    const images = values.upload.map((upload) => upload.name)
-    const input = values.date + values.amount + values.name + images + values.expected
+    const input = values.date + values.amount + values.name + values.expected
     const receip = await createProject(values.seed, input)
-    const txhash = receip.transactionHash
+    const txhash = receip? receip.transactionHash : 'b'
     console.log("tx hash: ", txhash)
     handleInit(values, txhash)
   };
@@ -41,16 +42,17 @@ const CreateProject = () => {
   const handleInit = async (values, txhash) => {
     try {
       const images = values.upload.map((upload) => upload.name)
-      const data = {
-        'name': values.name,
-        'input': {
-          'tx': txhash,
-          "initDate": values.date,
-          "seed": values.seed,
-          "amount": values.amount,  // Số lượng
-          "images": images
-        }
-      }
+      let formData = new FormData();
+      formData.append('name', values.name)
+      formData.append('tx', txhash)
+      formData.append('initDate', values.date)
+      formData.append('seed', values.seed)
+      formData.append('amount', values.amount)
+      fileList.forEach((file) => {
+        formData.append('images', file);
+      });
+      setUploading(true);
+      const data = formData
       const res = await FARM.initProject(data)
       console.log("res: ", res)
       const newPrj = res.data.project
@@ -75,6 +77,20 @@ const CreateProject = () => {
         console.error(error?.response?.data?.message);
     }
   }
+
+  const props = {
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: (file) => {
+      setFileList([...fileList, file]);
+      return false;
+    },
+    fileList,
+  };
 
   return (
     <div className="create-project-container">
@@ -149,8 +165,8 @@ const CreateProject = () => {
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
-        <Upload name="logo" action="/upload.do" listType="picture">
-          <Button icon={<UploadOutlined />}>Click to upload</Button>
+        <Upload {...props}>
+          <Button icon={<UploadOutlined />}>Select File</Button>
         </Upload>
       </Form.Item>
       {/* expected */}
