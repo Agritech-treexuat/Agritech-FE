@@ -21,9 +21,12 @@ function getItem(label, key, icon, link) {
 }
 const items = [
   getItem('Quản lý trang trại', '1', <DesktopOutlined />, '/home'),
-  getItem('Manage Plant', '2', <TeamOutlined />, '/manage-plant'),
-  getItem('Profile', '3', <UserOutlined />, '/profile'),
-  getItem('Log out', '4', <FileOutlined />),
+  getItem('Quản lý vườn TRH', '2', <DesktopOutlined />, '/manage-planting-garden'),
+  getItem('Quản lý yêu cầu', '3', <DesktopOutlined />, '/manage-request'),
+  getItem('Quản lý bản mẫu', '4', <DesktopOutlined />, '/manage-template'),
+  getItem('Manage Plant', '5', <TeamOutlined />, '/manage-plant'),
+  getItem('Profile', '6', <UserOutlined />, '/profile'),
+  getItem('Log out', '7', <FileOutlined />),
 ];
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);

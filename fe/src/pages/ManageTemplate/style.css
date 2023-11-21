@@ -1,0 +1,15 @@
+.ant-card-head {
+    background: #8fb955 !important;
+    color: #fff !important;
+}
+
+.styleText {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ant-card-body{
+    text-align: end !important;
+    background-color: #f5f2eb !important;
+}
