@@ -11,6 +11,7 @@ import Profile from './pages/Profile';
 import ManagePlant from './pages/ManagePlant';
 import PlantDetail from './pages/PlantDetail';
 import ManageTemplate from './pages/ManageTemplate';
+import ManageRequest from './pages/ManageRequest';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
           <Route index element={<Auth path={"login"}>{<Profile />}</Auth>} path="profile" />
           <Route index element={<Auth path={"login"}>{<ManagePlant />}</Auth>} path="manage-plant" />
           <Route index element={<Auth path={"login"}>{<ManageTemplate />}</Auth>} path="manage-template" />
+          <Route index element={<Auth path={"login"}>{<ManageRequest />}</Auth>} path="manage-request" />
           <Route element={<Auth path={"/login"}>{<CreateProject />}</Auth>} path="create-project" />
           <Route element={<Auth path={"/login"}>{<ProjectDetail />}</Auth>} path="project/:id" />
           <Route element={<Auth path={"/login"}>{<PlantDetail />}</Auth>} path="plant/:id" />
