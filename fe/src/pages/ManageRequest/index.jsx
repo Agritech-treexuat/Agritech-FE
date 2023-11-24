@@ -5,6 +5,7 @@ import {
   Col,
   Input,
   Button,
+  DatePicker,
   Flex,
   Form,
   Modal,
@@ -22,7 +23,7 @@ import Loading from "../Loading";
 import { Card, Space } from "antd";
 import FARM from "../../services/farmService";
 import { useParams } from "react-router";
-// import "./style.css";
+import "./style.css";
 
 const { Meta } = Card;
 const ManageRequest = () => {
@@ -121,6 +122,10 @@ const ManageRequest = () => {
     },
   ];
 
+  const onChange = (date, dateString) => {
+    console.log(date, dateString);
+  };
+
   useEffect(() => {
     // Gọi api list
     setRequests([
@@ -168,11 +173,37 @@ const ManageRequest = () => {
       {contextHolder}
       {requests ? (
         <div>
-          <h2 style={{ textAlign: "left" }}>Quản lý yêu cầu của khách hàng</h2>
+          <h2 style={{ textAlign: "left" }}>Quản lý cầu của khách hàng</h2>
+          {/* Sreach request */}
+          <div>
+            <p>
+              <strong>Tìm kiếm thông tin</strong>
+            </p>
+            <Flex style={{ marginBottom: "2rem" }} align="flex-end">
+              <Flex vertical style={{ marginRight: "1rem" }}>
+                <label style={{ marginBottom: "0.5rem" }}>
+                  Nội dung/Tên người đặt/Template đơn hàng:{" "}
+                </label>
+                <Input style={{ width: "100%" }} placeholder="Search" />
+              </Flex>
+              <Flex vertical style={{ marginRight: "1rem" }}>
+                <label style={{ marginBottom: "0.5rem" }}>
+                  Ngày đặt hàng:{" "}
+                </label>
+                <DatePicker onChange={onChange} />
+              </Flex>
+              <Flex gap="small" wrap="wrap">
+                <Button type="primary">Tìm kiếm</Button>
+                <Button>Đặt lại</Button>
+              </Flex>
+            </Flex>
+          </div>
+          <h2 style={{ textAlign: "left", fontSize: "18px" }}>
+            Danh sách yêu cầu của khách hàng
+          </h2>
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
               flexWrap: "wrap",
             }}
           >
@@ -180,7 +211,7 @@ const ManageRequest = () => {
               <Card
                 title={`Ngày đặt hàng: ${req.date}`}
                 hoverable
-                style={{ width: "32%", marginBottom: "1rem" }}
+                style={{ width: "30%", marginBottom: "1.5rem", marginRight: '1.5rem' }}
                 extra={
                   <Tooltip title="Chi tiết">
                     <EyeOutlined

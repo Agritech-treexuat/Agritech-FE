@@ -206,7 +206,7 @@ const ManageTemplate = () => {
           <h2 style={{ textAlign: "left" }}>Template List</h2>
           <Row>
             <Col span={6}>
-              <div style={{ marginBottom: "1rem" }}>
+              <div style={{ marginBottom: "1.5rem" }}>
                 <Button
                   type="primary"
                   onClick={() => {
@@ -231,7 +231,6 @@ const ManageTemplate = () => {
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
               flexWrap: "wrap",
             }}
           >
@@ -251,12 +250,13 @@ const ManageTemplate = () => {
                 }
                 style={{
                   width: "30%",
-                  marginBottom: "1rem",
+                  marginBottom: "1.5rem",
                   borderTopLeftRadius: "15px",
                   borderTopRightRadius: "15px",
+                  marginRight: '1.5rem'
                 }}
               >
-                <div>
+                <div style={{textAlign: 'end'}}>
                   <div className="styleText">
                     <p style={{ fontWeight: "600" }}>CHỦNG LOẠI GIEO TRỒNG</p>
                     <p>{temp.rau_dinh_duong} Rau dinh dưỡng</p>
