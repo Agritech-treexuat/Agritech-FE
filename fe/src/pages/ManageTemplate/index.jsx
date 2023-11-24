@@ -12,6 +12,7 @@ import {
   InputNumber,
   Divider,
   Tooltip,
+  notification,
 } from "antd";
 import { EditFilled } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -32,12 +33,13 @@ const layout = {
 
 const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
   const [form] = Form.useForm();
-  console.log('ds', template2);
+  console.log("ds", template2);
   return (
     <Modal
+      destroyOnClose={true}
       open={open}
       title="Template"
-      okText={template2 ? "Cập nhật": "Tạo mới"}
+      okText={template2 ? "Cập nhật" : "Tạo mới"}
       cancelText="Hủy"
       onCancel={onCancel}
       onOk={() => {
@@ -46,13 +48,19 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
           .then((values) => {
             form.resetFields();
             onCreate(values);
+            console.log(values);
           })
           .catch((info) => {
             console.log("Validate Failed:", info);
           });
       }}
     >
-      <Form form={form} {...layout} name="form_in_modal" initialValues={template2}>
+      <Form
+        form={form}
+        {...layout}
+        name="form_in_modal"
+        initialValues={template2}
+      >
         <Form.Item
           name="area"
           label="Diện tích"
@@ -131,6 +139,14 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
   );
 };
 const ManageTemplate = () => {
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5,
+    });
+  };
   const [templates, setTemplates] = useState([]);
   const [template, setTemplate] = useState(null);
   const [open, setOpen] = useState(false);
@@ -138,6 +154,7 @@ const ManageTemplate = () => {
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
     setOpen(false);
+    openNotificationWithIcon("success", "Thông báo", "Cập nhật thành công");
   };
 
   useEffect(() => {
@@ -183,15 +200,17 @@ const ManageTemplate = () => {
 
   return (
     <div>
+      {contextHolder}
       {templates ? (
         <div>
-          <h1 style={{ textAlign: "center" }}>Template List</h1>
+          <h2 style={{ textAlign: "left" }}>Template List</h2>
           <Row>
             <Col span={6}>
               <div style={{ marginBottom: "1rem" }}>
                 <Button
                   type="primary"
                   onClick={() => {
+                    console.log("sdsdsdsds");
                     setTemplate(null);
                     setOpen(true);
                   }}
@@ -204,7 +223,7 @@ const ManageTemplate = () => {
                   onCancel={() => {
                     setOpen(false);
                   }}
-                  template2 = {template}
+                  template2={template}
                 />
               </div>
             </Col>
@@ -218,7 +237,7 @@ const ManageTemplate = () => {
           >
             {templates.map((temp) => (
               <Card
-                title={`Diện tích ${temp.area}`}
+                title={`Diện tích ${temp.area} M2`}
                 extra={
                   <Tooltip title="Edit template">
                     <EditFilled
@@ -255,7 +274,12 @@ const ManageTemplate = () => {
                   </div>
                   <div className="styleText">
                     <p style={{ fontWeight: "600" }}>GIÁ</p>
-                    <p>{temp.price} VNĐ</p>
+                    <p>
+                      {temp.price.toLocaleString("it-IT", {
+                        style: "currency",
+                        currency: "VND",
+                      })}
+                    </p>
                   </div>
                 </div>
               </Card>
