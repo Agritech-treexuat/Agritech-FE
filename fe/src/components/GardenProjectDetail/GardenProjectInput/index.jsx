@@ -353,6 +353,7 @@ const GardenProjectInput = () => {
     setInitData({
       id: "1",
       transaction_hash: "adakdhakjdsas",
+      // Danh sách các cây: plants
       seeds: [
         {
           id: "1",

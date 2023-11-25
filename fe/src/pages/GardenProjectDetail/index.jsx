@@ -12,6 +12,7 @@ import GardenProjectInput from "../../components/GardenProjectDetail/GardenProje
 import Loading from "../Loading";
 import GardenProjectOrder from "../../components/GardenProjectDetail/GardenProjectOrder";
 import GardenProjectHistory from "../../components/GardenProjectDetail/GardenProjectHistory";
+import GardenProjectTemplate from "../../components/GardenProjectDetail/GardenProjectTemplate";
 const onChange = (key) => {
   console.log(key);
 };
@@ -34,7 +35,7 @@ const GardenProjectDetail = () => {
     {
       key: "3",
       label: "Template",
-      children: <div>hello</div>,
+      children: <GardenProjectTemplate />,
     },
     {
       key: "4",
