@@ -116,7 +116,7 @@ const UpdateTemplatePopup = ({ open, onCreate, onCancel, template, fetilizer, BV
                                 />
                               </Form.Item>
                               <Form.Item noStyle name={[subField.name, 'amount_per_ha']}>
-                                <Input placeholder="Số lượng" />
+                                <Input placeholder="Số lượng" type='number' />
                               </Form.Item>
                               <CloseOutlined
                                 onClick={() => {

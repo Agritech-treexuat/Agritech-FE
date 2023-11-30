@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import FARM from "../../../services/farmService";
 import { useParams } from "react-router";
 import { useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTree } from "@fortawesome/free-solid-svg-icons";
 import {
   Collapse,
   Col,
@@ -141,14 +143,18 @@ const layout = {
   },
 };
 
-const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
+const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
   const [form] = Form.useForm();
+
+  const handlePlantChange = (value) => {
+    console.log(value);
+  };
   return (
     <Modal
       open={open}
-      title="Create a new collection"
-      okText="Create"
-      cancelText="Cancel"
+      title="Thêm cây"
+      okText="Tạo mới"
+      cancelText="Hủy"
       onCancel={onCancel}
       onOk={() => {
         form
@@ -171,28 +177,53 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
         }}
       >
         <Form.Item
-          name="title"
-          label="Title"
+          name="plant"
+          label="Chọn cây"
           rules={[
             {
               required: true,
-              message: "Please input the title of collection!",
+              message: "Trường thông tin không được để trống!",
             },
           ]}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item name="description" label="Description">
-          <Input type="textarea" />
+          <Select
+            showSearch
+            style={{
+              width: "100%",
+            }}
+            placeholder="Chọn cây"
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.label.toLocaleLowerCase() ?? "").includes(
+                input.toLowerCase()
+              )
+            }
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            options={listPlant?.map((plant) => {
+              plant.label = plant.name;
+              plant.value = plant.id;
+              return plant;
+            })}
+            onChange={handlePlantChange}
+          />
         </Form.Item>
         <Form.Item
-          name="modifier"
-          className="collection-create-form_last-form-item"
+          name="template"
+          label="Template"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
         >
-          <Radio.Group>
-            <Radio value="public">Public</Radio>
-            <Radio value="private">Private</Radio>
-          </Radio.Group>
+          <Select placeholder="Chọn template">
+            {/* <Option value="default">Default</Option>
+            <Option value="none">Empty</Option> */}
+          </Select>
         </Form.Item>
       </Form>
     </Modal>
@@ -201,11 +232,18 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
 
 const items = mainContent.seeds?.map((plant, index) => {
   plant.key = index.toString();
-  plant.label = plant.name.charAt(0).toUpperCase() + plant.name.slice(1);
+  plant.label = (
+    <div>
+      <FontAwesomeIcon icon={faTree} style={{ color: "#476930" }} />{" "}
+      <span>{`${plant.name.charAt(0).toUpperCase()} ${plant.name.slice(
+        1
+      )}`}</span>
+    </div>
+  );
   plant.children = (
     <div>
       <div style={{ cursor: "pointer" }}>
-        <EditFilled style={{ color: "#476930", fontSize: "18px" }} />
+        <EditFilled style={{ color: "#86B049", fontSize: "18px" }} />
         {"  "}Chỉnh sửa thông tin
       </div>
       <div>
@@ -284,6 +322,7 @@ const GardenProjectTemplate = () => {
           <CollectionCreateForm
             open={open}
             onCreate={onCreate}
+            listPlant={mainContent.seeds}
             onCancel={() => {
               setOpen(false);
             }}

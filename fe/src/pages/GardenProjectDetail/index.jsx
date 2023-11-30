@@ -13,6 +13,9 @@ import Loading from "../Loading";
 import GardenProjectOrder from "../../components/GardenProjectDetail/GardenProjectOrder";
 import GardenProjectHistory from "../../components/GardenProjectDetail/GardenProjectHistory";
 import GardenProjectTemplate from "../../components/GardenProjectDetail/GardenProjectTemplate";
+import GardenProjectExpect from "../../components/GardenProjectDetail/GardenProjectExpect";
+import GardenProjectOutput from "../../components/GardenProjectDetail/GardenProjectOutput";
+
 const onChange = (key) => {
   console.log(key);
 };
@@ -44,13 +47,13 @@ const GardenProjectDetail = () => {
     },
     {
       key: "5",
-      label: "Dự kiến",
-      children: <div>hello</div>,
+      label: "Mong muốn người dùng",
+      children: <GardenProjectExpect />,
     },
     {
       key: "6",
       label: "Đầu ra",
-      children: <div>hello</div>,
+      children: <GardenProjectOutput />,
     },
   ];
   return (

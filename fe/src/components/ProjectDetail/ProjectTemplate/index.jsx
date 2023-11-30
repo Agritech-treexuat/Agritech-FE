@@ -132,7 +132,7 @@ const ProjectTemplate = () => {
         onClick={() => {
           setOpen(true);
         }}
-        disabled={projectTemplate? true: false}
+        // disabled={projectTemplate? true: false}
       >
         New Collection
       </Button>

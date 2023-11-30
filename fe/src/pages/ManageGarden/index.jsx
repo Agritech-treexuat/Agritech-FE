@@ -134,7 +134,7 @@ const ManageGarden = () => {
               flexWrap: "wrap",
             }}
           >
-            {projects.map((project) => (
+            {projects?.map((project) => (
               <Link
                 to={`/manage-planting-garden/${project.id}`}
                 style={{ width: "23%", marginBottom: "1.5rem", marginRight: '1.5rem' }}

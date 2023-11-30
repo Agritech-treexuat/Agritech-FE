@@ -1,1 +1,1 @@
-export const baseUrl = process.env.LINK || 'http://35.198.209.247:8080';
+export const baseUrl = process.env.LINK || 'http://34.142.207.44:8080';
