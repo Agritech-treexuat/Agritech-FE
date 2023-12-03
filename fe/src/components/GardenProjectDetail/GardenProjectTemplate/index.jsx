@@ -58,6 +58,30 @@ const mainContent = {
               name: "name",
               amount_per_ha: 12,
             },
+            {
+              name: "name",
+              amount_per_ha: 12,
+            },
+            {
+              name: "name",
+              amount_per_ha: 12,
+            },
+            {
+              name: "name",
+              amount_per_ha: 12,
+            },
+            {
+              name: "name",
+              amount_per_ha: 12,
+            },
+            {
+              name: "name",
+              amount_per_ha: 12,
+            },
+            {
+              name: "name",
+              amount_per_ha: 12,
+            },
           ],
         },
         {
@@ -255,27 +279,38 @@ const items = mainContent.seeds?.map((plant, index) => {
         </p>
         {plant.plan.map((p) => (
           <div>
-            <Divider orientation="center" style={{ fontSize: "20px" }}>
+            <Divider orientation="center" style={{ fontSize: "18px" }}>
               Thời gian: {p.time}
             </Divider>
-            <p>
-              <strong>Ghi chú:</strong> {p.note}
-            </p>
-            <p>
-              <strong>Type:</strong> {p.type}
-            </p>
-            <p style={{ fontSize: "16px", textAlign: "center" }}>
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              <p style={{ width: "25%" }}>
+                <strong>Ghi chú:</strong> {p.note}
+              </p>
+              <p style={{ width: "25%" }}>
+                <strong>Type:</strong> {p.type}
+              </p>
+            </div>
+            <p style={{ fontSize: "16px", margin: '0 1rem' }}>
               <strong>
-                <i>Chi tiết hoạt động </i>
+                <Divider orientation="left" style={{marginRight: '1rem', width: '80%'}}>
+                  <i>Chi tiết hoạt động </i>
+                </Divider>
               </strong>
             </p>
-            {p.cultivativeItems.map((i) => (
-              <div>
-                <Divider></Divider>
-                <p>Tên: {i.name}</p>
-                <p>Số lượng trên ha: {i.amount_per_ha}</p>
-              </div>
-            ))}
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              {p.cultivativeItems.map((i) => (
+                <div
+                  style={{
+                    width: "25%",
+                    backgroundColor: "#fff",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <p>Tên: {i.name}</p>
+                  <p>Số lượng trên ha: {i.amount_per_ha}</p>
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>

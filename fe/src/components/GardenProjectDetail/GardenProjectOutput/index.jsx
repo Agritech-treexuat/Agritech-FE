@@ -21,25 +21,26 @@ import {
   Flex,
   Select,
   DatePicker,
+  Space,
 } from "antd";
-import { HistoryOutlined, EditFilled } from "@ant-design/icons";
+import { HistoryOutlined, EditFilled, CloseOutlined } from "@ant-design/icons";
 
 import Loading from "../../../pages/Loading";
 import MenuDivider from "antd/es/menu/MenuDivider";
 
 const layout = {
   labelCol: {
-    span: 8,
+    span: 6,
   },
   wrapperCol: {
-    span: 16,
+    span: 18,
   },
 };
 
-const CollectionCreateForm = ({ open, onCreate, onCancel, initData }) => {
+const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
   const [form] = Form.useForm();
-  console.log("init dât; ", initData);
-  return initData.length > 0 ? (
+  console.log("init dât; ", listPlant);
+  return (
     <Modal
       open={open}
       title="Thêm mới"
@@ -63,46 +64,123 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, initData }) => {
         {...layout}
         name="form_in_modal"
         initialValues={{
-          modifier: "public",
+          plants: listPlant.map((p) => {
+            p.key = p.id;
+            return p;
+          }),
         }}
       >
-        <Form.Item
-          name="startDate"
-          label="Ngày bắt đầu"
-        >
+        <Form.Item name="startDate" label="Ngày bắt đầu">
           <DatePicker
             defaultValue={dayjs(new Date()).add(1, "day")}
             placeholder="Chọn ngày giao"
             style={{ width: "100%" }}
           />
         </Form.Item>
-        {initData[0].plants?.map((data, i) => (
-          <div>
-            <Form.Item
-              name={data.name}
-              label={data.name}
-            >
-              <Input type="number" defaultValue={0} addonAfter="kg"/>
-            </Form.Item>
-          </div>
-        ))}
+        <Form.Item label="Danh sách" name="plants">
+          <Form.List name="plants">
+            {(subFields, subOpt) => (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  rowGap: 16,
+                }}
+              >
+                {subFields.map((subField, i) => (
+                  <Space key={subField.key}>
+                    <span>{listPlant[i].name ? listPlant[i].name : ""}</span>
+                    <Form.Item
+                      noStyle
+                      name={[subField.name, "amount"]}
+                      label={listPlant[i]?.name}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Trường thông tin này không được để trống!",
+                        },
+                      ]}
+                    >
+                      <Input
+                        type={(() => {
+                          if (listPlant[i].name !== "Tặng") {
+                            return "number";
+                          }
+                          return "";
+                        })()}
+                        addonAfter={(() => {
+                          if (listPlant[i].name !== "Tặng") {
+                            return "kg";
+                          }
+                          return "";
+                        })()}
+                      />
+                    </Form.Item>
+                    <CloseOutlined
+                      onClick={() => {
+                        subOpt.remove(subField.name);
+                      }}
+                    />
+                  </Space>
+                ))}
+                <Button
+                  type="dashed"
+                  onClick={() => {
+                    listPlant.push({
+                      key: listPlant.length + 1,
+                      id: listPlant.length + 1,
+                      name: "Tặng",
+                    });
+                    subOpt.add();
+                  }}
+                  block
+                >
+                  + Thêm hàng hóa
+                </Button>
+              </div>
+            )}
+          </Form.List>
+        </Form.Item>
+        <div></div>
       </Form>
     </Modal>
-  ) : <Loading />;
+  );
 };
 const GardenProjectOutput = () => {
   const [open, setOpen] = useState(false);
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
-    
     setOpen(false);
   };
   const [initData, setInitData] = useState([]);
+  const [listPlant, setListPlant] = useState([]);
   const [deliveried, setDeliveried] = useState([]);
   const [notDeliveried, setNotDeliveried] = useState([]);
   const projectID = useParams();
   console.log("params: ", projectID);
   console.log(deliveried);
+
+  useEffect(() => {
+    // 1 là đã giao, 0 là chưa giao
+    setListPlant([
+      {
+        id: "1",
+        name: "Cây 1",
+      },
+      {
+        id: "2",
+        name: "Cây 2",
+      },
+      {
+        id: "3",
+        name: "Cây 3",
+      },
+      {
+        id: "4",
+        name: "Cây 4",
+      },
+    ]);
+  }, []);
 
   useEffect(() => {
     // 1 là đã giao, 0 là chưa giao
@@ -173,7 +251,7 @@ const GardenProjectOutput = () => {
             <div>
               {plant.amount > 0 ? (
                 <div>
-                  Cây: {plant?.name} - {plant?.amount} kg
+                  {plant?.name} - {plant?.amount} kg
                 </div>
               ) : (
                 <div></div>
@@ -203,7 +281,7 @@ const GardenProjectOutput = () => {
             onCancel={() => {
               setOpen(false);
             }}
-            initData={initData}
+            listPlant={listPlant}
           />
           <h2 style={{ marginBottom: "1rem" }}>Sắp giao</h2>
           <Table

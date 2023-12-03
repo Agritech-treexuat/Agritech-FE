@@ -67,7 +67,7 @@ const GardenProjectExpect = () => {
 
   const columns = [
     {
-      title: "Time",
+      title: "Thời gian",
       dataIndex: "time",
       width: 200,
       key: "time",
