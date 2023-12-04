@@ -16,7 +16,7 @@ const GardenProjectOrder = () => {
       id: "1",
       date: "23/11/2023",
       startDate: "23/11/2023",
-      name: "Le Ha",
+      name: "Duc Huy",
       address: "32 P. Đại Từ",
       phone: "0188666123",
       area: 4,
