@@ -59,7 +59,7 @@ const ManageRequest = () => {
     setReqDetail({
       id: id,
       date: "23/11/2023",
-      name: "Le Ha",
+      name: "Duc Huy",
       address: "32 P. Đại Từ",
       phone: "0188666123",
       area: 4,
@@ -132,7 +132,7 @@ const ManageRequest = () => {
       {
         id: "1",
         date: "23/11/2023",
-        name: "Le Ha",
+        name: "Duc Huy",
         address: "32 P. Đại Từ",
         phone: "0188666123",
         area: 4,
@@ -141,7 +141,7 @@ const ManageRequest = () => {
       {
         id: "2",
         date: "23/11/2023",
-        name: "Le Ha",
+        name: "Duc Huy",
         address: "32 P. Đại Từ",
         phone: "0188666123",
         area: 4,
@@ -150,7 +150,7 @@ const ManageRequest = () => {
       {
         id: "3",
         date: "23/11/2023",
-        name: "Le Ha",
+        name: "Duc Huy",
         address: "32 P. Đại Từ",
         phone: "0188666123",
         area: 4,
@@ -159,7 +159,7 @@ const ManageRequest = () => {
       {
         id: "4",
         date: "23/11/2023",
-        name: "Le Ha",
+        name: "Duc Huy",
         address: "32 P. Đại Từ",
         phone: "0188666123",
         area: 4,
