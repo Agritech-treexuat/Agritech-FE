@@ -23,8 +23,9 @@ import {
   DatePicker,
   notification,
   Divider,
+  Space,
 } from "antd";
-import { EditFilled, UploadOutlined } from "@ant-design/icons";
+import { EditFilled, UploadOutlined, CloseOutlined } from "@ant-design/icons";
 import Loading from "../../../pages/Loading";
 import "./style.css";
 
@@ -102,7 +103,7 @@ const mainContent = {
       ],
     },
     {
-      id: "1",
+      id: "2",
       name: "cây 2",
       seed: "Hạt giống",
       startDate: "23/11/2023",
@@ -129,7 +130,7 @@ const mainContent = {
       ],
     },
     {
-      id: "1",
+      id: "3",
       name: "cây 3",
       seed: "Hạt giống",
       startDate: "23/11/2023",
@@ -154,6 +155,28 @@ const mainContent = {
           ],
         },
       ],
+    },
+    {
+      id: "4",
+      name: "cây 4",
+      seed: "Hạt giống",
+      startDate: "23/11/2023",
+      amount: 1000,
+      img: [
+        "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
+      ],
+      plan: [],
+    },
+    {
+      id: "5",
+      name: "cây 5",
+      seed: "Hạt giống",
+      startDate: "23/11/2023",
+      amount: 1000,
+      img: [
+        "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
+      ],
+      plan: [],
     },
   ],
 };
@@ -244,80 +267,274 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             },
           ]}
         >
-          <Select placeholder="Chọn template">
-            {/* <Option value="default">Default</Option>
-            <Option value="none">Empty</Option> */}
-          </Select>
+          <Select
+            placeholder="Chọn template"
+            options={[
+              {
+                value: "default",
+                label: "Default",
+              },
+              {
+                value: "none",
+                label: "None",
+              },
+            ]}
+          ></Select>
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-const items = mainContent.seeds?.map((plant, index) => {
-  plant.key = index.toString();
-  plant.label = (
-    <div>
-      <FontAwesomeIcon icon={faTree} style={{ color: "#476930" }} />{" "}
-      <span>{`${plant.name.charAt(0).toUpperCase()} ${plant.name.slice(
-        1
-      )}`}</span>
-    </div>
-  );
-  plant.children = (
-    <div>
-      <div style={{ cursor: "pointer" }}>
-        <EditFilled style={{ color: "#86B049", fontSize: "18px" }} />
-        {"  "}Chỉnh sửa thông tin
-      </div>
-      <div>
-        <p>
-          <strong>Tên hạt giống:</strong> {plant.name}
-        </p>
-        <p>
-          <strong>Lượng:</strong> {plant.amount}
-        </p>
-        {plant.plan.map((p) => (
-          <div>
-            <Divider orientation="center" style={{ fontSize: "18px" }}>
-              Thời gian: {p.time}
-            </Divider>
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
-              <p style={{ width: "25%" }}>
-                <strong>Ghi chú:</strong> {p.note}
-              </p>
-              <p style={{ width: "25%" }}>
-                <strong>Type:</strong> {p.type}
-              </p>
-            </div>
-            <p style={{ fontSize: "16px", margin: '0 1rem' }}>
-              <strong>
-                <Divider orientation="left" style={{marginRight: '1rem', width: '80%'}}>
-                  <i>Chi tiết hoạt động </i>
-                </Divider>
-              </strong>
-            </p>
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
-              {p.cultivativeItems.map((i) => (
-                <div
-                  style={{
-                    width: "25%",
-                    backgroundColor: "#fff",
-                    marginBottom: "1rem",
-                  }}
+const CollectionTemplateForm = ({
+  open,
+  onCreate,
+  onCancel,
+  defaultTemplate,
+  fetilizer,
+  BVTV,
+}) => {
+  const [formTemplate] = Form.useForm();
+  console.log(defaultTemplate);
+
+  const BVTV_name = BVTV?.map((BVTV_item) => {
+    return {
+      value: BVTV_item.name,
+      label: BVTV_item.name,
+    };
+  });
+
+  const fetilizer_name = fetilizer?.map((fetilizer_item) => {
+    return {
+      value: fetilizer_item.name,
+      label: fetilizer_item.name,
+    };
+  });
+
+  useEffect(() => {
+    formTemplate.setFieldsValue({
+      items: defaultTemplate,
+    });
+  }, [formTemplate, defaultTemplate]);
+
+  const handlePlantChange = (value) => {
+    console.log(value);
+  };
+  return (
+    <Modal
+      open={open}
+      title="Thêm cây mới"
+      okText="Tạo mới"
+      cancelText="Hủy"
+      onCancel={onCancel}
+      onOk={() => {
+        formTemplate
+          .validateFields()
+          .then((values) => {
+            formTemplate.resetFields();
+            onCreate(values);
+          })
+          .catch((info) => {
+            console.log("Validate Failed:", info);
+          });
+      }}
+      getContainer={false}
+    >
+      <Form
+        labelCol={{
+          span: 6,
+        }}
+        wrapperCol={{
+          span: 18,
+        }}
+        form={formTemplate}
+        name="dynamic_form_complex"
+        style={{
+          maxWidth: 600,
+        }}
+        initialValues={{
+          items: defaultTemplate,
+        }}
+      >
+        <Form.List name="items">
+          {(fields, { add, remove }) => (
+            <div
+              style={{
+                display: "flex",
+                rowGap: 16,
+                flexDirection: "column",
+              }}
+            >
+              {fields?.map((field) => (
+                <Card
+                  size="small"
+                  title={`Kế hoạch ${field.name + 1}`}
+                  key={field.key}
+                  extra={
+                    <CloseOutlined
+                      onClick={() => {
+                        remove(field.name);
+                      }}
+                    />
+                  }
                 >
-                  <p>Tên: {i.name}</p>
-                  <p>Số lượng trên ha: {i.amount_per_ha}</p>
-                </div>
+                  <Form.Item label="Time" name={[field.name, "time"]}>
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item label="Note" name={[field.name, "note"]}>
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item label="Type" name={[field.name, "type"]}>
+                    <Select
+                      placeholder="Chọn loại"
+                      options={[
+                        {
+                          label: "Phân bón",
+                          value: "phân bón",
+                        },
+                        {
+                          label: "BVTV",
+                          value: "BVTV",
+                        },
+                      ]}
+                    ></Select>
+                  </Form.Item>
+
+                  <Form.Item label="List">
+                    <Form.List name={[field.name, "cultivativeItems"]}>
+                      {(subFields, subOpt) => (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            rowGap: 16,
+                          }}
+                        >
+                          {subFields.map((subField) => (
+                            <Space key={subField.key}>
+                              <Form.Item noStyle name={[subField.name, "name"]}>
+                                <Select
+                                  placeholder="Chọn tên"
+                                  options={
+                                    formTemplate.getFieldValue([
+                                      "items",
+                                      field.name,
+                                      "type",
+                                    ]) == "phân bón"
+                                      ? fetilizer_name
+                                      : BVTV_name
+                                  }
+                                />
+                              </Form.Item>
+                              <Form.Item
+                                noStyle
+                                name={[subField.name, "amount_per_ha"]}
+                              >
+                                <Input placeholder="Số lượng" type="number" />
+                              </Form.Item>
+                              <CloseOutlined
+                                onClick={() => {
+                                  subOpt.remove(subField.name);
+                                }}
+                              />
+                            </Space>
+                          ))}
+                          <Button
+                            type="dashed"
+                            onClick={() => subOpt.add()}
+                            block
+                          >
+                            + Thêm Sub Item
+                          </Button>
+                        </div>
+                      )}
+                    </Form.List>
+                  </Form.Item>
+                </Card>
               ))}
+
+              <Button type="dashed" onClick={() => add()} block>
+                + Add Item
+              </Button>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
+          )}
+        </Form.List>
+      </Form>
+    </Modal>
   );
-  return plant;
-});
+};
+
+const items = mainContent.seeds
+  ?.filter((seed) => seed.plan.length > 0)
+  .map((plant, index) => {
+    plant.key = index.toString();
+    plant.label = (
+      <div>
+        <FontAwesomeIcon icon={faTree} style={{ color: "#476930" }} />{" "}
+        <span>{`${plant.name.charAt(0).toUpperCase()} ${plant.name.slice(
+          1
+        )}`}</span>
+      </div>
+    );
+    plant.children = (
+      <div>
+        <div style={{ cursor: "pointer" }}>
+          <EditFilled style={{ color: "#86B049", fontSize: "18px" }} />
+          {"  "}Chỉnh sửa thông tin
+        </div>
+        <div>
+          <p>
+            <strong>Tên hạt giống:</strong> {plant.name}
+          </p>
+          <p>
+            <strong>Lượng:</strong> {plant.amount}
+          </p>
+          {plant.plan.map((p) => (
+            <div>
+              <Divider orientation="center" style={{ fontSize: "18px" }}>
+                Thời gian: {p.time}
+              </Divider>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                <p style={{ width: "25%" }}>
+                  <strong>Ghi chú:</strong> {p.note}
+                </p>
+                <p style={{ width: "25%" }}>
+                  <strong>Type:</strong> {p.type}
+                </p>
+              </div>
+              <p style={{ fontSize: "16px", margin: "0 1rem" }}>
+                <strong>
+                  <Divider
+                    orientation="left"
+                    style={{ marginRight: "1rem", width: "80%" }}
+                  >
+                    <i>Chi tiết hoạt động </i>
+                  </Divider>
+                </strong>
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {p.cultivativeItems.map((i) => (
+                  <div
+                    style={{
+                      width: "25%",
+                      backgroundColor: "#fff",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <p>Tên: {i.name}</p>
+                    <p>Số lượng trên ha: {i.amount_per_ha}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+    return plant;
+  });
 
 const GardenProjectTemplate = () => {
   const [api, contextHolder] = notification.useNotification();
@@ -329,12 +546,48 @@ const GardenProjectTemplate = () => {
     });
   };
   const [initData, setInitData] = useState(null);
+  const [defaultTemplate, setDefaultTemplate] = useState([]);
+  const [selectedPlant, setSelectedPlant] = useState("");
+  const [fetilizer, setFetilizer] = useState([]);
+  const [BVTV, setBVTV] = useState([]);
   const projectID = useParams();
   console.log("params: ", projectID);
+
   const [open, setOpen] = useState(false);
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
+    setSelectedPlant(values.plant);
+    if (values.template === "default") {
+      setDefaultTemplate(
+        mainContent.seeds.find((s) => s.id === values.plant)?.plan
+      );
+      setBVTV([
+        {
+          name: "type 1",
+        },
+        {
+          name: "type 2",
+        },
+      ]);
+
+      setFetilizer([
+        {
+          name: "Fetilizer 1",
+        },
+        {
+          name: "Fetilizer 2",
+        },
+      ]);
+    } else setDefaultTemplate([]);
+    console.log(defaultTemplate);
     setOpen(false);
+    setOpenTemplate(true);
+  };
+
+  const [openTemplate, setOpenTemplate] = useState(false);
+  const onCreateTemplate = (values) => {
+    console.log("Received values of form: ", values);
+    setOpenTemplate(false);
   };
 
   useEffect(() => {
@@ -361,6 +614,16 @@ const GardenProjectTemplate = () => {
             onCancel={() => {
               setOpen(false);
             }}
+          />
+          <CollectionTemplateForm
+            open={openTemplate}
+            onCreate={onCreateTemplate}
+            onCancel={() => {
+              setOpenTemplate(false);
+            }}
+            defaultTemplate={defaultTemplate}
+            fetilizer={fetilizer}
+            BVTV={BVTV}
           />
           <div>
             <Collapse
