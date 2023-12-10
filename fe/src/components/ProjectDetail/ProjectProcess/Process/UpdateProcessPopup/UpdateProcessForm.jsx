@@ -54,7 +54,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
     initValue = {
       'date': formattedDate,
       'type': process.type,
-      'cultivativeItems': process.cultivativeItems,
+      'agroChemicalItems': process.agroChemicalItems,
       'note': process.note
     };
   }
@@ -143,7 +143,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
           getFieldValue('type') === 'phân bón' || getFieldValue('type') === 'BVTV' ? (
             <div>
               {/* name */}
-              <Form.List name="cultivativeItems">
+              <Form.List name="agroChemicalItems">
                 {(fields, { add, remove }) => (
                   <>
                     {fields.map(({ key, name, ...restField }) => (
@@ -182,7 +182,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                         </Form.Item>
                         <Form.Item
                           {...restField}
-                          name={[name, 'amount_per_ha']}
+                          name={[name, 'amountPerHa']}
                           rules={[
                             {
                               required: true,

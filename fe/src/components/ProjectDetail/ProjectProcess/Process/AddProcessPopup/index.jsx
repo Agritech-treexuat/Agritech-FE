@@ -77,7 +77,7 @@ const AddProcessPopUp = ({setProcessData}) => {
           projectTemplate ? <>
           {projectTemplate.map((item, index) => <>
             <Button type="primary" onClick={() => toggleModal2(index, true)} >
-            {item.time + '-' + item.type + '-' +item.cultivativeItems.map((cul_item) => cul_item.name + '-' +cul_item.amount_per_ha)}
+            {item.time + '-' + item.type + '-' +item.agroChemicalItems.map((cul_item) => cul_item.name + '-' +cul_item.amountPerHa)}
             </Button>
 
           </>)}

@@ -17,7 +17,9 @@ const ProjectProcess = () => {
   const imagesPerRow = totalImages / rows;
   const projectID = useParams()
 
-  const imageArray = new Array(totalImages).fill('https://www.greenqueen.com.hk/wp-content/uploads/2020/12/Veganic-Farming.png');
+  const imageArray = new Array(totalImages).fill({
+    imageUrl: 'https://www.greenqueen.com.hk/wp-content/uploads/2020/12/Veganic-Farming.png'
+  });
 
   // Tạo ngày hôm nay bằng thư viện moment
   const [selectedDate, setSelectedDate] = useState('');
@@ -53,8 +55,9 @@ const ProjectProcess = () => {
       if(selectedDate)
       {
         const data = await FARM.getImage(projectID.id, selectedDate)
-        console.log("Data img: ", data.data)
-        setImageData(data.data.images)
+        // console.log("Data img: ", data.data)
+        // data is not ready
+        data.data ? setImageData(data.data.images) : setImageData(imageArray)
       }
     }
     fetchData();

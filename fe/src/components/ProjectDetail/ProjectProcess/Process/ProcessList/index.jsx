@@ -24,12 +24,12 @@ const ProcessList = ({ processes, setProcessData }) => {
 
           <Column
             title="Cụ thể"
-            key="cultivativeItems"
+            key="agroChemicalItems"
             render={(_, process) => (
               <ul>
-                {process.cultivativeItems.map((item, index) => (
+                {process.agroChemicalItems.map((item, index) => (
                   <li key={index}>
-                    <strong>{item.name}:</strong> {item.amount_per_ha}
+                    <strong>{item.name}:</strong> {item.amountPerHa}
                   </li>
                 ))}
               </ul>

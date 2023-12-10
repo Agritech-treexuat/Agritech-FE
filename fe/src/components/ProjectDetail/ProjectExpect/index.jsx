@@ -26,7 +26,7 @@ const ProjectExpect = () => {
   }, []);
   return (
     <div>
-      <AddExpectPopup />
+      <AddExpectPopup setExpectData={setExpectData}/>
       {expectData? (
         <Table dataSource={expectData}>
           <Column title="Tx" dataIndex="tx" key="tx" />

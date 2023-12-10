@@ -181,8 +181,8 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
               {plans.map((plan) => (
                 <Radio value={plan}>
                   {`${plan.time} ${plan.type}`} <br />
-                  {plan.cultivativeItems.map((d) => (
-                    <span>{`${d.name}: ${d.amount_per_ha} kg `}</span>
+                  {plan.agroChemicalItems.map((d) => (
+                    <span>{`${d.name}: ${d.amountPerHa} kg `}</span>
                   ))}
                 </Radio>
               ))}
@@ -300,7 +300,7 @@ const CollectionTemplateForm = ({
                   </Form.Item>
 
                   <Form.Item label="List">
-                    <Form.List name={[field.name, "cultivativeItems"]}>
+                    <Form.List name={[field.name, "agroChemicalItems"]}>
                       {(subFields, subOpt) => (
                         <div
                           style={{
@@ -327,7 +327,7 @@ const CollectionTemplateForm = ({
                               </Form.Item>
                               <Form.Item
                                 noStyle
-                                name={[subField.name, "amount_per_ha"]}
+                                name={[subField.name, "amountPerHa"]}
                               >
                                 <Input placeholder="Số lượng" type="number" />
                               </Form.Item>
@@ -464,7 +464,7 @@ const CollectionEditForm = ({
                         }
                       />
                     </Form.Item>
-                    <Form.Item noStyle name={[subField.name, "amount_per_ha"]}>
+                    <Form.Item noStyle name={[subField.name, "amountPerHa"]}>
                       <Input placeholder="Số lượng" type="number" />
                     </Form.Item>
                     <CloseOutlined
@@ -521,38 +521,38 @@ const GardenProjectHistory = () => {
               time: "12h",
               note: "note",
               type: "Phân bón",
-              cultivativeItems: [
+              agroChemicalItems: [
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
               ],
             },
@@ -560,14 +560,14 @@ const GardenProjectHistory = () => {
               time: "14h",
               note: "note",
               type: "type select",
-              cultivativeItems: [
+              agroChemicalItems: [
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
               ],
             },
@@ -587,14 +587,14 @@ const GardenProjectHistory = () => {
               time: "12h",
               note: "note",
               type: "type select",
-              cultivativeItems: [
+              agroChemicalItems: [
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
               ],
             },
@@ -614,14 +614,14 @@ const GardenProjectHistory = () => {
               time: "12h",
               note: "note",
               type: "type select",
-              cultivativeItems: [
+              agroChemicalItems: [
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
                 {
                   name: "name",
-                  amount_per_ha: 12,
+                  amountPerHa: 12,
                 },
               ],
             },
@@ -667,8 +667,8 @@ const GardenProjectHistory = () => {
               time: "19/11/2023",
               loai_canh_tac: "phân bón",
               detail: [
-                { name: "NHK", amount_per_ha: 100 },
-                { name: "Kali", amount_per_ha: 130 },
+                { name: "NHK", amountPerHa: 100 },
+                { name: "Kali", amountPerHa: 130 },
               ],
               note: "Bon thuc lan 1 sau 20 ngay-abc",
             },
@@ -677,8 +677,8 @@ const GardenProjectHistory = () => {
               time: "19/11/2023",
               loai_canh_tac: "phân bón",
               detail: [
-                { name: "NHK", amount_per_ha: 100 },
-                { name: "Kali", amount_per_ha: 130 },
+                { name: "NHK", amountPerHa: 100 },
+                { name: "Kali", amountPerHa: 130 },
               ],
               note: "Bon thuc lan 2 sau 20 ngay-abc",
             },
@@ -694,8 +694,8 @@ const GardenProjectHistory = () => {
               time: "19/11/2023",
               loai_canh_tac: "phân bón",
               detail: [
-                { name: "NHK", amount_per_ha: 100 },
-                { name: "Kali", amount_per_ha: 130 },
+                { name: "NHK", amountPerHa: 100 },
+                { name: "Kali", amountPerHa: 130 },
               ],
               note: "Bon thuc lan 1 sau 20 ngay-abc",
             },
@@ -850,7 +850,7 @@ const GardenProjectHistory = () => {
                   <ul>
                     {rec.detail.map((item, index) => (
                       <li key={index}>
-                        <strong>{item.name}:</strong> {item.amount_per_ha}
+                        <strong>{item.name}:</strong> {item.amountPerHa}
                       </li>
                     ))}
                   </ul>

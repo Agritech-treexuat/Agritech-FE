@@ -23,16 +23,16 @@ const App = () => {
           <Route index element={<LoginPage />} path="/login" />
         </Route>
         <Route element={<MainLayout />}>
-          <Route index element={<div path={"login"}>{<ProjectList />}</div>} path="home" />
-          <Route index element={<div path={"login"}>{<Profile />}</div>} path="profile" />
-          <Route index element={<div path={"login"}>{<ManagePlant />}</div>} path="manage-plant" />
-          <Route index element={<div path={"login"}>{<ManageTemplate />}</div>} path="manage-template" />
-          <Route index element={<div path={"login"}>{<ManageRequest />}</div>} path="manage-request" />
-          <Route index element={<div path={"login"}>{<ManageGarden />}</div>} path="manage-planting-garden" />
-          <Route element={<div path={"/login"}>{<GardenProjectDetail />}</div>} path="manage-planting-garden/:id" />
-          <Route element={<div path={"/login"}>{<CreateProject />}</div>} path="create-project" />
-          <Route element={<div path={"/login"}>{<ProjectDetail />}</div>} path="project/:id" />
-          <Route element={<div path={"/login"}>{<PlantDetail />}</div>} path="plant/:id" />
+          <Route index element={<Auth path={"login"}>{<ProjectList />}</Auth>} path="home" />
+          <Route index element={<Auth path={"login"}>{<Profile />}</Auth>} path="profile" />
+          <Route index element={<Auth path={"login"}>{<ManagePlant />}</Auth>} path="manage-plant" />
+          <Route index element={<Auth path={"login"}>{<ManageTemplate />}</Auth>} path="manage-template" />
+          <Route index element={<Auth path={"login"}>{<ManageRequest />}</Auth>} path="manage-request" />
+          <Route index element={<Auth path={"login"}>{<ManageGarden />}</Auth>} path="manage-planting-garden" />
+          <Route element={<Auth path={"/login"}>{<GardenProjectDetail />}</Auth>} path="manage-planting-garden/:id" />
+          <Route element={<Auth path={"/login"}>{<CreateProject />}</Auth>} path="create-project" />
+          <Route element={<Auth path={"/login"}>{<ProjectDetail />}</Auth>} path="project/:id" />
+          <Route element={<Auth path={"/login"}>{<PlantDetail />}</Auth>} path="plant/:id" />
         </Route>
       </Routes>
     </div>

@@ -50,38 +50,38 @@ const mainContent = {
           time: "12h",
           note: "note",
           type: "type select",
-          cultivativeItems: [
+          agroChemicalItems: [
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
           ],
         },
@@ -89,14 +89,14 @@ const mainContent = {
           time: "14h",
           note: "note",
           type: "type select",
-          cultivativeItems: [
+          agroChemicalItems: [
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
           ],
         },
@@ -116,14 +116,14 @@ const mainContent = {
           time: "12h",
           note: "note",
           type: "type select",
-          cultivativeItems: [
+          agroChemicalItems: [
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
           ],
         },
@@ -143,14 +143,14 @@ const mainContent = {
           time: "12h",
           note: "note",
           type: "type select",
-          cultivativeItems: [
+          agroChemicalItems: [
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
             {
               name: "name",
-              amount_per_ha: 12,
+              amountPerHa: 12,
             },
           ],
         },
@@ -403,7 +403,7 @@ const CollectionTemplateForm = ({
                   </Form.Item>
 
                   <Form.Item label="List">
-                    <Form.List name={[field.name, "cultivativeItems"]}>
+                    <Form.List name={[field.name, "agroChemicalItems"]}>
                       {(subFields, subOpt) => (
                         <div
                           style={{
@@ -430,7 +430,7 @@ const CollectionTemplateForm = ({
                               </Form.Item>
                               <Form.Item
                                 noStyle
-                                name={[subField.name, "amount_per_ha"]}
+                                name={[subField.name, "amountPerHa"]}
                               >
                                 <Input placeholder="Số lượng" type="number" />
                               </Form.Item>
@@ -515,7 +515,7 @@ const items = mainContent.seeds
                 </strong>
               </p>
               <div style={{ display: "flex", flexWrap: "wrap" }}>
-                {p.cultivativeItems.map((i) => (
+                {p.agroChemicalItems.map((i) => (
                   <div
                     style={{
                       width: "25%",
@@ -524,7 +524,7 @@ const items = mainContent.seeds
                     }}
                   >
                     <p>Tên: {i.name}</p>
-                    <p>Số lượng trên ha: {i.amount_per_ha}</p>
+                    <p>Số lượng trên ha: {i.amountPerHa}</p>
                   </div>
                 ))}
               </div>

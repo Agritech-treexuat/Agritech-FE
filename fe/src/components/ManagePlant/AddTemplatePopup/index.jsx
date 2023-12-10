@@ -98,7 +98,7 @@ const AddTemplatePopup = ({ open, onCreate, onCancel, defaultTemplate, fetilizer
                   </Form.Item>
 
                   <Form.Item label="List" >
-                    <Form.List name={[field.name, 'cultivativeItems']}>
+                    <Form.List name={[field.name, 'agroChemicalItems']}>
                       {(subFields, subOpt) => (
                         <div
                           style={{
@@ -115,7 +115,7 @@ const AddTemplatePopup = ({ open, onCreate, onCancel, defaultTemplate, fetilizer
                                   options={form.getFieldValue(['items', field.name, 'type']) == 'phân bón' ? fetilizer_name : BVTV_name}
                                 />
                               </Form.Item>
-                              <Form.Item noStyle name={[subField.name, 'amount_per_ha']}>
+                              <Form.Item noStyle name={[subField.name, 'amountPerHa']}>
                                 <Input placeholder="Số lượng" type='number'/>
                               </Form.Item>
                               <CloseOutlined

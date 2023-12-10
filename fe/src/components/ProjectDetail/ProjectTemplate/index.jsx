@@ -64,15 +64,15 @@ const ProjectTemplate = () => {
   };
 
   const loadDefaultTemplate = async (seed) => {
-    const data = await FARM.getPlanFromSeed('65597fd0e13d6f181d5e4af0', seed)
+    const data = await FARM.getPlanFromSeed('65746f46f0640f51f585bb07', seed)
     console.log("data default: ", data)
-    setDefaultTemplate(data.data.plantCultivates.plan)
+    setDefaultTemplate(data.data.plantFarming.plan)
   }
 
   const loadFarmTemplate = async (seed) => {
     const data = await FARM.getPlanFromSeed(farmId, seed)
     console.log("data: ", data)
-    setDefaultTemplate(data.data.plantCultivates.plan)
+    setDefaultTemplate(data.data.plantFarming.plan)
   }
 
   const loadCultivates = async () => {
@@ -105,7 +105,7 @@ const ProjectTemplate = () => {
     const new_data = await FARM.updatePlantCultivatesToProject(data, projectId)
     console.log("res new data: ", new_data)
     // const newPlans = plans.map((item) =>
-    //   item._id === new_data.data.plantCultivate._id ? new_data.data.plantCultivate : item
+    //   item._id === new_data.data.plantFarming._id ? new_data.data.plantFarming : item
     // )
     // setPlans(newPlans)
     setProjectTemplate(new_data.data.updatedProjectPlan)
@@ -181,11 +181,11 @@ const ProjectTemplate = () => {
                   <Divider><h3>Time: {cultivate.time}</h3></Divider>
                   <h3>Note: {cultivate.note}</h3>
                   <h3>Type: {cultivate.type}</h3>
-                    {cultivate.cultivativeItems.map((cultivativeItem) => (
+                    {cultivate.agroChemicalItems.map((cultivativeItem) => (
                       <>
                       <Divider></Divider>
                         <p>Name: {cultivativeItem.name}</p>
-                        <p>Amount per ha: {cultivativeItem.amount_per_ha}</p>
+                        <p>Amount per ha: {cultivativeItem.amountPerHa}</p>
                       </>
                     ))}
                   </>

@@ -47,7 +47,7 @@ const EditOutputHistory = ({output}) => {
           <p>Tx: {output.tx}</p>
           <p>Thời gian: {output.time}</p>
           <p>Lượng: {output.amount}</p>
-          <p>Lượng trên 1 sản phẩm: {output.amount_perOne}</p>
+          <p>Lượng trên 1 sản phẩm: {output.amountPerOne}</p>
 
           <div>
             {

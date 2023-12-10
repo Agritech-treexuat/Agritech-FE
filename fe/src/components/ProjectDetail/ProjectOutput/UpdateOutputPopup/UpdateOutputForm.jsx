@@ -45,7 +45,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
   const initValue = {
     'date': formattedDate,
     'amount': output.amount,
-    'amount per one': output.amount_perOne,
+    'amount per one': output.amountPerOne,
     'upload': output.images,
     'npp': output.npp
   };
@@ -54,7 +54,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
     console.log("Values: ", values);
     const images = values.upload.map(item => (typeof item === 'string' ? item : item.name));
     console.log("images here: ", images)
-    const updatedValue = { ...values, time: values.date, amount_perOne: values['amount per one'], images: images };
+    const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images };
     delete updatedValue.date;
     delete updatedValue.upload;
     delete updatedValue['amount per one'];

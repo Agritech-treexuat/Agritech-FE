@@ -72,7 +72,7 @@ const ProjectOutput = () => {
             }
           />
           <Column title="Lượng" dataIndex="amount" key="amount" />
-          <Column title="Lượng trên 1 sản phẩm" dataIndex="amount_perOne" key="amount_perOne" />
+          <Column title="Lượng trên 1 sản phẩm" dataIndex="amountPerOne" key="amountPerOne" />
           <Column
             title="Ảnh"
             key="images"

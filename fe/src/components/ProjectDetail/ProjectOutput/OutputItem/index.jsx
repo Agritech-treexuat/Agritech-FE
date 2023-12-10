@@ -16,7 +16,7 @@ const getBase64 = (file) =>
   });
 
 const OutputItem = ({ output, setOutputData }) => {
-  const { time, amount, amount_perOne, images, npp } = output;
+  const { time, amount, amountPerOne, images, npp } = output;
   console.log("images: ", images)
   const params = useParams()
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -59,7 +59,7 @@ const OutputItem = ({ output, setOutputData }) => {
     <div className="output-item">
       <p>Thời gian: {formatDate(time)}</p>
       <p>Lượng: {amount}</p>
-      <p>Lượng trên 1 sản phẩm: {amount_perOne}</p>
+      <p>Lượng trên 1 sản phẩm: {amountPerOne}</p>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {
           images ? images.map((image) => <span>

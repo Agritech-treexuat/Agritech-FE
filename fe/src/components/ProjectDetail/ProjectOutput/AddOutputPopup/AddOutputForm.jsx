@@ -42,8 +42,8 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
 
   const onFinish = (values) => {
     console.log("Values: ", values);
-    const images = values.upload.map((upload) => upload.name)
-    const updatedValue = { ...values, time: values.date, amount_perOne: values['amount per one'], images: images };
+    const images = values.upload? values.upload.map((upload) => upload.name) : []
+    const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images };
     delete updatedValue.date;
     delete updatedValue['amount per one'];
     delete updatedValue.upload

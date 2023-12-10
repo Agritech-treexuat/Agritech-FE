@@ -61,9 +61,9 @@ const PlantDetail = () => {
   };
 
   const loadDefaultTemplate = async (seed) => {
-    const data = await FARM.getPlanFromSeed('65597fd0e13d6f181d5e4af0',seed)
+    const data = await FARM.getPlanFromSeed('65746f46f0640f51f585bb07',seed)
     console.log("data: ", data)
-    setDefaultTemplate(data.data.plantCultivates.plan)
+    setDefaultTemplate(data.data.plantFarming.plan)
   }
 
   const loadCultivates = async () => {
@@ -86,14 +86,14 @@ const PlantDetail = () => {
 
   const submitTemplate = async (data) => {
     const new_data = await FARM.addPlantCultivates(data)
-    const newPlans = [...plans, new_data.data.plantCultivate]
+    const newPlans = [...plans, new_data.data.plantFarming]
     setPlans(newPlans)
   }
 
   const updateTemplate = async (data) => {
     const new_data = await FARM.updatePlantCultivates(data)
     const newPlans = plans.map((item) =>
-      item._id === new_data.data.plantCultivate._id ? new_data.data.plantCultivate : item
+      item._id === new_data.data.plantFarming._id ? new_data.data.plantFarming : item
     )
     setPlans(newPlans)
   }
@@ -102,7 +102,7 @@ const PlantDetail = () => {
       const data = await FARM.getPlans(farmId, params.id)
       console.log("Data plant new: ", data)
       if(data.data)
-        setPlans(data.data.plantCultivates)
+        setPlans(data.data.plantFarming)
     }
     fetchData();
     console.log("Output data: ", plans)
@@ -189,11 +189,11 @@ const PlantDetail = () => {
                   <Divider><h3>Time: {cultivate.time}</h3></Divider>
                   <h3>Note: {cultivate.note}</h3>
                   <h3>Type: {cultivate.type}</h3>
-                    {cultivate.cultivativeItems.map((cultivativeItem) => (
+                    {cultivate.agroChemicalItems.map((cultivativeItem) => (
                       <>
                       <Divider></Divider>
                         <p>Name: {cultivativeItem.name}</p>
-                        <p>Amount per ha: {cultivativeItem.amount_per_ha}</p>
+                        <p>Amount per ha: {cultivativeItem.amountPerHa}</p>
                       </>
                     ))}
                   </>

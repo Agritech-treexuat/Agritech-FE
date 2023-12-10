@@ -45,7 +45,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
     initValue = {
       'date': currentDate,
       'type': process.type,
-      'cultivativeItems': process.cultivativeItems,
+      'agroChemicalItems': process.agroChemicalItems,
       'note': process.time + '-' + process.note
     };
     console.log("init: ", initValue)
@@ -130,7 +130,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
         {({ getFieldValue }) => (
           getFieldValue('type') === 'phân bón' || getFieldValue('type') === 'BVTV' ? (
             <div>
-              <Form.List name="cultivativeItems">
+              <Form.List name="agroChemicalItems">
                 {(fields, { add, remove }) => (
                   <>
                     {fields.map(({ key, name, ...restField }) => (
@@ -169,7 +169,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
                         </Form.Item>
                         <Form.Item
                           {...restField}
-                          name={[name, 'amount_per_ha']}
+                          name={[name, 'amountPerHa']}
                           rules={[
                             {
                               required: true,

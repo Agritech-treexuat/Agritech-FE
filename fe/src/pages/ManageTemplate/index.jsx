@@ -21,6 +21,7 @@ import { Card, Space } from "antd";
 import FARM from "../../services/farmService";
 import { useParams } from "react-router";
 import "./style.css";
+import SERVICE from "../../services/serviceService";
 
 const layout = {
   labelCol: {
@@ -41,13 +42,16 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
       title="Template"
       okText={template2 ? "Cập nhật" : "Tạo mới"}
       cancelText="Hủy"
-      onCancel={onCancel}
+      onCancel={() => {
+        form.resetFields();
+        onCancel();
+      }}
       onOk={() => {
         form
           .validateFields()
           .then((values) => {
             form.resetFields();
-            onCreate(values);
+            onCreate(values, template2);
             console.log(values);
           })
           .catch((info) => {
@@ -62,7 +66,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
         initialValues={template2}
       >
         <Form.Item
-          name="area"
+          name="square"
           label="Diện tích"
           rules={[
             {
@@ -87,19 +91,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
         </Form.Item>
         <Divider>Chủng loại gieo trồng</Divider>
         <Form.Item
-          name="rau_dinh_duong"
-          label="Rau dinh dưỡng"
-          rules={[
-            {
-              required: true,
-              message: "Trường thông tin này không được để trống!",
-            },
-          ]}
-        >
-          <InputNumber addonAfter="cây" style={{ width: 300 }} />
-        </Form.Item>
-        <Form.Item
-          name="rau_an_la"
+          name="leafyMax"
           label="Rau ăn lá"
           rules={[
             {
@@ -111,7 +103,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
           <InputNumber addonAfter="cây" style={{ width: 300 }} />
         </Form.Item>
         <Form.Item
-          name="rau_gia_vi"
+          name="herbMax"
           label="Rau gia vị"
           rules={[
             {
@@ -123,7 +115,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
           <InputNumber addonAfter="cây" style={{ width: 300 }} />
         </Form.Item>
         <Form.Item
-          name="cu_qua"
+          name="rootMax"
           label="Củ, quả"
           rules={[
             {
@@ -134,11 +126,50 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
         >
           <InputNumber addonAfter="củ/quả" style={{ width: 300 }} />
         </Form.Item>
+
+        <Divider>Cam ket</Divider>
+        <Form.Item
+          name="expectedOutput"
+          label="San luong du kien"
+          rules={[
+            {
+              required: true,
+              message: "Trường thông tin này không được để trống!",
+            },
+          ]}
+        >
+          <InputNumber addonAfter="kg" style={{ width: 300 }} />
+        </Form.Item>
+        <Form.Item
+          name="expectDeliveryPerWeek"
+          label="So lan giao 1 tuan"
+          rules={[
+            {
+              required: true,
+              message: "Trường thông tin này không được để trống!",
+            },
+          ]}
+        >
+          <InputNumber addonAfter="lan" style={{ width: 300 }} />
+        </Form.Item>
+        <Form.Item
+          name="expectDeliveryAmount"
+          label="So luong 1 lan giao"
+          rules={[
+            {
+              required: true,
+              message: "Trường thông tin này không được để trống!",
+            },
+          ]}
+        >
+          <InputNumber addonAfter="kg/lan" style={{ width: 300 }} />
+        </Form.Item>
       </Form>
     </Modal>
   );
 };
 const ManageTemplate = () => {
+  const farmId = localStorage.getItem('id')
   const [api, contextHolder] = notification.useNotification();
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
@@ -151,51 +182,86 @@ const ManageTemplate = () => {
   const [template, setTemplate] = useState(null);
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
-  const onCreate = (values) => {
+  const onCreate = (values, template2) => {
     console.log("Received values of form: ", values);
+    // send data in here
+    // setTemplates in here
+    async function fetchData() {
+      if (template2) {
+        const data = await SERVICE.updateServiceTemplate(values, template2._id);
+        console.log("Data res: ", data);
+        setTemplates(data?.data.allServiceTemplates);
+      } else {
+        const data = await SERVICE.addServiceTemplate(values);
+        setTemplates(data?.data.allServiceTemplates);
+      }
+    }
+    fetchData();
     setOpen(false);
     openNotificationWithIcon("success", "Thông báo", "Cập nhật thành công");
   };
 
   useEffect(() => {
-    setTemplates([
-      {
-        area: 4,
-        rau_dinh_duong: 3,
-        rau_an_la: 4,
-        cu_qua: 5,
-        rau_gia_vi: 4,
-        san_luong_du_kien: 4,
-        price: 3000,
-      },
-      {
-        area: 4,
-        rau_dinh_duong: 3,
-        rau_an_la: 4,
-        cu_qua: 5,
-        rau_gia_vi: 4,
-        san_luong_du_kien: 4,
-        price: 3000,
-      },
-      {
-        area: 4,
-        rau_dinh_duong: 3,
-        rau_an_la: 4,
-        cu_qua: 5,
-        rau_gia_vi: 4,
-        san_luong_du_kien: 4,
-        price: 3000,
-      },
-      {
-        area: 4,
-        rau_dinh_duong: 3,
-        rau_an_la: 4,
-        cu_qua: 5,
-        rau_gia_vi: 4,
-        san_luong_du_kien: 4,
-        price: 3000,
-      },
-    ]);
+    async function fetchData() {
+      const data = await SERVICE.getServiceTemplate(farmId);
+      console.log("Data: ", data.data);
+      if (data.data.serviceTemplates) {
+        setTemplates(
+          data.data.serviceTemplates.map((serviceTemplate) => {
+            return {
+              _id: serviceTemplate._id,
+              square: serviceTemplate.square,
+              herbMax: serviceTemplate.herbMax,
+              leafyMax: serviceTemplate.leafyMax,
+              rootMax: serviceTemplate.rootMax,
+              expectedOutput: serviceTemplate.expectedOutput,
+              expectDeliveryPerWeek: serviceTemplate.expectDeliveryPerWeek,
+              price: serviceTemplate.price,
+              expectDeliveryAmount: serviceTemplate.expectDeliveryAmount,
+            };
+          })
+        );
+      }
+    }
+    fetchData();
+    // setTemplates([
+    //   {
+    //     square: 4,
+    //     rau_dinh_duong: 3,
+    //     leafyMax: 4,
+    //     rootMax: 5,
+    //     herbMax: 4,
+    //     expectedOutput: 4,
+    //     price: 3000,
+    //   },
+    //   {
+    //     square: 4,
+    //     rau_dinh_duong: 3,
+    //     leafyMax: 4,
+    //     rootMax: 5,
+    //     herbMax: 4,
+    //     expectedOutput: 4,
+    //     price: 3000,
+    //   },
+    //   {
+    //     square: 4,
+    //     rau_dinh_duong: 3,
+    //     leafyMax: 4,
+    //     rootMax: 5,
+    //     herbMax: 4,
+    //     expectedOutput: 4,
+    //     price: 3000,
+    //   },
+    //   {
+    //     square: 4,
+    //     rau_dinh_duong: 3,
+    //     leafyMax: 4,
+    //     rootMax: 5,
+    //     herbMax: 4,
+    //     expectedOutput: 4,
+    //     price: 3000,
+    //   },
+    // ]);
   }, []);
 
   return (
@@ -236,7 +302,7 @@ const ManageTemplate = () => {
           >
             {templates.map((temp) => (
               <Card
-                title={`Diện tích ${temp.area} M2`}
+                title={`Diện tích ${temp.square} M2`}
                 extra={
                   <Tooltip title="Edit template">
                     <EditFilled
@@ -253,24 +319,27 @@ const ManageTemplate = () => {
                   marginBottom: "1.5rem",
                   borderTopLeftRadius: "15px",
                   borderTopRightRadius: "15px",
-                  marginRight: '1.5rem'
+                  marginRight: "1.5rem",
                 }}
               >
-                <div style={{textAlign: 'end'}}>
+                <div style={{ textAlign: "end" }}>
                   <div className="styleText">
                     <p style={{ fontWeight: "600" }}>CHỦNG LOẠI GIEO TRỒNG</p>
-                    <p>{temp.rau_dinh_duong} Rau dinh dưỡng</p>
                   </div>
-                  <p>{temp.rau_an_la} Rau ăn lá</p>
-                  <p>{temp.rau_gia_vi} Rau gia vị</p>
-                  <p>{temp.cu_qua} Củ, quả</p>
+                  <p>{temp.leafyMax} Rau ăn lá</p>
+                  <p>{temp.herbMax} Rau gia vị</p>
+                  <p>{temp.rootMax} Củ, quả</p>
                   <div className="styleText">
                     <p style={{ fontWeight: "600" }}>SẢN LƯỢNG DỰ KIẾN</p>
-                    <p>{temp.san_luong_du_kien} kg/tháng</p>
+                    <p>{temp.expectedOutput} kg/tháng</p>
                   </div>
                   <div className="styleText">
                     <p style={{ fontWeight: "600" }}>SỐ LẦN GỬI RAU TỚI NHÀ</p>
-                    <p>{temp.san_luong_du_kien} lần/ tuần</p>
+                    <p>{temp.expectDeliveryPerWeek} lần/ tuần</p>
+                  </div>
+                  <div className="styleText">
+                    <p style={{ fontWeight: "600" }}>SỐ LUONG GIAO MOI LAN</p>
+                    <p>{temp.expectDeliveryAmount} kg/ lan</p>
                   </div>
                   <div className="styleText">
                     <p style={{ fontWeight: "600" }}>GIÁ</p>
