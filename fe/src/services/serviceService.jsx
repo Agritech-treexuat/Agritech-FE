@@ -55,6 +55,31 @@ const SERVICE = {
       return err;
     });
   },
+
+  getServiceRequest: async (farmId, status) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `serviceRequest/farm?farmId=${farmId}&status=${status}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  updateServiceRequestStatus: async (data, serviceRequestId) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `serviceRequest/update/${serviceRequestId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default SERVICE;

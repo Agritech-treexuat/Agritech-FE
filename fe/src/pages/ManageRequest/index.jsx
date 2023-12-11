@@ -24,9 +24,11 @@ import { Card, Space } from "antd";
 import FARM from "../../services/farmService";
 import { useParams } from "react-router";
 import "./style.css";
+import SERVICE from "../../services/serviceService";
 
 const { Meta } = Card;
 const ManageRequest = () => {
+  const farmId = localStorage.getItem('id')
   const { token } = theme.useToken();
   const [api, contextHolder] = notification.useNotification();
   const openNotificationWithIcon = (type, title, content) => {
@@ -45,36 +47,46 @@ const ManageRequest = () => {
   const [requests, setRequests] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reqDetail, setReqDetail] = useState({
-    id: "",
+    _id: "",
     date: "",
     name: "",
     address: "",
     phone: "",
-    area: 0,
+    square: 0,
     price: 0,
   });
 
-  const showModal = (id) => {
+  const showModal = (_id) => {
+    setReqDetail(requests.filter(req => req._id === _id)[0])
     // Gọi api detail
-    setReqDetail({
-      id: id,
-      date: "23/11/2023",
-      name: "Duc Huy",
-      address: "32 P. Đại Từ",
-      phone: "0188666123",
-      area: 4,
-      price: 10000,
-      rau_dinh_duong: 3,
-      rau_an_la: 4,
-      cu_qua: 5,
-      rau_gia_vi: 4,
-      san_luong_du_kien: 4,
-    });
-    console.log(reqDetail);
+    // setReqDetail({
+    //   _id: _id,
+    //   date: "23/11/2023",
+    //   name: "Duc Huy",
+    //   address: "32 P. Đại Từ",
+    //   phone: "0188666123",
+    //   square: 4,
+    //   price: 10000,
+    //   rau_dinh_duong: 3,
+    //   rau_an_la: 4,
+    //   cu_qua: 5,
+    //   rau_gia_vi: 4,
+    //   expectedOutput: 4,
+    // });
+    console.log("req details: ", reqDetail);
     setIsModalOpen(true);
   };
 
   const handleOk = () => {
+    console.log("req detail in ok: ", reqDetail)
+    async function fetchData() {
+      const data = await SERVICE.updateServiceRequestStatus({status: 'accepted'}, reqDetail._id);
+      console.log("Data: ", data.data);
+      if (data.data.serviceRequest) {
+        setRequests(requests.filter(req => req._id !== data.data.serviceRequest._id));
+      }
+    }
+    fetchData();
     setIsModalOpen(false);
     openNotificationWithIcon(
       "success",
@@ -84,10 +96,28 @@ const ManageRequest = () => {
   };
 
   const handleCancel = () => {
+    console.log("req detail in cancel: ", reqDetail)
+    async function fetchData() {
+      const data = await SERVICE.updateServiceRequestStatus({status: 'rejected'}, reqDetail._id);
+      console.log("Data: ", data.data);
+      if (data.data.serviceRequest) {
+        setRequests(requests.filter(req => req._id !== data.data.serviceRequest._id));
+      }
+    }
+    fetchData();
     setIsModalOpen(false);
   };
 
   const handleReject = () => {
+    console.log("req detail in reject: ", reqDetail)
+    async function fetchData() {
+      const data = await SERVICE.updateServiceRequestStatus(reqDetail._id, 'rejected');
+      console.log("Data: ", data.data);
+      if (data.data.serviceRequest) {
+        setRequests(requests.filter(req => req._id != data.data.serviceRequest._id));
+      }
+    }
+    fetchData();
     setIsModalOpen(false);
     openNotificationWithIcon(
       "success",
@@ -104,19 +134,33 @@ const ManageRequest = () => {
         <div style={{ textAlign: "right" }}>
           <div className="styleText">
             <p style={{ fontWeight: "600" }}>CHỦNG LOẠI GIEO TRỒNG</p>
-            <p>{reqDetail.rau_dinh_duong} Rau dinh dưỡng</p>
           </div>
-          <p>{reqDetail.rau_an_la} Rau ăn lá</p>
-          <p>{reqDetail.rau_gia_vi} Rau gia vị</p>
-          <p>{reqDetail.cu_qua} Củ, quả</p>
+          {reqDetail.leafyMax ? <>
+          <p>{reqDetail.leafyMax} Rau ăn lá</p>
+          {
+            reqDetail.leafyList.map(leafy => <p>{leafy.name}</p>)
+          }
+          <p>{reqDetail.herbMax} Rau gia vị</p>
+          {
+            reqDetail.herbList.map(herb => <p>{herb.name}</p>)
+          }
+          <p>{reqDetail.rootMax} Củ, quả</p>
+          {
+            reqDetail.rootList.map(root => <p>{root.name}</p>)
+          }
           <div className="styleText">
             <p style={{ fontWeight: "600" }}>SẢN LƯỢNG DỰ KIẾN</p>
-            <p>{reqDetail.san_luong_du_kien} kg/tháng</p>
+            <p>{reqDetail.expectedOutput} kg/tháng</p>
           </div>
           <div className="styleText">
             <p style={{ fontWeight: "600" }}>SỐ LẦN GỬI RAU TỚI NHÀ</p>
-            <p>{reqDetail.san_luong_du_kien} lần/ tuần</p>
+            <p>{reqDetail.expectDeliveryPerWeek} lần/ tuần</p>
           </div>
+          <div className="styleText">
+            <p style={{ fontWeight: "600" }}>SỐ Luong 1 lan iao</p>
+            <p>{reqDetail.expectDeliveryAmount} kg/ lan</p>
+          </div>
+          </> : <></> }
         </div>
       ),
     },
@@ -128,44 +172,52 @@ const ManageRequest = () => {
 
   useEffect(() => {
     // Gọi api list
-    setRequests([
-      {
-        id: "1",
-        date: "23/11/2023",
-        name: "Duc Huy",
-        address: "32 P. Đại Từ",
-        phone: "0188666123",
-        area: 4,
-        price: 10000,
-      },
-      {
-        id: "2",
-        date: "23/11/2023",
-        name: "Duc Huy",
-        address: "32 P. Đại Từ",
-        phone: "0188666123",
-        area: 4,
-        price: 10000,
-      },
-      {
-        id: "3",
-        date: "23/11/2023",
-        name: "Duc Huy",
-        address: "32 P. Đại Từ",
-        phone: "0188666123",
-        area: 4,
-        price: 10000,
-      },
-      {
-        id: "4",
-        date: "23/11/2023",
-        name: "Duc Huy",
-        address: "32 P. Đại Từ",
-        phone: "0188666123",
-        area: 4,
-        price: 10000,
-      },
-    ]);
+    async function fetchData() {
+      const data = await SERVICE.getServiceRequest(farmId, 'waiting');
+      console.log("Data: ", data.data);
+      if (data.data.requestsAllInformation) {
+        setRequests(data.data.requestsAllInformation);
+      }
+    }
+    fetchData();
+    // setRequests([
+    //   {
+    //     _id: "1",
+    //     date: "23/11/2023",
+    //     name: "Duc Huy",
+    //     address: "32 P. Đại Từ",
+    //     phone: "0188666123",
+    //     square: 4,
+    //     price: 10000,
+    //   },
+    //   {
+    //     _id: "2",
+    //     date: "23/11/2023",
+    //     name: "Duc Huy",
+    //     address: "32 P. Đại Từ",
+    //     phone: "0188666123",
+    //     square: 4,
+    //     price: 10000,
+    //   },
+    //   {
+    //     _id: "3",
+    //     date: "23/11/2023",
+    //     name: "Duc Huy",
+    //     address: "32 P. Đại Từ",
+    //     phone: "0188666123",
+    //     square: 4,
+    //     price: 10000,
+    //   },
+    //   {
+    //     _id: "4",
+    //     date: "23/11/2023",
+    //     name: "Duc Huy",
+    //     address: "32 P. Đại Từ",
+    //     phone: "0188666123",
+    //     square: 4,
+    //     price: 10000,
+    //   },
+    // ]);
   }, []);
 
   return (
@@ -221,7 +273,7 @@ const ManageRequest = () => {
                         fontWeight: "600",
                         cursor: "pointer",
                       }}
-                      onClick={() => showModal(req.id)}
+                      onClick={() => showModal(req._id)}
                     />
                   </Tooltip>
                 }
@@ -247,7 +299,7 @@ const ManageRequest = () => {
                   </Col>
                   <Col span={9} style={{ textAlign: "left" }}>
                     <h3>Template</h3>
-                    <p>Diện tích: {req.area} M2</p>
+                    <p>Diện tích: {req.square} M2</p>
                     <p>
                       Giá:{" "}
                       {req.price.toLocaleString("it-IT", {
@@ -269,17 +321,17 @@ const ManageRequest = () => {
             cancelText="Từ chối"
             onOk={handleOk}
             onCancel={handleCancel}
-            footer={[
-              <Button key="back" onClick={handleCancel}>
-                Hủy
-              </Button>,
-              <Button key="submit" danger onClick={handleReject}>
-                Từ chối
-              </Button>,
-              <Button type="primary" onClick={handleOk}>
-                Chấp nhận
-              </Button>,
-            ]}
+            // footer={[
+            //   <Button key="back" onClick={handleCancel}>
+            //     Hủy
+            //   </Button>,
+            //   <Button key="submit" danger onClick={handleReject}>
+            //     Từ chối
+            //   </Button>,
+            //   <Button type="primary" onClick={handleOk}>
+            //     Chấp nhận
+            //   </Button>,
+            // ]}
           >
             <Divider orientation="left" style={{ fontSize: "14px" }}>
               Thông tin khách hàng
@@ -298,7 +350,7 @@ const ManageRequest = () => {
               <p>
                 <i>
                   <strong>Template</strong>:{" "}
-                  <span>Diện tích: {reqDetail.area} M2</span>
+                  <span>Diện tích: {reqDetail.square} M2</span>
                 </i>
               </p>
               <Collapse
