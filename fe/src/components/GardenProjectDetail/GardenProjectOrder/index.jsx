@@ -5,28 +5,23 @@ import { useEffect } from "react";
 import { Col, Row, Divider, Alert } from "antd";
 import Loading from "../../../pages/Loading";
 import { CalendarFilled } from "@ant-design/icons";
+import SERVICE from "../../../services/serviceService";
 
 const GardenProjectOrder = () => {
   const [initData, setInitData] = useState(null);
-  const projectID = useParams();
-  console.log("params: ", projectID);
+  const gardenId = useParams().id;
+  const farmId = localStorage.getItem('id')
+  console.log("params: ", gardenId);
 
   useEffect(() => {
-    setInitData({
-      id: "1",
-      date: "23/11/2023",
-      startDate: "23/11/2023",
-      name: "Duc Huy",
-      address: "32 P. Đại Từ",
-      phone: "0188666123",
-      area: 4,
-      price: 10000,
-      rau_dinh_duong: 3,
-      rau_an_la: 4,
-      cu_qua: 5,
-      rau_gia_vi: 4,
-      san_luong_du_kien: 4,
-    });
+    async function fetchData() {
+      const data = await SERVICE.getGardenByGardenId(farmId, gardenId);
+      console.log("data: ", data)
+      if (data.data.garden) {
+        setInitData(data.data.garden);
+      }
+    }
+    fetchData();
   }, []);
 
   return (
@@ -46,10 +41,10 @@ const GardenProjectOrder = () => {
             </Divider>
             <div>
               <p>
-                <strong>Tên:</strong> {initData.name}
+                <strong>Tên:</strong> {initData.client?.name ? initData.client.name : 'note have'}
               </p>
-              <p><strong>SĐT:</strong> {initData.phone}</p>
-              <p><strong>Địa chỉ:</strong> {initData.address}</p>
+              <p><strong>SĐT:</strong> {initData.client?.phone ? initData.client.phone : 'note have'}</p>
+              <p><strong>Địa chỉ:</strong> {initData.client?.address ? initData.client.address : 'note have'}</p>
             </div>
 
             <Divider orientationMargin={0} orientation="left">
@@ -59,31 +54,43 @@ const GardenProjectOrder = () => {
             <p>
               <i>
                 <strong>Template</strong>:{" "}
-                <span>Diện tích: {initData.area} M2</span>
+                <span>Diện tích: {initData.template?.square ? initData.template.square : 'none'} M2</span>
               </i>
             </p>
             <p>
               <strong>Giá: </strong>
-              {initData.price.toLocaleString("it-IT", {
+              {initData.template?.price ? initData.template?.price.toLocaleString("it-IT", {
                 style: "currency",
                 currency: "VND",
-              })}
+              }) : 'none'}
             </p>
             <div style={{ textAlign: "right", width: "50%" }}>
               <div className="styleText">
                 <p style={{ fontWeight: "600" }}>CHỦNG LOẠI GIEO TRỒNG</p>
-                <p>{initData.rau_dinh_duong} Rau dinh dưỡng</p>
               </div>
-              <p>{initData.rau_an_la} Rau ăn lá</p>
-              <p>{initData.rau_gia_vi} Rau gia vị</p>
-              <p>{initData.cu_qua} Củ, quả</p>
+              <p>{initData.template.herbMax} Rau gia vị</p>
+              {
+                initData.herbList.map(herb => <p>{herb.name}</p>)
+              }
+              <p>{initData.template.leafyMax} Rau ăn lá</p>
+              {
+                initData.leafyList.map(leafy => <p>{leafy.name}</p>)
+              }
+              <p>{initData.template.rootMax} Củ, quả</p>
+              {
+                initData.rootList.map(root => <p>{root.name}</p>)
+              }
               <div className="styleText">
                 <p style={{ fontWeight: "600" }}>SẢN LƯỢNG DỰ KIẾN</p>
-                <p>{initData.san_luong_du_kien} kg/tháng</p>
+                <p>{initData.template.expectedOutput} kg/tháng</p>
               </div>
               <div className="styleText">
                 <p style={{ fontWeight: "600" }}>SỐ LẦN GỬI RAU TỚI NHÀ</p>
-                <p>{initData.san_luong_du_kien} lần/ tuần</p>
+                <p>{initData.template.expectDeliveryPerWeek} lần/ tuần</p>
+              </div>
+              <div className="styleText">
+                <p style={{ fontWeight: "600" }}>SỐ Luong GỬI RAU TỚI NHÀ / lan</p>
+                <p>{initData.template.expectDeliveryAmount} kg/ lan</p>
               </div>
             </div>
           </div>

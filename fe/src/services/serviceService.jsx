@@ -106,6 +106,17 @@ const SERVICE = {
     });
   },
 
+  getGardenByGardenId: async (farmId, gardenId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `garden/${farmId}/${gardenId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default SERVICE;

@@ -180,44 +180,6 @@ const ManageRequest = () => {
       }
     }
     fetchData();
-    // setRequests([
-    //   {
-    //     _id: "1",
-    //     date: "23/11/2023",
-    //     name: "Duc Huy",
-    //     address: "32 P. Đại Từ",
-    //     phone: "0188666123",
-    //     square: 4,
-    //     price: 10000,
-    //   },
-    //   {
-    //     _id: "2",
-    //     date: "23/11/2023",
-    //     name: "Duc Huy",
-    //     address: "32 P. Đại Từ",
-    //     phone: "0188666123",
-    //     square: 4,
-    //     price: 10000,
-    //   },
-    //   {
-    //     _id: "3",
-    //     date: "23/11/2023",
-    //     name: "Duc Huy",
-    //     address: "32 P. Đại Từ",
-    //     phone: "0188666123",
-    //     square: 4,
-    //     price: 10000,
-    //   },
-    //   {
-    //     _id: "4",
-    //     date: "23/11/2023",
-    //     name: "Duc Huy",
-    //     address: "32 P. Đại Từ",
-    //     phone: "0188666123",
-    //     square: 4,
-    //     price: 10000,
-    //   },
-    // ]);
   }, []);
 
   return (
