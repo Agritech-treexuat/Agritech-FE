@@ -80,6 +80,32 @@ const SERVICE = {
       return err;
     });
   },
+
+  getGardens: async (farmId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `garden/${farmId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  updateStatusGarden: async (data, gardenId) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `updateGardenStatus/${gardenId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
 }
 
 export default SERVICE;

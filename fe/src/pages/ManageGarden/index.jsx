@@ -31,69 +31,46 @@ import {
   Navigate,
   useNavigate,
 } from "react-router-dom";
+import SERVICE from "../../services/serviceService";
 
 const { Meta } = Card;
 const ManageGarden = () => {
+  const farmId = localStorage.getItem('id')
   const [projects, setProjects] = useState([]);
 
   const onChange = (date, dateString) => {
     console.log(date, dateString);
   };
 
+  const handleStart = (project) => {
+    console.log("Herre: ", project)
+    const dataStatus = {
+      status: 'started'
+    }
+    async function fetchData() {
+      const data = await SERVICE.updateStatusGarden(dataStatus, project._id)
+      if (data.data.garden) {
+        setProjects(projects.map(project => {
+          if(project._id === data.data.garden._id) {
+            project.status = data.data.garden.status
+            project.startDate = data.data.garden.startDate
+          }
+          return project
+        }))
+      }
+    }
+    fetchData();
+  }
+
   useEffect(() => {
     // Gọi api list
-    setProjects([
-      {
-        id: "1",
-        date: "23/11/2023",
-        startDate: "23/11/2023",
-        name: "Duc Huy",
-        address: "32 P. Đại Từ",
-        phone: "0188666123",
-        area: 4,
-        price: 10000,
-      },
-      {
-        id: "2",
-        date: "23/11/2023",
-        startDate: "23/11/2023",
-        name: "Duc Huy",
-        address: "32 P. Đại Từ",
-        phone: "0188666123",
-        area: 4,
-        price: 10000,
-      },
-      {
-        id: "3",
-        date: "23/11/2023",
-        startDate: "23/11/2023",
-        name: "Duc Huy",
-        address: "32 P. Đại Từ",
-        phone: "0188666123",
-        area: 4,
-        price: 10000,
-      },
-      {
-        id: "4",
-        date: "23/11/2023",
-        startDate: "23/11/2023",
-        name: "Duc Huy",
-        address: "32 P. Đại Từ",
-        phone: "0188666123",
-        area: 4,
-        price: 10000,
-      },
-      {
-        id: "5",
-        date: "23/11/2023",
-        startDate: "23/11/2023",
-        name: "Duc Huy",
-        address: "32 P. Đại Từ",
-        phone: "0188666123",
-        area: 4,
-        price: 10000,
-      },
-    ]);
+    async function fetchData() {
+      const data = await SERVICE.getGardens(farmId)
+      if (data.data.gardens) {
+        setProjects(data.data.gardens)
+      }
+    }
+    fetchData();
   }, []);
 
   return (
@@ -135,31 +112,36 @@ const ManageGarden = () => {
             }}
           >
             {projects?.map((project) => (
-              <Link
-                to={`/manage-planting-garden/${project.id}`}
-                style={{ width: "23%", marginBottom: "1.5rem", marginRight: '1.5rem' }}
+              <Card
+                hoverable
+                cover={
+                  <img
+                    alt="example"
+                    src="https://media.istockphoto.com/id/1323663582/vi/anh/tr%E1%BA%BB-em-v%C3%A0-m%E1%BA%B9-l%C3%A0m-v%C6%B0%E1%BB%9Dn-trong-v%C6%B0%E1%BB%9Dn-rau-%E1%BB%9F-s%C3%A2n-sau.jpg?s=612x612&w=0&k=20&c=wU9d5Vwf0Rmb6B7jZOU0T6KgcceeTrGU99lCT2XfH-Q="
+                  />
+                }
+                style={{ width: "23%", marginBottom: "1.5rem", marginRight: '1.5rem'}}
               >
-                <Card
-                  hoverable
-                  cover={
-                    <img
-                      alt="example"
-                      src="https://media.istockphoto.com/id/1323663582/vi/anh/tr%E1%BA%BB-em-v%C3%A0-m%E1%BA%B9-l%C3%A0m-v%C6%B0%E1%BB%9Dn-trong-v%C6%B0%E1%BB%9Dn-rau-%E1%BB%9F-s%C3%A2n-sau.jpg?s=612x612&w=0&k=20&c=wU9d5Vwf0Rmb6B7jZOU0T6KgcceeTrGU99lCT2XfH-Q="
-                    />
-                  }
+                <Link
+                to={`/manage-planting-garden/${project._id}`}
                 >
                   <Meta
                     align={"center"}
                     style={{ fontStyle: "italic" }}
-                    title={`Ngày bắt đầu ${project.startDate}`}
+                    title={project.startDate ? `Ngày bắt đầu ${project.startDate}` : 'not started'}
                   />
                   <div style={{ textAlign: "left" }}>
-                    <p>Template: {project.area} M2</p>
-                    <p>Khách hàng: {project.name}</p>
-                    <p>Thông tin liên lạc: {project.phone}</p>
+                    <p>Template: {project.template.square} M2</p>
+                    <p>Khách hàng: {project.client.email}</p>
+                    <p>Thông tin liên lạc: {project.client.phone ? project.client.phone : 'not have'}</p>
                   </div>
-                </Card>
-              </Link>
+                </Link>
+                <div>
+                  {
+                    project.status === 'waiting' ? <Button onClick={() => handleStart(project)}> Start </Button> : 'Started'
+                  }
+                </div >
+              </Card>
             ))}
           </div>
         </div>
