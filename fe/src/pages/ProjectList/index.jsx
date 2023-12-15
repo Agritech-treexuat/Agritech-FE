@@ -21,17 +21,20 @@ const ProjectList = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getProjects(farmId)
-      console.log("Data: ", parseData(data.data))
+      console.log("Data: ", parseData(data.data).projects)
 
       setProjects(parseData(data.data).projects)
-      console.log("Projects: ", projects)
     }
     fetchData();
   }, []);
 
-  const filteredProjects = projects.length != 0 ? projects.filter((project) =>
-    project.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProjects = projects.length > 0 ? projects.filter((project) =>
+  {
+    if(project.title)
+      return project.title.toLowerCase().includes(searchQuery.toLowerCase())
+  }
   ) : [];
+
 
   return (
     <div>
