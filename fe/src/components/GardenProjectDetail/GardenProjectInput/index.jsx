@@ -71,14 +71,10 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
           rules={[
             {
               required: true,
-              message: "Trường thông tin không được để trống!",
             },
           ]}
         >
-          <DatePicker
-            placeholder="Chọn ngày bắt đầu"
-            style={{ width: "100%" }}
-          />
+          <Input type="date" />
         </Form.Item>
         <Form.Item
           name="plant"
@@ -109,7 +105,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             }
             options={listPlant.map((plant) => {
               plant.label = plant.name;
-              plant.value = plant.id;
+              plant.value = plant.name;
               return plant;
             })}
             onChange={handlePlantChange}
@@ -201,7 +197,7 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
         formEdit
           .validateFields()
           .then((values) => {
-            console.log("Here is values: ", values)
+            console.log("Here is values: ", values);
             formEdit.resetFields();
             onCreate(values, seed);
           })
@@ -300,19 +296,21 @@ const GardenProjectInput = () => {
   const [selectedSeed, setSelectedSeed] = useState([]);
   console.log("params: ", gardenId);
 
-  const handleSubmitInput = async (data, projectId)=> {
+  const handleSubmitInput = async (data, projectId) => {
     try {
-      console.log("data to send: ", data, projectId)
+      console.log("data to send: ", data, projectId);
       const res = await FARM.editInput(data, projectId);
-      console.log("res: ", res)
-      setInitData(initData.map(data => {
-        if(data.projectId === res.data.projectId) {
-          data.input.seed = res.data.updatedInput.seed
-          data.input.amount = res.data.updatedInput.amount
-          data.input.startDate = res.data.updatedInput.initDate
-        }
-        return data
-      }))
+      console.log("res: ", res);
+      setInitData(
+        initData.map((data) => {
+          if (data.projectId === res.data.projectId) {
+            data.input.seed = res.data.updatedInput.seed;
+            data.input.amount = res.data.updatedInput.amount;
+            data.input.startDate = res.data.updatedInput.initDate;
+          }
+          return data;
+        })
+      );
       openNotificationWithIcon(
         "success",
         "Thông báo",
@@ -320,21 +318,47 @@ const GardenProjectInput = () => {
       );
       setOpenEdit(false);
     } catch (error) {
-        console.error(error?.response?.data?.message);
+      console.error(error?.response?.data?.message);
     }
-  }
+  };
+
+  const handleSubmitCreate = async (values) => {
+    try {
+      console.log("data to send: ", values);
+      const data = {...values, initDate: values.startDate, name: values.plant}
+      const res = await FARM.createProjectGarden(data, gardenId);
+      console.log("res: ", res)
+      setInitData([...initData, {
+        name: res.data.project.name,
+        projectId: res.data.project._id,
+        input: res.data.project.input,
+        plantImage: res.data.plantImage
+      }])
+      // setInitData(initData.map(data => {
+      //   if(data.projectId === res.data.projectId) {
+      //     data.input.seed = res.data.updatedInput.seed
+      //     data.input.amount = res.data.updatedInput.amount
+      //     data.input.startDate = res.data.updatedInput.initDate
+      //   }
+      //   return data
+      // }))
+      openNotificationWithIcon("success", "Thông báo", "Tạo mới thành công");
+      setOpen(false);
+    } catch (error) {
+      console.error(error?.response?.data?.message);
+    }
+  };
 
   const onCreateEdit = (values, seed) => {
     console.log("Received values of form: ", values);
-    const updatedValue = { ...values, initDate: values.startDate};
+    const updatedValue = { ...values, initDate: values.startDate };
     console.log(updatedValue);
-    handleSubmitInput(updatedValue, seed.projectId)
+    handleSubmitInput(updatedValue, seed.projectId);
   };
 
   const onCreate = (values) => {
-    console.log("Received values of form: ", values);
-    setOpen(false);
-    openNotificationWithIcon("success", "Thông báo", "Tạo mới thành công");
+    console.log("Received values of form cretae: ", values);
+    handleSubmitCreate(values);
   };
 
   useEffect(() => {
@@ -352,60 +376,36 @@ const GardenProjectInput = () => {
     setListPlant([
       {
         id: "1",
-        name: "Cay 1",
+        name: "rau muống",
         seeds: [
           {
             id: "1",
-            name: "Hạt giống 11",
+            name: "seed rau muong C",
           },
           {
             id: "2",
-            name: "Hạt giống 12",
+            name: "seed rau muong A",
+          },
+          {
+            id: "3",
+            name: "seed rau muong B",
           },
         ],
       },
       {
         id: "2",
-        name: "Cay 2",
+        name: "rau cải",
         seeds: [
           {
             id: "3",
-            name: "Hạt giống 21",
+            name: "seed rau muong C",
           },
           {
             id: "2",
-            name: "Hạt giống 22",
+            name: "seed rau muong C",
           },
         ],
-      },
-      {
-        id: "3",
-        name: "Cay 3",
-        seeds: [
-          {
-            id: "4",
-            name: "Hạt giống 31",
-          },
-          {
-            id: "5",
-            name: "Hạt giống 32",
-          },
-        ],
-      },
-      {
-        id: "4",
-        name: "Cay 4",
-        seeds: [
-          {
-            id: "6",
-            name: "Hạt giống 41",
-          },
-          {
-            id: "7",
-            name: "Hạt giống 42",
-          },
-        ],
-      },
+      }
     ]);
   }, []);
 

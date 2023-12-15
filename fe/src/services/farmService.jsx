@@ -48,6 +48,19 @@ const FARM = {
     });
   },
 
+  createProjectGarden: async (data, gardenId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/farm/createProjectGarden/${gardenId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
   addExpect: async (data, projectId) => {
     return await privateHttp({
       method: 'POST',
