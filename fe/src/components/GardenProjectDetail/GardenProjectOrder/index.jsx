@@ -6,6 +6,7 @@ import { Col, Row, Divider, Alert } from "antd";
 import Loading from "../../../pages/Loading";
 import { CalendarFilled } from "@ant-design/icons";
 import SERVICE from "../../../services/serviceService";
+import GARDEN from "../../../services/gardenService";
 
 const GardenProjectOrder = () => {
   const [initData, setInitData] = useState(null);
@@ -15,7 +16,7 @@ const GardenProjectOrder = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await SERVICE.getGardenByGardenId(farmId, gardenId);
+      const data = await GARDEN.getGardenByGardenId(farmId, gardenId);
       console.log("data: ", data)
       if (data.data.garden) {
         setInitData(data.data.garden);

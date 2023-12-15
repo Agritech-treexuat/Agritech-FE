@@ -32,6 +32,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import SERVICE from "../../services/serviceService";
+import GARDEN from "../../services/gardenService";
 
 const { Meta } = Card;
 const ManageGarden = () => {
@@ -48,7 +49,7 @@ const ManageGarden = () => {
       status: 'started'
     }
     async function fetchData() {
-      const data = await SERVICE.updateStatusGarden(dataStatus, project._id)
+      const data = await GARDEN.updateStatusGarden(dataStatus, project._id)
       if (data.data.garden) {
         setProjects(projects.map(project => {
           if(project._id === data.data.garden._id) {
@@ -65,7 +66,7 @@ const ManageGarden = () => {
   useEffect(() => {
     // Gọi api list
     async function fetchData() {
-      const data = await SERVICE.getGardens(farmId)
+      const data = await GARDEN.getGardens(farmId)
       if (data.data.gardens) {
         setProjects(data.data.gardens)
       }

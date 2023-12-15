@@ -22,6 +22,7 @@ import {
 } from "antd";
 import { EditFilled, UploadOutlined } from "@ant-design/icons";
 import Loading from "../../../pages/Loading";
+import GARDEN from "../../../services/gardenService";
 
 const { Meta } = Card;
 
@@ -42,14 +43,6 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
     setlistSeed(listPlant.find((plant) => plant.value === value).seeds);
     console.log(value);
     console.log(listSeed);
-  };
-
-  const normFile = (e) => {
-    console.log("Upload event:", e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
   };
 
   return (
@@ -168,16 +161,6 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
         >
           <InputNumber style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item
-          name="upload"
-          label="Ảnh"
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-        >
-          <Upload name="logo" action="/upload.do" listType="picture">
-            <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
-          </Upload>
-        </Form.Item>
       </Form>
     </Modal>
   );
@@ -189,13 +172,6 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
   // seed.upload = [seed.img]
   console.log("Seed: ", seed);
 
-  const normFile = (e) => {
-    console.log("Upload event:", e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
   useEffect(() => {
     setListSeed([
       {
@@ -225,6 +201,7 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
         formEdit
           .validateFields()
           .then((values) => {
+            console.log("Here is values: ", values)
             formEdit.resetFields();
             onCreate(values);
           })
@@ -237,23 +214,23 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
         form={formEdit}
         {...layout}
         name="form_in_modal"
-        initialValues={seed}
+        initialValues={{
+          startDate: seed.input?.startDate ? seed.input?.startDate : new Date(),
+          seed: seed.input?.seed ? seed.input?.seed : null,
+          amount: seed.input?.amount ? seed.input?.amount : null,
+        }}
       >
-        {/* <Form.Item
+        <Form.Item
           name="startDate"
           label="Ngày bắt đầu"
           rules={[
             {
               required: true,
-              message: "Trường thông tin không được để trống!",
             },
           ]}
         >
-          <DatePicker
-            placeholder="Chọn ngày bắt đầu"
-            style={{ width: "100%" }}
-          />
-        </Form.Item> */}
+          <Input type="date" />
+        </Form.Item>
         <Form.Item
           name="seed"
           label="Chọn hạt giống"
@@ -300,16 +277,6 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
         >
           <InputNumber style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item
-          name="img"
-          label="Ảnh"
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-        >
-          <Upload name="logo" action="/upload.do" listType="picture">
-            <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
-          </Upload>
-        </Form.Item>
       </Form>
     </Modal>
   );
@@ -329,9 +296,9 @@ const GardenProjectInput = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [open, setOpen] = useState(false);
   const [listPlant, setListPlant] = useState([]);
-  const projectID = useParams();
+  const gardenId = useParams().id;
   const [selectedSeed, setSelectedSeed] = useState([]);
-  console.log("params: ", projectID);
+  console.log("params: ", gardenId);
 
   const onCreateEdit = (values) => {
     console.log("Received values of form: ", values);
@@ -350,73 +317,14 @@ const GardenProjectInput = () => {
   };
 
   useEffect(() => {
-    setInitData({
-      id: "1",
-      transaction_hash: "adakdhakjdsas",
-      // Danh sách các cây: plants
-      seeds: [
-        {
-          id: "1",
-          name: "cây 1",
-          seed: "abc",
-          startDate: "23/11/2023",
-          amount: null,
-          img: [
-            "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-          ],
-        },
-        {
-          id: "1",
-          name: "cây 2",
-          seed: "Hạt giống",
-          startDate: "23/11/2023",
-          amount: 1000,
-          img: [
-            "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-          ],
-        },
-        {
-          id: "1",
-          name: "cây 3",
-          seed: "Hạt giống",
-          startDate: "23/11/2023",
-          amount: 1000,
-          img: [
-            "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-          ],
-        },
-        {
-          id: "1",
-          name: "cây 4",
-          seed: "",
-          startDate: "23/11/2023",
-          amount: null,
-          img: [
-            "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-          ],
-        },
-        {
-          id: "1",
-          name: "cây 5",
-          seed: "Hạt giống",
-          startDate: "23/11/2023",
-          amount: 1000,
-          img: [
-            "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-          ],
-        },
-        {
-          id: "1",
-          name: "cây 6",
-          seed: "Hạt giống",
-          startDate: "23/11/2023",
-          amount: 1000,
-          img: [
-            "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-          ],
-        },
-      ],
-    });
+    // Gọi api list
+    async function fetchData() {
+      const data = await GARDEN.getGardenInput(gardenId);
+      if (data.data.projects) {
+        setInitData(data.data.projects);
+      }
+    }
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -496,17 +404,13 @@ const GardenProjectInput = () => {
               Thêm cây mới
             </Button>
           </Flex>
-          <div>
-            {/* <p>Ngày bắt đầu: {initData.startDate}</p> */}
-            <p>Transaction hash: {initData.transaction_hash}</p>
-          </div>
           <div
             style={{
               display: "flex",
               flexWrap: "wrap",
             }}
           >
-            {initData.seeds.map((seed) => (
+            {initData.map((project) => (
               <Card
                 style={{
                   width: "23%",
@@ -514,7 +418,7 @@ const GardenProjectInput = () => {
                   marginRight: "1.5rem",
                 }}
                 hoverable
-                cover={<img alt="example" src={seed.img[0]} />}
+                cover={<img alt="example" src={project.plantImage} />}
               >
                 <Meta
                   align={"center"}
@@ -526,15 +430,17 @@ const GardenProjectInput = () => {
                         justifyContent: "space-between",
                       }}
                     >
-                      <span>Cây: {seed.name}</span>{" "}
+                      <span>Cây: {project.name}</span>{" "}
                       <Tooltip title="Sửa/Cập nhật thông tin">
                         <EditFilled
                           style={{ color: "#476930" }}
                           onClick={() => {
-                            setSeedDetail(seed);
+                            setSeedDetail(project);
                             setSelectedSeed({
-                              ...seed,
-                              startDate: new Date(seed.startDate),
+                              ...project,
+                              startDate: project.startDate
+                                ? new Date(project.startDate)
+                                : new Date(),
                             });
                             setOpenEdit(true);
                           }}
@@ -544,9 +450,12 @@ const GardenProjectInput = () => {
                   }
                 />
                 <div style={{ textAlign: "left" }}>
-                  <p>Hạt giống: {seed.seed || "Chưa có thông tin"}</p>
-                  <p>Ngày bắt đầu: {seed.startDate || "Chưa có thông tin"}</p>
-                  <p>Số lượng: {seed.amount || "Chưa có thông tin"}</p>
+                  <p>Hạt giống: {project.input.seed || "Chưa có thông tin"}</p>
+                  <p>
+                    Ngày bắt đầu:{" "}
+                    {project.input.startDate || "Chưa có thông tin"}
+                  </p>
+                  <p>Số lượng: {project.input.amount || "Chưa có thông tin"}</p>
                 </div>
               </Card>
             ))}
