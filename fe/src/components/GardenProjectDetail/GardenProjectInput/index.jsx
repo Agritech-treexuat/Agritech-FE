@@ -203,7 +203,7 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
           .then((values) => {
             console.log("Here is values: ", values)
             formEdit.resetFields();
-            onCreate(values);
+            onCreate(values, seed);
           })
           .catch((info) => {
             console.log("Validate Failed:", info);
@@ -300,14 +300,35 @@ const GardenProjectInput = () => {
   const [selectedSeed, setSelectedSeed] = useState([]);
   console.log("params: ", gardenId);
 
-  const onCreateEdit = (values) => {
+  const handleSubmitInput = async (data, projectId)=> {
+    try {
+      console.log("data to send: ", data, projectId)
+      const res = await FARM.editInput(data, projectId);
+      console.log("res: ", res)
+      setInitData(initData.map(data => {
+        if(data.projectId === res.data.projectId) {
+          data.input.seed = res.data.updatedInput.seed
+          data.input.amount = res.data.updatedInput.amount
+          data.input.startDate = res.data.updatedInput.initDate
+        }
+        return data
+      }))
+      openNotificationWithIcon(
+        "success",
+        "Thông báo",
+        "Chỉnh sửa/Cập nhật thành công"
+      );
+      setOpenEdit(false);
+    } catch (error) {
+        console.error(error?.response?.data?.message);
+    }
+  }
+
+  const onCreateEdit = (values, seed) => {
     console.log("Received values of form: ", values);
-    openNotificationWithIcon(
-      "success",
-      "Thông báo",
-      "Chỉnh sửa/Cập nhật thành công"
-    );
-    setOpenEdit(false);
+    const updatedValue = { ...values, initDate: values.startDate};
+    console.log(updatedValue);
+    handleSubmitInput(updatedValue, seed.projectId)
   };
 
   const onCreate = (values) => {
