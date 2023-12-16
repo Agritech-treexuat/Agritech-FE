@@ -614,6 +614,11 @@ const GardenProjectTemplate = () => {
   const updateTemplate = async (data, projectId) => {
     console.log("data send: ", data)
     const new_data = await FARM.updatePlantCultivatesToProject(data, projectId)
+    openNotificationWithIcon(
+      "success",
+      "Thông báo",
+      "Cập nhật thành công"
+    );
     console.log("res new data: ", new_data)
     // const newPlans = plans.map((item) =>
     //   item._id === new_data.data.plantFarming._id ? new_data.data.plantFarming : item

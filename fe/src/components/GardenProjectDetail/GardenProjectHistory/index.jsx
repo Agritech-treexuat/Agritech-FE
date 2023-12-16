@@ -22,8 +22,11 @@ import {
   Flex,
   Select,
   Radio,
+  notification
 } from "antd";
-import { HistoryOutlined, EditFilled, CloseOutlined } from "@ant-design/icons";
+import { HistoryOutlined, EditFilled, CloseOutlined, DatabaseFilled } from "@ant-design/icons";
+import GARDEN from "../../../services/gardenService";
+
 
 import Loading from "../../../pages/Loading";
 
@@ -178,7 +181,7 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
         >
           <Radio.Group>
             <Space direction="vertical">
-              {plans.map((plan) => (
+              {plans?.map((plan) => (
                 <Radio value={plan}>
                   {`${plan.time} ${plan.type}`} <br />
                   {plan.agroChemicalItems.map((d) => (
@@ -204,6 +207,7 @@ const CollectionTemplateForm = ({
 }) => {
   const [formTemplate] = Form.useForm();
   console.log("defaultTemplate", defaultTemplate);
+
 
   const BVTV_name = BVTV?.map((BVTV_item) => {
     return {
@@ -276,7 +280,7 @@ const CollectionTemplateForm = ({
               {fields?.map((field) => (
                 <Card size="small" title={`Kế hoạch`} key={field.key}>
                   <Form.Item label="Time" name={[field.name, "time"]}>
-                    <Input />
+                    <Input type="date" />
                   </Form.Item>
 
                   <Form.Item label="Note" name={[field.name, "note"]}>
@@ -415,7 +419,7 @@ const CollectionEditForm = ({
         <Form.Item label="Time" name="time">
           <Form.Item name="startDate">
             <DatePicker
-              // defaultValue={dayjs(new Date(data.time))}
+              defaultValue={dayjs(new Date(data?.time))}
               placeholder="Chọn ngày giao"
               style={{ width: "100%" }}
             />
@@ -495,11 +499,23 @@ const GardenProjectHistory = () => {
   const [historyData, setHistoryData] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [plans, setPlans] = useState([]);
+  const [planSelected, setPlanSelected] = useState(null);
+  const [processSelected, setProcessSelected] = useState(null);
+  const [projectIDSelected, setProjectIDSelected] = useState(null);
   const projectID = useParams();
   const [defaultTemplate, setDefaultTemplate] = useState([]);
   const [fetilizer, setFetilizer] = useState([]);
   const [BVTV, setBVTV] = useState([]);
   console.log("params: ", projectID);
+  const gardenId = useParams().id;
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5,
+    });
+  };
 
   useEffect(() => {
     setTemplates({
@@ -654,76 +670,6 @@ const GardenProjectHistory = () => {
   }, []);
 
   useEffect(() => {
-    setInitData({
-      id: "1",
-      startDate: "23/11/2023",
-      plants: [
-        {
-          id: "1",
-          name: "Cây 1",
-          plan: [
-            {
-              tx: "skdjksjdskjdskjdkjsdksd",
-              time: "19/11/2023",
-              loai_canh_tac: "phân bón",
-              detail: [
-                { name: "NHK", amountPerHa: 100 },
-                { name: "Kali", amountPerHa: 130 },
-              ],
-              note: "Bon thuc lan 1 sau 20 ngay-abc",
-            },
-            {
-              tx: "skdjksjdskjdskjdkjsdksd",
-              time: "19/11/2023",
-              loai_canh_tac: "phân bón",
-              detail: [
-                { name: "NHK", amountPerHa: 100 },
-                { name: "Kali", amountPerHa: 130 },
-              ],
-              note: "Bon thuc lan 2 sau 20 ngay-abc",
-            },
-          ],
-          status: "status",
-        },
-        {
-          id: "2",
-          name: "Cây 2",
-          plan: [
-            {
-              tx: "skdjksjdskjdskjdkjsdksd",
-              time: "19/11/2023",
-              loai_canh_tac: "phân bón",
-              detail: [
-                { name: "NHK", amountPerHa: 100 },
-                { name: "Kali", amountPerHa: 130 },
-              ],
-              note: "Bon thuc lan 1 sau 20 ngay-abc",
-            },
-          ],
-          status: "status",
-        },
-        {
-          id: "3",
-          name: "Cây 3",
-          plan: [],
-        },
-        {
-          id: "4",
-          name: "Cây 4",
-          plan: [],
-        },
-        {
-          id: "5",
-          name: "Cây 5",
-          plan: [],
-        },
-        {
-          id: "6",
-          name: "Cây 6",
-          plan: [],
-        },
-      ],
-    });
     setBVTV([
       {
         name: "type 1",
@@ -743,10 +689,72 @@ const GardenProjectHistory = () => {
     ]);
   }, []);
 
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await GARDEN.getGardenProject(gardenId)
+      console.log("Data: ", data.data)
+
+      data.data.projects ? setInitData({
+        id: 1,
+        plants: data.data.projects.map(prj => {
+          return {
+            id: prj.projectId,
+            name: prj.name,
+            status: prj.status,
+            plan: prj.process.map(p => {
+              return {
+                tx: p._id,
+                time: p.time,
+                loai_canh_tac: p.type,
+                detail:p.agroChemicalItems,
+                note: p.note,
+                id: p._id
+              }
+            })
+          }
+        })
+      }): setInitData([]);
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await GARDEN.getGardenProject(gardenId)
+      console.log("Data to look: ", data)
+
+      data.data.projects ? setTemplates({
+        id: '1',
+        seeds: data.data.projects.map(s => {
+          return {
+            id: s.projectId,
+            name: s.name,
+            seed: s.input.seed,
+            img: s.input.images,
+            plan: s.plan.map(p => {
+              return {
+                id: p._id,
+                time: p.time,
+                note: p.note,
+                type: p.type,
+                agroChemicalItems: p.agroChemicalItems,
+              }
+            })
+            }
+          })
+      }): setTemplates([]);
+    }
+    fetchData();
+  }, []);
+
+
   const onCreate = (values) => {
-    console.log("Received values of onCreate: ", values);
+    console.log("Received values of onCreate abcdjcndjcndj: ", values);
+    setPlanSelected(values.plant);
+    console.log(templates.seeds);
     setPlans(templates.seeds.find((s) => s.id === values.plant)?.plan);
-    console.log(plans);
+    console.log('plans', plans);
     setOpen(false);
     setOpenPlans(true);
   };
@@ -756,6 +764,15 @@ const GardenProjectHistory = () => {
     setOpenPlans(false);
     let newTemp = [];
     newTemp.push(values.plan);
+    newTemp[0].note = newTemp[0].note + newTemp[0].time
+    const dateObj = new Date();
+
+    const yearData = dateObj.getFullYear();
+    const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const dateData = dateObj.getDate().toString().padStart(2, '0');
+
+    const formattedDate = `${yearData}-${monthData}-${dateData}`;
+    newTemp[0].time = formattedDate
     setDefaultTemplate(newTemp);
     setBVTV([
       {
@@ -777,14 +794,90 @@ const GardenProjectHistory = () => {
     setOpenTemplate(true);
   };
 
-  const onCreateTemplate = (values) => {
-    console.log("Received values of onCreateTemplate: ", values);
-    setOpenTemplate(false);
+  const onCreateTemplate = async (values) => {
+    try {
+      delete values.items[0].id
+      const res = await FARM.addProcess(values.items[0], planSelected);
+      console.log("res: ", res);
+      setOpenTemplate(false);
+      setInitData({
+        id: "1",
+        plants: initData.plants.map(data => {
+          if(data.id === res.data.projectId){
+            data.plan = res.data.updatedProjectProcess.map(p => {
+              return {
+                tx: p._id,
+                time: p.time,
+                loai_canh_tac: p.type,
+                detail:p.agroChemicalItems,
+                note: p.note,
+              }
+            })
+          }
+          return data
+        })
+      })
+      openNotificationWithIcon(
+        "success",
+        "Thông báo",
+        "Tạo mới thành công"
+      );
+
+    } catch (error) {
+      openNotificationWithIcon(
+        "error",
+        "Thông báo",
+        "Có lỗi xảy ra"
+      );
+        console.error(error?.response?.data?.message);
+    }
   };
 
-  const onCreateEdit = (values) => {
-    console.log("Received values of onCreate: ", values);
-    setOpenEdit(false);
+  const onCreateEdit = async (values) => {
+    try {
+      console.log("Received values of editttttttt: ", values);
+      let body = {
+        time: values.time,
+        agroChemicalItems: values.detail,
+        type: values.loai_canh_tac,
+        note: values.note
+      }
+      const res = await FARM.editProcess(body, projectIDSelected, processSelected);
+      openNotificationWithIcon(
+        "success",
+        "Thông báo",
+        "Cập nhật thành công"
+      );
+      console.log('initData', initData);
+      const editData = initData.plants.find(obj => obj.id === projectIDSelected)
+      setInitData({
+        id: "1",
+        plants: initData.plants.map(plant => {
+          console.log("here:", plant, editData)
+          if(plant.id == editData.id) {
+            plant.plan = res?.data.updatedProcess.map(i => {
+              return {
+                detail: i.agroChemicalItems,
+                loai_canh_tac: i.type,
+                note: i.note,
+                time: i.time,
+                id: i._id
+              }
+            })
+          }
+          return plant
+        })
+      })
+      setOpenEdit(false);
+    }
+    catch (e) {
+      console.error(e?.response?.data?.message);
+      openNotificationWithIcon(
+        "error",
+        "Thông báo",
+        "Có lỗi xảy ra"
+      );
+    }
   };
 
   const handleChangeStatus = (value) => {
@@ -821,7 +914,10 @@ const GardenProjectHistory = () => {
                       onClick={() => {
                         setOpenEdit(true);
                         setEditData(rec);
+                        setProcessSelected(rec.id);
+                        setProjectIDSelected(record.id)
                         console.log("rec", rec);
+                        console.log("record", record);
                       }}
                     >
                       <EditFilled /> Chỉnh sửa
@@ -938,6 +1034,7 @@ const GardenProjectHistory = () => {
 
   return (
     <div>
+      {contextHolder}
       {initData ? (
         <div>
           <h2 style={{ margin: "0px" }}>Các hoạt động canh tác</h2>

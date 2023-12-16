@@ -62,6 +62,19 @@ const GARDEN = {
       return err;
     });
   },
+
+  getGardenProject: async (gardenId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `gardenProject/${gardenId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  }
 }
+
 
 export default GARDEN;
