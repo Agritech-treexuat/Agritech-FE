@@ -28,23 +28,18 @@ import {
 import { EditFilled, UploadOutlined, CloseOutlined } from "@ant-design/icons";
 import Loading from "../../../pages/Loading";
 import "./style.css";
+import GARDEN from "../../../services/gardenService";
 
 const { Meta } = Card;
 
 const mainContent = {
   id: "1",
-  transaction_hash: "adakdhakjdsas",
   //Cây
   seeds: [
     {
       id: "1",
       name: "cây 1",
       seed: "abc",
-      startDate: "23/11/2023",
-      amount: 10000,
-      img: [
-        "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-      ],
       plan: [
         {
           time: "12h",
@@ -106,11 +101,6 @@ const mainContent = {
       id: "2",
       name: "cây 2",
       seed: "Hạt giống",
-      startDate: "23/11/2023",
-      amount: 1000,
-      img: [
-        "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-      ],
       plan: [
         {
           time: "12h",
@@ -133,11 +123,6 @@ const mainContent = {
       id: "3",
       name: "cây 3",
       seed: "Hạt giống",
-      startDate: "23/11/2023",
-      amount: 1000,
-      img: [
-        "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-      ],
       plan: [
         {
           time: "12h",
@@ -160,22 +145,12 @@ const mainContent = {
       id: "4",
       name: "cây 4",
       seed: "Hạt giống",
-      startDate: "23/11/2023",
-      amount: 1000,
-      img: [
-        "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-      ],
       plan: [],
     },
     {
       id: "5",
       name: "cây 5",
       seed: "Hạt giống",
-      startDate: "23/11/2023",
-      amount: 1000,
-      img: [
-        "https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg",
-      ],
       plan: [],
     },
   ],
@@ -466,7 +441,25 @@ const CollectionTemplateForm = ({
   );
 };
 
-const items = mainContent.seeds
+
+const GardenProjectTemplate = () => {
+
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5,
+    });
+  };
+  const [initData, setInitData] = useState(null);
+  const [defaultTemplate, setDefaultTemplate] = useState([]);
+  const [selectedPlant, setSelectedPlant] = useState("");
+  const [fetilizer, setFetilizer] = useState([]);
+  const [BVTV, setBVTV] = useState([]);
+  const gardenId = useParams().id;
+  console.log("params: ", gardenId);
+  const items = initData ? initData.seeds
   ?.filter((seed) => seed.plan.length > 0)
   .map((plant, index) => {
     plant.key = index.toString();
@@ -481,15 +474,12 @@ const items = mainContent.seeds
     plant.children = (
       <div>
         <div style={{ cursor: "pointer" }}>
-          <EditFilled style={{ color: "#86B049", fontSize: "18px" }} />
+          <EditFilled style={{ color: "#86B049", fontSize: "18px" }} onClick={() => handleEdit(plant)}/>
           {"  "}Chỉnh sửa thông tin
         </div>
         <div>
           <p>
-            <strong>Tên hạt giống:</strong> {plant.name}
-          </p>
-          <p>
-            <strong>Lượng:</strong> {plant.amount}
+            <strong>Tên hạt giống:</strong> {plant.seed}
           </p>
           {plant.plan.map((p) => (
             <div>
@@ -534,24 +524,27 @@ const items = mainContent.seeds
       </div>
     );
     return plant;
-  });
+  }) : [];
 
-const GardenProjectTemplate = () => {
-  const [api, contextHolder] = notification.useNotification();
-  const openNotificationWithIcon = (type, title, content) => {
-    api[type]({
-      message: title,
-      description: content,
-      duration: 3.5,
-    });
-  };
-  const [initData, setInitData] = useState(null);
-  const [defaultTemplate, setDefaultTemplate] = useState([]);
-  const [selectedPlant, setSelectedPlant] = useState("");
-  const [fetilizer, setFetilizer] = useState([]);
-  const [BVTV, setBVTV] = useState([]);
-  const projectID = useParams();
-  console.log("params: ", projectID);
+  useEffect(() => {
+    async function fetchData() {
+      const data = await GARDEN.getGardenTemplate(gardenId)
+      console.log("Data: ", data.data)
+
+      data.data.projects ? setInitData({
+        id: 1,
+        seeds: data.data.projects.map(prj => {
+          return {
+            id: prj.projectId,
+            name: prj.name,
+            seed: prj.input.seed,
+            plan: prj.plan
+          }
+        })
+      }): setInitData([]);
+    }
+    fetchData();
+  }, []);
 
   const [open, setOpen] = useState(false);
   const onCreate = (values) => {
@@ -584,29 +577,65 @@ const GardenProjectTemplate = () => {
     setOpenTemplate(true);
   };
 
+  const handleEdit = (plant) => {
+    console.log("plant: ", plant)
+    setSelectedPlant(plant);
+      setBVTV([
+        {
+          name: "type 1",
+        },
+        {
+          name: "type 2",
+        },
+      ]);
+
+      setFetilizer([
+        {
+          name: "Fetilizer 1",
+        },
+        {
+          name: "Fetilizer 2",
+        },
+      ]);
+    setDefaultTemplate(plant.plan)
+    setOpenTemplate(true);
+  }
+
   const [openTemplate, setOpenTemplate] = useState(false);
   const onCreateTemplate = (values) => {
-    console.log("Received values of form: ", values);
+    console.log("Received values of form here: ", values);
+    const data = {
+      "plan": values.items
+    }
+    updateTemplate(data, selectedPlant.id)
     setOpenTemplate(false);
   };
 
-  useEffect(() => {
-    setInitData(mainContent);
-  }, []);
+  const updateTemplate = async (data, projectId) => {
+    console.log("data send: ", data)
+    const new_data = await FARM.updatePlantCultivatesToProject(data, projectId)
+    console.log("res new data: ", new_data)
+    // const newPlans = plans.map((item) =>
+    //   item._id === new_data.data.plantFarming._id ? new_data.data.plantFarming : item
+    // )
+    // setPlans(newPlans)
+    setInitData({
+      id: "1",
+      seeds: initData.seeds.map(data => {
+        if(data.id === selectedPlant.id){
+          data.plan = new_data.data.updatedProjectPlan
+        }
+        return data
+      })
+    })
+    // setProjectTemplate(new_data.data.updatedProjectPlan)
+  }
 
   return (
     <div>
       {contextHolder}
-      {setInitData ? (
+      {initData ? (
         <div>
-          <Button
-            type="primary"
-            onClick={() => {
-              setOpen(true);
-            }}
-          >
-            Thêm cây
-          </Button>
           <CollectionCreateForm
             open={open}
             onCreate={onCreate}

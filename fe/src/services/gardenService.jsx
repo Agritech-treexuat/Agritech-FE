@@ -50,6 +50,18 @@ const GARDEN = {
       return err;
     });
   },
+
+  getGardenTemplate: async (gardenId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `gardenPlantFarming/${gardenId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
 }
 
 export default GARDEN;

@@ -140,7 +140,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             }
             options={listSeed.map((seed) => {
               seed.label = seed.name;
-              seed.value = seed.id;
+              seed.value = seed.name;
               return seed;
             })}
           />
@@ -256,7 +256,7 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
             }
             options={listSeed?.map((seed) => {
               seed.label = seed.name;
-              seed.value = seed.id;
+              seed.value = seed.name;
               return seed;
             })}
           />
