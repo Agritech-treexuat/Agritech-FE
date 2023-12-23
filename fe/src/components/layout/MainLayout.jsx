@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
 import { Breadcrumb, Layout, Menu, theme } from 'antd'
 import { Outlet } from 'react-router-dom'
@@ -23,7 +23,18 @@ const items = [
   getItem('Log out', '7', <FileOutlined />)
 ]
 const App = () => {
+  useEffect(() => {
+    // Lấy path từ URL và chọn key tương ứng
+    const path = window.location.pathname
+    const selectedItem = items.find((item) => item.link === path)
+    if (selectedItem) {
+      setSelectedKey(selectedItem.key)
+    }
+  }, []) // Chạy một lần khi component mount
+
   const [collapsed, setCollapsed] = useState(false)
+  const [selectedKey, setSelectedKey] = useState('1')
+
   const {
     token: { colorBgContainer }
   } = theme.useToken()
@@ -35,9 +46,9 @@ const App = () => {
     >
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+        <Menu theme="dark" selectedKeys={[selectedKey]} mode="inline">
           {items.map((item) => (
-            <Menu.Item key={item.key}>
+            <Menu.Item key={item.key} onClick={() => setSelectedKey(item.key)}>
               {item.icon}
               <span>{item.label}</span>
               <Link to={item.link} />
