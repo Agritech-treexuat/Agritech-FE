@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Form, Input, Select, InputNumber, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import FARM from '../../../services/farmService'
@@ -30,7 +30,6 @@ const normFile = (e) => {
 }
 
 const testForm = null
-const seeds = ['Seed A', 'Seed B', 'Seed C', 'Seed D']
 
 const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
   const params = useParams()
@@ -49,6 +48,7 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
     amount: input.amount,
     upload: input.images
   }
+  const [seeds, setSeeds] = useState([])
 
   const onFinish = (values) => {
     console.log('Values: ', values)
@@ -76,6 +76,16 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
       console.error(error?.response?.data?.message)
     }
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getAllSeedByPlantId(input.plantId)
+      console.log('Data to look: ', data)
+
+      data.data ? setSeeds(data.data.seeds.map((item) => item.name)) : setSeeds([])
+    }
+    fetchData()
+  }, [])
 
   return (
     <Form
