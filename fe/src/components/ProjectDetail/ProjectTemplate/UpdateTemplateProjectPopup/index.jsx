@@ -26,7 +26,7 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
   return (
     <Modal
       open={open}
-      title="Thêm cây mới"
+      title="Cập nhật quy trình"
       okText="Create"
       cancelText="Cancel"
       onCancel={onCancel}
@@ -43,7 +43,6 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
       }}
       getContainer={false}
     >
-      <h1>hello</h1>
       <Form
         labelCol={{
           span: 6

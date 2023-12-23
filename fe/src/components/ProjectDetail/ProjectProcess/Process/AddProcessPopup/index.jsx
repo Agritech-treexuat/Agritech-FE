@@ -66,44 +66,54 @@ const AddProcessPopUp = ({ setProcessData }) => {
     setIsModalOpen3(false)
   }
 
+  const modalContentStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  }
+
+  const buttonContainerStyle = {
+    margin: '8px 0'
+  }
+
   return (
     <>
       <Button type="primary" onClick={showModal} style={{ marginBottom: '15px' }}>
         Thêm hoạt động
       </Button>
       <Modal
-        title="Thêm hoạt động "
-        open={isModalOpen}
+        title="Thêm hoạt động"
+        visible={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Submit"
         footer={null}
       >
-        {projectTemplate ? (
-          <>
-            {projectTemplate.map((item, index) => (
-              <>
+        <div style={modalContentStyle}>
+          {projectTemplate ? (
+            projectTemplate.map((item, index) => (
+              <div key={index} style={buttonContainerStyle}>
                 <Button type="primary" onClick={() => toggleModal2(index, true)}>
-                  {item.time +
-                    '-' +
-                    item.type +
-                    '-' +
-                    item.agroChemicalItems.map((cul_item) => cul_item.name + '-' + cul_item.amountPerHa)}
+                  {`${item.time} (${item.type}) \n ${item.agroChemicalItems.map(
+                    (cul_item) => `${cul_item.name}-${cul_item.amountPerHa}`
+                  )}`}
                 </Button>
-              </>
-            ))}
-          </>
-        ) : (
-          <></>
-        )}
-        <Button type="primary" onClick={showModal3}>
-          None
-        </Button>
+              </div>
+            ))
+          ) : (
+            <></>
+          )}
+          <div style={buttonContainerStyle}>
+            <Button type="primary" onClick={showModal3}>
+              None
+            </Button>
+          </div>
+        </div>
       </Modal>
       {projectTemplate.map((item, index) => (
         <>
           <Modal
-            title="Basic Modal"
+            title="Thêm hoạt động"
             open={isModalOpen2[index]}
             onOk={() => toggleModal2(index, false)}
             onCancel={() => toggleModal2(index, false)}
@@ -112,7 +122,7 @@ const AddProcessPopUp = ({ setProcessData }) => {
           </Modal>
         </>
       ))}
-      <Modal title="Basic Modal" open={isModalOpen3} onOk={handleOk3} onCancel={handleCancel3}>
+      <Modal title="Thêm hoạt động" open={isModalOpen3} onOk={handleOk3} onCancel={handleCancel3}>
         <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData} process={null} />
       </Modal>
     </>
