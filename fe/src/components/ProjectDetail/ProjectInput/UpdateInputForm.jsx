@@ -138,7 +138,7 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
           }
         ]}
       >
-        <InputNumber defaultValue={3} />
+        <InputNumber defaultValue={3} addonAfter="kg"/>
       </Form.Item>
 
       <Form.Item name="upload" label="Ảnh" valuePropName="fileList" getValueFromEvent={normFile}>

@@ -296,14 +296,14 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
                                 <Select
                                   placeholder="Chọn tên"
                                   options={
-                                    formTemplate.getFieldValue(['items', field.name, 'type']) == 'phân bón'
+                                    formTemplate.getFieldValue(['items', field.name, 'type']) === 'phân bón'
                                       ? fetilizer_name
                                       : BVTV_name
                                   }
                                 />
                               </Form.Item>
                               <Form.Item noStyle name={[subField.name, 'amountPerHa']}>
-                                <Input placeholder="Số lượng" type="number" />
+                                <Input placeholder="Số lượng" type="number"/>
                               </Form.Item>
                               <CloseOutlined
                                 onClick={() => {

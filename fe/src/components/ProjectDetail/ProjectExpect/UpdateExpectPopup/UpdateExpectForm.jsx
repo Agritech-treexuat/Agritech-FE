@@ -95,7 +95,7 @@ const UpdateExpectForm = ({ handleCloseForm, expect, setExpectData }) => {
           }
         ]}
       >
-        <InputNumber />
+        <InputNumber addonAfter="kg"/>
       </Form.Item>
       {/* note */}
       <Form.Item name="note" label="Ghi chú">

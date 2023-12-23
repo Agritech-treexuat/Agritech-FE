@@ -156,7 +156,7 @@ const CreateProject = () => {
             }
           ]}
         >
-          <InputNumber defaultValue={3} />
+          <InputNumber defaultValue={3} addonAfter="kg"/>
         </Form.Item>
 
         <Form.Item name="upload" label="Upload" valuePropName="fileList" getValueFromEvent={normFile}>
@@ -174,7 +174,7 @@ const CreateProject = () => {
             }
           ]}
         >
-          <InputNumber defaultValue={30} />
+          <InputNumber defaultValue={30} addonAfter="kg"/>
         </Form.Item>
         {/* submit button */}
         <Form.Item {...tailLayout}>

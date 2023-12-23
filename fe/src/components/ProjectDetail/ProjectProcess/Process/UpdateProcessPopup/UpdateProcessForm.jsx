@@ -185,7 +185,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                             }
                           ]}
                         >
-                          <InputNumber />
+                          <InputNumber addonAfter="kg"/>
                         </Form.Item>
                         <MinusCircleOutlined onClick={() => remove(name)} />
                       </Space>

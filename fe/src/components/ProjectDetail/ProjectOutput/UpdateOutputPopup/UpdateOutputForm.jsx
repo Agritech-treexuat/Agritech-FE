@@ -118,7 +118,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
           }
         ]}
       >
-        <InputNumber />
+        <InputNumber addonAfter="kg"/>
       </Form.Item>
       {/* amount per one */}
       <Form.Item
@@ -130,7 +130,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
           }
         ]}
       >
-        <InputNumber />
+        <InputNumber addonAfter="kg"/>
       </Form.Item>
 
       <Form.Item name="upload" label="Ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
@@ -173,7 +173,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
                     }
                   ]}
                 >
-                  <InputNumber />
+                  <InputNumber addonAfter="kg"/>
                 </Form.Item>
                 <MinusCircleOutlined onClick={() => remove(name)} />
               </Space>
