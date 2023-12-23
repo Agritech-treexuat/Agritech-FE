@@ -1,98 +1,97 @@
-import React from 'react';
-import { Button, Form, Input, Select, Space, InputNumber } from 'antd';
+import React from 'react'
+import { Button, Form, Input, Select, Space, InputNumber } from 'antd'
 import FARM from '../../../../../services/farmService'
-import { useParams } from 'react-router';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import './style.css';
-const { Option } = Select;
+import { useParams } from 'react-router'
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+import './style.css'
+const { Option } = Select
 
 const layout = {
   labelCol: {
-    span: 8,
+    span: 8
   },
   wrapperCol: {
-    span: 16,
-  },
-};
+    span: 16
+  }
+}
 
 const tailLayout = {
   wrapperCol: {
     offset: 8,
-    span: 16,
-  },
-};
+    span: 16
+  }
+}
 
-const testForm = null;
+const testForm = null
 
-const fertilizers = ["NHK", "Kali", "Other name"];
-const bvtvs = ["BVTV1", "BVTV2", "Other name"];
+const fertilizers = ['NHK', 'Kali', 'Other name']
+const bvtvs = ['BVTV1', 'BVTV2', 'Other name']
 
 const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
-  const date = today.getDate().toString().padStart(2, '0');
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = (today.getMonth() + 1).toString().padStart(2, '0') // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
+  const date = today.getDate().toString().padStart(2, '0')
 
-  const currentDate = `${year}-${month}-${date}`;
-  console.log("Today: ", currentDate)
+  const currentDate = `${year}-${month}-${date}`
+  console.log('Today: ', currentDate)
   const params = useParams()
-  const dateObj = new Date(process.time);
+  const dateObj = new Date(process.time)
 
-  const yearData = dateObj.getFullYear();
-  const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-  const dateData = dateObj.getDate().toString().padStart(2, '0');
+  const yearData = dateObj.getFullYear()
+  const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0')
+  const dateData = dateObj.getDate().toString().padStart(2, '0')
 
-  const formattedDate = `${yearData}-${monthData}-${dateData}`;
-  const formRef = React.useRef(null);
+  const formattedDate = `${yearData}-${monthData}-${dateData}`
+  const formRef = React.useRef(null)
   let initValue = {
-    'date': formattedDate,
-    'type': process.type,
-    'note': process.note
-  };
-
-  if (process.type === 'phân bón'||process.type === 'BVTV') {
-    initValue = {
-      'date': formattedDate,
-      'type': process.type,
-      'agroChemicalItems': process.agroChemicalItems,
-      'note': process.note
-    };
+    date: formattedDate,
+    type: process.type,
+    note: process.note
   }
-  console.log("process: ", process)
-  console.log("init: ", initValue)
+
+  if (process.type === 'phân bón' || process.type === 'BVTV') {
+    initValue = {
+      date: formattedDate,
+      type: process.type,
+      agroChemicalItems: process.agroChemicalItems,
+      note: process.note
+    }
+  }
+  console.log('process: ', process)
+  console.log('init: ', initValue)
 
   const onFinish = (values) => {
-    console.log("Values: ", values);
+    console.log('Values: ', values)
     if ('other name' in values) {
-      values.name = values['other name'];
+      values.name = values['other name']
     }
-    let updatedValue = { ...values, time: values.date };
-    if(updatedValue.type == 'other') {
+    let updatedValue = { ...values, time: values.date }
+    if (updatedValue.type == 'other') {
       updatedValue.name = ''
       updatedValue.amount = ''
     }
-    delete updatedValue.date;
-    console.log(updatedValue);
+    delete updatedValue.date
+    console.log(updatedValue)
     const data = {
-      "tx": "b",
+      tx: 'b',
       ...updatedValue
     }
-    console.log("test form: ", testForm)
+    console.log('test form: ', testForm)
     handleSubmitProcess(data, params.id, process._id)
-  };
-
-  const handleSubmitProcess = async (data, projectId, processId )=> {
-    try {
-      console.log("data to send: ", data, projectId)
-      const res = await FARM.editProcess(data, projectId, processId);
-      console.log("res: ", res)
-      setProcessData(res.data.updatedProcess)
-      handleCloseForm();
-    } catch (error) {
-        console.error(error?.response?.data?.message);
-    }
   }
 
+  const handleSubmitProcess = async (data, projectId, processId) => {
+    try {
+      console.log('data to send: ', data, projectId)
+      const res = await FARM.editProcess(data, projectId, processId)
+      console.log('res: ', res)
+      setProcessData(res.data.updatedProcess)
+      handleCloseForm()
+    } catch (error) {
+      console.error(error?.response?.data?.message)
+    }
+  }
 
   return (
     <Form
@@ -103,7 +102,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       onFinish={onFinish}
       initialValues={initValue}
       style={{
-        maxWidth: 600,
+        maxWidth: 600
       }}
     >
       {/* date */}
@@ -112,8 +111,8 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
         label="Thời gian"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
         <Input type="date" />
@@ -124,8 +123,8 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
         label="Loại canh tác"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
         <Select placeholder="Chọn loại">
@@ -135,11 +134,8 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
         </Select>
       </Form.Item>
       {/* item whe check type */}
-      <Form.Item
-        noStyle
-        shouldUpdate={(prevValues, currentValues) => prevValues.type !== currentValues.type}
-      >
-        {({ getFieldValue }) => (
+      <Form.Item noStyle shouldUpdate={(prevValues, currentValues) => prevValues.type !== currentValues.type}>
+        {({ getFieldValue }) =>
           getFieldValue('type') === 'phân bón' || getFieldValue('type') === 'BVTV' ? (
             <div>
               {/* name */}
@@ -151,7 +147,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                         key={key}
                         style={{
                           display: 'flex',
-                          marginBottom: 8,
+                          marginBottom: 8
                         }}
                         align="baseline"
                       >
@@ -161,8 +157,8 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                           rules={[
                             {
                               required: true,
-                              message: 'Missing name',
-                            },
+                              message: 'Missing name'
+                            }
                           ]}
                         >
                           <Select placeholder="Select a name">
@@ -176,8 +172,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                                   <Option key={bv} value={bv}>
                                     {bv}
                                   </Option>
-                                ))
-                              }
+                                ))}
                           </Select>
                         </Form.Item>
                         <Form.Item
@@ -186,8 +181,8 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                           rules={[
                             {
                               required: true,
-                              message: 'Missing amount per ha',
-                            },
+                              message: 'Missing amount per ha'
+                            }
                           ]}
                         >
                           <InputNumber />
@@ -197,39 +192,33 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                     ))}
                     <Form.Item>
                       <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                      Thêm cụ thể
+                        Thêm cụ thể
                       </Button>
                     </Form.Item>
                   </>
                 )}
               </Form.List>
               {/* note */}
-              <Form.Item
-                name="note"
-                label="Ghi chú"
-              >
+              <Form.Item name="note" label="Ghi chú">
                 <Input />
               </Form.Item>
             </div>
           ) : (
             // note
-            <Form.Item
-              name="note"
-              label="Ghi chú"
-            >
+            <Form.Item name="note" label="Ghi chú">
               <Input />
             </Form.Item>
           )
-        )}
+        }
       </Form.Item>
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-        Cập nhật
+          Cập nhật
         </Button>
       </Form.Item>
     </Form>
-  );
-};
+  )
+}
 
-export default UpdateProcessForm;
+export default UpdateProcessForm

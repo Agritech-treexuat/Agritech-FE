@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import FARM from "../../../services/farmService";
-import { useParams } from "react-router";
-import { useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import dayjs from "dayjs";
+import React, { useState } from 'react'
+import FARM from '../../../services/farmService'
+import { useParams } from 'react-router'
+import { useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import dayjs from 'dayjs'
 import {
   Col,
   Row,
@@ -21,25 +21,25 @@ import {
   Flex,
   Select,
   DatePicker,
-  Space,
-} from "antd";
-import { HistoryOutlined, EditFilled, CloseOutlined } from "@ant-design/icons";
+  Space
+} from 'antd'
+import { HistoryOutlined, EditFilled, CloseOutlined } from '@ant-design/icons'
 
-import Loading from "../../../pages/Loading";
-import MenuDivider from "antd/es/menu/MenuDivider";
+import Loading from '../../../pages/Loading'
+import MenuDivider from 'antd/es/menu/MenuDivider'
 
 const layout = {
   labelCol: {
-    span: 6,
+    span: 6
   },
   wrapperCol: {
-    span: 18,
-  },
-};
+    span: 18
+  }
+}
 
 const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
-  const [form] = Form.useForm();
-  console.log("init dât; ", listPlant);
+  const [form] = Form.useForm()
+  console.log('init dât; ', listPlant)
   return (
     <Modal
       open={open}
@@ -51,12 +51,12 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
-            onCreate(values);
+            form.resetFields()
+            onCreate(values)
           })
           .catch((info) => {
-            console.log("Validate Failed:", info);
-          });
+            console.log('Validate Failed:', info)
+          })
       }}
     >
       <Form
@@ -65,16 +65,16 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
         name="form_in_modal"
         initialValues={{
           plants: listPlant.map((p) => {
-            p.key = p.id;
-            return p;
-          }),
+            p.key = p.id
+            return p
+          })
         }}
       >
         <Form.Item name="startDate" label="Ngày bắt đầu">
           <DatePicker
-            defaultValue={dayjs(new Date()).add(1, "day")}
+            defaultValue={dayjs(new Date()).add(1, 'day')}
             placeholder="Chọn ngày giao"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
           />
         </Form.Item>
         <Form.Item label="Danh sách" name="plants">
@@ -82,43 +82,43 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             {(subFields, subOpt) => (
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  rowGap: 16,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  rowGap: 16
                 }}
               >
                 {subFields.map((subField, i) => (
                   <Space key={subField.key}>
-                    <span>{listPlant[i].name ? listPlant[i].name : ""}</span>
+                    <span>{listPlant[i].name ? listPlant[i].name : ''}</span>
                     <Form.Item
                       noStyle
-                      name={[subField.name, "amount"]}
+                      name={[subField.name, 'amount']}
                       label={listPlant[i]?.name}
                       rules={[
                         {
                           required: true,
-                          message: "Trường thông tin này không được để trống!",
-                        },
+                          message: 'Trường thông tin này không được để trống!'
+                        }
                       ]}
                     >
                       <Input
                         type={(() => {
-                          if (listPlant[i].name !== "Tặng") {
-                            return "number";
+                          if (listPlant[i].name !== 'Tặng') {
+                            return 'number'
                           }
-                          return "";
+                          return ''
                         })()}
                         addonAfter={(() => {
-                          if (listPlant[i].name !== "Tặng") {
-                            return "kg";
+                          if (listPlant[i].name !== 'Tặng') {
+                            return 'kg'
                           }
-                          return "";
+                          return ''
                         })()}
                       />
                     </Form.Item>
                     <CloseOutlined
                       onClick={() => {
-                        subOpt.remove(subField.name);
+                        subOpt.remove(subField.name)
                       }}
                     />
                   </Space>
@@ -129,9 +129,9 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
                     listPlant.push({
                       key: listPlant.length + 1,
                       id: listPlant.length + 1,
-                      name: "Tặng",
-                    });
-                    subOpt.add();
+                      name: 'Tặng'
+                    })
+                    subOpt.add()
                   }}
                   block
                 >
@@ -144,43 +144,43 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
         <div></div>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 const GardenProjectOutput = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   const onCreate = (values) => {
-    console.log("Received values of form: ", values);
-    setOpen(false);
-  };
-  const [initData, setInitData] = useState([]);
-  const [listPlant, setListPlant] = useState([]);
-  const [deliveried, setDeliveried] = useState([]);
-  const [notDeliveried, setNotDeliveried] = useState([]);
-  const projectID = useParams();
-  console.log("params: ", projectID);
-  console.log(deliveried);
+    console.log('Received values of form: ', values)
+    setOpen(false)
+  }
+  const [initData, setInitData] = useState([])
+  const [listPlant, setListPlant] = useState([])
+  const [deliveried, setDeliveried] = useState([])
+  const [notDeliveried, setNotDeliveried] = useState([])
+  const projectID = useParams()
+  console.log('params: ', projectID)
+  console.log(deliveried)
 
   useEffect(() => {
     // 1 là đã giao, 0 là chưa giao
     setListPlant([
       {
-        id: "1",
-        name: "Cây 1",
+        id: '1',
+        name: 'Cây 1'
       },
       {
-        id: "2",
-        name: "Cây 2",
+        id: '2',
+        name: 'Cây 2'
       },
       {
-        id: "3",
-        name: "Cây 3",
+        id: '3',
+        name: 'Cây 3'
       },
       {
-        id: "4",
-        name: "Cây 4",
-      },
-    ]);
-  }, []);
+        id: '4',
+        name: 'Cây 4'
+      }
+    ])
+  }, [])
 
   useEffect(() => {
     // 1 là đã giao, 0 là chưa giao
@@ -188,63 +188,63 @@ const GardenProjectOutput = () => {
       {
         time: new Date().toISOString(),
         plants: [
-          { name: "Cây 1", amount: 5 },
-          { name: "Cây 2", amount: 5 },
-          { name: "Cây 3", amount: 0 },
-          { name: "Cây 4", amount: 0 },
+          { name: 'Cây 1', amount: 5 },
+          { name: 'Cây 2', amount: 5 },
+          { name: 'Cây 3', amount: 0 },
+          { name: 'Cây 4', amount: 0 }
         ],
-        status: 1,
+        status: 1
       },
       {
         time: new Date().toISOString(),
         plants: [
-          { name: "Cây 1", amount: 5 },
-          { name: "Cây 1", amount: 5 },
+          { name: 'Cây 1', amount: 5 },
+          { name: 'Cây 1', amount: 5 }
         ],
-        status: 1,
+        status: 1
       },
       {
         time: new Date().toISOString(),
         plants: [
-          { name: "Cây 1", amount: 5 },
-          { name: "Cây 1", amount: 5 },
+          { name: 'Cây 1', amount: 5 },
+          { name: 'Cây 1', amount: 5 }
         ],
-        status: 1,
+        status: 1
       },
       {
         time: new Date().toISOString(),
         plants: [
-          { name: "Cây 1", amount: 5 },
-          { name: "Cây 1", amount: 5 },
+          { name: 'Cây 1', amount: 5 },
+          { name: 'Cây 1', amount: 5 }
         ],
-        status: 0,
-      },
-    ]);
-  }, []);
+        status: 0
+      }
+    ])
+  }, [])
 
   useEffect(() => {
-    console.log("Init: ", initData);
+    console.log('Init: ', initData)
     // 1 là đã giao, 0 là chưa giao
-    setDeliveried(initData.filter((i) => i.status === 1));
-  }, [initData]);
+    setDeliveried(initData.filter((i) => i.status === 1))
+  }, [initData])
 
   useEffect(() => {
     // 1 là đã giao, 0 là chưa giao
-    setNotDeliveried(initData.filter((i) => i.status === 0));
-  }, [initData]);
+    setNotDeliveried(initData.filter((i) => i.status === 0))
+  }, [initData])
 
   const columns = [
     {
-      title: "Ngày",
-      dataIndex: "date",
+      title: 'Ngày',
+      dataIndex: 'date',
       width: 300,
-      key: "date",
-      render: (_, record) => <div>{record?.time}</div>,
+      key: 'date',
+      render: (_, record) => <div>{record?.time}</div>
     },
     {
-      title: "Thông tin",
-      key: "value",
-      dataIndex: "value",
+      title: 'Thông tin',
+      key: 'value',
+      dataIndex: 'value',
       render: (_, record) => (
         <div>
           {record.plants.map((plant) => (
@@ -259,9 +259,9 @@ const GardenProjectOutput = () => {
             </div>
           ))}
         </div>
-      ),
-    },
-  ];
+      )
+    }
+  ]
 
   return (
     <div>
@@ -270,7 +270,7 @@ const GardenProjectOutput = () => {
           <Button
             type="primary"
             onClick={() => {
-              setOpen(true);
+              setOpen(true)
             }}
           >
             Thêm
@@ -279,28 +279,20 @@ const GardenProjectOutput = () => {
             open={open}
             onCreate={onCreate}
             onCancel={() => {
-              setOpen(false);
+              setOpen(false)
             }}
             listPlant={listPlant}
           />
-          <h2 style={{ marginBottom: "1rem" }}>Sắp giao</h2>
-          <Table
-            bordered={true}
-            columns={columns}
-            dataSource={notDeliveried}
-          />{" "}
-          <h2 style={{ marginBottom: "1rem", marginTop: "1rem" }}>Đã giao</h2>
-          <Table
-            bordered={true}
-            columns={columns}
-            dataSource={deliveried}
-          />{" "}
+          <h2 style={{ marginBottom: '1rem' }}>Sắp giao</h2>
+          <Table bordered={true} columns={columns} dataSource={notDeliveried} />{' '}
+          <h2 style={{ marginBottom: '1rem', marginTop: '1rem' }}>Đã giao</h2>
+          <Table bordered={true} columns={columns} dataSource={deliveried} />{' '}
         </div>
       ) : (
         <Loading />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default GardenProjectOutput;
+export default GardenProjectOutput

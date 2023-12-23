@@ -1,29 +1,34 @@
+import React, { useState } from 'react'
+import { Button, Modal } from 'antd'
+import UpdateOutputForm from './UpdateOutputForm'
 
-import React, { useState } from 'react';
-import { Button, Modal} from 'antd';
-import UpdateOutputForm from './UpdateOutputForm';
-
-const UpdateOutputPopup = ({output, disabled, setOutputData}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const UpdateOutputPopup = ({ output, disabled, setOutputData }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
-    setIsModalOpen(true);
-  };
+    setIsModalOpen(true)
+  }
   const handleOk = () => {
-    setIsModalOpen(false);
-
-  };
+    setIsModalOpen(false)
+  }
   const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
   return (
     <>
       <Button type="primary" onClick={showModal} disabled={disabled}>
-      Chỉnh sửa
+        Chỉnh sửa
       </Button>
-      <Modal  title="Chỉnh sửa đầu ra" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText='Submit' footer={null}>
-        <UpdateOutputForm handleCloseForm={handleOk} output = {output} setOutputData={setOutputData}/>
+      <Modal
+        title="Chỉnh sửa đầu ra"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Submit"
+        footer={null}
+      >
+        <UpdateOutputForm handleCloseForm={handleOk} output={output} setOutputData={setOutputData} />
       </Modal>
     </>
-  );
-};
-export default UpdateOutputPopup;
+  )
+}
+export default UpdateOutputPopup

@@ -1,23 +1,17 @@
-import React, { useState } from 'react';
-import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import React, { useState } from 'react'
+import { DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
+import { Breadcrumb, Layout, Menu, theme } from 'antd'
 import { Outlet } from 'react-router-dom'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Footer, Sider } = Layout
 function getItem(label, key, icon, link) {
   return {
     key,
     icon,
     link,
-    label,
-  };
+    label
+  }
 }
 const items = [
   getItem('Quản lý trang trại', '1', <DesktopOutlined />, '/home'),
@@ -26,42 +20,42 @@ const items = [
   getItem('Quản lý bản mẫu', '4', <DesktopOutlined />, '/manage-template'),
   getItem('Manage Plant', '5', <TeamOutlined />, '/manage-plant'),
   getItem('Profile', '6', <UserOutlined />, '/profile'),
-  getItem('Log out', '7', <FileOutlined />),
-];
+  getItem('Log out', '7', <FileOutlined />)
+]
 const App = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false)
   const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+    token: { colorBgContainer }
+  } = theme.useToken()
   return (
     <Layout
       style={{
-        minHeight: '100vh',
+        minHeight: '100vh'
       }}
     >
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" >
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
           {items.map((item) => (
             <Menu.Item key={item.key}>
-            {item.icon}
-            <span>{item.label}</span>
-            <Link to={item.link}/>
-        </Menu.Item>
+              {item.icon}
+              <span>{item.label}</span>
+              <Link to={item.link} />
+            </Menu.Item>
           ))}
         </Menu>
       </Sider>
       <Layout>
         <Content
           style={{
-            margin: '0 16px',
+            margin: '0 16px'
           }}
         >
           <div
             style={{
               padding: 24,
               minHeight: 360,
-              background: colorBgContainer,
+              background: colorBgContainer
             }}
           >
             <Outlet />
@@ -69,13 +63,13 @@ const App = () => {
         </Content>
         <Footer
           style={{
-            textAlign: 'center',
+            textAlign: 'center'
           }}
         >
           Ant Design ©2023 Created by Ant UED
         </Footer>
       </Layout>
     </Layout>
-  );
-};
-export default App;
+  )
+}
+export default App

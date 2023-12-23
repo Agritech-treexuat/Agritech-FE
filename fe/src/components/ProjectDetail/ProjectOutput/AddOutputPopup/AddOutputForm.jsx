@@ -1,77 +1,77 @@
-import { Button, Form, Input, InputNumber, Select, Upload, Space } from 'antd';
-import { useRef } from 'react';
-import './style.css';
-import { UploadOutlined } from '@ant-design/icons';
-import { useParams } from 'react-router';
+import { Button, Form, Input, InputNumber, Select, Upload, Space } from 'antd'
+import { useRef } from 'react'
+import './style.css'
+import { UploadOutlined } from '@ant-design/icons'
+import { useParams } from 'react-router'
 import FARM from '../../../../services/farmService'
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 const layout = {
   labelCol: {
-    span: 8,
+    span: 8
   },
   wrapperCol: {
-    span: 16,
-  },
-};
+    span: 16
+  }
+}
 
 const tailLayout = {
   wrapperCol: {
     offset: 8,
-    span: 16,
-  },
-};
+    span: 16
+  }
+}
 
 const normFile = (e) => {
-  console.log('Upload event:', e);
+  console.log('Upload event:', e)
   if (Array.isArray(e)) {
-    return e;
+    return e
   }
-  return e?.fileList;
-};
+  return e?.fileList
+}
 
 const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
-  const date = today.getDate().toString().padStart(2, '0');
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = (today.getMonth() + 1).toString().padStart(2, '0') // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
+  const date = today.getDate().toString().padStart(2, '0')
 
-  const currentDate = `${year}-${month}-${date}`;
-  const formRef = useRef(null);
+  const currentDate = `${year}-${month}-${date}`
+  const formRef = useRef(null)
   const params = useParams()
 
   const onFinish = (values) => {
-    console.log("Values: ", values);
-    const images = values.upload? values.upload.map((upload) => upload.name) : []
-    const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images };
-    delete updatedValue.date;
-    delete updatedValue['amount per one'];
+    console.log('Values: ', values)
+    const images = values.upload ? values.upload.map((upload) => upload.name) : []
+    const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
+    delete updatedValue.date
+    delete updatedValue['amount per one']
     delete updatedValue.upload
     const data = {
-      "tx": "b",
+      tx: 'b',
       ...updatedValue,
-      "exportQR": false
+      exportQR: false
     }
-    const totalNppAmount = values.npp ? values.npp.reduce((total, item) => total + item.amount, 0) : 0;
+    const totalNppAmount = values.npp ? values.npp.reduce((total, item) => total + item.amount, 0) : 0
 
     if (values.amount >= totalNppAmount) {
       handleSubmitOutput(data, params.id)
       // handleSubmitOutput(data, params.id);
     } else {
-      alert("Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế");
+      alert('Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế')
       // Hiển thị thông báo hoặc thực hiện các xử lý khác tại đây nếu cần.
     }
-  };
+  }
 
-  const handleSubmitOutput = async (data, projectId )=> {
+  const handleSubmitOutput = async (data, projectId) => {
     try {
-      console.log("data to send: ", data, projectId)
-      const res = await FARM.addOutput(data, projectId);
-      console.log("res: ", res)
+      console.log('data to send: ', data, projectId)
+      const res = await FARM.addOutput(data, projectId)
+      console.log('res: ', res)
       setOutputData(res.data.updatedProjectOutput)
-      handleCloseForm();
+      handleCloseForm()
     } catch (error) {
-        console.error(error?.response?.data?.message);
+      console.error(error?.response?.data?.message)
     }
   }
 
@@ -82,28 +82,26 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
     accept: 'image/*',
     onChange(info) {
       if (info.file.status === 'done') {
-        console.log(`${info.file.name} file uploaded successfully`);
+        console.log(`${info.file.name} file uploaded successfully`)
       } else if (info.file.status === 'error') {
-        console.error(`${info.file.name} file upload failed.`);
+        console.error(`${info.file.name} file upload failed.`)
       }
-    },
-  };
+    }
+  }
 
   return (
     <Form
       {...layout}
       ref={formRef}
-      initialValues={
-        {
-          'date': currentDate,
-          'amount': 1000,
-          'amount per one': 10
-        }
-      }
+      initialValues={{
+        date: currentDate,
+        amount: 1000,
+        'amount per one': 10
+      }}
       name="control-ref"
       onFinish={onFinish}
       style={{
-        maxWidth: 600,
+        maxWidth: 600
       }}
     >
       {/* date */}
@@ -112,8 +110,8 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
         label="Thời gian"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
         <Input type="date" />
@@ -124,8 +122,8 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
         label="Lượng"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
         <InputNumber />
@@ -136,22 +134,17 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
         label="Lượng/sản phẩm"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
         <InputNumber />
       </Form.Item>
 
-      <Form.Item
-        name="upload"
-        label="Ảnh"
-        valuePropName="fileList"
-        getValueFromEvent={normFile}
-      >
+      <Form.Item name="upload" label="Ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
         <Upload {...uploadProps} listType="picture">
-        <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
-      </Upload>
+          <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
+        </Upload>
       </Form.Item>
       {/* List npp */}
       <Form.List name="npp">
@@ -162,7 +155,7 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
                 key={key}
                 style={{
                   display: 'flex',
-                  marginBottom: 8,
+                  marginBottom: 8
                 }}
                 align="baseline"
               >
@@ -172,8 +165,8 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
                   rules={[
                     {
                       required: true,
-                      message: 'Missing name',
-                    },
+                      message: 'Missing name'
+                    }
                   ]}
                 >
                   <Input placeholder="NPP Name" />
@@ -184,8 +177,8 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
                   rules={[
                     {
                       required: true,
-                      message: 'Missing amount',
-                    },
+                      message: 'Missing amount'
+                    }
                   ]}
                 >
                   <InputNumber />
@@ -195,7 +188,7 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
             ))}
             <Form.Item>
               <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-              Thêm nhà phân phối
+                Thêm nhà phân phối
               </Button>
             </Form.Item>
           </>
@@ -204,11 +197,11 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-        Thêm
+          Thêm
         </Button>
       </Form.Item>
     </Form>
-  );
-};
+  )
+}
 
-export default AddOutputForm;
+export default AddOutputForm

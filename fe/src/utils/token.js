@@ -1,32 +1,32 @@
 // get access token from local storage
 const getAccessToken = () => {
-  return localStorage.getItem('accessToken');
-};
+  return localStorage.getItem('accessToken')
+}
 
 // set access token to local storage
 const setAccessToken = (accessToken) => {
-  localStorage.setItem('accessToken', accessToken);
-};
+  localStorage.setItem('accessToken', accessToken)
+}
 
 // remove access token from local storage
 const removeAccessToken = () => {
-  localStorage.removeItem('accessToken');
-};
+  localStorage.removeItem('accessToken')
+}
 
 // get refresh token from local storage
 const getRefreshToken = () => {
-  return localStorage.getItem('refreshToken');
-};
+  return localStorage.getItem('refreshToken')
+}
 
 // set refresh token to local storage
 const setRefreshToken = (refreshToken) => {
-  localStorage.setItem('refreshToken', refreshToken);
-};
+  localStorage.setItem('refreshToken', refreshToken)
+}
 
 // remove refresh token from local storage
 const removeRefreshToken = () => {
-  localStorage.removeItem('refreshToken');
-};
+  localStorage.removeItem('refreshToken')
+}
 
 const token = {
   getAccessToken,
@@ -34,7 +34,7 @@ const token = {
   removeAccessToken,
   getRefreshToken,
   setRefreshToken,
-  removeRefreshToken,
-};
+  removeRefreshToken
+}
 
-export default token;
+export default token

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import FARM from "../../../services/farmService";
-import { useParams } from "react-router";
-import { useEffect } from "react";
+import React, { useState } from 'react'
+import FARM from '../../../services/farmService'
+import { useParams } from 'react-router'
+import { useEffect } from 'react'
 import {
   Col,
   Row,
@@ -16,90 +16,90 @@ import {
   Modal,
   Divider,
   Flex,
-  Select,
-} from "antd";
-import { HistoryOutlined, EditFilled } from "@ant-design/icons";
+  Select
+} from 'antd'
+import { HistoryOutlined, EditFilled } from '@ant-design/icons'
 
-import Loading from "../../../pages/Loading";
-import MenuDivider from "antd/es/menu/MenuDivider";
+import Loading from '../../../pages/Loading'
+import MenuDivider from 'antd/es/menu/MenuDivider'
 
-const { Meta } = Card;
+const { Meta } = Card
 
 const GardenProjectExpect = () => {
-  const [initData, setInitData] = useState([]);
-  const projectID = useParams();
-  console.log("params: ", projectID);
+  const [initData, setInitData] = useState([])
+  const projectID = useParams()
+  console.log('params: ', projectID)
 
   useEffect(() => {
     setInitData([
       {
         time: new Date().toISOString(),
-        category: "Trồng cây mới",
-        detail: "abcxyz",
+        category: 'Trồng cây mới',
+        detail: 'abcxyz'
       },
       {
         time: new Date().toISOString(),
-        category: "Trồng cây mới",
-        detail: "abcxyz",
+        category: 'Trồng cây mới',
+        detail: 'abcxyz'
       },
       {
         time: new Date().toISOString(),
-        category: "Trồng cây mới",
-        detail: "abcxyz",
+        category: 'Trồng cây mới',
+        detail: 'abcxyz'
       },
       {
         time: new Date().toISOString(),
-        category: "Trồng cây mới",
-        detail: "abcxyz",
+        category: 'Trồng cây mới',
+        detail: 'abcxyz'
       },
       {
         time: new Date().toISOString(),
-        category: "Trồng cây mới",
-        detail: "abcxyz",
+        category: 'Trồng cây mới',
+        detail: 'abcxyz'
       },
       {
         time: new Date().toISOString(),
-        category: "Trồng cây mới",
-        detail: "abcxyz",
-      },
-    ]);
-  }, []);
+        category: 'Trồng cây mới',
+        detail: 'abcxyz'
+      }
+    ])
+  }, [])
 
   const columns = [
     {
-      title: "Thời gian",
-      dataIndex: "time",
+      title: 'Thời gian',
+      dataIndex: 'time',
       width: 200,
-      key: "time",
-      render: (_, record) => <div>{record.time}</div>,
+      key: 'time',
+      render: (_, record) => <div>{record.time}</div>
     },
     {
-      title: "Loại",
-      key: "type",
-      dataIndex: "type",
+      title: 'Loại',
+      key: 'type',
+      dataIndex: 'type',
       width: 200,
-      render: (_, record) => <div>{record.category}</div>,
+      render: (_, record) => <div>{record.category}</div>
     },
     {
-      title: "Chi tiết",
-      dataIndex: "detail",
-      key: "detail",
-      render: (_, record) => <div>{record.detail}</div>,
-    },
-  ];
+      title: 'Chi tiết',
+      dataIndex: 'detail',
+      key: 'detail',
+      render: (_, record) => <div>{record.detail}</div>
+    }
+  ]
 
   return (
     <div>
       {initData ? (
         <div>
-          <h2 style={{ marginBottom: "1rem" }}>Mong muốn của người dùng</h2>
-          <Table bordered={true} columns={columns} dataSource={initData} />{" "}
+          <h2 style={{ marginBottom: '1rem' }}>Mong muốn của người dùng</h2>
+          <Table bordered={true} columns={columns} dataSource={initData} />{' '}
         </div>
       ) : (
         <Loading />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default GardenProjectExpect;
+export default GardenProjectExpect

@@ -20,6 +20,7 @@
     "assert": "^2.0.0",
     "babel-plugin-macros": "^3.1.0",
     "browserify-zlib": "latest",
+    "eslint": "^8.56.0",
     "ethers": "^5",
     "http": "npm:http-browserify",
     "http-browserify": "latest",
@@ -39,7 +40,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "yarn build && npx thirdweb@latest upload build"
+    "deploy": "yarn build && npx thirdweb@latest upload build",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,html,css,md}\"",
+    "lint:prettier": "prettier --check ."
   },
   "eslintConfig": {
     "extends": [
@@ -58,5 +61,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "prettier": "3.1.1"
   }
 }

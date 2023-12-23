@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { Modal, Radio, Select } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
-import { Button, Card, Form, Input, Space, Typography } from 'antd';
+import React, { useState } from 'react'
+import { Modal, Radio, Select } from 'antd'
+import { CloseOutlined } from '@ant-design/icons'
+import { Button, Card, Form, Input, Space, Typography } from 'antd'
 import './style.css'
-const { Option } = Select;
+const { Option } = Select
 const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetilizer, BVTV, plantCultivateId }) => {
-  const [form] = Form.useForm();
-  console.log("default: ", template)
-  console.log("fe: ", fetilizer, BVTV)
+  const [form] = Form.useForm()
+  console.log('default: ', template)
+  console.log('fe: ', fetilizer, BVTV)
   // const fetilizer_name = fetilizer.map((fetilizer_item) => fetilizer_item.name)
   const BVTV_name = BVTV.map((BVTV_item) => {
     return {
@@ -22,7 +22,7 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
       label: fetilizer_item.name
     }
   })
-  console.log("here 2: ", fetilizer_name, BVTV_name );
+  console.log('here 2: ', fetilizer_name, BVTV_name)
   return (
     <Modal
       open={open}
@@ -34,30 +34,30 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
-            onCreate(values, plantCultivateId);
+            form.resetFields()
+            onCreate(values, plantCultivateId)
           })
           .catch((info) => {
-            console.log('Validate Failed:', info);
-          });
+            console.log('Validate Failed:', info)
+          })
       }}
       getContainer={false}
     >
       <h1>hello</h1>
       <Form
         labelCol={{
-          span: 6,
+          span: 6
         }}
         wrapperCol={{
-          span: 18,
+          span: 18
         }}
         form={form}
         name="dynamic_form_complex"
         style={{
-          maxWidth: 600,
+          maxWidth: 600
         }}
         initialValues={{
-          items: template,
+          items: template
         }}
       >
         <Form.List name="items">
@@ -66,7 +66,7 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
               style={{
                 display: 'flex',
                 rowGap: 16,
-                flexDirection: 'column',
+                flexDirection: 'column'
               }}
             >
               {fields.map((field) => (
@@ -77,7 +77,7 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
                   extra={
                     <CloseOutlined
                       onClick={() => {
-                        remove(field.name);
+                        remove(field.name)
                       }}
                     />
                   }
@@ -97,14 +97,14 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
                     </Select>
                   </Form.Item>
 
-                  <Form.Item label="List" >
+                  <Form.Item label="List">
                     <Form.List name={[field.name, 'agroChemicalItems']}>
                       {(subFields, subOpt) => (
                         <div
                           style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            rowGap: 16,
+                            rowGap: 16
                           }}
                         >
                           {subFields.map((subField) => (
@@ -112,15 +112,19 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
                               <Form.Item noStyle name={[subField.name, 'name']}>
                                 <Select
                                   placeholder="Chọn tên"
-                                  options={form.getFieldValue(['items', field.name, 'type']) == 'phân bón' ? fetilizer_name : BVTV_name}
+                                  options={
+                                    form.getFieldValue(['items', field.name, 'type']) == 'phân bón'
+                                      ? fetilizer_name
+                                      : BVTV_name
+                                  }
                                 />
                               </Form.Item>
                               <Form.Item noStyle name={[subField.name, 'amountPerHa']}>
-                                <Input placeholder="Số lượng" type='number' />
+                                <Input placeholder="Số lượng" type="number" />
                               </Form.Item>
                               <CloseOutlined
                                 onClick={() => {
-                                  subOpt.remove(subField.name);
+                                  subOpt.remove(subField.name)
                                 }}
                               />
                             </Space>
@@ -143,7 +147,7 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
         </Form.List>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
 export default UpdateTemplateProjectPopup

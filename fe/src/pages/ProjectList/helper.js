@@ -1,6 +1,6 @@
-const parseData =  (data) => {
-  console.log("after api data: ", data);
-  const projects = data.map(item => {
+const parseData = (data) => {
+  console.log('after api data: ', data)
+  const projects = data.map((item) => {
     return {
       id: item?.id,
       title: item?.name,
@@ -12,7 +12,7 @@ const parseData =  (data) => {
 
   return {
     projects
-  };
-};
+  }
+}
 
 export default parseData

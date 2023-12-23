@@ -1,53 +1,53 @@
-import React from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
-import FARM from '../../services/farmService';
+import React from 'react'
+import { Button, Checkbox, Form, Input } from 'antd'
+import FARM from '../../services/farmService'
 // import { toast } from 'react-toastify';
-import { Navigate } from "react-router-dom";
+import { Navigate } from 'react-router-dom'
 
 const onFinish = (values) => {
-  console.log('Success:', values);
+  console.log('Success:', values)
   console.log(values.email, values.password)
   handle_login(values.email, values.password)
-};
+}
 const onFinishFailed = (errorInfo) => {
-  console.log('Failed:', errorInfo);
-};
+  console.log('Failed:', errorInfo)
+}
 
 const handle_login = async (email, password) => {
   try {
     const res = await FARM.login({
-        email: email,
-        password: password
-    });
-    console.log("res: ", res)
-    const token = res?.data?.accessToken;
+      email: email,
+      password: password
+    })
+    console.log('res: ', res)
+    const token = res?.data?.accessToken
     if (token) {
-        localStorage.setItem('token', token);
+      localStorage.setItem('token', token)
     }
-    const id = res?.data?.id;
+    const id = res?.data?.id
     if (id) {
-        localStorage.setItem('id', id);
+      localStorage.setItem('id', id)
     }
-    console.log('Login success');
-    <Navigate to='/home' />
-} catch (error) {
-    console.error(error?.response?.data?.message);
-}
+    console.log('Login success')
+    ;<Navigate to="/home" />
+  } catch (error) {
+    console.error(error?.response?.data?.message)
+  }
 }
 const LoginPage = () => (
   <Form
     name="basic"
     labelCol={{
-      span: 8,
+      span: 8
     }}
     wrapperCol={{
-      span: 16,
+      span: 16
     }}
     style={{
-      maxWidth: 600,
+      maxWidth: 600
     }}
     initialValues={{
-      remember: true,
+      remember: true
     }}
     onFinish={onFinish}
     onFinishFailed={onFinishFailed}
@@ -59,8 +59,8 @@ const LoginPage = () => (
       rules={[
         {
           required: true,
-          message: 'Please input your email!',
-        },
+          message: 'Please input your email!'
+        }
       ]}
     >
       <Input />
@@ -72,8 +72,8 @@ const LoginPage = () => (
       rules={[
         {
           required: true,
-          message: 'Please input your password!',
-        },
+          message: 'Please input your password!'
+        }
       ]}
     >
       <Input.Password />
@@ -84,7 +84,7 @@ const LoginPage = () => (
       valuePropName="checked"
       wrapperCol={{
         offset: 8,
-        span: 16,
+        span: 16
       }}
     >
       <Checkbox>Remember me</Checkbox>
@@ -93,7 +93,7 @@ const LoginPage = () => (
     <Form.Item
       wrapperCol={{
         offset: 8,
-        span: 16,
+        span: 16
       }}
     >
       <Button type="primary" htmlType="submit">
@@ -101,5 +101,5 @@ const LoginPage = () => (
       </Button>
     </Form.Item>
   </Form>
-);
-export default LoginPage;
+)
+export default LoginPage
