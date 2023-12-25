@@ -303,7 +303,7 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
                                 />
                               </Form.Item>
                               <Form.Item noStyle name={[subField.name, 'amountPerHa']}>
-                                <Input placeholder="Số lượng" type="number"/>
+                                <Input placeholder="Số lượng" type="number" />
                               </Form.Item>
                               <CloseOutlined
                                 onClick={() => {

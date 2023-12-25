@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ProjectItem from '../../components/ProjectItem'
-import useProjectList from './useProjectList'
 import './style.css'
 import FARM from '../../services/farmService'
 import parseData from './helper'
@@ -36,7 +35,7 @@ const ProjectList = () => {
     <div>
       {projects ? (
         <div>
-          <h1>Project List</h1>
+          <h1>Danh sách các dự án</h1>
           <Row>
             <Col span={8}>
               <Input
@@ -50,7 +49,7 @@ const ProjectList = () => {
               <Link to="/create-project">
                 <Flex gap="small" wrap="wrap">
                   <Button style={{ marginRight: '6px' }} type="primary">
-                    Create New
+                    Tạo mới
                   </Button>
                 </Flex>
               </Link>

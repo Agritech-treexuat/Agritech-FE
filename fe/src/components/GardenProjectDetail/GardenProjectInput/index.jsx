@@ -143,7 +143,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             }
           ]}
         >
-          <InputNumber style={{ width: '100%' }} addonAfter="kg"/>
+          <InputNumber style={{ width: '100%' }} addonAfter="kg" />
         </Form.Item>
       </Form>
     </Modal>
@@ -253,7 +253,7 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
             }
           ]}
         >
-          <InputNumber style={{ width: '100%' }} addonAfter="kg"/>
+          <InputNumber style={{ width: '100%' }} addonAfter="kg" />
         </Form.Item>
       </Form>
     </Modal>
