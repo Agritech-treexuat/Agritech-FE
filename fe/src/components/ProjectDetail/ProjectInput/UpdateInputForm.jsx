@@ -22,18 +22,14 @@ const tailLayout = {
   }
 }
 const normFile = (e) => {
-  console.log('Upload event:', e)
   if (Array.isArray(e)) {
     return e
   }
   return e?.fileList
 }
 
-const testForm = null
-
 const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
   const params = useParams()
-  console.log('input form: ', input)
   const dateObj = new Date(input.initDate)
 
   const yearData = dateObj.getFullYear()
@@ -80,8 +76,6 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getAllSeedByPlantId(input.plantId)
-      console.log('Data to look: ', data)
-
       data.data ? setSeeds(data.data.seeds.map((item) => item.name)) : setSeeds([])
     }
     fetchData()
@@ -120,7 +114,7 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
           }
         ]}
       >
-        <Select placeholder="Select a seed">
+        <Select placeholder="Chọn hạt giống">
           {seeds.map((seed) => (
             <Option key={seed} value={seed}>
               {seed}
