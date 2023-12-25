@@ -16,11 +16,9 @@ const ProjectInput = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getInit(projectID.id)
-      console.log('Data: ', data.data)
       setInitData(data.data.input)
     }
     fetchData()
-    console.log('Init data: ', initData)
   }, [])
 
   return (

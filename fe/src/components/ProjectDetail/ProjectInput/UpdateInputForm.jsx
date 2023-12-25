@@ -47,13 +47,10 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
   const [seeds, setSeeds] = useState([])
 
   const onFinish = (values) => {
-    console.log('Values: ', values)
     const images = values.upload.map((item) => (typeof item === 'string' ? item : item.name))
-    console.log('images here: ', images)
     const updatedValue = { ...values, initDate: values.date, images: images }
     delete updatedValue.date
     delete updatedValue.upload
-    console.log(updatedValue)
     const data = {
       tx: 'b',
       ...updatedValue
@@ -63,9 +60,7 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
 
   const handleSubmitInput = async (data, projectId) => {
     try {
-      console.log('data to send: ', data, projectId)
       const res = await FARM.editInput(data, projectId)
-      console.log('res: ', res)
       setInitData(res.data.updatedInput)
       handleCloseForm()
     } catch (error) {
