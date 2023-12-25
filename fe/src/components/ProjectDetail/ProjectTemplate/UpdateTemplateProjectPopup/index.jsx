@@ -89,6 +89,7 @@ const UpdateTemplateProjectPopup = ({ open, onCreate, onCancel, template, fetili
                     <Select placeholder="Chọn loại">
                       <Option value="phân bón">Phân bón</Option>
                       <Option value="BVTV">BVTV</Option>
+                      <Option value="other">Other</Option>
                     </Select>
                   </Form.Item>
 
