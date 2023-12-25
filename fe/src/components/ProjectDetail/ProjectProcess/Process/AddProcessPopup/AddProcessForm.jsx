@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Form, Input, Select, Space, InputNumber } from 'antd'
 import FARM from '../../../../../services/farmService'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
@@ -24,13 +24,12 @@ const tailLayout = {
 
 const testForm = null
 
-const fertilizers = ['NHK', 'Kali', 'Other name']
-const bvtvs = ['BVTV1', 'BVTV2', 'Other name']
-
 const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
+  const [fertilizers, setFertilizers] = useState([]);
+  const [bvtvs, setBvtvs] = useState([]);
   const today = new Date()
   const year = today.getFullYear()
-  const month = (today.getMonth() + 1).toString().padStart(2, '0') // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
+  const month = (today.getMonth() + 1).toString().padStart(2, '0')
   const date = today.getDate().toString().padStart(2, '0')
 
   const currentDate = `${year}-${month}-${date}`
@@ -39,6 +38,17 @@ const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
   let initValue = {
     date: currentDate
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getCultivative()
+      if (data.data) {
+        setFertilizers(data.data.cultivatives.filter(item => item.type === 'phân bón').map(item => item.name))
+        setBvtvs(data.data.cultivatives.filter(item => item.type === 'BVTV').map(item => item.name))
+      }
+    }
+    fetchData()
+  }, [])
 
   if (process) {
     initValue = {

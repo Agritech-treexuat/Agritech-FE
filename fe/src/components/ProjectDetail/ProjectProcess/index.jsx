@@ -42,16 +42,13 @@ const ProjectProcess = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getProcess(projectID.id)
-      console.log('Data: ', data.data)
       setProcessData(data.data.processes)
     }
     fetchData()
-    console.log('Process data: ', processData)
   }, [])
 
   useEffect(() => {
     async function fetchData() {
-      console.log('date: ', selectedDate)
       if (selectedDate) {
         const data = await FARM.getImage(projectID.id, selectedDate)
         // data is not ready
@@ -59,7 +56,6 @@ const ProjectProcess = () => {
       }
     }
     fetchData()
-    console.log('image data: ', imageData)
   }, [selectedDate])
 
   useEffect(() => {
@@ -69,7 +65,6 @@ const ProjectProcess = () => {
           `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apid}&units=metric&lang=vi`
         )
         const data = await response.json()
-        console.log('json: ', data)
 
         setWeatherData(data)
       } catch (error) {
