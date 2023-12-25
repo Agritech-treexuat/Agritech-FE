@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Button, Form, Input, Modal, Radio, Select } from 'antd'
+import React from 'react'
+import { Form, Modal, Select } from 'antd'
 import './style.css'
 const { Option } = Select
 const AddPlanProjectPopup = ({ open, onCreate, onCancel }) => {
@@ -7,9 +7,9 @@ const AddPlanProjectPopup = ({ open, onCreate, onCancel }) => {
   return (
     <Modal
       open={open}
-      title="Choose Template"
-      okText="Create"
-      cancelText="Cancel"
+      title="Chọn loại khởi tạo"
+      okText="Chọn"
+      cancelText="Hủy"
       onCancel={onCancel}
       onOk={() => {
         form
@@ -34,9 +34,9 @@ const AddPlanProjectPopup = ({ open, onCreate, onCancel }) => {
           ]}
         >
           <Select placeholder="Chọn template">
-            <Option value="default">Default</Option>
-            <Option value="farm">From Farm</Option>
-            <Option value="none">Empty</Option>
+            <Option value="default">Gợi ý của hệ thống</Option>
+            <Option value="farm">Từ quy trình chuẩn của bạn</Option>
+            <Option value="none">Trống</Option>
           </Select>
         </Form.Item>
       </Form>

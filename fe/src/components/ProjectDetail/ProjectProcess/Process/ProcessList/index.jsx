@@ -1,18 +1,18 @@
 import React from 'react'
 import EditHistory from '../EditHistory'
 import UpdateProcessPopup from '../UpdateProcessPopup'
-import { Space, Table, Tag } from 'antd'
+import { Space, Table } from 'antd'
 import Loading from '../../../../../pages/Loading'
 import { formatDate } from '../../../../../utils/helpers'
 
-const { Column, ColumnGroup } = Table
+const { Column } = Table
 
 const ProcessList = ({ processes, setProcessData }) => {
   return (
     <div>
       {processes ? (
         <Table dataSource={processes}>
-          <Column title="Tx" dataIndex="tx" key="tx" />
+          <Column title="Transaction hash" dataIndex="tx" key="tx" />
           <Column title="Thời gian" key="time" render={(_, process) => <p>{formatDate(process.time)}</p>} />
           <Column title="Loại canh tác" dataIndex="type" key="type" />
 
@@ -23,7 +23,7 @@ const ProcessList = ({ processes, setProcessData }) => {
               <ul>
                 {process.agroChemicalItems.map((item, index) => (
                   <li key={index}>
-                    <strong>{item.name}:</strong> {item.amountPerHa}
+                    <strong>{item.name}:</strong> {item.amountPerHa} kg/ha
                   </li>
                 ))}
               </ul>

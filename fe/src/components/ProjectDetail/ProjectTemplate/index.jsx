@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Collapse, Button, Input, Card, Divider } from 'antd'
+import { Button, Card, Divider } from 'antd'
 import FARM from '../../../services/farmService'
 import { useParams } from 'react-router-dom'
 import AddPlanProjectPopup from './AddPlanProjectPopup'
 import AddTemplateProjectPopup from './AddTemplateProjectPopup'
-import AddTemplatePopup from '../../ManagePlant/AddTemplatePopup'
 import UpdateTemplateProjectPopup from './UpdateTemplateProjectPopup'
-import { ConsoleSqlOutlined } from '@ant-design/icons'
-const { Panel } = Collapse
+import { constants } from '../../../constant'
 
 const ProjectTemplate = () => {
+  const adminId = constants.ADMIN_ID
   const params = useParams()
-  const [search, setSearch] = useState('')
-  console.log('params:', params)
   const farmId = localStorage.getItem('id')
   const [projectTemplate, setProjectTemplate] = useState([])
-  const [plans, setPlans] = useState([])
   const [allSeedByPlant, setAllSeedByPlant] = useState([])
 
   const [open, setOpen] = useState(false)
@@ -24,15 +20,13 @@ const ProjectTemplate = () => {
   const [defaultTemplate, setDefaultTemplate] = useState([])
   const [fetilizer, setFetilizer] = useState([])
   const [BVTV, setBVTV] = useState([])
-  console.log('prj: ', projectTemplate)
 
   const onCreate = async (values) => {
-    console.log('Received values of form: ', values)
     setOpen(false)
-    if (values.template == 'default') {
+    if (values.template === 'default') {
       // load from farm admin
       loadDefaultTemplate('seed rau cai A')
-    } else if (values.template == 'farm') {
+    } else if (values.template === 'farm') {
       // load from farm
       loadFarmTemplate('seed rau cai A')
     } else {
@@ -43,7 +37,6 @@ const ProjectTemplate = () => {
   }
 
   const onCreateTemplate = (values) => {
-    console.log('Received values of form 2: ', values)
     const data = {
       plan: values.items
     }
@@ -53,24 +46,20 @@ const ProjectTemplate = () => {
   }
 
   const onUpdateTemplate = (values, plantCultivateId) => {
-    console.log('Received values of form 23 ', values)
     const data = {
       plan: values.items
     }
-    // console.log("data to send: ", data)
     updateTemplate(data, params.id)
     setOpenUpdateTemplate(false)
   }
 
   const loadDefaultTemplate = async (seed) => {
-    const data = await FARM.getPlanFromSeed('65746f46f0640f51f585bb07', seed)
-    console.log('data default: ', data)
+    const data = await FARM.getPlanFromSeed(adminId, seed)
     setDefaultTemplate(data.data.plantFarming.plan)
   }
 
   const loadFarmTemplate = async (seed) => {
     const data = await FARM.getPlanFromSeed(farmId, seed)
-    console.log('data: ', data)
     setDefaultTemplate(data.data.plantFarming.plan)
   }
 
@@ -89,24 +78,15 @@ const ProjectTemplate = () => {
 
     setFetilizer(fetilizer)
     setBVTV(BVTV)
-    console.log('cul: ', fetilizer, BVTV)
   }
 
   const submitTemplate = async (data, projectId) => {
     const new_data = await FARM.addPlantCultivatesToProject(data, projectId)
-    console.log('new data: ', new_data.data.updatedProjectPlan)
     setProjectTemplate(new_data.data.updatedProjectPlan)
-    console.log('new prj t: ', projectTemplate)
   }
 
   const updateTemplate = async (data, projectId) => {
-    console.log('data send: ', data)
     const new_data = await FARM.updatePlantCultivatesToProject(data, projectId)
-    console.log('res new data: ', new_data)
-    // const newPlans = plans.map((item) =>
-    //   item._id === new_data.data.plantFarming._id ? new_data.data.plantFarming : item
-    // )
-    // setPlans(newPlans)
     setProjectTemplate(new_data.data.updatedProjectPlan)
   }
 
@@ -114,12 +94,10 @@ const ProjectTemplate = () => {
     async function fetchData() {
       const data = await FARM.getPlanFromProject(params.id)
       if (data.data) {
-        console.log('Data here: ', data.data.plan)
         setProjectTemplate([...data.data.plan])
       }
     }
     fetchData()
-    console.log('heree: ', projectTemplate)
   }, [])
 
   return (
@@ -130,9 +108,9 @@ const ProjectTemplate = () => {
           onClick={() => {
             setOpen(true)
           }}
-          // disabled={projectTemplate? true: false}
+          disabled={projectTemplate ? true : false}
         >
-          New Collection
+          Khởi tạo quy trình canh tác
         </Button>
         <AddPlanProjectPopup
           open={open}
@@ -162,7 +140,7 @@ const ProjectTemplate = () => {
               setOpenUpdateTemplate(true)
             }}
           >
-            Update
+            Chỉnh sửa
           </Button>
           <UpdateTemplateProjectPopup
             open={openUpdateTemplate}
@@ -177,22 +155,24 @@ const ProjectTemplate = () => {
           {projectTemplate.map((cultivate) => (
             <>
               <Divider>
-                <h3>Time: {cultivate.time}</h3>
+                <h3>Thời gian: {cultivate.time}</h3>
               </Divider>
-              <h3>Note: {cultivate.note}</h3>
-              <h3>Type: {cultivate.type}</h3>
-              {cultivate.agroChemicalItems.map((cultivativeItem) => (
+              <h3>Loại canh tác: {cultivate.type}</h3>
+              <h3>Ghi chú: {cultivate.note}</h3>
+              {cultivate.agroChemicalItems?.map((cultivativeItem) => (
                 <>
                   <Divider></Divider>
-                  <p>Name: {cultivativeItem.name}</p>
-                  <p>Amount per ha: {cultivativeItem.amountPerHa}</p>
+                  <p>Tên: {cultivativeItem.name}</p>
+                  <p>
+                    Lượng: {cultivativeItem.amountPerHa} {cultivate.type === 'phân bón' ? 'kg/ha' : 'lit/ha'}
+                  </p>
                 </>
               ))}
             </>
           ))}
         </Card>
       ) : (
-        <h1>Khong co</h1>
+        <h1>Không có</h1>
       )}
     </>
   )
