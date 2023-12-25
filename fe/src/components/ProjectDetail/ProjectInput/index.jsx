@@ -12,7 +12,6 @@ import { formatDate } from '../../../utils/helpers'
 const ProjectInput = () => {
   const [initData, setInitData] = useState(null)
   const projectID = useParams()
-  console.log('params: ', projectID)
 
   useEffect(() => {
     async function fetchData() {

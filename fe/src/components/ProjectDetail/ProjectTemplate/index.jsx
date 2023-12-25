@@ -13,6 +13,7 @@ const ProjectTemplate = () => {
   const farmId = localStorage.getItem('id')
   const [projectTemplate, setProjectTemplate] = useState([])
   const [allSeedByPlant, setAllSeedByPlant] = useState([])
+  const [initData, setInitData] = useState(null)
 
   const [open, setOpen] = useState(false)
   const [openTemplate, setOpenTemplate] = useState(false)
@@ -21,14 +22,22 @@ const ProjectTemplate = () => {
   const [fetilizer, setFetilizer] = useState([])
   const [BVTV, setBVTV] = useState([])
 
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getInit(params.id)
+      setInitData(data.data.input)
+    }
+    fetchData()
+  }, [])
+
   const onCreate = async (values) => {
     setOpen(false)
     if (values.template === 'default') {
       // load from farm admin
-      loadDefaultTemplate('seed rau cai A')
+      loadDefaultTemplate(initData.seed)
     } else if (values.template === 'farm') {
       // load from farm
-      loadFarmTemplate('seed rau cai A')
+      loadFarmTemplate(initData.seed)
     } else {
       setDefaultTemplate([])
     }
