@@ -23,7 +23,7 @@ const ProcessList = ({ processes, setProcessData }) => {
               <ul>
                 {process.agroChemicalItems.map((item, index) => (
                   <li key={index}>
-                    <strong>{item.name}:</strong> {item.amountPerHa} kg/ha
+                    <strong>{item.name}:</strong> {item.amountPerHa} {process.type === 'phân bón' ? 'kg/ha' : 'lit/ha'}
                   </li>
                 ))}
               </ul>

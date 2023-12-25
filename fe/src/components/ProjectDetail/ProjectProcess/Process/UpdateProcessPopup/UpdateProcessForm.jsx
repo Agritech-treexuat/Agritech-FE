@@ -28,13 +28,6 @@ const fertilizers = ['NHK', 'Kali', 'Other name']
 const bvtvs = ['BVTV1', 'BVTV2', 'Other name']
 
 const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = (today.getMonth() + 1).toString().padStart(2, '0') // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
-  const date = today.getDate().toString().padStart(2, '0')
-
-  const currentDate = `${year}-${month}-${date}`
-  console.log('Today: ', currentDate)
   const params = useParams()
   const dateObj = new Date(process.time)
 
@@ -58,34 +51,27 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
       note: process.note
     }
   }
-  console.log('process: ', process)
-  console.log('init: ', initValue)
 
   const onFinish = (values) => {
-    console.log('Values: ', values)
     if ('other name' in values) {
       values.name = values['other name']
     }
     let updatedValue = { ...values, time: values.date }
-    if (updatedValue.type == 'other') {
+    if (updatedValue.type === 'other') {
       updatedValue.name = ''
       updatedValue.amount = ''
     }
     delete updatedValue.date
-    console.log(updatedValue)
     const data = {
       tx: 'b',
       ...updatedValue
     }
-    console.log('test form: ', testForm)
     handleSubmitProcess(data, params.id, process._id)
   }
 
   const handleSubmitProcess = async (data, projectId, processId) => {
     try {
-      console.log('data to send: ', data, projectId)
       const res = await FARM.editProcess(data, projectId, processId)
-      console.log('res: ', res)
       setProcessData(res.data.updatedProcess)
       handleCloseForm()
     } catch (error) {
@@ -185,7 +171,7 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
                             }
                           ]}
                         >
-                          <InputNumber addonAfter="kg" />
+                          <InputNumber addonAfter={getFieldValue('type') === 'phân bón' ? 'kg/ha' : 'lit/ha'} />
                         </Form.Item>
                         <MinusCircleOutlined onClick={() => remove(name)} />
                       </Space>

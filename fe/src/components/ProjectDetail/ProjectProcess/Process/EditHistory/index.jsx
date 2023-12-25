@@ -20,7 +20,7 @@ const EditHistory = ({ process }) => {
       <Modal title="Lịch sử chỉnh sửa" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         {process.historyProcess.map((process) => (
           <>
-            <Divider>Chỉnh sửa lúc: {formatDateTime(process.modified_at)}</Divider>
+            <Divider>Chỉnh sửa lúc: {formatDateTime(process.modifiedAt)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>Tx: {process.tx}</p>
               <p>Thời gian: {formatDate(process.time)}</p>
@@ -30,7 +30,7 @@ const EditHistory = ({ process }) => {
                   {process.agroChemicalItems.map((item) => (
                     <ul>
                       <li>
-                        Tên: {item.name}, Lượng per ha: {item.amountPerHa}
+                        Tên: {item.name}, {item.amountPerHa} {process.type === 'phân bón' ? 'kg/ha' : 'lit/ha'}
                       </li>
                     </ul>
                   ))}

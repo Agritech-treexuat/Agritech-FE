@@ -34,7 +34,6 @@ const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
   const date = today.getDate().toString().padStart(2, '0')
 
   const currentDate = `${year}-${month}-${date}`
-  console.log('Today: ', currentDate)
   const params = useParams()
   const formRef = React.useRef(null)
   let initValue = {
@@ -48,30 +47,24 @@ const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
       agroChemicalItems: process.agroChemicalItems,
       note: process.time + '-' + process.note
     }
-    console.log('init: ', initValue)
   }
 
   const onFinish = (values) => {
-    console.log('Values: ', values)
     if ('other name' in values) {
       values.name = values['other name']
     }
     const updatedValue = { ...values, time: values.date }
     delete updatedValue.date
-    console.log(updatedValue)
     const data = {
       tx: 'b',
       ...updatedValue
     }
-    console.log('test form: ', data)
     handleSubmitProcess(data, params.id)
   }
 
   const handleSubmitProcess = async (data, projectId) => {
     try {
-      console.log('data to send: ', data, projectId)
       const res = await FARM.addProcess(data, projectId)
-      console.log('res: ', res)
       setProcessData(res.data.updatedProjectProcess)
       handleCloseForm()
     } catch (error) {
@@ -170,7 +163,7 @@ const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
                             }
                           ]}
                         >
-                          <InputNumber addonAfter="kg" />
+                          <InputNumber addonAfter={getFieldValue('type') === 'phân bón' ? 'kg/ha' : 'lit/ha'} />
                         </Form.Item>
                         <MinusCircleOutlined onClick={() => remove(name)} />
                       </Space>

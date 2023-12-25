@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import AddPlanProjectPopup from './AddPlanProjectPopup'
 import AddTemplateProjectPopup from './AddTemplateProjectPopup'
 import UpdateTemplateProjectPopup from './UpdateTemplateProjectPopup'
-import { constants } from '../../../constant'
+import { constants } from '../../../utils/constant'
 
 const ProjectTemplate = () => {
   const adminId = constants.ADMIN_ID

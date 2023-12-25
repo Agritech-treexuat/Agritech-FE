@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Modal, Form, Input, Select } from 'antd'
+import { Button, Modal } from 'antd'
 import AddProcessForm from './AddProcessForm'
 import { useParams } from 'react-router-dom'
 import FARM from '../../../../../services/farmService'
@@ -8,7 +8,6 @@ const AddProcessPopUp = ({ setProcessData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isModalOpen2, setIsModalOpen2] = useState([false, false])
   const [isModalOpen3, setIsModalOpen3] = useState(false)
-  console.log('modal: ', isModalOpen, isModalOpen2, isModalOpen3)
   const [projectTemplate, setProjectTemplate] = useState([])
   const params = useParams()
 
@@ -16,13 +15,10 @@ const AddProcessPopUp = ({ setProcessData }) => {
     async function fetchData() {
       const data = await FARM.getPlanFromProject(params.id)
       if (data.data) {
-        console.log('Data here new: ', data.data.plan)
         setProjectTemplate(data.data.plan)
       }
-      console.log('prj new: ', projectTemplate)
     }
     fetchData()
-    console.log('heree: ', projectTemplate)
   }, [])
 
   const showModal = () => {
@@ -39,21 +35,11 @@ const AddProcessPopUp = ({ setProcessData }) => {
     setIsModalOpen(false)
   }
 
-  // const [isModalOpen2, setIsModalOpen2] = useState(false);
   const toggleModal2 = (idx, target) => {
     setIsModalOpen2((p) => {
       p[idx] = target
       return [...p]
     })
-  }
-  const showModal2 = () => {
-    setIsModalOpen2(true)
-  }
-  const handleOk2 = () => {
-    setIsModalOpen2(false)
-  }
-  const handleCancel2 = () => {
-    setIsModalOpen2(false)
   }
 
   const showModal3 = () => {
@@ -105,7 +91,7 @@ const AddProcessPopUp = ({ setProcessData }) => {
           )}
           <div style={buttonContainerStyle}>
             <Button type="primary" onClick={showModal3}>
-              None
+              Trống
             </Button>
           </div>
         </div>
@@ -117,12 +103,13 @@ const AddProcessPopUp = ({ setProcessData }) => {
             open={isModalOpen2[index]}
             onOk={() => toggleModal2(index, false)}
             onCancel={() => toggleModal2(index, false)}
+            footer={null}
           >
             <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData} process={item} />
           </Modal>
         </>
       ))}
-      <Modal title="Thêm hoạt động" open={isModalOpen3} onOk={handleOk3} onCancel={handleCancel3}>
+      <Modal title="Thêm hoạt động" open={isModalOpen3} onOk={handleOk3} onCancel={handleCancel3} footer={null}>
         <AddProcessForm handleCloseForm={handleOk} setProcessData={setProcessData} process={null} />
       </Modal>
     </>

@@ -1,6 +1,6 @@
 import React from 'react'
 import './style.css'
-import { formatDate } from '../../services/dateService'
+import { formatDate } from '../../utils/helpers'
 
 const ProjectItem = ({ project }) => {
   return (

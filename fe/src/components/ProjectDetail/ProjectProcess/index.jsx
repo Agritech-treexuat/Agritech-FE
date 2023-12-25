@@ -54,7 +54,6 @@ const ProjectProcess = () => {
       console.log('date: ', selectedDate)
       if (selectedDate) {
         const data = await FARM.getImage(projectID.id, selectedDate)
-        // console.log("Data img: ", data.data)
         // data is not ready
         data.data ? setImageData(data.data.images) : setImageData(imageArray)
       }
