@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Button, Form, Input, Modal, Radio, Select } from 'antd'
+import React from 'react'
+import { Form, Modal, Select } from 'antd'
 import './style.css'
 const { Option } = Select
 const AddPlantPopup = ({ open, onCreate, onCancel, allPlants }) => {
@@ -8,8 +8,8 @@ const AddPlantPopup = ({ open, onCreate, onCancel, allPlants }) => {
     <Modal
       open={open}
       title="Thêm cây mới"
-      okText="Create"
-      cancelText="Cancel"
+      okText="Thêm"
+      cancelText="Hủy"
       onCancel={onCancel}
       onOk={() => {
         form

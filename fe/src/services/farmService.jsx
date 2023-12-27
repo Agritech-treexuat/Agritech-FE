@@ -254,6 +254,19 @@ const FARM = {
       })
   },
 
+  getPlantByPlantId: async (plantId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plant/${plantId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
   getPlant: async (farmId) => {
     return await publicHttp({
       method: 'GET',

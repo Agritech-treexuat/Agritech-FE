@@ -1,12 +1,11 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { Row, Col, Input, Button, Flex } from 'antd'
+import { Row, Col, Input, Button } from 'antd'
 import { Link } from 'react-router-dom'
 import Loading from '../Loading'
 import { Card } from 'antd'
 import { AddPlantPopup } from '../../components'
 import FARM from '../../services/farmService'
-import { useParams } from 'react-router'
 
 const { Meta } = Card
 const ManagePlant = () => {
@@ -14,35 +13,29 @@ const ManagePlant = () => {
   const [plants, setPlants] = useState([])
   const [allPlants, setAllPlants] = useState([])
 
-  // const [plants, setPlants] = useState([])
   const farmId = localStorage.getItem('id')
 
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getPlant(farmId)
-      console.log('Data plant: ', data)
       setPlants(data.data.plants)
     }
     fetchData()
-    console.log('Output data: ', plants)
   }, [])
 
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getAllPlant()
-      console.log('Data: ', data.data)
       setAllPlants(data.data.plants)
     }
     fetchData()
-    console.log('Output data: ', allPlants)
   }, [])
 
   const filteredPlants =
-    plants.length != 0 ? plants.filter((plant) => plant.name.toLowerCase().includes(searchQuery.toLowerCase())) : []
+    plants.length !== 0 ? plants.filter((plant) => plant.name.toLowerCase().includes(searchQuery.toLowerCase())) : []
 
   const [open, setOpen] = useState(false)
   const onCreate = (values) => {
-    console.log('Received values of form: ', values)
     const data = {
       plantId: values._id
     }
@@ -51,10 +44,8 @@ const ManagePlant = () => {
 
   const handleSubmitPlant = async (data) => {
     try {
-      console.log('data to send: ', data)
       const res = await FARM.addPlant(data)
-      console.log('res: ', res)
-      if (res.response && res.response.data.message == 'EXISTED_TREE') {
+      if (res.response && res.response.data.message === 'EXISTED_TREE') {
         alert('Cây đã tồn tại')
       } else {
         setPlants(res.data.plants)
@@ -69,11 +60,11 @@ const ManagePlant = () => {
     <div>
       {plants ? (
         <div>
-          <h1>Plant List</h1>
+          <h1>Danh sách các cây</h1>
           <Row>
             <Col span={8}>
               <Input
-                placeholder="Search plants"
+                placeholder="Tìm kiếm cây"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{ marginBottom: '30px' }}
@@ -110,9 +101,9 @@ const ManagePlant = () => {
                     style={{
                       width: 240
                     }}
-                    cover={<img alt="example" src={plant.image} />}
+                    cover={<img alt="plant" src={plant.image} />}
                   >
-                    <Meta title={plant.name} description="www.instagram.com" />
+                    <Meta title={plant.name} />
                   </Card>
                 </Link>
               </Col>

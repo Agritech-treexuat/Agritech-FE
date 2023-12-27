@@ -6,13 +6,14 @@ import Loading from '../Loading'
 import AddPlanPopup from '../../components/ManagePlant/AddPlanPopup'
 import AddTemplatePopup from '../../components/ManagePlant/AddTemplatePopup'
 import UpdateTemplatePopup from '../../components/ManagePlant/UpdateTemplatePopup'
+import { constants } from '../../utils/constant'
 
 const { Panel } = Collapse
 
 const PlantDetail = () => {
+  const adminId = constants.ADMIN_ID
   const [search, setSearch] = useState('')
   const params = useParams()
-  console.log('params:', params)
   const farmId = localStorage.getItem('id')
   const [plans, setPlans] = useState([])
   const [allSeedByPlant, setAllSeedByPlant] = useState([])
@@ -23,12 +24,12 @@ const PlantDetail = () => {
   const [defaultTemplate, setDefaultTemplate] = useState([])
   const [seed, setSeed] = useState(null)
   const [fetilizer, setFetilizer] = useState([])
+  const [currentPlant, setCurrentPlant] = useState(null)
   const [BVTV, setBVTV] = useState([])
 
   const onCreate = async (values) => {
-    console.log('Received values of form 222: ', values)
     setOpen(false)
-    if (values.template == 'default') {
+    if (values.template === 'default') {
       await loadDefaultTemplate(values.seed)
     } else {
       setDefaultTemplate([])
@@ -39,7 +40,6 @@ const PlantDetail = () => {
   }
 
   const onCreateTemplate = (values) => {
-    console.log('Received values of form 2: ', values)
     const data = {
       plantId: params.id,
       seed: seed,
@@ -50,19 +50,16 @@ const PlantDetail = () => {
   }
 
   const onUpdateTemplate = (values, plantCultivateId) => {
-    console.log('Received values of form 23 ', values)
     const data = {
       plantCultivateId: plantCultivateId,
       plan: values.items
     }
-    console.log('data to send: ', data)
     updateTemplate(data)
     setOpenUpdateTemplate(false)
   }
 
   const loadDefaultTemplate = async (seed) => {
-    const data = await FARM.getPlanFromSeed('65746f46f0640f51f585bb07', seed)
-    console.log('data: ', data)
+    const data = await FARM.getPlanFromSeed(adminId, seed)
     setDefaultTemplate(data.data.plantFarming.plan)
   }
 
@@ -81,7 +78,6 @@ const PlantDetail = () => {
 
     setFetilizer(fetilizer)
     setBVTV(BVTV)
-    console.log('cul: ', fetilizer, BVTV)
   }
 
   const submitTemplate = async (data) => {
@@ -100,28 +96,32 @@ const PlantDetail = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getPlans(farmId, params.id)
-      console.log('Data plant new: ', data)
       if (data.data) setPlans(data.data.plantFarming)
     }
     fetchData()
-    console.log('Output data: ', plans)
   }, [])
 
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getAllSeedByPlantId(params.id)
-      console.log('Data plant: ', data)
       if (data.data) setAllSeedByPlant(data.data.seeds)
     }
     fetchData()
-    console.log('Output data: ', allSeedByPlant)
+  }, [])
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getPlantByPlantId(params.id)
+      if (data.data) setCurrentPlant(data.data.plant)
+    }
+    fetchData()
   }, [])
 
   return (
     <div>
-      {plans ? (
+      {plans && currentPlant ? (
         <>
-          <h1>Thông tin cây trồng {params.id}</h1>
+          <h1>Thông tin cây trồng {currentPlant.name}</h1>
           <Input
             placeholder="Tìm kiếm"
             value={search}
@@ -135,7 +135,7 @@ const PlantDetail = () => {
                 setOpen(true)
               }}
             >
-              New Collection
+              Thêm quy trình mới
             </Button>
             <AddPlanPopup
               open={open}
@@ -168,7 +168,7 @@ const PlantDetail = () => {
                       setOpenUpdateTemplate(true)
                     }}
                   >
-                    Update
+                    Chỉnh sửa
                   </Button>
                   <UpdateTemplatePopup
                     open={openUpdateTemplate}
@@ -184,15 +184,17 @@ const PlantDetail = () => {
                   {item.plan.map((cultivate) => (
                     <>
                       <Divider>
-                        <h3>Time: {cultivate.time}</h3>
+                        <h3>Thời điểm: {cultivate.time}</h3>
                       </Divider>
-                      <h3>Note: {cultivate.note}</h3>
-                      <h3>Type: {cultivate.type}</h3>
+                      <h3>Ghi chú: {cultivate.note}</h3>
+                      <h3>Loại: {cultivate.type}</h3>
                       {cultivate.agroChemicalItems.map((cultivativeItem) => (
                         <>
                           <Divider></Divider>
-                          <p>Name: {cultivativeItem.name}</p>
-                          <p>Amount per ha: {cultivativeItem.amountPerHa}</p>
+                          <p>Tên: {cultivativeItem.name}</p>
+                          <p>
+                            Lượng: {cultivativeItem.amountPerHa} {cultivate.type === 'phân bón' ? 'kg/ha' : 'lit/ha'}
+                          </p>
                         </>
                       ))}
                     </>

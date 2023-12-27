@@ -1,14 +1,11 @@
-import React, { useState } from 'react'
-import { Modal, Radio, Select } from 'antd'
+import React from 'react'
+import { Modal, Select } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
-import { Button, Card, Form, Input, Space, Typography } from 'antd'
+import { Button, Card, Form, Input, Space } from 'antd'
 import './style.css'
 const { Option } = Select
 const UpdateTemplatePopup = ({ open, onCreate, onCancel, template, fetilizer, BVTV, plantCultivateId }) => {
   const [form] = Form.useForm()
-  console.log('default: ', template)
-  console.log('fe: ', fetilizer, BVTV)
-  // const fetilizer_name = fetilizer.map((fetilizer_item) => fetilizer_item.name)
   const BVTV_name = BVTV.map((BVTV_item) => {
     return {
       value: BVTV_item.name,
@@ -22,13 +19,12 @@ const UpdateTemplatePopup = ({ open, onCreate, onCancel, template, fetilizer, BV
       label: fetilizer_item.name
     }
   })
-  console.log('here 2: ', fetilizer_name, BVTV_name)
   return (
     <Modal
       open={open}
-      title="Thêm cây mới"
-      okText="Create"
-      cancelText="Cancel"
+      title="Thêm quy trình mới"
+      okText="Thêm"
+      cancelText="Hủy"
       onCancel={onCancel}
       onOk={() => {
         form
@@ -43,7 +39,6 @@ const UpdateTemplatePopup = ({ open, onCreate, onCancel, template, fetilizer, BV
       }}
       getContainer={false}
     >
-      <h1>hello</h1>
       <Form
         labelCol={{
           span: 6
@@ -82,22 +77,22 @@ const UpdateTemplatePopup = ({ open, onCreate, onCancel, template, fetilizer, BV
                     />
                   }
                 >
-                  <Form.Item label="Time" name={[field.name, 'time']}>
+                  <Form.Item label="Thời điểm" name={[field.name, 'time']}>
                     <Input />
                   </Form.Item>
 
-                  <Form.Item label="Note" name={[field.name, 'note']}>
+                  <Form.Item label="Ghi chú" name={[field.name, 'note']}>
                     <Input />
                   </Form.Item>
 
-                  <Form.Item label="Type" name={[field.name, 'type']}>
+                  <Form.Item label="Loại" name={[field.name, 'type']}>
                     <Select placeholder="Chọn loại">
                       <Option value="phân bón">Phân bón</Option>
                       <Option value="BVTV">BVTV</Option>
                     </Select>
                   </Form.Item>
 
-                  <Form.Item label="List">
+                  <Form.Item label="Cụ thể">
                     <Form.List name={[field.name, 'agroChemicalItems']}>
                       {(subFields, subOpt) => (
                         <div
@@ -113,14 +108,22 @@ const UpdateTemplatePopup = ({ open, onCreate, onCancel, template, fetilizer, BV
                                 <Select
                                   placeholder="Chọn tên"
                                   options={
-                                    form.getFieldValue(['items', field.name, 'type']) == 'phân bón'
+                                    form.getFieldValue(['items', field.name, 'type']) === 'phân bón'
                                       ? fetilizer_name
                                       : BVTV_name
                                   }
                                 />
                               </Form.Item>
                               <Form.Item noStyle name={[subField.name, 'amountPerHa']}>
-                                <Input placeholder="Số lượng" type="number" />
+                                <Input
+                                  placeholder="Số lượng"
+                                  type="number"
+                                  addonAfter={
+                                    form.getFieldValue(['items', field.name, 'type']) === 'phân bón'
+                                      ? 'kg/ha'
+                                      : 'lit/ha'
+                                  }
+                                />
                               </Form.Item>
                               <CloseOutlined
                                 onClick={() => {
@@ -130,7 +133,7 @@ const UpdateTemplatePopup = ({ open, onCreate, onCancel, template, fetilizer, BV
                             </Space>
                           ))}
                           <Button type="dashed" onClick={() => subOpt.add()} block>
-                            + Thêm Sub Item
+                            + Thêm
                           </Button>
                         </div>
                       )}
@@ -140,7 +143,7 @@ const UpdateTemplatePopup = ({ open, onCreate, onCancel, template, fetilizer, BV
               ))}
 
               <Button type="dashed" onClick={() => add()} block>
-                + Add Item
+                + Thêm việc
               </Button>
             </div>
           )}
