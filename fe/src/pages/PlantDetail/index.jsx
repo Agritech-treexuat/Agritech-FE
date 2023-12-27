@@ -1,34 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { Collapse, Button, Input, Card, Divider } from 'antd';
-import { useParams } from 'react-router-dom';
-import FARM from '../../services/farmService';
-import Loading from '../Loading';
-import AddPlanPopup from '../../components/ManagePlant/AddPlanPopup';
-import AddTemplatePopup from '../../components/ManagePlant/AddTemplatePopup';
-import UpdateTemplatePopup from '../../components/ManagePlant/UpdateTemplatePopup';
+import React, { useState, useEffect } from 'react'
+import { Collapse, Button, Input, Card, Divider } from 'antd'
+import { useParams } from 'react-router-dom'
+import FARM from '../../services/farmService'
+import Loading from '../Loading'
+import AddPlanPopup from '../../components/ManagePlant/AddPlanPopup'
+import AddTemplatePopup from '../../components/ManagePlant/AddTemplatePopup'
+import UpdateTemplatePopup from '../../components/ManagePlant/UpdateTemplatePopup'
+import { constants } from '../../utils/constant'
 
-const { Panel } = Collapse;
+const { Panel } = Collapse
 
 const PlantDetail = () => {
-  const [search, setSearch] = useState('');
-  const params = useParams();
-  console.log("params:" , params)
+  const adminId = constants.ADMIN_ID
+  const [search, setSearch] = useState('')
+  const params = useParams()
   const farmId = localStorage.getItem('id')
   const [plans, setPlans] = useState([])
   const [allSeedByPlant, setAllSeedByPlant] = useState([])
 
-  const [open, setOpen] = useState(false);
-  const [openTemplate, setOpenTemplate] = useState(false);
-  const [openUpdateTemplate, setOpenUpdateTemplate] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [openTemplate, setOpenTemplate] = useState(false)
+  const [openUpdateTemplate, setOpenUpdateTemplate] = useState(false)
   const [defaultTemplate, setDefaultTemplate] = useState([])
   const [seed, setSeed] = useState(null)
   const [fetilizer, setFetilizer] = useState([])
+  const [currentPlant, setCurrentPlant] = useState(null)
   const [BVTV, setBVTV] = useState([])
 
   const onCreate = async (values) => {
-    console.log('Received values of form 222: ', values);
-    setOpen(false);
-    if(values.template == 'default'){
+    setOpen(false)
+    if (values.template === 'default') {
       await loadDefaultTemplate(values.seed)
     } else {
       setDefaultTemplate([])
@@ -36,10 +37,9 @@ const PlantDetail = () => {
     setSeed(values.seed)
     loadCultivates()
     setOpenTemplate(true)
-  };
+  }
 
   const onCreateTemplate = (values) => {
-    console.log('Received values of form 2: ', values);
     const data = {
       plantId: params.id,
       seed: seed,
@@ -47,82 +47,81 @@ const PlantDetail = () => {
     }
     submitTemplate(data)
     setOpenTemplate(false)
-  };
+  }
 
   const onUpdateTemplate = (values, plantCultivateId) => {
-    console.log('Received values of form 23 ', values);
     const data = {
       plantCultivateId: plantCultivateId,
       plan: values.items
     }
-    console.log("data to send: ", data)
     updateTemplate(data)
     setOpenUpdateTemplate(false)
-  };
+  }
 
   const loadDefaultTemplate = async (seed) => {
-    const data = await FARM.getPlanFromSeed('65597fd0e13d6f181d5e4af0',seed)
-    console.log("data: ", data)
-    setDefaultTemplate(data.data.plantCultivates.plan)
+    const data = await FARM.getPlanFromSeed(adminId, seed)
+    setDefaultTemplate(data.data.plantFarming.plan)
   }
 
   const loadCultivates = async () => {
     const data = await FARM.getCultivative()
-    const fetilizer = [];
-    const BVTV = [];
+    const fetilizer = []
+    const BVTV = []
 
-    data.data.cultivatives.forEach(cultivative => {
+    data.data.cultivatives.forEach((cultivative) => {
       if (cultivative.type === 'phân bón') {
-        fetilizer.push(cultivative);
+        fetilizer.push(cultivative)
       } else if (cultivative.type === 'BVTV') {
-        BVTV.push(cultivative);
+        BVTV.push(cultivative)
       }
-    });
+    })
 
     setFetilizer(fetilizer)
     setBVTV(BVTV)
-    console.log("cul: ", fetilizer, BVTV)
   }
 
   const submitTemplate = async (data) => {
     const new_data = await FARM.addPlantCultivates(data)
-    const newPlans = [...plans, new_data.data.plantCultivate]
+    const newPlans = [...plans, new_data.data.plantFarming]
     setPlans(newPlans)
   }
 
   const updateTemplate = async (data) => {
     const new_data = await FARM.updatePlantCultivates(data)
     const newPlans = plans.map((item) =>
-      item._id === new_data.data.plantCultivate._id ? new_data.data.plantCultivate : item
+      item._id === new_data.data.plantFarming._id ? new_data.data.plantFarming : item
     )
     setPlans(newPlans)
   }
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getPlans(farmId, params.id)
-      console.log("Data plant new: ", data)
-      if(data.data)
-        setPlans(data.data.plantCultivates)
+      if (data.data) setPlans(data.data.plantFarming)
     }
-    fetchData();
-    console.log("Output data: ", plans)
-  }, []);
+    fetchData()
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getAllSeedByPlantId(params.id)
-      console.log("Data plant: ", data)
-      if(data.data)
-        setAllSeedByPlant(data.data.seeds)
+      if (data.data) setAllSeedByPlant(data.data.seeds)
     }
-    fetchData();
-    console.log("Output data: ", allSeedByPlant)
-  }, []);
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getPlantByPlantId(params.id)
+      if (data.data) setCurrentPlant(data.data.plant)
+    }
+    fetchData()
+  }, [])
 
   return (
     <div>
-      {plans ? <>
-        <h1>Thông tin cây trồng {params.id}</h1>
+      {plans && currentPlant ? (
+        <>
+          <h1>Thông tin cây trồng {currentPlant.name}</h1>
           <Input
             placeholder="Tìm kiếm"
             value={search}
@@ -133,16 +132,16 @@ const PlantDetail = () => {
             <Button
               type="primary"
               onClick={() => {
-                setOpen(true);
+                setOpen(true)
               }}
             >
-              New Collection
+              Thêm quy trình mới
             </Button>
             <AddPlanPopup
               open={open}
               onCreate={onCreate}
               onCancel={() => {
-                setOpen(false);
+                setOpen(false)
               }}
               allSeedByPlant={allSeedByPlant}
             />
@@ -150,7 +149,7 @@ const PlantDetail = () => {
               open={openTemplate}
               onCreate={onCreateTemplate}
               onCancel={() => {
-                setOpenTemplate(false);
+                setOpenTemplate(false)
               }}
               defaultTemplate={defaultTemplate}
               fetilizer={fetilizer}
@@ -161,50 +160,55 @@ const PlantDetail = () => {
             <Card style={{ marginTop: '16px' }}>
               <h2>{item.seed}</h2>
               <Collapse>
-              <Panel
-                    header='Quy trình chi tiết'
+                <Panel header="Quy trình chi tiết">
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      loadCultivates()
+                      setOpenUpdateTemplate(true)
+                    }}
                   >
-                    <Button
-                      type="primary"
-                      onClick={() => {
-                        loadCultivates();
-                        setOpenUpdateTemplate(true);
-                      }}
-                    >
-                      Update
-                    </Button>
-                    <UpdateTemplatePopup
-                      open={openUpdateTemplate}
-                      onCreate={onUpdateTemplate}
-                      onCancel={() => {
-                        setOpenUpdateTemplate(false);
-                      }}
-                      template={item.plan}
-                      fetilizer={fetilizer}
-                      BVTV={BVTV}
-                      plantCultivateId={item._id}
-                    />
-                {item.plan.map((cultivate) => (
-                  <>
-                  <Divider><h3>Time: {cultivate.time}</h3></Divider>
-                  <h3>Note: {cultivate.note}</h3>
-                  <h3>Type: {cultivate.type}</h3>
-                    {cultivate.cultivativeItems.map((cultivativeItem) => (
-                      <>
-                      <Divider></Divider>
-                        <p>Name: {cultivativeItem.name}</p>
-                        <p>Amount per ha: {cultivativeItem.amount_per_ha}</p>
-                      </>
-                    ))}
-                  </>
-                ))}
+                    Chỉnh sửa
+                  </Button>
+                  <UpdateTemplatePopup
+                    open={openUpdateTemplate}
+                    onCreate={onUpdateTemplate}
+                    onCancel={() => {
+                      setOpenUpdateTemplate(false)
+                    }}
+                    template={item.plan}
+                    fetilizer={fetilizer}
+                    BVTV={BVTV}
+                    plantCultivateId={item._id}
+                  />
+                  {item.plan.map((cultivate) => (
+                    <>
+                      <Divider>
+                        <h3>Thời điểm: {cultivate.time}</h3>
+                      </Divider>
+                      <h3>Ghi chú: {cultivate.note}</h3>
+                      <h3>Loại: {cultivate.type}</h3>
+                      {cultivate.agroChemicalItems.map((cultivativeItem) => (
+                        <>
+                          <Divider></Divider>
+                          <p>Tên: {cultivativeItem.name}</p>
+                          <p>
+                            Lượng: {cultivativeItem.amountPerHa} {cultivate.type === 'phân bón' ? 'kg/ha' : 'lit/ha'}
+                          </p>
+                        </>
+                      ))}
+                    </>
+                  ))}
                 </Panel>
               </Collapse>
             </Card>
           ))}
-      </> : <Loading />}
+        </>
+      ) : (
+        <Loading />
+      )}
     </div>
-  );
-};
+  )
+}
 
-export default PlantDetail;
+export default PlantDetail

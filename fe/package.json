@@ -5,6 +5,11 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
+    "@fortawesome/fontawesome-svg-core": "^6.5.0",
+    "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-regular-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@tanstack/react-query": "^5.4.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -13,7 +18,9 @@
     "@thirdweb-dev/sdk": "^4",
     "antd": "^5.10.3",
     "assert": "^2.0.0",
+    "babel-plugin-macros": "^3.1.0",
     "browserify-zlib": "latest",
+    "eslint": "^8.56.0",
     "ethers": "^5",
     "http": "npm:http-browserify",
     "http-browserify": "latest",
@@ -33,7 +40,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "yarn build && npx thirdweb@latest upload build"
+    "deploy": "yarn build && npx thirdweb@latest upload build",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,html,css,md}\"",
+    "lint:prettier": "prettier --check ."
   },
   "eslintConfig": {
     "extends": [
@@ -52,5 +61,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "prettier": "3.1.1"
   }
 }

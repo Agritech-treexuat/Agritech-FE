@@ -1,60 +1,57 @@
-import React from 'react';
-import { Button, Form, Input, InputNumber, Select } from 'antd';
-import './style.css';
+import React from 'react'
+import { Button, Form, Input, InputNumber } from 'antd'
+import './style.css'
 import FARM from '../../../../services/farmService'
-import { useParams } from 'react-router';
-import { useStateContext } from '../../../../context';
-const { Option } = Select;
+import { useParams } from 'react-router'
 
 const layout = {
   labelCol: {
-    span: 8,
+    span: 8
   },
   wrapperCol: {
-    span: 16,
-  },
-};
+    span: 16
+  }
+}
 
 const tailLayout = {
   wrapperCol: {
     offset: 8,
-    span: 16,
-  },
-};
+    span: 16
+  }
+}
 
 const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
-  const date = today.getDate().toString().padStart(2, '0');
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = (today.getMonth() + 1).toString().padStart(2, '0')
+  const date = today.getDate().toString().padStart(2, '0')
 
-  const currentDate = `${year}-${month}-${date}`;
-  const formRef = React.useRef(null);
+  const currentDate = `${year}-${month}-${date}`
+  const formRef = React.useRef(null)
   const params = useParams()
-  const { insertExpect, connect, address } = useStateContext();
 
   const onFinish = (values) => {
-    console.log("Values: ", values);
+    console.log('Values: ', values)
 
-    const updatedValue = { ...values, time: values.date };
-    delete updatedValue.date;
-    console.log(updatedValue);
+    const updatedValue = { ...values, time: values.date }
+    delete updatedValue.date
+    console.log(updatedValue)
     const data = {
-      "tx": "b",
+      tx: 'b',
       ...updatedValue
     }
     handleSubmitExpect(data, params.id)
-  };
+  }
 
-  const handleSubmitExpect = async (data, projectId )=> {
+  const handleSubmitExpect = async (data, projectId) => {
     try {
-      console.log("data to send: ", data, projectId)
-      const res = await FARM.addExpect(data, projectId);
-      console.log("res: ", res)
+      console.log('data to send: ', data, projectId)
+      const res = await FARM.addExpect(data, projectId)
+      console.log('res: ', res)
       setExpectData(res.data.updatedProjectExpect)
-      handleCloseForm();
+      handleCloseForm()
     } catch (error) {
-        console.error(error?.response?.data?.message);
+      console.error(error?.response?.data?.message)
     }
   }
 
@@ -62,17 +59,15 @@ const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
     <Form
       {...layout}
       ref={formRef}
-      initialValues={
-        {
-          'date': currentDate,
-          'amount': 1000,
-          'note': ''
-        }
-      }
+      initialValues={{
+        date: currentDate,
+        amount: 1000,
+        note: ''
+      }}
       name="control-ref"
       onFinish={onFinish}
       style={{
-        maxWidth: 600,
+        maxWidth: 600
       }}
     >
       {/* date */}
@@ -81,8 +76,8 @@ const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
         label="Thời gian"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
         <Input type="date" />
@@ -93,27 +88,24 @@ const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
         label="Lượng"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
-        <InputNumber />
+        <InputNumber addonAfter="kg" />
       </Form.Item>
       {/* note */}
-      <Form.Item
-        name="note"
-        label="Ghi chú"
-      >
+      <Form.Item name="note" label="Ghi chú">
         <Input />
       </Form.Item>
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-        Thêm 
+          Thêm
         </Button>
       </Form.Item>
     </Form>
-  );
-};
+  )
+}
 
-export default AddExpectForm;
+export default AddExpectForm

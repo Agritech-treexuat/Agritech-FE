@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
-import { Button, Modal, Form, Input, Select } from 'antd';
-import AddExpectForm from './AddExpectForm';
+import React, { useState } from 'react'
+import { Button, Modal } from 'antd'
+import AddExpectForm from './AddExpectForm'
 
-const AddExpectPopup = ({setExpectData}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const AddExpectPopup = ({ setExpectData }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
-    setIsModalOpen(true);
-  };
+    setIsModalOpen(true)
+  }
   const handleOk = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
   const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
   return (
     <>
-      <Button type="primary" onClick={showModal} style={{marginBottom: "15px"}}>
-      Thêm dự kiến
+      <Button type="primary" onClick={showModal} style={{ marginBottom: '15px' }}>
+        Thêm dự kiến
       </Button>
       <Modal title="Thêm dự kiến" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
-        <AddExpectForm handleCloseForm={handleOk} setExpectData={setExpectData}/>
+        <AddExpectForm handleCloseForm={handleOk} setExpectData={setExpectData} />
       </Modal>
     </>
-  );
-};
-export default AddExpectPopup;
+  )
+}
+export default AddExpectPopup
