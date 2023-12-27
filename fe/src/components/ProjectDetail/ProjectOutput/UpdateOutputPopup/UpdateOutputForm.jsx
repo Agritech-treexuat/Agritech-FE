@@ -1,11 +1,10 @@
 import React from 'react'
-import { Button, Form, Input, Select, InputNumber, Upload, Space } from 'antd'
+import { Button, Form, Input, InputNumber, Upload, Space } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import { UploadOutlined } from '@ant-design/icons'
 import FARM from '../../../../services/farmService'
 import { useParams } from 'react-router'
 import './style.css'
-const { Option } = Select
 
 const layout = {
   labelCol: {
@@ -23,14 +22,11 @@ const tailLayout = {
   }
 }
 const normFile = (e) => {
-  console.log('Upload event:', e)
   if (Array.isArray(e)) {
     return e
   }
   return e?.fileList
 }
-
-const testForm = null
 
 const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
   const params = useParams()
@@ -51,14 +47,11 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
   }
 
   const onFinish = (values) => {
-    console.log('Values: ', values)
     const images = values.upload.map((item) => (typeof item === 'string' ? item : item.name))
-    console.log('images here: ', images)
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
     delete updatedValue.date
     delete updatedValue.upload
     delete updatedValue['amount per one']
-    console.log(updatedValue)
     const data = {
       tx: 'b',
       ...updatedValue
@@ -66,18 +59,14 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
     const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0)
     if (values.amount >= totalNppAmount) {
       handleSubmitOutput(data, params.id, output._id)
-      // handleSubmitOutput(data, params.id);
     } else {
       alert('Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế')
-      // Hiển thị thông báo hoặc thực hiện các xử lý khác tại đây nếu cần.
     }
   }
 
   const handleSubmitOutput = async (data, projectId, outputId) => {
     try {
-      console.log('data to send: ', data, projectId)
       const res = await FARM.editOutput(data, projectId, outputId)
-      console.log('res: ', res)
       setOutputData(res.data.updatedOutput)
       handleCloseForm()
     } catch (error) {

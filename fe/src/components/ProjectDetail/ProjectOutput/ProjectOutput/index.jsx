@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
-import OutputItem from '../OutputItem' // Import ProcessItem component
 import AddOutputPopup from '../AddOutputPopup'
 import FARM from '../../../../services/farmService'
 import { useParams } from 'react-router'
 import Loading from '../../../../pages/Loading'
 import { useEffect } from 'react'
-import { Space, Table, Tag, Button, Image, Modal } from 'antd'
+import { Space, Table, Button, Image, Modal } from 'antd'
 import { formatDate } from '../../../../utils/helpers'
 import EditOutputHistory from '../EditOutputHistory'
 import UpdateOutputPopup from '../UpdateOutputPopup'
 
-const { Column, ColumnGroup } = Table
+const { Column } = Table
 
 const ProjectOutput = () => {
   const [outputData, setOutputData] = useState([])
@@ -19,23 +18,18 @@ const ProjectOutput = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await FARM.getOutput(params.id)
-      console.log('Data: ', data.data)
       setOutputData(data.data.outputs)
     }
     fetchData()
-    console.log('Output data: ', outputData)
   }, [])
 
   const handleQR = (output) => {
-    // Xử lý logic xuất QR code ở đây
     handleExportQR(params.id, output._id)
   }
 
   const handleExportQR = async (projectId, outputId) => {
     try {
-      console.log('data to send: ', projectId, outputId)
       const res = await FARM.exportQR(projectId, outputId)
-      console.log('res export qr: ', res)
       setOutputData(res.data.projectOutput)
       alert('Eport QR thanh cong')
     } catch (error) {

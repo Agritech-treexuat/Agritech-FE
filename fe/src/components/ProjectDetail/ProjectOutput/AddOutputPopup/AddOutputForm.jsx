@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Select, Upload, Space } from 'antd'
+import { Button, Form, Input, InputNumber, Upload, Space } from 'antd'
 import { useRef } from 'react'
 import './style.css'
 import { UploadOutlined } from '@ant-design/icons'
@@ -33,7 +33,7 @@ const normFile = (e) => {
 const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
   const today = new Date()
   const year = today.getFullYear()
-  const month = (today.getMonth() + 1).toString().padStart(2, '0') // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
+  const month = (today.getMonth() + 1).toString().padStart(2, '0')
   const date = today.getDate().toString().padStart(2, '0')
 
   const currentDate = `${year}-${month}-${date}`
@@ -41,7 +41,6 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
   const params = useParams()
 
   const onFinish = (values) => {
-    console.log('Values: ', values)
     const images = values.upload ? values.upload.map((upload) => upload.name) : []
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
     delete updatedValue.date
@@ -56,18 +55,14 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
 
     if (values.amount >= totalNppAmount) {
       handleSubmitOutput(data, params.id)
-      // handleSubmitOutput(data, params.id);
     } else {
       alert('Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế')
-      // Hiển thị thông báo hoặc thực hiện các xử lý khác tại đây nếu cần.
     }
   }
 
   const handleSubmitOutput = async (data, projectId) => {
     try {
-      console.log('data to send: ', data, projectId)
       const res = await FARM.addOutput(data, projectId)
-      console.log('res: ', res)
       setOutputData(res.data.updatedProjectOutput)
       handleCloseForm()
     } catch (error) {
@@ -77,7 +72,7 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
 
   const uploadProps = {
     name: 'logo',
-    action: 'http://35.247.150.142:8080/upload/error', // URL của API upload
+    action: 'http://35.247.150.142:8080/upload/error',
     method: 'post',
     accept: 'image/*',
     onChange(info) {
