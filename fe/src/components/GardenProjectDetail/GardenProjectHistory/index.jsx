@@ -45,7 +45,6 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
   const [form] = Form.useForm();
 
   const handlePlantChange = (value) => {
-    console.log(value);
   };
 
   return (
@@ -63,7 +62,6 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             onCreate(values);
           })
           .catch((info) => {
-            console.log("Validate Failed:", info);
           });
       }}
     >
@@ -102,7 +100,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
                 .toLowerCase()
                 .localeCompare((optionB?.label ?? "").toLowerCase())
             }
-            options={listPlant.map((plant) => {
+            options={listPlant?.map((plant) => {
               plant.label = plant.name;
               plant.value = plant.id;
               return plant;
@@ -130,7 +128,6 @@ const CollectionHistoryForm = ({ open, onCreate, onCancel, history }) => {
 
 const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
   const [formPlans] = Form.useForm();
-  console.log(plans);
 
   useEffect(() => {
     formPlans.setFieldsValue({
@@ -139,7 +136,6 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
   }, [formPlans, plans]);
 
   const handlePlantChange = (value) => {
-    console.log(value);
   };
   return (
     <Modal
@@ -156,7 +152,6 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
             onCreate(values);
           })
           .catch((info) => {
-            console.log("Validate Failed:", info);
           });
       }}
       getContainer={false}
@@ -206,8 +201,6 @@ const CollectionTemplateForm = ({
   BVTV,
 }) => {
   const [formTemplate] = Form.useForm();
-  console.log("defaultTemplate", defaultTemplate);
-
 
   const BVTV_name = BVTV?.map((BVTV_item) => {
     return {
@@ -230,7 +223,6 @@ const CollectionTemplateForm = ({
   }, [formTemplate, defaultTemplate]);
 
   const handlePlantChange = (value) => {
-    console.log(value);
   };
   return (
     <Modal
@@ -247,7 +239,6 @@ const CollectionTemplateForm = ({
             onCreate(values);
           })
           .catch((info) => {
-            console.log("Validate Failed:", info);
           });
       }}
       getContainer={false}
@@ -374,7 +365,6 @@ const CollectionEditForm = ({
   const [formEdit] = Form.useForm();
 
   const handlePlantChange = (value) => {
-    console.log(value);
   };
 
   const BVTV_name = BVTV?.map((BVTV_item) => {
@@ -715,6 +705,8 @@ const GardenProjectHistory = () => {
           }
         })
       }): setInitData([]);
+
+      console.log('initData', initData);
     }
     fetchData();
   }, []);
@@ -722,7 +714,6 @@ const GardenProjectHistory = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await GARDEN.getGardenProject(gardenId)
-      console.log("Data to look: ", data)
 
       data.data.projects ? setTemplates({
         id: '1',
@@ -750,17 +741,13 @@ const GardenProjectHistory = () => {
 
 
   const onCreate = (values) => {
-    console.log("Received values of onCreate abcdjcndjcndj: ", values);
     setPlanSelected(values.plant);
-    console.log(templates.seeds);
     setPlans(templates.seeds.find((s) => s.id === values.plant)?.plan);
-    console.log('plans', plans);
     setOpen(false);
     setOpenPlans(true);
   };
 
   const onCreatePlans = (values) => {
-    console.log("Received values of onCreatePlans: ", values);
     setOpenPlans(false);
     let newTemp = [];
     newTemp.push(values.plan);
@@ -798,7 +785,6 @@ const GardenProjectHistory = () => {
     try {
       delete values.items[0].id
       const res = await FARM.addProcess(values.items[0], planSelected);
-      console.log("res: ", res);
       setOpenTemplate(false);
       setInitData({
         id: "1",
@@ -835,7 +821,6 @@ const GardenProjectHistory = () => {
 
   const onCreateEdit = async (values) => {
     try {
-      console.log("Received values of editttttttt: ", values);
       let body = {
         time: values.time,
         agroChemicalItems: values.detail,
@@ -848,12 +833,10 @@ const GardenProjectHistory = () => {
         "Thông báo",
         "Cập nhật thành công"
       );
-      console.log('initData', initData);
       const editData = initData.plants.find(obj => obj.id === projectIDSelected)
       setInitData({
         id: "1",
-        plants: initData.plants.map(plant => {
-          console.log("here:", plant, editData)
+        plants: initData?.plants?.map(plant => {
           if(plant.id == editData.id) {
             plant.plan = res?.data.updatedProcess.map(i => {
               return {
@@ -881,7 +864,6 @@ const GardenProjectHistory = () => {
   };
 
   const handleChangeStatus = (value) => {
-    console.log(`selected ${value}`);
   };
 
   const columns = [
@@ -916,8 +898,6 @@ const GardenProjectHistory = () => {
                         setEditData(rec);
                         setProcessSelected(rec.id);
                         setProjectIDSelected(record.id)
-                        console.log("rec", rec);
-                        console.log("record", record);
                       }}
                     >
                       <EditFilled /> Chỉnh sửa
@@ -932,7 +912,6 @@ const GardenProjectHistory = () => {
                     onClick={() => {
                       setHistory(true);
                       setHistoryData(rec.tx);
-                      console.log(rec.tx);
                     }}
                   >
                     <HistoryOutlined /> Lịch sử chỉnh sửa
@@ -1093,7 +1072,7 @@ const GardenProjectHistory = () => {
           <Table
             bordered={true}
             columns={columns}
-            dataSource={initData.plants.map((data, index) => {
+            dataSource={initData?.plants?.map((data, index) => {
               data.key = index;
               return data;
             })}
