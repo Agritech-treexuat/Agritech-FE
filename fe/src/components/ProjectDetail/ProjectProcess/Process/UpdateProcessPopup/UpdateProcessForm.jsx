@@ -26,8 +26,8 @@ const testForm = null
 
 const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
   const params = useParams()
-  const [fertilizers, setFertilizers] = useState([]);
-  const [bvtvs, setBvtvs] = useState([]);
+  const [fertilizers, setFertilizers] = useState([])
+  const [bvtvs, setBvtvs] = useState([])
   const dateObj = new Date(process.time)
 
   const yearData = dateObj.getFullYear()
@@ -41,8 +41,8 @@ const UpdateProcessForm = ({ handleCloseForm, process, setProcessData }) => {
     async function fetchData() {
       const data = await FARM.getCultivative()
       if (data.data) {
-        setFertilizers(data.data.cultivatives.filter(item => item.type === 'phân bón').map(item => item.name))
-        setBvtvs(data.data.cultivatives.filter(item => item.type === 'BVTV').map(item => item.name))
+        setFertilizers(data.data.cultivatives.filter((item) => item.type === 'phân bón').map((item) => item.name))
+        setBvtvs(data.data.cultivatives.filter((item) => item.type === 'BVTV').map((item) => item.name))
       }
     }
     fetchData()

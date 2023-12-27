@@ -1,9 +1,8 @@
 import React from 'react'
-import { Button, Form, Input, Select, InputNumber } from 'antd'
+import { Button, Form, Input, InputNumber } from 'antd'
 import FARM from '../../../../services/farmService'
 import { useParams } from 'react-router'
 import './style.css'
-const { Option } = Select
 
 const layout = {
   labelCol: {
@@ -20,8 +19,6 @@ const tailLayout = {
     span: 16
   }
 }
-
-const testForm = null
 
 const UpdateExpectForm = ({ handleCloseForm, expect, setExpectData }) => {
   const params = useParams()

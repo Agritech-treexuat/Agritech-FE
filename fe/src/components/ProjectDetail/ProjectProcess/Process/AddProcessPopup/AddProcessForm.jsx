@@ -25,8 +25,8 @@ const tailLayout = {
 const testForm = null
 
 const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
-  const [fertilizers, setFertilizers] = useState([]);
-  const [bvtvs, setBvtvs] = useState([]);
+  const [fertilizers, setFertilizers] = useState([])
+  const [bvtvs, setBvtvs] = useState([])
   const today = new Date()
   const year = today.getFullYear()
   const month = (today.getMonth() + 1).toString().padStart(2, '0')
@@ -43,8 +43,8 @@ const AddProcessForm = ({ handleCloseForm, setProcessData, process }) => {
     async function fetchData() {
       const data = await FARM.getCultivative()
       if (data.data) {
-        setFertilizers(data.data.cultivatives.filter(item => item.type === 'phân bón').map(item => item.name))
-        setBvtvs(data.data.cultivatives.filter(item => item.type === 'BVTV').map(item => item.name))
+        setFertilizers(data.data.cultivatives.filter((item) => item.type === 'phân bón').map((item) => item.name))
+        setBvtvs(data.data.cultivatives.filter((item) => item.type === 'BVTV').map((item) => item.name))
       }
     }
     fetchData()

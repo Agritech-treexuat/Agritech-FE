@@ -1,10 +1,8 @@
 import React from 'react'
-import { Button, Form, Input, InputNumber, Select } from 'antd'
+import { Button, Form, Input, InputNumber } from 'antd'
 import './style.css'
 import FARM from '../../../../services/farmService'
 import { useParams } from 'react-router'
-import { useStateContext } from '../../../../context'
-const { Option } = Select
 
 const layout = {
   labelCol: {
@@ -25,13 +23,12 @@ const tailLayout = {
 const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
   const today = new Date()
   const year = today.getFullYear()
-  const month = (today.getMonth() + 1).toString().padStart(2, '0') // Cần thêm 1 vào tháng vì tháng bắt đầu từ 0
+  const month = (today.getMonth() + 1).toString().padStart(2, '0')
   const date = today.getDate().toString().padStart(2, '0')
 
   const currentDate = `${year}-${month}-${date}`
   const formRef = React.useRef(null)
   const params = useParams()
-  const { insertExpect, connect, address } = useStateContext()
 
   const onFinish = (values) => {
     console.log('Values: ', values)
