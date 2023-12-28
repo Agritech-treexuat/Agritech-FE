@@ -10,232 +10,8 @@ import Loading from '../../../pages/Loading'
 import './style.css'
 import GARDEN from '../../../services/gardenService'
 
-const mainContent = {
-  id: '1',
-  //Cây
-  seeds: [
-    {
-      id: '1',
-      name: 'cây 1',
-      seed: 'abc',
-      plan: [
-        {
-          time: '12h',
-          note: 'note',
-          type: 'type select',
-          agroChemicalItems: [
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            }
-          ]
-        },
-        {
-          time: '14h',
-          note: 'note',
-          type: 'type select',
-          agroChemicalItems: [
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: '2',
-      name: 'cây 2',
-      seed: 'Hạt giống',
-      plan: [
-        {
-          time: '12h',
-          note: 'note',
-          type: 'type select',
-          agroChemicalItems: [
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: '3',
-      name: 'cây 3',
-      seed: 'Hạt giống',
-      plan: [
-        {
-          time: '12h',
-          note: 'note',
-          type: 'type select',
-          agroChemicalItems: [
-            {
-              name: 'name',
-              amountPerHa: 12
-            },
-            {
-              name: 'name',
-              amountPerHa: 12
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: '4',
-      name: 'cây 4',
-      seed: 'Hạt giống',
-      plan: []
-    },
-    {
-      id: '5',
-      name: 'cây 5',
-      seed: 'Hạt giống',
-      plan: []
-    }
-  ]
-}
-
-const layout = {
-  labelCol: {
-    span: 8
-  },
-  wrapperCol: {
-    span: 16
-  }
-}
-
-const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
-  const [form] = Form.useForm()
-
-  const handlePlantChange = (value) => {
-    console.log(value)
-  }
-  return (
-    <Modal
-      open={open}
-      title="Thêm cây"
-      okText="Tạo mới"
-      cancelText="Hủy"
-      onCancel={onCancel}
-      onOk={() => {
-        form
-          .validateFields()
-          .then((values) => {
-            form.resetFields()
-            onCreate(values)
-          })
-          .catch((info) => {
-            console.log('Validate Failed:', info)
-          })
-      }}
-    >
-      <Form
-        form={form}
-        {...layout}
-        name="form_in_modal"
-        initialValues={{
-          modifier: 'public'
-        }}
-      >
-        <Form.Item
-          name="plant"
-          label="Chọn cây"
-          rules={[
-            {
-              required: true,
-              message: 'Trường thông tin không được để trống!'
-            }
-          ]}
-        >
-          <Select
-            showSearch
-            style={{
-              width: '100%'
-            }}
-            placeholder="Chọn cây"
-            optionFilterProp="children"
-            filterOption={(input, option) => (option?.label.toLocaleLowerCase() ?? '').includes(input.toLowerCase())}
-            filterSort={(optionA, optionB) =>
-              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-            }
-            options={listPlant?.map((plant) => {
-              plant.label = plant.name
-              plant.value = plant.id
-              return plant
-            })}
-            onChange={handlePlantChange}
-          />
-        </Form.Item>
-        <Form.Item
-          name="template"
-          label="Template"
-          rules={[
-            {
-              required: true
-            }
-          ]}
-        >
-          <Select
-            placeholder="Chọn template"
-            options={[
-              {
-                value: 'default',
-                label: 'Default'
-              },
-              {
-                value: 'none',
-                label: 'None'
-              }
-            ]}
-          ></Select>
-        </Form.Item>
-      </Form>
-    </Modal>
-  )
-}
-
 const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fetilizer, BVTV }) => {
   const [formTemplate] = Form.useForm()
-  console.log(defaultTemplate)
 
   const BVTV_name = BVTV?.map((BVTV_item) => {
     return {
@@ -257,14 +33,11 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
     })
   }, [formTemplate, defaultTemplate])
 
-  const handlePlantChange = (value) => {
-    console.log(value)
-  }
   return (
     <Modal
       open={open}
-      title="Thêm cây mới"
-      okText="Tạo mới"
+      title="Cập nhật quy trình"
+      okText="Cập nhật"
       cancelText="Hủy"
       onCancel={onCancel}
       onOk={() => {
@@ -308,7 +81,7 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
               {fields?.map((field) => (
                 <Card
                   size="small"
-                  title={`Kế hoạch ${field.name + 1}`}
+                  title={`Việc ${field.name + 1}`}
                   key={field.key}
                   extra={
                     <CloseOutlined
@@ -318,15 +91,15 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
                     />
                   }
                 >
-                  <Form.Item label="Time" name={[field.name, 'time']}>
+                  <Form.Item label="Thời điểm" name={[field.name, 'time']}>
                     <Input />
                   </Form.Item>
 
-                  <Form.Item label="Note" name={[field.name, 'note']}>
+                  <Form.Item label="Ghi chú" name={[field.name, 'note']}>
                     <Input />
                   </Form.Item>
 
-                  <Form.Item label="Type" name={[field.name, 'type']}>
+                  <Form.Item label="Loại" name={[field.name, 'type']}>
                     <Select
                       placeholder="Chọn loại"
                       options={[
@@ -337,12 +110,16 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
                         {
                           label: 'BVTV',
                           value: 'BVTV'
+                        },
+                        {
+                          label: 'Khác',
+                          value: 'other'
                         }
                       ]}
                     ></Select>
                   </Form.Item>
 
-                  <Form.Item label="List">
+                  <Form.Item label="Cụ thể">
                     <Form.List name={[field.name, 'agroChemicalItems']}>
                       {(subFields, subOpt) => (
                         <div
@@ -365,7 +142,15 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
                                 />
                               </Form.Item>
                               <Form.Item noStyle name={[subField.name, 'amountPerHa']}>
-                                <Input placeholder="Số lượng" type="number" />
+                                <Input
+                                  placeholder="Số lượng"
+                                  type="number"
+                                  addonAfter={
+                                    formTemplate.getFieldValue(['items', field.name, 'type']) === 'phân bón'
+                                      ? 'kg/ha'
+                                      : 'lit/ha'
+                                  }
+                                />
                               </Form.Item>
                               <CloseOutlined
                                 onClick={() => {
@@ -375,7 +160,7 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
                             </Space>
                           ))}
                           <Button type="dashed" onClick={() => subOpt.add()} block>
-                            + Thêm Sub Item
+                            + Thêm
                           </Button>
                         </div>
                       )}
@@ -385,7 +170,7 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
               ))}
 
               <Button type="dashed" onClick={() => add()} block>
-                + Add Item
+                + Thêm việc
               </Button>
             </div>
           )}
@@ -410,12 +195,10 @@ const GardenProjectTemplate = () => {
   const [fetilizer, setFetilizer] = useState([])
   const [BVTV, setBVTV] = useState([])
   const gardenId = useParams().id
-  console.log('params: ', gardenId)
 
   useEffect(() => {
     async function fetchData() {
       const data = await GARDEN.getGardenTemplate(gardenId)
-      console.log('Data: ', data.data)
 
       data.data.projects
         ? setInitData({
@@ -498,62 +281,34 @@ const GardenProjectTemplate = () => {
         })
     : []
 
-  const [open, setOpen] = useState(false)
-  const onCreate = (values) => {
-    console.log('Received values of form: ', values)
-    setSelectedPlant(values.plant)
-    if (values.template === 'default') {
-      setDefaultTemplate(mainContent.seeds.find((s) => s.id === values.plant)?.plan)
-      setBVTV([
-        {
-          name: 'type 1'
-        },
-        {
-          name: 'type 2'
-        }
-      ])
-
-      setFetilizer([
-        {
-          name: 'Fetilizer 1'
-        },
-        {
-          name: 'Fetilizer 2'
-        }
-      ])
-    } else setDefaultTemplate([])
-    console.log(defaultTemplate)
-    setOpen(false)
-    setOpenTemplate(true)
-  }
-
-  const handleEdit = (plant) => {
-    console.log('plant: ', plant)
+  const handleEdit = async (plant) => {
     setSelectedPlant(plant)
-    setBVTV([
-      {
-        name: 'type 1'
-      },
-      {
-        name: 'type 2'
-      }
-    ])
-
-    setFetilizer([
-      {
-        name: 'Fetilizer 1'
-      },
-      {
-        name: 'Fetilizer 2'
-      }
-    ])
+    await loadCultivates()
     setDefaultTemplate(plant.plan)
     setOpenTemplate(true)
   }
 
+  const loadCultivates = async () => {
+    const data = await FARM.getCultivative()
+    const fetilizer = []
+    const BVTV = []
+
+    if (data.data) {
+      data.data.cultivatives.forEach((cultivative) => {
+        if (cultivative.type === 'phân bón') {
+          fetilizer.push({ name: cultivative.name })
+        } else if (cultivative.type === 'BVTV') {
+          BVTV.push({ name: cultivative.name })
+        }
+      })
+
+      setFetilizer(fetilizer)
+      setBVTV(BVTV)
+    }
+  }
+
   const [openTemplate, setOpenTemplate] = useState(false)
   const onCreateTemplate = (values) => {
-    console.log('Received values of form here: ', values)
     const data = {
       plan: values.items
     }
@@ -562,14 +317,8 @@ const GardenProjectTemplate = () => {
   }
 
   const updateTemplate = async (data, projectId) => {
-    console.log('data send: ', data)
     const new_data = await FARM.updatePlantCultivatesToProject(data, projectId)
     openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
-    console.log('res new data: ', new_data)
-    // const newPlans = plans.map((item) =>
-    //   item._id === new_data.data.plantFarming._id ? new_data.data.plantFarming : item
-    // )
-    // setPlans(newPlans)
     setInitData({
       id: '1',
       seeds: initData.seeds.map((data) => {
@@ -579,7 +328,6 @@ const GardenProjectTemplate = () => {
         return data
       })
     })
-    // setProjectTemplate(new_data.data.updatedProjectPlan)
   }
 
   return (
@@ -587,14 +335,6 @@ const GardenProjectTemplate = () => {
       {contextHolder}
       {initData ? (
         <div>
-          <CollectionCreateForm
-            open={open}
-            onCreate={onCreate}
-            listPlant={mainContent.seeds}
-            onCancel={() => {
-              setOpen(false)
-            }}
-          />
           <CollectionTemplateForm
             open={openTemplate}
             onCreate={onCreateTemplate}
