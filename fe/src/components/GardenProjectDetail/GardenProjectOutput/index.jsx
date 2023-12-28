@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
-import FARM from '../../../services/farmService'
-import { useParams } from 'react-router'
-import { useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import dayjs from 'dayjs'
+import React, { useState } from "react";
+import FARM from "../../../services/farmService";
+import { useParams } from "react-router";
+import { useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import dayjs from "dayjs";
+import GARDEN from "../../../services/gardenService";
+
 import {
   Col,
+  notification,
   Row,
   Image,
   Card,
@@ -94,12 +97,6 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
                       noStyle
                       name={[subField.name, 'amount']}
                       label={listPlant[i]?.name}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Trường thông tin này không được để trống!'
-                        }
-                      ]}
                     >
                       <Input
                         type={(() => {
@@ -141,24 +138,74 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             )}
           </Form.List>
         </Form.Item>
+        <Form.Item name="note" label="Ghi chú">
+          <Input placeholder="Điền ghi chú" style={{ width: "100%" }} />
+        </Form.Item>
         <div></div>
       </Form>
     </Modal>
   )
 }
 const GardenProjectOutput = () => {
-  const [open, setOpen] = useState(false)
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5,
+    });
+  };
+  const [open, setOpen] = useState(false);
+  const gardenId = useParams().id;
   const onCreate = (values) => {
-    console.log('Received values of form: ', values)
-    setOpen(false)
-  }
-  const [initData, setInitData] = useState([])
-  const [listPlant, setListPlant] = useState([])
-  const [deliveried, setDeliveried] = useState([])
-  const [notDeliveried, setNotDeliveried] = useState([])
-  const projectID = useParams()
-  console.log('params: ', projectID)
-  console.log(deliveried)
+    console.log("Received values of form thêm: ", values);
+
+    const fetchData = async () => {
+      const addData = {
+        deliveryDetails: values?.plants.map((plant) => {
+          if (plant.amount) {
+            return {
+              plant: plant.name,
+              amount: plant.amount,
+            };
+          } else {
+            return undefined;
+          }
+        }),
+        note: values.note,
+        date: values.startDate
+          ? values.startDate.dateString
+          : dayjs(new Date()).add(1, "day"), // Check if values.startDate is undefined
+      };
+
+      try {
+        const data = await GARDEN.addDelivery(addData, gardenId);
+        console.log("ssssssssssssssssssss", data);
+        openNotificationWithIcon(
+          "success",
+          "Thông báo",
+          "Tạo mới thành công"
+        );
+      } catch (error) {
+        console.error("Error adding delivery:", error);
+        openNotificationWithIcon(
+          "erro",
+          "Thông báo",
+          "Có lỗi xảy ra"
+        );
+        // Handle error as needed
+      }
+    };
+    fetchData();
+    setOpen(false);
+  };
+  const [initData, setInitData] = useState([]);
+  const [listPlant, setListPlant] = useState([]);
+  const [deliveried, setDeliveried] = useState([]);
+  const [notDeliveried, setNotDeliveried] = useState([]);
+  const projectID = useParams();
+  console.log("params: ", projectID);
+  console.log(deliveried);
 
   useEffect(() => {
     // 1 là đã giao, 0 là chưa giao
@@ -223,15 +270,44 @@ const GardenProjectOutput = () => {
   }, [])
 
   useEffect(() => {
-    console.log('Init: ', initData)
+    async function fetchData() {
+      const data = await GARDEN.getGardenOutput(gardenId);
+      console.log("Data: here ", data.data);
+
+      data.data.deliveries
+        ? setInitData(
+            data.data.deliveries.map((item) => {
+              return {
+                id: item._id,
+                time: item.date,
+                plants: item.deliveryDetails.map((plant) => ({
+                  name: plant.plant,
+                  amount: plant.amount,
+                  id: plant._id,
+                })),
+                note: item.note,
+                status: item.status,
+                clientAccept: item.clientAccept,
+                clientNote: item.clientNote,
+              };
+            })
+          )
+        : setInitData([]);
+    }
+    console.log("initData API", initData);
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log("Init: ", initData);
     // 1 là đã giao, 0 là chưa giao
-    setDeliveried(initData.filter((i) => i.status === 1))
-  }, [initData])
+    setDeliveried(initData.filter((i) => i.status === "done"));
+  }, [initData]);
 
   useEffect(() => {
     // 1 là đã giao, 0 là chưa giao
-    setNotDeliveried(initData.filter((i) => i.status === 0))
-  }, [initData])
+    setNotDeliveried(initData.filter((i) => i.status === "coming"));
+  }, [initData]);
 
   const columns = [
     {
@@ -259,12 +335,31 @@ const GardenProjectOutput = () => {
             </div>
           ))}
         </div>
-      )
-    }
-  ]
+      ),
+    },
+    {
+      title: "Khách chấp nhận",
+      dataIndex: "detail",
+      key: "detail",
+      render: (_, record) => <div>{record.clientAccept}</div>,
+    },
+    {
+      title: "Ghi chú của Khách",
+      dataIndex: "detail",
+      key: "detail",
+      render: (_, record) => <div>{record.clientNote}</div>,
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "detail",
+      key: "detail",
+      render: (_, record) => <div>{record.note}</div>,
+    },
+  ];
 
   return (
     <div>
+      {contextHolder}
       {initData ? (
         <div>
           <Button

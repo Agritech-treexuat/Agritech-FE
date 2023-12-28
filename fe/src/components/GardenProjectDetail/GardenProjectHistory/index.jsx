@@ -44,8 +44,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
   const [form] = Form.useForm()
 
   const handlePlantChange = (value) => {
-    console.log(value)
-  }
+  };
 
   return (
     <Modal
@@ -62,8 +61,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             onCreate(values)
           })
           .catch((info) => {
-            console.log('Validate Failed:', info)
-          })
+          });
       }}
     >
       <Form
@@ -95,10 +93,10 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
             }
-            options={listPlant.map((plant) => {
-              plant.label = plant.name
-              plant.value = plant.id
-              return plant
+            options={listPlant?.map((plant) => {
+              plant.label = plant.name;
+              plant.value = plant.id;
+              return plant;
             })}
             onChange={handlePlantChange}
           />
@@ -117,8 +115,7 @@ const CollectionHistoryForm = ({ open, onCreate, onCancel, history }) => {
 }
 
 const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
-  const [formPlans] = Form.useForm()
-  console.log(plans)
+  const [formPlans] = Form.useForm();
 
   useEffect(() => {
     formPlans.setFieldsValue({
@@ -127,8 +124,7 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
   }, [formPlans, plans])
 
   const handlePlantChange = (value) => {
-    console.log(value)
-  }
+  };
   return (
     <Modal
       open={open}
@@ -144,8 +140,7 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
             onCreate(values)
           })
           .catch((info) => {
-            console.log('Validate Failed:', info)
-          })
+          });
       }}
       getContainer={false}
     >
@@ -179,12 +174,18 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
         </Form.Item>
       </Form>
     </Modal>
-  )
-}
+  );
+};
 
-const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fetilizer, BVTV }) => {
-  const [formTemplate] = Form.useForm()
-  console.log('defaultTemplate', defaultTemplate)
+const CollectionTemplateForm = ({
+  open,
+  onCreate,
+  onCancel,
+  defaultTemplate,
+  fetilizer,
+  BVTV,
+}) => {
+  const [formTemplate] = Form.useForm();
 
   const BVTV_name = BVTV?.map((BVTV_item) => {
     return {
@@ -207,8 +208,8 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
   }, [formTemplate, defaultTemplate])
 
   const handlePlantChange = (value) => {
-    console.log(value)
-  }
+  };
+
   return (
     <Modal
       open={open}
@@ -224,8 +225,7 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
             onCreate(values)
           })
           .catch((info) => {
-            console.log('Validate Failed:', info)
-          })
+          });
       }}
       getContainer={false}
     >
@@ -333,8 +333,7 @@ const CollectionEditForm = ({ open, onCreate, onCancel, data, fetilizer, BVTV })
   const [formEdit] = Form.useForm()
 
   const handlePlantChange = (value) => {
-    console.log(value)
-  }
+  };
 
   const BVTV_name = BVTV?.map((BVTV_item) => {
     return {
@@ -654,8 +653,11 @@ const GardenProjectHistory = () => {
                 })
               }
             })
-          })
-        : setInitData([])
+          }
+        })
+      }): setInitData([]);
+
+      console.log('initData', initData);
     }
     fetchData()
   }, [])
@@ -663,7 +665,6 @@ const GardenProjectHistory = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await GARDEN.getGardenProject(gardenId)
-      console.log('Data to look: ', data)
 
       data.data.projects
         ? setTemplates({
@@ -692,20 +693,16 @@ const GardenProjectHistory = () => {
   }, [])
 
   const onCreate = (values) => {
-    console.log('Received values of onCreate abcdjcndjcndj: ', values)
-    setPlanSelected(values.plant)
-    console.log(templates.seeds)
-    setPlans(templates.seeds.find((s) => s.id === values.plant)?.plan)
-    console.log('plans', plans)
-    setOpen(false)
-    setOpenPlans(true)
-  }
+    setPlanSelected(values.plant);
+    setPlans(templates.seeds.find((s) => s.id === values.plant)?.plan);
+    setOpen(false);
+    setOpenPlans(true);
+  };
 
   const onCreatePlans = (values) => {
-    console.log('Received values of onCreatePlans: ', values)
-    setOpenPlans(false)
-    let newTemp = []
-    newTemp.push(values.plan)
+    setOpenPlans(false);
+    let newTemp = [];
+    newTemp.push(values.plan);
     newTemp[0].note = newTemp[0].note + newTemp[0].time
     const dateObj = new Date()
 
@@ -739,9 +736,8 @@ const GardenProjectHistory = () => {
   const onCreateTemplate = async (values) => {
     try {
       delete values.items[0].id
-      const res = await FARM.addProcess(values.items[0], planSelected)
-      console.log('res: ', res)
-      setOpenTemplate(false)
+      const res = await FARM.addProcess(values.items[0], planSelected);
+      setOpenTemplate(false);
       setInitData({
         id: '1',
         plants: initData.plants.map((data) => {
@@ -768,23 +764,24 @@ const GardenProjectHistory = () => {
 
   const onCreateEdit = async (values) => {
     try {
-      console.log('Received values of editttttttt: ', values)
       let body = {
         time: values.time,
         agroChemicalItems: values.detail,
         type: values.loai_canh_tac,
         note: values.note
       }
-      const res = await FARM.editProcess(body, projectIDSelected, processSelected)
-      openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
-      console.log('initData', initData)
-      const editData = initData.plants.find((obj) => obj.id === projectIDSelected)
+      const res = await FARM.editProcess(body, projectIDSelected, processSelected);
+      openNotificationWithIcon(
+        "success",
+        "Thông báo",
+        "Cập nhật thành công"
+      );
+      const editData = initData.plants.find(obj => obj.id === projectIDSelected)
       setInitData({
-        id: '1',
-        plants: initData.plants.map((plant) => {
-          console.log('here:', plant, editData)
-          if (plant.id == editData.id) {
-            plant.plan = res?.data.updatedProcess.map((i) => {
+        id: "1",
+        plants: initData?.plants?.map(plant => {
+          if(plant.id == editData.id) {
+            plant.plan = res?.data.updatedProcess.map(i => {
               return {
                 detail: i.agroChemicalItems,
                 loai_canh_tac: i.type,
@@ -805,8 +802,6 @@ const GardenProjectHistory = () => {
   }
 
   const handleChangeStatus = (value) => {
-    console.log(`selected ${value}`)
-  }
 
   const columns = [
     {
@@ -838,8 +833,6 @@ const GardenProjectHistory = () => {
                         setEditData(rec)
                         setProcessSelected(rec.id)
                         setProjectIDSelected(record.id)
-                        console.log('rec', rec)
-                        console.log('record', record)
                       }}
                     >
                       <EditFilled /> Chỉnh sửa
@@ -852,9 +845,8 @@ const GardenProjectHistory = () => {
                       cursor: 'pointer'
                     }}
                     onClick={() => {
-                      setHistory(true)
-                      setHistoryData(rec.tx)
-                      console.log(rec.tx)
+                      setHistory(true);
+                      setHistoryData(rec.tx);
                     }}
                   >
                     <HistoryOutlined /> Lịch sử chỉnh sửa
@@ -1015,9 +1007,9 @@ const GardenProjectHistory = () => {
           <Table
             bordered={true}
             columns={columns}
-            dataSource={initData.plants.map((data, index) => {
-              data.key = index
-              return data
+            dataSource={initData?.plants?.map((data, index) => {
+              data.key = index;
+              return data;
             })}
           />{' '}
         </div>

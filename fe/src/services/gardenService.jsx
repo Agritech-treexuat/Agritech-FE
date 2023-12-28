@@ -55,6 +55,18 @@ const GARDEN = {
       })
   },
 
+  getGardenOutput: async (gardenId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `delivery/${gardenId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
   getGardenTemplate: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
@@ -73,12 +85,47 @@ const GARDEN = {
       method: 'GET',
       url: `gardenProject/${gardenId}`
     })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  getRequestGarden: async (gardenId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `clientRequests/${gardenId}`,
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  updateDeliveryStatus: async (data, gardenId, deliveryId) => {
+    return await publicHttp({
+      method: 'POST',
+      url: `clientRequests/${gardenId}/${deliveryId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
+
+  addDelivery: async (data, gardenId) => {
+    return await publicHttp({
+      method: 'POST',
+      url: `clientRequests/${gardenId}`,
+      data
+    }).then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
   }
 }
 
