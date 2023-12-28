@@ -294,6 +294,19 @@ const FARM = {
       })
   },
 
+  getPlantWithSeed: async () => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plants-and-seeds`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
   getPlans: async (farmId, plantId) => {
     return await publicHttp({
       method: 'GET',
@@ -311,6 +324,19 @@ const FARM = {
     return await publicHttp({
       method: 'GET',
       url: `/seeds/${plantId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  getAllSeedByPlantName: async (plantName) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/seedsByPlantName/${plantName}`
     })
       .then((res) => {
         return res

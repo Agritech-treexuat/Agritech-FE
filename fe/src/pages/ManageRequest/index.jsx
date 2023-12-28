@@ -1,32 +1,13 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import {
-  Row,
-  Col,
-  Input,
-  Button,
-  DatePicker,
-  Flex,
-  Form,
-  Modal,
-  Radio,
-  InputNumber,
-  Divider,
-  Tooltip,
-  notification,
-  Collapse,
-  theme
-} from 'antd'
+import { Row, Col, Input, Button, DatePicker, Flex, Modal, Divider, Tooltip, notification, Collapse, theme } from 'antd'
 import { EyeOutlined, CaretRightOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
 import Loading from '../Loading'
-import { Card, Space } from 'antd'
-import FARM from '../../services/farmService'
-import { useParams } from 'react-router'
+import { Card } from 'antd'
 import './style.css'
 import SERVICE from '../../services/serviceService'
+import { formatDateTime } from '../../utils/helpers'
 
-const { Meta } = Card
 const ManageRequest = () => {
   const farmId = localStorage.getItem('id')
   const { token } = theme.useToken()
@@ -58,30 +39,12 @@ const ManageRequest = () => {
 
   const showModal = (_id) => {
     setReqDetail(requests.filter((req) => req._id === _id)[0])
-    // Gọi api detail
-    // setReqDetail({
-    //   _id: _id,
-    //   date: "23/11/2023",
-    //   name: "Duc Huy",
-    //   address: "32 P. Đại Từ",
-    //   phone: "0188666123",
-    //   square: 4,
-    //   price: 10000,
-    //   rau_dinh_duong: 3,
-    //   rau_an_la: 4,
-    //   cu_qua: 5,
-    //   rau_gia_vi: 4,
-    //   expectedOutput: 4,
-    // });
-    console.log('req details: ', reqDetail)
     setIsModalOpen(true)
   }
 
   const handleOk = () => {
-    console.log('req detail in ok: ', reqDetail)
     async function fetchData() {
       const data = await SERVICE.updateServiceRequestStatus({ status: 'accepted' }, reqDetail._id)
-      console.log('Data: ', data.data)
       if (data.data.serviceRequest) {
         setRequests(requests.filter((req) => req._id !== data.data.serviceRequest._id))
       }
@@ -92,10 +55,12 @@ const ManageRequest = () => {
   }
 
   const handleCancel = () => {
-    console.log('req detail in cancel: ', reqDetail)
+    setIsModalOpen(false)
+  }
+
+  const handleReject = () => {
     async function fetchData() {
       const data = await SERVICE.updateServiceRequestStatus({ status: 'rejected' }, reqDetail._id)
-      console.log('Data: ', data.data)
       if (data.data.serviceRequest) {
         setRequests(requests.filter((req) => req._id !== data.data.serviceRequest._id))
       }
@@ -104,24 +69,10 @@ const ManageRequest = () => {
     setIsModalOpen(false)
   }
 
-  const handleReject = () => {
-    console.log('req detail in reject: ', reqDetail)
-    async function fetchData() {
-      const data = await SERVICE.updateServiceRequestStatus(reqDetail._id, 'rejected')
-      console.log('Data: ', data.data)
-      if (data.data.serviceRequest) {
-        setRequests(requests.filter((req) => req._id != data.data.serviceRequest._id))
-      }
-    }
-    fetchData()
-    setIsModalOpen(false)
-    openNotificationWithIcon('success', 'Thông báo', 'Từ chối đơn hàng thành công')
-  }
-
   const getItems = (panelStyle) => [
     {
       key: '1',
-      label: 'Xem thêm',
+      label: 'Xem chi tiết',
       children: (
         <div style={{ textAlign: 'right' }}>
           <div className="styleText">
@@ -150,8 +101,8 @@ const ManageRequest = () => {
                 <p>{reqDetail.expectDeliveryPerWeek} lần/ tuần</p>
               </div>
               <div className="styleText">
-                <p style={{ fontWeight: '600' }}>SỐ Luong 1 lan iao</p>
-                <p>{reqDetail.expectDeliveryAmount} kg/ lan</p>
+                <p style={{ fontWeight: '600' }}>SỐ LƯỢNG 1 LẦN GIAO</p>
+                <p>{reqDetail.expectDeliveryAmount} kg/ lần</p>
               </div>
             </>
           ) : (
@@ -167,10 +118,8 @@ const ManageRequest = () => {
   }
 
   useEffect(() => {
-    // Gọi api list
     async function fetchData() {
       const data = await SERVICE.getServiceRequest(farmId, 'waiting')
-      console.log('Data: ', data.data)
       if (data.data.requestsAllInformation) {
         setRequests(data.data.requestsAllInformation)
       }
@@ -191,7 +140,7 @@ const ManageRequest = () => {
             </p>
             <Flex style={{ marginBottom: '2rem' }} align="flex-end">
               <Flex vertical style={{ marginRight: '1rem' }}>
-                <label style={{ marginBottom: '0.5rem' }}>Nội dung/Tên người đặt/Template đơn hàng: </label>
+                <label style={{ marginBottom: '0.5rem' }}>Nội dung/Tên người đặt/Dịch vụ đơn hàng: </label>
                 <Input style={{ width: '100%' }} placeholder="Search" />
               </Flex>
               <Flex vertical style={{ marginRight: '1rem' }}>
@@ -213,7 +162,7 @@ const ManageRequest = () => {
           >
             {requests.map((req) => (
               <Card
-                title={`Ngày đặt hàng: ${req.date}`}
+                title={`Ngày đặt hàng: ${formatDateTime(req.date)}`}
                 hoverable
                 style={{ width: '30%', marginBottom: '1.5rem', marginRight: '1.5rem' }}
                 extra={
@@ -233,9 +182,9 @@ const ManageRequest = () => {
                 <Row>
                   <Col span={13} style={{ textAlign: 'left' }}>
                     <h3>Thông tin khách hàng</h3>
-                    <p>Tên: {req.name}</p>
-                    <p>SĐT: {req.phone}</p>
-                    <p>Địa chỉ: {req.address}</p>
+                    <p>Tên: {req.name ? req.name : 'Không có tên'}</p>
+                    <p>SĐT: {req.phone ? req.phone : 'Không có sdt'}</p>
+                    <p>Địa chỉ: {req.address ? req.address : 'Không có địa chỉ'}</p>
                   </Col>
                   <Col span={2} style={{ display: 'flex', justifyContent: 'center' }}>
                     <Divider
@@ -247,7 +196,7 @@ const ManageRequest = () => {
                     />
                   </Col>
                   <Col span={9} style={{ textAlign: 'left' }}>
-                    <h3>Template</h3>
+                    <h3>Dịch vụ</h3>
                     <p>Diện tích: {req.square} M2</p>
                     <p>
                       Giá:{' '}
@@ -267,44 +216,38 @@ const ManageRequest = () => {
             title="Chi tiết đơn hàng"
             open={isModalOpen}
             okText="Chấp nhận"
-            cancelText="Từ chối"
             onOk={handleOk}
             onCancel={handleCancel}
-            // footer={[
-            //   <Button key="back" onClick={handleCancel}>
-            //     Hủy
-            //   </Button>,
-            //   <Button key="submit" danger onClick={handleReject}>
-            //     Từ chối
-            //   </Button>,
-            //   <Button type="primary" onClick={handleOk}>
-            //     Chấp nhận
-            //   </Button>,
-            // ]}
+            footer={(_, { OkBtn }) => (
+              <>
+                <Button onClick={handleReject} style={{ backgroundColor: 'red', color: 'white' }}>
+                  Từ chối
+                </Button>
+                <OkBtn />
+              </>
+            )}
           >
             <Divider orientation="left" style={{ fontSize: '14px' }}>
               Thông tin khách hàng
             </Divider>
             <div style={{ marginLeft: '5%' }}>
-              <p>Tên: {reqDetail.name}</p>
-              <p>SĐT: {reqDetail.phone}</p>
-              <p>Địa chỉ: {reqDetail.address}</p>
+              <p>Tên: {reqDetail.name ? reqDetail.name : 'Không có tên'}</p>
+              <p>SĐT: {reqDetail.phone ? reqDetail.phone : 'Không có sdt'}</p>
+              <p>Địa chỉ: {reqDetail.address ? reqDetail.address : 'Không có địa chỉ'}</p>
             </div>
 
             <Divider orientation="left" style={{ fontSize: '14px' }}>
               Nội dung đặt hàng
             </Divider>
             <div style={{ marginLeft: '5%' }}>
-              <p>Ngày đặt hàng: {reqDetail.date}</p>
+              <p>Ngày đặt hàng: {formatDateTime(reqDetail.date)}</p>
               <p>
                 <i>
-                  <strong>Template</strong>: <span>Diện tích: {reqDetail.square} M2</span>
+                  <strong>Dịch vụ</strong>: <span>Diện tích: {reqDetail.square} M2</span>
                 </i>
               </p>
               <Collapse
-                // defaultActiveKey={["1"]}
                 expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-                // ghost
                 items={getItems(panelStyle)}
               />
               <p>

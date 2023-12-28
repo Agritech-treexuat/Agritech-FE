@@ -1,23 +1,20 @@
 import React, { useState } from 'react'
-import FARM from '../../../services/farmService'
 import { useParams } from 'react-router'
 import { useEffect } from 'react'
-import { Col, Row, Divider, Alert } from 'antd'
+import { Divider, Alert } from 'antd'
 import Loading from '../../../pages/Loading'
 import { CalendarFilled } from '@ant-design/icons'
-import SERVICE from '../../../services/serviceService'
 import GARDEN from '../../../services/gardenService'
+import { formatDateTime } from '../../../utils/helpers'
 
 const GardenProjectOrder = () => {
   const [initData, setInitData] = useState(null)
   const gardenId = useParams().id
   const farmId = localStorage.getItem('id')
-  console.log('params: ', gardenId)
 
   useEffect(() => {
     async function fetchData() {
       const data = await GARDEN.getGardenByGardenId(farmId, gardenId)
-      console.log('data: ', data)
       if (data.data.garden) {
         setInitData(data.data.garden)
       }
@@ -32,7 +29,7 @@ const GardenProjectOrder = () => {
           <div>
             <Alert
               style={{ fontWeight: '500', fontSize: '16px' }}
-              message={`Ngày đặt hàng ${initData.startDate}`}
+              message={`Ngày đặt hàng ${formatDateTime(initData.startDate)}`}
               showIcon
               icon={<CalendarFilled />}
               type="success"
@@ -42,24 +39,27 @@ const GardenProjectOrder = () => {
             </Divider>
             <div>
               <p>
-                <strong>Tên:</strong> {initData.client?.name ? initData.client.name : 'note have'}
+                <strong>Tên:</strong> {initData.client?.name ? initData.client.name : 'Không có thông tin'}
               </p>
               <p>
-                <strong>SĐT:</strong> {initData.client?.phone ? initData.client.phone : 'note have'}
+                <strong>SĐT:</strong> {initData.client?.phone ? initData.client.phone : 'Không có thông tin'}
               </p>
               <p>
-                <strong>Địa chỉ:</strong> {initData.client?.address ? initData.client.address : 'note have'}
+                <strong>Email:</strong> {initData.client?.email ? initData.client.email : 'Không có thông tin'}
+              </p>
+              <p>
+                <strong>Địa chỉ:</strong> {initData.client?.address ? initData.client.address : 'Không có thông tin'}
               </p>
             </div>
 
             <Divider orientationMargin={0} orientation="left">
-              <h3>Mô hình yêu cầu</h3>
+              <h3>Yêu cầu</h3>
             </Divider>
 
             <p>
               <i>
-                <strong>Template</strong>:{' '}
-                <span>Diện tích: {initData.template?.square ? initData.template.square : 'none'} M2</span>
+                <strong>Dịch vụ</strong>:
+                <span>Diện tích: {initData.template?.square ? initData.template.square : 'Không có thông tin'} M2</span>
               </i>
             </p>
             <p>
@@ -69,7 +69,7 @@ const GardenProjectOrder = () => {
                     style: 'currency',
                     currency: 'VND'
                   })
-                : 'none'}
+                : 'Không có thông tin'}
             </p>
             <div style={{ textAlign: 'right', width: '50%' }}>
               <div className="styleText">
@@ -96,8 +96,8 @@ const GardenProjectOrder = () => {
                 <p>{initData.template.expectDeliveryPerWeek} lần/ tuần</p>
               </div>
               <div className="styleText">
-                <p style={{ fontWeight: '600' }}>SỐ Luong GỬI RAU TỚI NHÀ / lan</p>
-                <p>{initData.template.expectDeliveryAmount} kg/ lan</p>
+                <p style={{ fontWeight: '600' }}>SỐ LƯỢNG GỬI RAU TỚI NHÀ / lần</p>
+                <p>{initData.template.expectDeliveryAmount} kg/ lần</p>
               </div>
             </div>
           </div>

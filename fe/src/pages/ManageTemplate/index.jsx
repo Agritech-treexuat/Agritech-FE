@@ -1,12 +1,9 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { Row, Col, Input, Button, Flex, Form, Modal, Radio, InputNumber, Divider, Tooltip, notification } from 'antd'
+import { Row, Col, Button, Form, Modal, InputNumber, Divider, Tooltip, notification } from 'antd'
 import { EditFilled } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
 import Loading from '../Loading'
-import { Card, Space } from 'antd'
-import FARM from '../../services/farmService'
-import { useParams } from 'react-router'
+import { Card } from 'antd'
 import './style.css'
 import SERVICE from '../../services/serviceService'
 
@@ -21,12 +18,11 @@ const layout = {
 
 const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
   const [form] = Form.useForm()
-  console.log('ds', template2)
   return (
     <Modal
       destroyOnClose={true}
       open={open}
-      title="Template"
+      title="Dịch vụ"
       okText={template2 ? 'Cập nhật' : 'Tạo mới'}
       cancelText="Hủy"
       onCancel={() => {
@@ -39,7 +35,6 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
           .then((values) => {
             form.resetFields()
             onCreate(values, template2)
-            console.log(values)
           })
           .catch((info) => {
             console.log('Validate Failed:', info)
@@ -109,10 +104,10 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
           <InputNumber addonAfter="củ/quả" style={{ width: 300 }} />
         </Form.Item>
 
-        <Divider>Cam ket</Divider>
+        <Divider>Cam kết</Divider>
         <Form.Item
           name="expectedOutput"
-          label="San luong du kien"
+          label="Sản lượng dự kiến"
           rules={[
             {
               required: true,
@@ -124,7 +119,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
         </Form.Item>
         <Form.Item
           name="expectDeliveryPerWeek"
-          label="So lan giao 1 tuan"
+          label="Số lần giao/tuần"
           rules={[
             {
               required: true,
@@ -132,11 +127,11 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
             }
           ]}
         >
-          <InputNumber addonAfter="lan" style={{ width: 300 }} />
+          <InputNumber addonAfter="lần" style={{ width: 300 }} />
         </Form.Item>
         <Form.Item
           name="expectDeliveryAmount"
-          label="So luong 1 lan giao"
+          label="Số lượng 1 lần giao"
           rules={[
             {
               required: true,
@@ -144,7 +139,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
             }
           ]}
         >
-          <InputNumber addonAfter="kg/lan" style={{ width: 300 }} />
+          <InputNumber addonAfter="kg/lần" style={{ width: 300 }} />
         </Form.Item>
       </Form>
     </Modal>
@@ -163,15 +158,10 @@ const ManageTemplate = () => {
   const [templates, setTemplates] = useState([])
   const [template, setTemplate] = useState(null)
   const [open, setOpen] = useState(false)
-  const [form] = Form.useForm()
   const onCreate = (values, template2) => {
-    console.log('Received values of form: ', values)
-    // send data in here
-    // setTemplates in here
     async function fetchData() {
       if (template2) {
         const data = await SERVICE.updateServiceTemplate(values, template2._id)
-        console.log('Data res: ', data)
         setTemplates(data?.data.allServiceTemplates)
       } else {
         const data = await SERVICE.addServiceTemplate(values)
@@ -186,7 +176,6 @@ const ManageTemplate = () => {
   useEffect(() => {
     async function fetchData() {
       const data = await SERVICE.getServiceTemplate(farmId)
-      console.log('Data: ', data.data)
       if (data.data.serviceTemplates) {
         setTemplates(
           data.data.serviceTemplates.map((serviceTemplate) => {
@@ -206,44 +195,6 @@ const ManageTemplate = () => {
       }
     }
     fetchData()
-    // setTemplates([
-    //   {
-    //     square: 4,
-    //     rau_dinh_duong: 3,
-    //     leafyMax: 4,
-    //     rootMax: 5,
-    //     herbMax: 4,
-    //     expectedOutput: 4,
-    //     price: 3000,
-    //   },
-    //   {
-    //     square: 4,
-    //     rau_dinh_duong: 3,
-    //     leafyMax: 4,
-    //     rootMax: 5,
-    //     herbMax: 4,
-    //     expectedOutput: 4,
-    //     price: 3000,
-    //   },
-    //   {
-    //     square: 4,
-    //     rau_dinh_duong: 3,
-    //     leafyMax: 4,
-    //     rootMax: 5,
-    //     herbMax: 4,
-    //     expectedOutput: 4,
-    //     price: 3000,
-    //   },
-    //   {
-    //     square: 4,
-    //     rau_dinh_duong: 3,
-    //     leafyMax: 4,
-    //     rootMax: 5,
-    //     herbMax: 4,
-    //     expectedOutput: 4,
-    //     price: 3000,
-    //   },
-    // ]);
   }, [])
 
   return (
@@ -258,12 +209,11 @@ const ManageTemplate = () => {
                 <Button
                   type="primary"
                   onClick={() => {
-                    console.log('sdsdsdsds')
                     setTemplate(null)
                     setOpen(true)
                   }}
                 >
-                  Tạo template mới
+                  Tạo bản dịch vụ mới
                 </Button>
                 <CollectionCreateForm
                   open={open}
@@ -286,7 +236,7 @@ const ManageTemplate = () => {
               <Card
                 title={`Diện tích ${temp.square} M2`}
                 extra={
-                  <Tooltip title="Edit template">
+                  <Tooltip title="Chỉnh sửa dịch vụ">
                     <EditFilled
                       onClick={() => {
                         setTemplate(temp)
@@ -320,8 +270,8 @@ const ManageTemplate = () => {
                     <p>{temp.expectDeliveryPerWeek} lần/ tuần</p>
                   </div>
                   <div className="styleText">
-                    <p style={{ fontWeight: '600' }}>SỐ LUONG GIAO MOI LAN</p>
-                    <p>{temp.expectDeliveryAmount} kg/ lan</p>
+                    <p style={{ fontWeight: '600' }}>SỐ LƯỢNG GIAO MỘT LẦN</p>
+                    <p>{temp.expectDeliveryAmount} kg/ lần</p>
                   </div>
                   <div className="styleText">
                     <p style={{ fontWeight: '600' }}>GIÁ</p>
