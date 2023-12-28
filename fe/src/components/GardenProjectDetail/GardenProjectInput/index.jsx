@@ -138,7 +138,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             }
           ]}
         >
-          <InputNumber style={{ width: '100%' }} addonAfter="kg" />
+          <InputNumber style={{ width: '100%' }} addonAfter="g" />
         </Form.Item>
       </Form>
     </Modal>
@@ -395,7 +395,7 @@ const GardenProjectInput = () => {
                   <p>
                     Ngày bắt đầu: {project.input.initDate ? formatDate(project.input.initDate) : 'Chưa có thông tin'}
                   </p>
-                  <p>Số lượng: {project.input.amount || 'Chưa có thông tin'}</p>
+                  <p>Số lượng: {project.input.amount + ' gram' || 'Chưa có thông tin'}</p>
                 </div>
               </Card>
             ))}
