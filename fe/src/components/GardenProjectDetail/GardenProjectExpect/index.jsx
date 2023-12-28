@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import FARM from "../../../services/farmService";
-import { useParams } from "react-router";
-import { useEffect } from "react";
-import GARDEN from "../../../services/gardenService";
+import React, { useState } from 'react'
+import FARM from '../../../services/farmService'
+import { useParams } from 'react-router'
+import { useEffect } from 'react'
+import GARDEN from '../../../services/gardenService'
 
 import {
   Col,
@@ -28,11 +28,11 @@ import MenuDivider from 'antd/es/menu/MenuDivider'
 const { Meta } = Card
 
 const GardenProjectExpect = () => {
-  const [initData, setInitData] = useState([]);
-  const projectID = useParams();
-  console.log("params: ", projectID);
-  const gardenId = useParams().id;
-  console.log("params: ", projectID);
+  const [initData, setInitData] = useState([])
+  const projectID = useParams()
+  console.log('params: ', projectID)
+  const gardenId = useParams().id
+  console.log('params: ', projectID)
 
   useEffect(() => {
     setInitData([
@@ -71,7 +71,7 @@ const GardenProjectExpect = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await GARDEN.getRequestGarden(gardenId);
+      const data = await GARDEN.getRequestGarden(gardenId)
 
       data.data.clientRequests
         ? setInitData(
@@ -81,13 +81,13 @@ const GardenProjectExpect = () => {
                 category: item.type,
                 detail: item.note,
                 id: item._id
-              };
+              }
             })
           )
-        : setInitData([]);
+        : setInitData([])
     }
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   const columns = [
     {
