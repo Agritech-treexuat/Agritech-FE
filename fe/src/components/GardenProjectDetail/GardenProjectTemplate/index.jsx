@@ -4,33 +4,11 @@ import { useParams } from 'react-router'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTree } from '@fortawesome/free-solid-svg-icons'
-import {
-  Collapse,
-  Col,
-  Row,
-  Image,
-  Card,
-  Tooltip,
-  Form,
-  Input,
-  Modal,
-  Radio,
-  Button,
-  Flex,
-  InputNumber,
-  Upload,
-  Select,
-  DatePicker,
-  notification,
-  Divider,
-  Space
-} from 'antd'
-import { EditFilled, UploadOutlined, CloseOutlined } from '@ant-design/icons'
+import { Collapse, Card, Form, Input, Modal, Button, Select, notification, Divider, Space } from 'antd'
+import { EditFilled, CloseOutlined } from '@ant-design/icons'
 import Loading from '../../../pages/Loading'
 import './style.css'
 import GARDEN from '../../../services/gardenService'
-
-const { Meta } = Card
 
 const mainContent = {
   id: '1',
@@ -433,6 +411,29 @@ const GardenProjectTemplate = () => {
   const [BVTV, setBVTV] = useState([])
   const gardenId = useParams().id
   console.log('params: ', gardenId)
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await GARDEN.getGardenTemplate(gardenId)
+      console.log('Data: ', data.data)
+
+      data.data.projects
+        ? setInitData({
+            id: 1,
+            seeds: data.data.projects.map((prj) => {
+              return {
+                id: prj.projectId,
+                name: prj.name,
+                seed: prj.input.seed,
+                plan: prj.plan
+              }
+            })
+          })
+        : setInitData([])
+    }
+    fetchData()
+  }, [])
+
   const items = initData
     ? initData.seeds
         ?.filter((seed) => seed.plan.length > 0)
@@ -496,28 +497,6 @@ const GardenProjectTemplate = () => {
           return plant
         })
     : []
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await GARDEN.getGardenTemplate(gardenId)
-      console.log('Data: ', data.data)
-
-      data.data.projects
-        ? setInitData({
-            id: 1,
-            seeds: data.data.projects.map((prj) => {
-              return {
-                id: prj.projectId,
-                name: prj.name,
-                seed: prj.input.seed,
-                plan: prj.plan
-              }
-            })
-          })
-        : setInitData([])
-    }
-    fetchData()
-  }, [])
 
   const [open, setOpen] = useState(false)
   const onCreate = (values) => {

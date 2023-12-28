@@ -33,3 +33,15 @@ export function formatDateTime(inputDateTime) {
 
   return formattedDateTime
 }
+
+export function formatDateToInput(dateTime) {
+  const dateObj = new Date(dateTime)
+
+  const yearData = dateObj.getFullYear()
+  const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0')
+  const dateData = dateObj.getDate().toString().padStart(2, '0')
+
+  const formattedDate = `${yearData}-${monthData}-${dateData}`
+
+  return formattedDate
+}

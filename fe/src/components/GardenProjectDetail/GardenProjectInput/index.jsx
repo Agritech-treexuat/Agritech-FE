@@ -2,27 +2,11 @@ import React, { useState } from 'react'
 import FARM from '../../../services/farmService'
 import { useParams } from 'react-router'
 import { useEffect } from 'react'
-import {
-  Col,
-  Row,
-  Image,
-  Card,
-  Tooltip,
-  Form,
-  Input,
-  Modal,
-  Radio,
-  Button,
-  Flex,
-  InputNumber,
-  Upload,
-  Select,
-  DatePicker,
-  notification
-} from 'antd'
-import { EditFilled, UploadOutlined } from '@ant-design/icons'
+import { Card, Tooltip, Form, Input, Modal, Button, Flex, InputNumber, Select, notification } from 'antd'
+import { EditFilled } from '@ant-design/icons'
 import Loading from '../../../pages/Loading'
 import GARDEN from '../../../services/gardenService'
+import { formatDate, formatDateToInput } from '../../../utils/helpers'
 
 const { Meta } = Card
 
@@ -34,6 +18,12 @@ const layout = {
     span: 16
   }
 }
+const today = new Date()
+const year = today.getFullYear()
+const month = (today.getMonth() + 1).toString().padStart(2, '0')
+const date = today.getDate().toString().padStart(2, '0')
+
+const currentDate = `${year}-${month}-${date}`
 
 const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
   const [form] = Form.useForm()
@@ -41,8 +31,6 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
 
   const handlePlantChange = (value) => {
     setlistSeed(listPlant.find((plant) => plant.value === value).seeds)
-    console.log(value)
-    console.log(listSeed)
   }
 
   return (
@@ -64,7 +52,14 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
           })
       }}
     >
-      <Form form={form} {...layout} name="form_in_modal">
+      <Form
+        form={form}
+        {...layout}
+        name="form_in_modal"
+        initialValues={{
+          startDate: currentDate
+        }}
+      >
         <Form.Item
           name="startDate"
           label="Ngày bắt đầu"
@@ -153,31 +148,21 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
 const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
   const [formEdit] = Form.useForm()
   const [listSeed, setListSeed] = useState([])
-  // seed.upload = [seed.img]
-  console.log('Seed: ', seed)
 
   useEffect(() => {
-    setListSeed([
-      {
-        id: 'a11',
-        name: 'seed 1'
-      },
-      {
-        id: 'a21',
-        name: 'seed 2'
-      },
-      {
-        id: 'a13',
-        name: 'seed 3'
+    async function fetchData() {
+      const data = await FARM.getAllSeedByPlantName(seedDetail ? seedDetail.name : '')
+      if (data.data) {
+        setListSeed(data.data.result)
       }
-    ])
-    console.log('Seed: ', seed)
-  }, [])
+    }
+    fetchData()
+  }, [seedDetail])
 
   return (
     <Modal
       open={open}
-      title="Cập nhật/Chỉnh sửa thông tin"
+      title="Cập nhật thông tin"
       cancelText="Hủy"
       okText="Cập nhật"
       onCancel={onCancel}
@@ -185,7 +170,6 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
         formEdit
           .validateFields()
           .then((values) => {
-            console.log('Here is values: ', values)
             formEdit.resetFields()
             onCreate(values, seed)
           })
@@ -199,7 +183,7 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
         {...layout}
         name="form_in_modal"
         initialValues={{
-          startDate: seed.input?.startDate ? seed.input?.startDate : new Date(),
+          startDate: seed.input?.initDate ? formatDateToInput(seed.input?.initDate) : currentDate,
           seed: seed.input?.seed ? seed.input?.seed : null,
           amount: seed.input?.amount ? seed.input?.amount : null
         }}
@@ -276,19 +260,16 @@ const GardenProjectInput = () => {
   const [listPlant, setListPlant] = useState([])
   const gardenId = useParams().id
   const [selectedSeed, setSelectedSeed] = useState([])
-  console.log('params: ', gardenId)
 
   const handleSubmitInput = async (data, projectId) => {
     try {
-      console.log('data to send: ', data, projectId)
       const res = await FARM.editInput(data, projectId)
-      console.log('res: ', res)
       setInitData(
         initData.map((data) => {
           if (data.projectId === res.data.projectId) {
             data.input.seed = res.data.updatedInput.seed
             data.input.amount = res.data.updatedInput.amount
-            data.input.startDate = res.data.updatedInput.initDate
+            data.input.initDate = res.data.updatedInput.initDate
           }
           return data
         })
@@ -302,10 +283,8 @@ const GardenProjectInput = () => {
 
   const handleSubmitCreate = async (values) => {
     try {
-      console.log('data to send: ', values)
       const data = { ...values, initDate: values.startDate, name: values.plant }
       const res = await FARM.createProjectGarden(data, gardenId)
-      console.log('res: ', res)
       setInitData([
         ...initData,
         {
@@ -315,14 +294,6 @@ const GardenProjectInput = () => {
           plantImage: res.data.plantImage
         }
       ])
-      // setInitData(initData.map(data => {
-      //   if(data.projectId === res.data.projectId) {
-      //     data.input.seed = res.data.updatedInput.seed
-      //     data.input.amount = res.data.updatedInput.amount
-      //     data.input.startDate = res.data.updatedInput.initDate
-      //   }
-      //   return data
-      // }))
       openNotificationWithIcon('success', 'Thông báo', 'Tạo mới thành công')
       setOpen(false)
     } catch (error) {
@@ -331,14 +302,11 @@ const GardenProjectInput = () => {
   }
 
   const onCreateEdit = (values, seed) => {
-    console.log('Received values of form: ', values)
     const updatedValue = { ...values, initDate: values.startDate }
-    console.log(updatedValue)
     handleSubmitInput(updatedValue, seed.projectId)
   }
 
   const onCreate = (values) => {
-    console.log('Received values of form cretae: ', values)
     handleSubmitCreate(values)
   }
 
@@ -354,40 +322,13 @@ const GardenProjectInput = () => {
   }, [])
 
   useEffect(() => {
-    setListPlant([
-      {
-        id: '1',
-        name: 'rau muống',
-        seeds: [
-          {
-            id: '1',
-            name: 'seed rau muong C'
-          },
-          {
-            id: '2',
-            name: 'seed rau muong A'
-          },
-          {
-            id: '3',
-            name: 'seed rau muong B'
-          }
-        ]
-      },
-      {
-        id: '2',
-        name: 'rau cải',
-        seeds: [
-          {
-            id: '3',
-            name: 'seed rau muong C'
-          },
-          {
-            id: '2',
-            name: 'seed rau muong C'
-          }
-        ]
+    async function fetchData() {
+      const data = await FARM.getPlantWithSeed()
+      if (data.data.result) {
+        setListPlant(data.data.result)
       }
-    ])
+    }
+    fetchData()
   }, [])
 
   return (
@@ -451,7 +392,9 @@ const GardenProjectInput = () => {
                 />
                 <div style={{ textAlign: 'left' }}>
                   <p>Hạt giống: {project.input.seed || 'Chưa có thông tin'}</p>
-                  <p>Ngày bắt đầu: {project.input.startDate || 'Chưa có thông tin'}</p>
+                  <p>
+                    Ngày bắt đầu: {project.input.initDate ? formatDate(project.input.initDate) : 'Chưa có thông tin'}
+                  </p>
                   <p>Số lượng: {project.input.amount || 'Chưa có thông tin'}</p>
                 </div>
               </Card>
