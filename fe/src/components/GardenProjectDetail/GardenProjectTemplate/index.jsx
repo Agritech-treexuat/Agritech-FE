@@ -230,8 +230,8 @@ const GardenProjectTemplate = () => {
           )
           plant.children = (
             <div>
-              <div style={{ cursor: 'pointer' }}>
-                <EditFilled style={{ color: '#86B049', fontSize: '18px' }} onClick={() => handleEdit(plant)} />
+              <div style={{ cursor: 'pointer' }} onClick={() => handleEdit(plant)}>
+                <EditFilled style={{ color: '#86B049', fontSize: '18px' }} />
                 {'  '}Chỉnh sửa thông tin
               </div>
               <div>
