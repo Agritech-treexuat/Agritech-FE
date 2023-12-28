@@ -1,9 +1,7 @@
 // src/components/CreateProject.js
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
 import './style.css'
 import { useStateContext } from '../../context'
-import CustomButton from '../../components/CustomButton'
 import { Button, Form, Input, InputNumber, Select, Upload } from 'antd'
 import { useRef } from 'react'
 import { UploadOutlined } from '@ant-design/icons'
@@ -14,13 +12,11 @@ const { Option } = Select
 
 const CreateProject = () => {
   const { createProject, connect, address } = useStateContext()
-  const farmId = localStorage.getItem('id')
   const formRef = useRef(null)
   const [fileList, setFileList] = useState([])
   const [uploading, setUploading] = useState(false)
 
   const onFinish = (values) => {
-    console.log(values)
     if (address) handleSave(values)
     else connect()
   }
@@ -31,17 +27,14 @@ const CreateProject = () => {
   const handleSave = async (values) => {
     // Handle project creation and data submission here
     console.log('address: ', address)
-    // console.log("data: ", startDate, selectedSeed, amount, image, expected)
     const input = values.date + values.amount + values.name + values.expected
     const receip = await createProject(values.seed, input)
     const txhash = receip ? receip.transactionHash : 'b'
-    console.log('tx hash: ', txhash)
     handleInit(values, txhash)
   }
 
   const handleInit = async (values, txhash) => {
     try {
-      const images = values.upload.map((upload) => upload.name)
       let formData = new FormData()
       formData.append('name', values.name)
       formData.append('tx', txhash)
@@ -54,7 +47,6 @@ const CreateProject = () => {
       setUploading(true)
       const data = formData
       const res = await FARM.initProject(data)
-      console.log('res: ', res)
       const newPrj = res.data.project
       handleAddExpect(values, newPrj._id, txhash)
     } catch (error) {
@@ -70,8 +62,7 @@ const CreateProject = () => {
         note: 'init project expected',
         time: values.date
       }
-      const res = await FARM.addExpect(data, projectId)
-      console.log('res: ', res)
+      await FARM.addExpect(data, projectId)
       return redirect('/home')
     } catch (error) {
       console.error(error?.response?.data?.message)
