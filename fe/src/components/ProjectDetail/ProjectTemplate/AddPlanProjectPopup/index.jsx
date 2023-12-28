@@ -1,57 +1,47 @@
-import React, { useState } from 'react';
-import { Button, Form, Input, Modal, Radio, Select } from 'antd';
+import React from 'react'
+import { Form, Modal, Select } from 'antd'
 import './style.css'
-const { Option } = Select;
+const { Option } = Select
 const AddPlanProjectPopup = ({ open, onCreate, onCancel }) => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
   return (
     <Modal
       open={open}
-      title="Choose Template"
-      okText="Create"
-      cancelText="Cancel"
+      title="Chọn loại khởi tạo"
+      okText="Chọn"
+      cancelText="Hủy"
       onCancel={onCancel}
       onOk={() => {
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
-            onCreate(values);
+            form.resetFields()
+            onCreate(values)
           })
           .catch((info) => {
-            console.log('Validate Failed:', info);
-          });
+            console.log('Validate Failed:', info)
+          })
       }}
     >
-      <Form
-        form={form}
-        layout="vertical"
-      >
-
+      <Form form={form} layout="vertical">
         <Form.Item
           name="template"
           label="Template"
           rules={[
             {
-              required: true,
-            },
+              required: true
+            }
           ]}
         >
           <Select placeholder="Chọn template">
-            <Option value="default">
-              Default
-            </Option>
-            <Option value="farm">
-              From Farm
-            </Option>
-            <Option value="none">
-              Empty
-            </Option>
+            <Option value="default">Gợi ý của hệ thống</Option>
+            <Option value="farm">Từ quy trình chuẩn của bạn</Option>
+            <Option value="none">Trống</Option>
           </Select>
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
 export default AddPlanProjectPopup

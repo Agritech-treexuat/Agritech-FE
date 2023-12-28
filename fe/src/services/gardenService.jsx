@@ -1,17 +1,18 @@
-import privateHttp from "./http/privateHttp.config";
-import publicHttp from "./http/publicHttp.config";
+import privateHttp from './http/privateHttp.config'
+import publicHttp from './http/publicHttp.config'
 
 const GARDEN = {
   getGardens: async (farmId) => {
     return await publicHttp({
       method: 'GET',
-      url: `garden/${farmId}`,
-    }).then((res) => {
-      return res;
+      url: `garden/${farmId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   updateStatusGarden: async (data, gardenId) => {
@@ -19,36 +20,39 @@ const GARDEN = {
       method: 'PATCH',
       url: `updateGardenStatus/${gardenId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getGardenByGardenId: async (farmId, gardenId) => {
     return await publicHttp({
       method: 'GET',
-      url: `garden/${farmId}/${gardenId}`,
-    }).then((res) => {
-      return res;
+      url: `garden/${farmId}/${gardenId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getGardenInput: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
-      url: `projects/${gardenId}`,
-    }).then((res) => {
-      return res;
+      url: `projects/${gardenId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getGardenOutput: async (gardenId) => {
@@ -66,21 +70,20 @@ const GARDEN = {
   getGardenTemplate: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
-      url: `gardenPlantFarming/${gardenId}`,
-    }).then((res) => {
-      return res;
+      url: `gardenPlantFarming/${gardenId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getGardenProject: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
-      url: `gardenProject/${gardenId}`,
-    }).then((res) => {
-      return res;
+      url: `gardenProject/${gardenId}`
     })
     .catch((err) => {
       return err;
@@ -126,5 +129,4 @@ const GARDEN = {
   }
 }
 
-
-export default GARDEN;
+export default GARDEN

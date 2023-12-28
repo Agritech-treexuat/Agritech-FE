@@ -1,35 +1,37 @@
-import privateHttp from "./http/privateHttp.config";
-import publicHttp from "./http/publicHttp.config";
+import privateHttp from './http/privateHttp.config'
+import publicHttp from './http/publicHttp.config'
 
 const FARM = {
-  me: () => privateHttp({
-    method: 'GET',
-    url: '/farm/me'
-  }),
-  login: async ({email, password}) => {
+  me: () =>
+    privateHttp({
+      method: 'GET',
+      url: '/farm/me'
+    }),
+  login: async ({ email, password }) => {
     let result = await publicHttp({
-        method: 'POST',
-        url: 'api/auth/signin',
-        data: {
-            email,
-            password
-        }
-    });
+      method: 'POST',
+      url: 'api/auth/signin',
+      data: {
+        email,
+        password
+      }
+    })
 
-    console.log("result: ", result)
-    return result;
+    console.log('result: ', result)
+    return result
   },
 
   getProjects: async (farmId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/${farmId}/projects`,
-    }).then((res) => {
-      return res;
+      url: `/farm/${farmId}/projects`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   initProject: async (data) => {
@@ -37,15 +39,16 @@ const FARM = {
       method: 'POST',
       url: `/farm/initProject`,
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data'
       },
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   createProjectGarden: async (data, gardenId) => {
@@ -53,12 +56,13 @@ const FARM = {
       method: 'POST',
       url: `/farm/createProjectGarden/${gardenId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   addExpect: async (data, projectId) => {
@@ -66,12 +70,13 @@ const FARM = {
       method: 'POST',
       url: `/farm/project/addExpect/${projectId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   addProcess: async (data, projectId) => {
@@ -79,12 +84,13 @@ const FARM = {
       method: 'POST',
       url: `/farm/project/addProcess/${projectId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   addOutput: async (data, projectId) => {
@@ -92,72 +98,78 @@ const FARM = {
       method: 'POST',
       url: `/farm/project/addOutput/${projectId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getInit: async (projectId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/project/${projectId}/input`,
-    }).then((res) => {
-      return res;
+      url: `/farm/project/${projectId}/input`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getProcess: async (projectId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/project/${projectId}/process`,
-    }).then((res) => {
-      return res;
+      url: `/farm/project/${projectId}/process`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getExpect: async (projectId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/project/${projectId}/expect`,
-    }).then((res) => {
-      return res;
+      url: `/farm/project/${projectId}/expect`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getOutput: async (projectId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/project/${projectId}/output`,
-    }).then((res) => {
-      return res;
+      url: `/farm/project/${projectId}/output`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getImage: async (projectId, selectedDate) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/project/${projectId}/image/?date=${selectedDate}`,
-    }).then((res) => {
-      return res;
+      url: `/farm/project/${projectId}/image/?date=${selectedDate}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   editProcess: async (data, projectId, processId) => {
@@ -165,12 +177,13 @@ const FARM = {
       method: 'POST',
       url: `/farm/project/editProcess/${projectId}/${processId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   editExpect: async (data, projectId, expectId) => {
@@ -178,12 +191,13 @@ const FARM = {
       method: 'POST',
       url: `/farm/project/editExpect/${projectId}/${expectId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   editOutput: async (data, projectId, outputId) => {
@@ -191,12 +205,13 @@ const FARM = {
       method: 'POST',
       url: `/farm/project/editOutput/${projectId}/${outputId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   editInput: async (data, projectId) => {
@@ -204,48 +219,65 @@ const FARM = {
       method: 'POST',
       url: `/farm/project/editInput/${projectId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   exportQR: async (projectId, outputId) => {
     return await privateHttp({
       method: 'POST',
-      url: `/farm/project/exportQR/${projectId}/${outputId}`,
-    }).then((res) => {
-      return res;
+      url: `/farm/project/exportQR/${projectId}/${outputId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getAllPlant: async () => {
     return await publicHttp({
       method: 'GET',
-      url: `/plants`,
-    }).then((res) => {
-      return res;
+      url: `/plants`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  getPlantByPlantId: async (plantId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plant/${plantId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getPlant: async (farmId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/plant/${farmId}`,
-    }).then((res) => {
-      return res;
+      url: `/farm/plant/${farmId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   addPlant: async (data) => {
@@ -253,48 +285,78 @@ const FARM = {
       method: 'POST',
       url: `/farm/plant`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  getPlantWithSeed: async () => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plants-and-seeds`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getPlans: async (farmId, plantId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/planInFarmFromPlant/${farmId}/${plantId}`,
-    }).then((res) => {
-      return res;
+      url: `/farm/planInFarmFromPlant/${farmId}/${plantId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getAllSeedByPlantId: async (plantId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/seeds/${plantId}`,
-    }).then((res) => {
-      return res;
+      url: `/seeds/${plantId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  getAllSeedByPlantName: async (plantName) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/seedsByPlantName/${plantName}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getPlanFromSeed: async (farmId, seed) => {
     return await publicHttp({
       method: 'GET',
-      url: `/plantCultivates/${farmId}/${seed}`,
-    }).then((res) => {
-      return res;
+      url: `/plantCultivates/${farmId}/${seed}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   addPlantCultivates: async (data) => {
@@ -302,12 +364,13 @@ const FARM = {
       method: 'POST',
       url: `/farm/plantCultivates`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   updatePlantCultivates: async (data) => {
@@ -315,36 +378,39 @@ const FARM = {
       method: 'PUT',
       url: `/farm/plantCultivates`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getCultivative: async () => {
     return await publicHttp({
       method: 'GET',
-      url: `/cultivative`,
-    }).then((res) => {
-      return res;
+      url: `/cultivative`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getPlanFromProject: async (projectId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/plan/${projectId}`,
-    }).then((res) => {
-      return res;
+      url: `/farm/plan/${projectId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   addPlantCultivatesToProject: async (data, projectId) => {
@@ -352,12 +418,13 @@ const FARM = {
       method: 'POST',
       url: `/farm/addPlantCultivate/${projectId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   updatePlantCultivatesToProject: async (data, projectId) => {
@@ -365,13 +432,14 @@ const FARM = {
       method: 'POST',
       url: `/farm/addPlantCultivate/${projectId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
-  },
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  }
 }
 
-export default FARM;
+export default FARM

@@ -1,49 +1,37 @@
-import React, { useState } from "react";
-import FARM from "../../../services/farmService";
-import { useParams } from "react-router";
-import { useEffect } from "react";
-import {
-  Col,
-  Row,
-  Image,
-  Card,
-  Tooltip,
-  Form,
-  Input,
-  Modal,
-  Radio,
-  Button,
-  Flex,
-  InputNumber,
-  Upload,
-  Select,
-  DatePicker,
-  notification,
-} from "antd";
-import { EditFilled, UploadOutlined } from "@ant-design/icons";
-import Loading from "../../../pages/Loading";
-import GARDEN from "../../../services/gardenService";
+import React, { useState } from 'react'
+import FARM from '../../../services/farmService'
+import { useParams } from 'react-router'
+import { useEffect } from 'react'
+import { Card, Tooltip, Form, Input, Modal, Button, Flex, InputNumber, Select, notification } from 'antd'
+import { EditFilled } from '@ant-design/icons'
+import Loading from '../../../pages/Loading'
+import GARDEN from '../../../services/gardenService'
+import { formatDate, formatDateToInput } from '../../../utils/helpers'
 
-const { Meta } = Card;
+const { Meta } = Card
 
 const layout = {
   labelCol: {
-    span: 8,
+    span: 8
   },
   wrapperCol: {
-    span: 16,
-  },
-};
+    span: 16
+  }
+}
+const today = new Date()
+const year = today.getFullYear()
+const month = (today.getMonth() + 1).toString().padStart(2, '0')
+const date = today.getDate().toString().padStart(2, '0')
+
+const currentDate = `${year}-${month}-${date}`
 
 const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
-  const [form] = Form.useForm();
-  const [listSeed, setlistSeed] = useState([]);
+  const [form] = Form.useForm()
+  const [listSeed, setlistSeed] = useState([])
 
   const handlePlantChange = (value) => {
-    setlistSeed(listPlant.find((plant) => plant.value === value).seeds);
-    console.log(value);
-    console.log(listSeed);
-  };
+    setlistSeed(listPlant.find((plant) => plant.value === value).seeds)
+  }
 
   return (
     <Modal
@@ -56,22 +44,29 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
-            onCreate(values);
+            form.resetFields()
+            onCreate(values)
           })
           .catch((info) => {
-            console.log("Validate Failed:", info);
-          });
+            console.log('Validate Failed:', info)
+          })
       }}
     >
-      <Form form={form} {...layout} name="form_in_modal">
+      <Form
+        form={form}
+        {...layout}
+        name="form_in_modal"
+        initialValues={{
+          startDate: currentDate
+        }}
+      >
         <Form.Item
           name="startDate"
           label="Ngày bắt đầu"
           rules={[
             {
-              required: true,
-            },
+              required: true
+            }
           ]}
         >
           <Input type="date" />
@@ -82,31 +77,25 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
           rules={[
             {
               required: true,
-              message: "Trường thông tin không được để trống!",
-            },
+              message: 'Trường thông tin không được để trống!'
+            }
           ]}
         >
           <Select
             showSearch
             style={{
-              width: "100%",
+              width: '100%'
             }}
             placeholder="Chọn cây"
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.label.toLocaleLowerCase() ?? "").includes(
-                input.toLowerCase()
-              )
-            }
+            filterOption={(input, option) => (option?.label.toLocaleLowerCase() ?? '').includes(input.toLowerCase())}
             filterSort={(optionA, optionB) =>
-              (optionA?.label ?? "")
-                .toLowerCase()
-                .localeCompare((optionB?.label ?? "").toLowerCase())
+              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
             }
             options={listPlant.map((plant) => {
-              plant.label = plant.name;
-              plant.value = plant.name;
-              return plant;
+              plant.label = plant.name
+              plant.value = plant.name
+              return plant
             })}
             onChange={handlePlantChange}
           />
@@ -117,31 +106,25 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
           rules={[
             {
               required: true,
-              message: "Trường thông tin không được để trống!",
-            },
+              message: 'Trường thông tin không được để trống!'
+            }
           ]}
         >
           <Select
             showSearch
             style={{
-              width: "100%",
+              width: '100%'
             }}
             placeholder="Chọn hạt giống"
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.label.toLocaleLowerCase() ?? "").includes(
-                input.toLowerCase()
-              )
-            }
+            filterOption={(input, option) => (option?.label.toLocaleLowerCase() ?? '').includes(input.toLowerCase())}
             filterSort={(optionA, optionB) =>
-              (optionA?.label ?? "")
-                .toLowerCase()
-                .localeCompare((optionB?.label ?? "").toLowerCase())
+              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
             }
             options={listSeed.map((seed) => {
-              seed.label = seed.name;
-              seed.value = seed.name;
-              return seed;
+              seed.label = seed.name
+              seed.value = seed.name
+              return seed
             })}
           />
         </Form.Item>
@@ -151,45 +134,35 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
           rules={[
             {
               required: true,
-              message: "Trường thông tin không được để trống!",
-            },
+              message: 'Trường thông tin không được để trống!'
+            }
           ]}
         >
-          <InputNumber style={{ width: "100%" }} />
+          <InputNumber style={{ width: '100%' }} addonAfter="g" />
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
 const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
-  const [formEdit] = Form.useForm();
-  const [listSeed, setListSeed] = useState([]);
-  // seed.upload = [seed.img]
-  console.log("Seed: ", seed);
+  const [formEdit] = Form.useForm()
+  const [listSeed, setListSeed] = useState([])
 
   useEffect(() => {
-    setListSeed([
-      {
-        id: "a11",
-        name: "seed 1",
-      },
-      {
-        id: "a21",
-        name: "seed 2",
-      },
-      {
-        id: "a13",
-        name: "seed 3",
-      },
-    ]);
-    console.log("Seed: ", seed);
-  }, []);
+    async function fetchData() {
+      const data = await FARM.getAllSeedByPlantName(seedDetail ? seedDetail.name : '')
+      if (data.data) {
+        setListSeed(data.data.result)
+      }
+    }
+    fetchData()
+  }, [seedDetail])
 
   return (
     <Modal
       open={open}
-      title="Cập nhật/Chỉnh sửa thông tin"
+      title="Cập nhật thông tin"
       cancelText="Hủy"
       okText="Cập nhật"
       onCancel={onCancel}
@@ -197,13 +170,12 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
         formEdit
           .validateFields()
           .then((values) => {
-            console.log("Here is values: ", values);
-            formEdit.resetFields();
-            onCreate(values, seed);
+            formEdit.resetFields()
+            onCreate(values, seed)
           })
           .catch((info) => {
-            console.log("Validate Failed:", info);
-          });
+            console.log('Validate Failed:', info)
+          })
       }}
     >
       <Form
@@ -211,9 +183,9 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
         {...layout}
         name="form_in_modal"
         initialValues={{
-          startDate: seed.input?.startDate ? seed.input?.startDate : new Date(),
+          startDate: seed.input?.initDate ? formatDateToInput(seed.input?.initDate) : currentDate,
           seed: seed.input?.seed ? seed.input?.seed : null,
-          amount: seed.input?.amount ? seed.input?.amount : null,
+          amount: seed.input?.amount ? seed.input?.amount : null
         }}
       >
         <Form.Item
@@ -221,8 +193,8 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
           label="Ngày bắt đầu"
           rules={[
             {
-              required: true,
-            },
+              required: true
+            }
           ]}
         >
           <Input type="date" />
@@ -233,31 +205,25 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
           rules={[
             {
               required: true,
-              message: "Trường thông tin không được để trống!",
-            },
+              message: 'Trường thông tin không được để trống!'
+            }
           ]}
         >
           <Select
             showSearch
             style={{
-              width: "100%",
+              width: '100%'
             }}
             placeholder="Chọn hạt giống"
             optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.label.toLocaleLowerCase() ?? "").includes(
-                input.toLowerCase()
-              )
-            }
+            filterOption={(input, option) => (option?.label.toLocaleLowerCase() ?? '').includes(input.toLowerCase())}
             filterSort={(optionA, optionB) =>
-              (optionA?.label ?? "")
-                .toLowerCase()
-                .localeCompare((optionB?.label ?? "").toLowerCase())
+              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
             }
             options={listSeed?.map((seed) => {
-              seed.label = seed.name;
-              seed.value = seed.name;
-              return seed;
+              seed.label = seed.name
+              seed.value = seed.name
+              return seed
             })}
           />
         </Form.Item>
@@ -267,147 +233,103 @@ const CollectionEditForm = ({ open, onCreate, onCancel, seedDetail, seed }) => {
           rules={[
             {
               required: true,
-              message: "Trường thông tin không được để trống!",
-            },
+              message: 'Trường thông tin không được để trống!'
+            }
           ]}
         >
-          <InputNumber style={{ width: "100%" }} />
+          <InputNumber style={{ width: '100%' }} addonAfter="kg" />
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
 const GardenProjectInput = () => {
-  const [api, contextHolder] = notification.useNotification();
+  const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
       message: title,
       description: content,
-      duration: 3.5,
-    });
-  };
-  const [initData, setInitData] = useState(null);
-  const [seedDetail, setSeedDetail] = useState(null);
-  const [openEdit, setOpenEdit] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [listPlant, setListPlant] = useState([]);
-  const gardenId = useParams().id;
-  const [selectedSeed, setSelectedSeed] = useState([]);
-  console.log("params: ", gardenId);
+      duration: 3.5
+    })
+  }
+  const [initData, setInitData] = useState(null)
+  const [seedDetail, setSeedDetail] = useState(null)
+  const [openEdit, setOpenEdit] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [listPlant, setListPlant] = useState([])
+  const gardenId = useParams().id
+  const [selectedSeed, setSelectedSeed] = useState([])
 
   const handleSubmitInput = async (data, projectId) => {
     try {
-      console.log("data to send: ", data, projectId);
-      const res = await FARM.editInput(data, projectId);
-      console.log("res: ", res);
+      const res = await FARM.editInput(data, projectId)
       setInitData(
         initData.map((data) => {
           if (data.projectId === res.data.projectId) {
-            data.input.seed = res.data.updatedInput.seed;
-            data.input.amount = res.data.updatedInput.amount;
-            data.input.startDate = res.data.updatedInput.initDate;
+            data.input.seed = res.data.updatedInput.seed
+            data.input.amount = res.data.updatedInput.amount
+            data.input.initDate = res.data.updatedInput.initDate
           }
-          return data;
+          return data
         })
-      );
-      openNotificationWithIcon(
-        "success",
-        "Thông báo",
-        "Chỉnh sửa/Cập nhật thành công"
-      );
-      setOpenEdit(false);
+      )
+      openNotificationWithIcon('success', 'Thông báo', 'Chỉnh sửa/Cập nhật thành công')
+      setOpenEdit(false)
     } catch (error) {
-      console.error(error?.response?.data?.message);
+      console.error(error?.response?.data?.message)
     }
-  };
+  }
 
   const handleSubmitCreate = async (values) => {
     try {
-      console.log("data to send: ", values);
-      const data = {...values, initDate: values.startDate, name: values.plant}
-      const res = await FARM.createProjectGarden(data, gardenId);
-      console.log("res: ", res)
-      setInitData([...initData, {
-        name: res.data.project.name,
-        projectId: res.data.project._id,
-        input: res.data.project.input,
-        plantImage: res.data.plantImage
-      }])
-      // setInitData(initData.map(data => {
-      //   if(data.projectId === res.data.projectId) {
-      //     data.input.seed = res.data.updatedInput.seed
-      //     data.input.amount = res.data.updatedInput.amount
-      //     data.input.startDate = res.data.updatedInput.initDate
-      //   }
-      //   return data
-      // }))
-      openNotificationWithIcon("success", "Thông báo", "Tạo mới thành công");
-      setOpen(false);
+      const data = { ...values, initDate: values.startDate, name: values.plant }
+      const res = await FARM.createProjectGarden(data, gardenId)
+      setInitData([
+        ...initData,
+        {
+          name: res.data.project.name,
+          projectId: res.data.project._id,
+          input: res.data.project.input,
+          plantImage: res.data.plantImage
+        }
+      ])
+      openNotificationWithIcon('success', 'Thông báo', 'Tạo mới thành công')
+      setOpen(false)
     } catch (error) {
-      console.error(error?.response?.data?.message);
+      console.error(error?.response?.data?.message)
     }
-  };
+  }
 
   const onCreateEdit = (values, seed) => {
-    console.log("Received values of form: ", values);
-    const updatedValue = { ...values, initDate: values.startDate };
-    console.log(updatedValue);
-    handleSubmitInput(updatedValue, seed.projectId);
-  };
+    const updatedValue = { ...values, initDate: values.startDate }
+    handleSubmitInput(updatedValue, seed.projectId)
+  }
 
   const onCreate = (values) => {
-    console.log("Received values of form cretae: ", values);
-    handleSubmitCreate(values);
-  };
+    handleSubmitCreate(values)
+  }
 
   useEffect(() => {
     // Gọi api list
     async function fetchData() {
-      const data = await GARDEN.getGardenInput(gardenId);
+      const data = await GARDEN.getGardenInput(gardenId)
       if (data.data.projects) {
-        setInitData(data.data.projects);
+        setInitData(data.data.projects)
       }
     }
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   useEffect(() => {
-    setListPlant([
-      {
-        id: "1",
-        name: "rau muống",
-        seeds: [
-          {
-            id: "1",
-            name: "seed rau muong C",
-          },
-          {
-            id: "2",
-            name: "seed rau muong A",
-          },
-          {
-            id: "3",
-            name: "seed rau muong B",
-          },
-        ],
-      },
-      {
-        id: "2",
-        name: "rau cải",
-        seeds: [
-          {
-            id: "3",
-            name: "seed rau muong C",
-          },
-          {
-            id: "2",
-            name: "seed rau muong C",
-          },
-        ],
+    async function fetchData() {
+      const data = await FARM.getPlantWithSeed()
+      if (data.data.result) {
+        setListPlant(data.data.result)
       }
-    ]);
-  }, []);
+    }
+    fetchData()
+  }, [])
 
   return (
     <div>
@@ -415,11 +337,11 @@ const GardenProjectInput = () => {
       {initData ? (
         <div>
           <Flex justify="space-between" align="center">
-            <h2 style={{ margin: "0px" }}>Thông tin khởi tạo</h2>
+            <h2 style={{ margin: '0px' }}>Thông tin khởi tạo</h2>
             <Button
               type="primary"
               onClick={() => {
-                setOpen(true);
+                setOpen(true)
               }}
             >
               Thêm cây mới
@@ -427,56 +349,53 @@ const GardenProjectInput = () => {
           </Flex>
           <div
             style={{
-              display: "flex",
-              flexWrap: "wrap",
+              display: 'flex',
+              flexWrap: 'wrap'
             }}
           >
             {initData.map((project) => (
               <Card
                 style={{
-                  width: "23%",
-                  marginBottom: "1.5rem",
-                  marginRight: "1.5rem",
+                  width: '23%',
+                  marginBottom: '1.5rem',
+                  marginRight: '1.5rem'
                 }}
                 hoverable
                 cover={<img alt="example" src={project.plantImage} />}
               >
                 <Meta
-                  align={"center"}
-                  style={{ fontStyle: "italic" }}
+                  align={'center'}
+                  style={{ fontStyle: 'italic' }}
                   title={
                     <div
                       style={{
-                        display: "flex",
-                        justifyContent: "space-between",
+                        display: 'flex',
+                        justifyContent: 'space-between'
                       }}
                     >
-                      <span>Cây: {project.name}</span>{" "}
+                      <span>Cây: {project.name}</span>{' '}
                       <Tooltip title="Sửa/Cập nhật thông tin">
                         <EditFilled
-                          style={{ color: "#476930" }}
+                          style={{ color: '#476930' }}
                           onClick={() => {
-                            setSeedDetail(project);
+                            setSeedDetail(project)
                             setSelectedSeed({
                               ...project,
-                              startDate: project.startDate
-                                ? new Date(project.startDate)
-                                : new Date(),
-                            });
-                            setOpenEdit(true);
+                              startDate: project.startDate ? new Date(project.startDate) : new Date()
+                            })
+                            setOpenEdit(true)
                           }}
                         />
-                      </Tooltip>{" "}
+                      </Tooltip>{' '}
                     </div>
                   }
                 />
-                <div style={{ textAlign: "left" }}>
-                  <p>Hạt giống: {project.input.seed || "Chưa có thông tin"}</p>
+                <div style={{ textAlign: 'left' }}>
+                  <p>Hạt giống: {project.input.seed || 'Chưa có thông tin'}</p>
                   <p>
-                    Ngày bắt đầu:{" "}
-                    {project.input.startDate || "Chưa có thông tin"}
+                    Ngày bắt đầu: {project.input.initDate ? formatDate(project.input.initDate) : 'Chưa có thông tin'}
                   </p>
-                  <p>Số lượng: {project.input.amount || "Chưa có thông tin"}</p>
+                  <p>Số lượng: {project.input.amount + ' gram' || 'Chưa có thông tin'}</p>
                 </div>
               </Card>
             ))}
@@ -486,7 +405,7 @@ const GardenProjectInput = () => {
             open={openEdit}
             onCreate={onCreateEdit}
             onCancel={() => {
-              setOpenEdit(false);
+              setOpenEdit(false)
             }}
             seedDetail={seedDetail}
             seed={selectedSeed}
@@ -496,7 +415,7 @@ const GardenProjectInput = () => {
             listPlant={listPlant}
             onCreate={onCreate}
             onCancel={() => {
-              setOpen(false);
+              setOpen(false)
             }}
           />
         </div>
@@ -504,7 +423,7 @@ const GardenProjectInput = () => {
         <Loading />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default GardenProjectInput;
+export default GardenProjectInput

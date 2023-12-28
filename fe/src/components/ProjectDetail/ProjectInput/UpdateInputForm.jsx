@@ -1,82 +1,80 @@
-import React from 'react';
-import { Button, Form, Input, Select, InputNumber, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react'
+import { Button, Form, Input, Select, InputNumber, Upload } from 'antd'
+import { UploadOutlined } from '@ant-design/icons'
 import FARM from '../../../services/farmService'
-import { useParams } from 'react-router';
-import './style.css';
-const { Option } = Select;
+import { useParams } from 'react-router'
+import './style.css'
+const { Option } = Select
 
 const layout = {
   labelCol: {
-    span: 8,
+    span: 8
   },
   wrapperCol: {
-    span: 16,
-  },
-};
+    span: 16
+  }
+}
 
 const tailLayout = {
   wrapperCol: {
     offset: 8,
-    span: 16,
-  },
-};
-const normFile = (e) => {
-  console.log('Upload event:', e);
-  if (Array.isArray(e)) {
-    return e;
+    span: 16
   }
-  return e?.fileList;
-};
-
-const testForm = null;
-const seeds = ['Seed A', 'Seed B', 'Seed C', 'Seed D'];
+}
+const normFile = (e) => {
+  if (Array.isArray(e)) {
+    return e
+  }
+  return e?.fileList
+}
 
 const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
   const params = useParams()
-  console.log("input form: ", input)
-  const dateObj = new Date(input.initDate);
+  const dateObj = new Date(input.initDate)
 
-  const yearData = dateObj.getFullYear();
-  const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-  const dateData = dateObj.getDate().toString().padStart(2, '0');
+  const yearData = dateObj.getFullYear()
+  const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0')
+  const dateData = dateObj.getDate().toString().padStart(2, '0')
 
-  const formattedDate = `${yearData}-${monthData}-${dateData}`;
-  const formRef = React.useRef(null);
+  const formattedDate = `${yearData}-${monthData}-${dateData}`
+  const formRef = React.useRef(null)
   const initValue = {
-    'date': formattedDate,
-    'seed': input.seed,
-    'amount': input.amount,
-    'upload': input.images
-  };
+    date: formattedDate,
+    seed: input.seed,
+    amount: input.amount,
+    upload: input.images
+  }
+  const [seeds, setSeeds] = useState([])
 
   const onFinish = (values) => {
-    console.log("Values: ", values);
-    const images = values.upload.map(item => (typeof item === 'string' ? item : item.name));
-    console.log("images here: ", images)
-    const updatedValue = { ...values, initDate: values.date, images: images };
-    delete updatedValue.date;
-    delete updatedValue.upload;
-    console.log(updatedValue);
+    const images = values.upload.map((item) => (typeof item === 'string' ? item : item.name))
+    const updatedValue = { ...values, initDate: values.date, images: images }
+    delete updatedValue.date
+    delete updatedValue.upload
     const data = {
-      "tx": "b",
+      tx: 'b',
       ...updatedValue
     }
     handleSubmitInput(data, params.id)
-  };
+  }
 
-  const handleSubmitInput = async (data, projectId)=> {
+  const handleSubmitInput = async (data, projectId) => {
     try {
-      console.log("data to send: ", data, projectId)
-      const res = await FARM.editInput(data, projectId);
-      console.log("res: ", res)
+      const res = await FARM.editInput(data, projectId)
       setInitData(res.data.updatedInput)
-      handleCloseForm();
+      handleCloseForm()
     } catch (error) {
-        console.error(error?.response?.data?.message);
+      console.error(error?.response?.data?.message)
     }
   }
 
+  useEffect(() => {
+    async function fetchData() {
+      const data = await FARM.getAllSeedByPlantId(input.plantId)
+      data.data ? setSeeds(data.data.seeds.map((item) => item.name)) : setSeeds([])
+    }
+    fetchData()
+  }, [])
 
   return (
     <Form
@@ -86,7 +84,7 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
       onFinish={onFinish}
       initialValues={initValue}
       style={{
-        maxWidth: 600,
+        maxWidth: 600
       }}
     >
       {/* date */}
@@ -95,8 +93,8 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
         label="Ngày bắt đầu"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
         <Input type="date" />
@@ -107,16 +105,16 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
         label="Hạt giống"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
-        <Select placeholder="Select a seed">
+        <Select placeholder="Chọn hạt giống">
           {seeds.map((seed) => (
-                <Option key={seed} value={seed}>
-                  {seed}
-                </Option>
-              ))}
+            <Option key={seed} value={seed}>
+              {seed}
+            </Option>
+          ))}
         </Select>
       </Form.Item>
       {/* amount */}
@@ -125,19 +123,14 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
         label="Lượng"
         rules={[
           {
-            required: true,
-          },
+            required: true
+          }
         ]}
       >
-        <InputNumber defaultValue={3} />
+        <InputNumber defaultValue={3} addonAfter="kg" />
       </Form.Item>
 
-      <Form.Item
-        name="upload"
-        label="Ảnh"
-        valuePropName="fileList"
-        getValueFromEvent={normFile}
-      >
+      <Form.Item name="upload" label="Ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
         <Upload name="logo" action="/upload.do" listType="picture">
           <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
         </Upload>
@@ -145,11 +138,11 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
       {/* submit button */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
-        Cập nhật
+          Cập nhật
         </Button>
       </Form.Item>
     </Form>
-  );
-};
+  )
+}
 
-export default UpdateInputForm;
+export default UpdateInputForm
