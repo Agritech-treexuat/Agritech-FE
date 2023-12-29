@@ -2,7 +2,7 @@ import React from 'react'
 import { Tabs } from 'antd'
 import GardenProjectInput from '../../components/GardenProjectDetail/GardenProjectInput'
 import GardenProjectOrder from '../../components/GardenProjectDetail/GardenProjectOrder'
-import GardenProjectHistory from '../../components/GardenProjectDetail/GardenProjectHistory'
+import GardenProjectProcess from '../../components/GardenProjectDetail/GardenProjectProcess'
 import GardenProjectTemplate from '../../components/GardenProjectDetail/GardenProjectTemplate'
 import GardenProjectExpect from '../../components/GardenProjectDetail/GardenProjectExpect'
 import GardenProjectOutput from '../../components/GardenProjectDetail/GardenProjectOutput'
@@ -31,7 +31,7 @@ const GardenProjectDetail = () => {
     {
       key: '4',
       label: 'Quá trình canh tác',
-      children: <GardenProjectHistory />
+      children: <GardenProjectProcess />
     },
     {
       key: '5',

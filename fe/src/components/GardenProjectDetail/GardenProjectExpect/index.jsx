@@ -1,73 +1,14 @@
 import React, { useState } from 'react'
-import FARM from '../../../services/farmService'
 import { useParams } from 'react-router'
 import { useEffect } from 'react'
 import GARDEN from '../../../services/gardenService'
-
-import {
-  Col,
-  Row,
-  Image,
-  Card,
-  Button,
-  Table,
-  Column,
-  ColumnGroup,
-  Form,
-  Input,
-  Modal,
-  Divider,
-  Flex,
-  Select
-} from 'antd'
-import { HistoryOutlined, EditFilled } from '@ant-design/icons'
-
+import { Table } from 'antd'
 import Loading from '../../../pages/Loading'
-import MenuDivider from 'antd/es/menu/MenuDivider'
-
-const { Meta } = Card
+import { formatDateTime } from '../../../utils/helpers'
 
 const GardenProjectExpect = () => {
   const [initData, setInitData] = useState([])
-  const projectID = useParams()
-  console.log('params: ', projectID)
   const gardenId = useParams().id
-  console.log('params: ', projectID)
-
-  useEffect(() => {
-    setInitData([
-      {
-        time: new Date().toISOString(),
-        category: 'Trồng cây mới',
-        detail: 'abcxyz'
-      },
-      {
-        time: new Date().toISOString(),
-        category: 'Trồng cây mới',
-        detail: 'abcxyz'
-      },
-      {
-        time: new Date().toISOString(),
-        category: 'Trồng cây mới',
-        detail: 'abcxyz'
-      },
-      {
-        time: new Date().toISOString(),
-        category: 'Trồng cây mới',
-        detail: 'abcxyz'
-      },
-      {
-        time: new Date().toISOString(),
-        category: 'Trồng cây mới',
-        detail: 'abcxyz'
-      },
-      {
-        time: new Date().toISOString(),
-        category: 'Trồng cây mới',
-        detail: 'abcxyz'
-      }
-    ])
-  }, [])
 
   useEffect(() => {
     async function fetchData() {
@@ -76,10 +17,25 @@ const GardenProjectExpect = () => {
       data.data.clientRequests
         ? setInitData(
             data.data.clientRequests.map((item) => {
+              let detail = ''
+              let type = ''
+
+              if (item.type === 'deliveryRequest') {
+                detail =
+                  item.deliveryDetails.map((detailItem) => `${detailItem.plant}: ${detailItem.amount}kg`).join(', ') +
+                  ` (${item.note})`
+                type = 'Cây sẽ giao'
+              } else if (item.type === 'newPlant') {
+                detail = `${item.newPlant} (${item.note})`
+                type = 'Trồng cây mới'
+              } else if (item.type === 'other') {
+                detail = item.note
+                type = 'Khác'
+              }
               return {
-                time: item.date,
-                category: item.type,
-                detail: item.note,
+                time: formatDateTime(item.date),
+                category: type,
+                detail: detail,
                 id: item._id
               }
             })

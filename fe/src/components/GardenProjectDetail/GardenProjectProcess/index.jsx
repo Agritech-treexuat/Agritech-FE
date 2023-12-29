@@ -460,7 +460,7 @@ const CollectionHistoryForm = ({ open, onCreate, onCancel, history }) => {
   )
 }
 
-const GardenProjectHistory = () => {
+const GardenProjectProcess = () => {
   const [initData, setInitData] = useState([])
   const [templates, setTemplates] = useState([])
   const [open, setOpen] = useState(false)
@@ -871,4 +871,4 @@ const GardenProjectHistory = () => {
   )
 }
 
-export default GardenProjectHistory
+export default GardenProjectProcess
