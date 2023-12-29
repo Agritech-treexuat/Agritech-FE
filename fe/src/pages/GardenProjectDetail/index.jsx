@@ -1,9 +1,6 @@
 import React from 'react'
 import { Tabs } from 'antd'
-import { useParams } from 'react-router-dom'
-import { ProjectOutput, ProjectProcess, ProjectInput, ProjectExpect, ProjectTemplate } from '../../components'
 import GardenProjectInput from '../../components/GardenProjectDetail/GardenProjectInput'
-import Loading from '../Loading'
 import GardenProjectOrder from '../../components/GardenProjectDetail/GardenProjectOrder'
 import GardenProjectHistory from '../../components/GardenProjectDetail/GardenProjectHistory'
 import GardenProjectTemplate from '../../components/GardenProjectDetail/GardenProjectTemplate'
@@ -15,9 +12,6 @@ const onChange = (key) => {
 }
 
 const GardenProjectDetail = () => {
-  const { id } = useParams()
-  console.log('id: ', id)
-
   const items = [
     {
       key: '1',
@@ -31,7 +25,7 @@ const GardenProjectDetail = () => {
     },
     {
       key: '3',
-      label: 'Template',
+      label: 'Quy trình canh tác',
       children: <GardenProjectTemplate />
     },
     {

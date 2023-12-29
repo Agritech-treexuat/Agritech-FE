@@ -5,15 +5,10 @@ import dayjs from 'dayjs'
 import { useEffect } from 'react'
 import {
   Tooltip,
-  Col,
-  Row,
-  Image,
   Card,
   Button,
   Table,
-  Column,
   Space,
-  ColumnGroup,
   DatePicker,
   Form,
   Input,
@@ -24,12 +19,10 @@ import {
   Radio,
   notification
 } from 'antd'
-import { HistoryOutlined, EditFilled, CloseOutlined, DatabaseFilled } from '@ant-design/icons'
+import { HistoryOutlined, EditFilled, CloseOutlined } from '@ant-design/icons'
 import GARDEN from '../../../services/gardenService'
-
 import Loading from '../../../pages/Loading'
-
-const { Meta } = Card
+import { formatDate, formatDateTime } from '../../../utils/helpers'
 
 const layout = {
   labelCol: {
@@ -42,8 +35,6 @@ const layout = {
 
 const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
   const [form] = Form.useForm()
-
-  const handlePlantChange = (value) => {}
 
   return (
     <Modal
@@ -59,7 +50,9 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
             form.resetFields()
             onCreate(values)
           })
-          .catch((info) => {})
+          .catch((info) => {
+            console.error('Error: ', info)
+          })
       }}
     >
       <Form
@@ -96,18 +89,9 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant }) => {
               plant.value = plant.id
               return plant
             })}
-            onChange={handlePlantChange}
           />
         </Form.Item>
       </Form>
-    </Modal>
-  )
-}
-
-const CollectionHistoryForm = ({ open, onCreate, onCancel, history }) => {
-  return (
-    <Modal open={open} title="Lịch sử chỉnh sửa" footer={null} onCancel={onCancel}>
-      <p>{history}</p>
     </Modal>
   )
 }
@@ -121,7 +105,6 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
     })
   }, [formPlans, plans])
 
-  const handlePlantChange = (value) => {}
   return (
     <Modal
       open={open}
@@ -136,7 +119,9 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
             formPlans.resetFields()
             onCreate(values)
           })
-          .catch((info) => {})
+          .catch((info) => {
+            console.error('Error: ', info)
+          })
       }}
       getContainer={false}
     >
@@ -159,9 +144,9 @@ const CollectionPlansForm = ({ open, onCreate, onCancel, plans }) => {
             <Space direction="vertical">
               {plans?.map((plan) => (
                 <Radio value={plan}>
-                  {`${plan.time} ${plan.type}`} <br />
+                  {`${plan.time} (${plan.type}): ${plan.note}`} <br />
                   {plan.agroChemicalItems.map((d) => (
-                    <span>{`${d.name}: ${d.amountPerHa} kg `}</span>
+                    <span>{`${d.name}: ${d.amountPerHa} ${plan.type === 'phân bón' ? 'kg/ha' : 'lit/ha'} `}</span>
                   ))}
                 </Radio>
               ))}
@@ -196,8 +181,6 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
     })
   }, [formTemplate, defaultTemplate])
 
-  const handlePlantChange = (value) => {}
-
   return (
     <Modal
       open={open}
@@ -212,7 +195,9 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
             formTemplate.resetFields()
             onCreate(values)
           })
-          .catch((info) => {})
+          .catch((info) => {
+            console.error('Error: ', info)
+          })
       }}
       getContainer={false}
     >
@@ -243,15 +228,15 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
             >
               {fields?.map((field) => (
                 <Card size="small" title={`Kế hoạch`} key={field.key}>
-                  <Form.Item label="Time" name={[field.name, 'time']}>
+                  <Form.Item label="Thời gian" name={[field.name, 'time']}>
                     <Input type="date" />
                   </Form.Item>
 
-                  <Form.Item label="Note" name={[field.name, 'note']}>
+                  <Form.Item label="Ghi chú" name={[field.name, 'note']}>
                     <Input />
                   </Form.Item>
 
-                  <Form.Item label="Type" name={[field.name, 'type']}>
+                  <Form.Item label="Loại" name={[field.name, 'type']}>
                     <Select
                       placeholder="Chọn loại"
                       options={[
@@ -262,12 +247,16 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
                         {
                           label: 'BVTV',
                           value: 'BVTV'
+                        },
+                        {
+                          label: 'Khác',
+                          value: 'other'
                         }
                       ]}
                     ></Select>
                   </Form.Item>
 
-                  <Form.Item label="List">
+                  <Form.Item label="Cụ thể">
                     <Form.List name={[field.name, 'agroChemicalItems']}>
                       {(subFields, subOpt) => (
                         <div
@@ -290,7 +279,15 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
                                 />
                               </Form.Item>
                               <Form.Item noStyle name={[subField.name, 'amountPerHa']}>
-                                <Input placeholder="Số lượng" type="number" />
+                                <Input
+                                  placeholder="Số lượng"
+                                  type="number"
+                                  addonAfter={
+                                    formTemplate.getFieldValue(['items', field.name, 'type']) === 'phân bón'
+                                      ? 'kg/ha'
+                                      : 'lit/ha'
+                                  }
+                                />
                               </Form.Item>
                               <CloseOutlined
                                 onClick={() => {
@@ -300,7 +297,7 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
                             </Space>
                           ))}
                           <Button type="dashed" onClick={() => subOpt.add()} block>
-                            + Thêm Sub Item
+                            + Thêm
                           </Button>
                         </div>
                       )}
@@ -318,8 +315,6 @@ const CollectionTemplateForm = ({ open, onCreate, onCancel, defaultTemplate, fet
 
 const CollectionEditForm = ({ open, onCreate, onCancel, data, fetilizer, BVTV }) => {
   const [formEdit] = Form.useForm()
-
-  const handlePlantChange = (value) => {}
 
   const BVTV_name = BVTV?.map((BVTV_item) => {
     return {
@@ -355,21 +350,21 @@ const CollectionEditForm = ({ open, onCreate, onCancel, data, fetilizer, BVTV })
       }}
     >
       <Form form={formEdit} {...layout} name="form_in_modal" initialValues={data}>
-        <Form.Item label="Time" name="time">
+        <Form.Item label="Thời gian" name="time">
           <Form.Item name="startDate">
             <DatePicker
               defaultValue={dayjs(new Date(data?.time))}
-              placeholder="Chọn ngày giao"
+              placeholder="Chọn thời gian"
               style={{ width: '100%' }}
             />
           </Form.Item>
         </Form.Item>
 
-        <Form.Item label="Note" name="note">
+        <Form.Item label="Ghi chú" name="note">
           <Input />
         </Form.Item>
 
-        <Form.Item label="Type" name="loai_canh_tac">
+        <Form.Item label="Loại" name="loai_canh_tac">
           <Select
             placeholder="Chọn loại"
             options={[
@@ -380,12 +375,16 @@ const CollectionEditForm = ({ open, onCreate, onCancel, data, fetilizer, BVTV })
               {
                 label: 'BVTV',
                 value: 'BVTV'
+              },
+              {
+                label: 'Khác',
+                value: 'other'
               }
             ]}
           ></Select>
         </Form.Item>
 
-        <Form.Item label="List">
+        <Form.Item label="Cụ thể">
           <Form.List name="detail">
             {(subFields, subOpt) => (
               <div
@@ -404,7 +403,11 @@ const CollectionEditForm = ({ open, onCreate, onCancel, data, fetilizer, BVTV })
                       />
                     </Form.Item>
                     <Form.Item noStyle name={[subField.name, 'amountPerHa']}>
-                      <Input placeholder="Số lượng" type="number" />
+                      <Input
+                        placeholder="Số lượng"
+                        type="number"
+                        addonAfter={data.loai_canh_tac === 'phân bón' ? 'kg/ha' : 'lit/ha'}
+                      />
                     </Form.Item>
                     <CloseOutlined
                       onClick={() => {
@@ -422,9 +425,44 @@ const CollectionEditForm = ({ open, onCreate, onCancel, data, fetilizer, BVTV })
   )
 }
 
+const CollectionHistoryForm = ({ open, onCreate, onCancel, history }) => {
+  return (
+    <Modal open={open} title="Lịch sử chỉnh sửa" footer={null} onCancel={onCancel}>
+      {history ? (
+        history.map((process) => (
+          <>
+            <Divider>Chỉnh sửa lúc: {formatDateTime(process.modifiedAt)}</Divider>
+            <div style={{ width: 'fit-content', marginRight: '10px' }}>
+              <p>Tx: {process.tx}</p>
+              <p>Thời gian: {formatDate(process.time)}</p>
+              <p>Loại canh tác: {process.type}</p>
+              {process.type === 'phân bón' || process.type === 'BVTV' ? (
+                <div>
+                  {process.agroChemicalItems.map((item) => (
+                    <ul>
+                      <li>
+                        Tên: {item.name}, {item.amountPerHa} {process.type === 'phân bón' ? 'kg/ha' : 'lit/ha'}
+                      </li>
+                    </ul>
+                  ))}
+                  <p>Ghi chú: {process.note}</p>
+                </div>
+              ) : (
+                <p>Ghi chú: {process.note}</p>
+              )}
+            </div>
+          </>
+        ))
+      ) : (
+        <>Không có lịch sử chỉnh sửa</>
+      )}
+    </Modal>
+  )
+}
+
 const GardenProjectHistory = () => {
-  const [initData, setInitData] = useState(null)
-  const [templates, setTemplates] = useState(null)
+  const [initData, setInitData] = useState([])
+  const [templates, setTemplates] = useState([])
   const [open, setOpen] = useState(false)
   const [openTemplate, setOpenTemplate] = useState(false)
   const [openPlans, setOpenPlans] = useState(false)
@@ -437,11 +475,9 @@ const GardenProjectHistory = () => {
   const [planSelected, setPlanSelected] = useState(null)
   const [processSelected, setProcessSelected] = useState(null)
   const [projectIDSelected, setProjectIDSelected] = useState(null)
-  const projectID = useParams()
   const [defaultTemplate, setDefaultTemplate] = useState([])
   const [fetilizer, setFetilizer] = useState([])
   const [BVTV, setBVTV] = useState([])
-  console.log('params: ', projectID)
   const gardenId = useParams().id
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
@@ -452,234 +488,85 @@ const GardenProjectHistory = () => {
     })
   }
 
-  useEffect(() => {
-    setTemplates({
-      id: '1',
-      transaction_hash: 'adakdhakjdsas',
-      //Cây
-      seeds: [
-        {
-          id: '1',
-          name: 'cây 1',
-          seed: 'abc',
-          startDate: '23/11/2023',
-          amount: 10000,
-          img: ['https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg'],
-          plan: [
-            {
-              time: '12h',
-              note: 'note',
-              type: 'Phân bón',
-              agroChemicalItems: [
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                }
-              ]
-            },
-            {
-              time: '14h',
-              note: 'note',
-              type: 'type select',
-              agroChemicalItems: [
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: '2',
-          name: 'cây 2',
-          seed: 'Hạt giống',
-          startDate: '23/11/2023',
-          amount: 1000,
-          img: ['https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg'],
-          plan: [
-            {
-              time: '12h',
-              note: 'note',
-              type: 'type select',
-              agroChemicalItems: [
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: '3',
-          name: 'cây 3',
-          seed: 'Hạt giống',
-          startDate: '23/11/2023',
-          amount: 1000,
-          img: ['https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg'],
-          plan: [
-            {
-              time: '12h',
-              note: 'note',
-              type: 'type select',
-              agroChemicalItems: [
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                },
-                {
-                  name: 'name',
-                  amountPerHa: 12
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: '4',
-          name: 'cây 4',
-          seed: 'Hạt giống',
-          startDate: '23/11/2023',
-          amount: 1000,
-          img: ['https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg'],
-          plan: []
-        },
-        {
-          id: '5',
-          name: 'cây 5',
-          seed: 'Hạt giống',
-          startDate: '23/11/2023',
-          amount: 1000,
-          img: ['https://st.depositphotos.com/2632165/4026/i/450/depositphotos_40264933-stock-photo-young-plant.jpg'],
-          plan: []
+  const loadCultivates = async () => {
+    const data = await FARM.getCultivative()
+    const fetilizer = []
+    const BVTV = []
+
+    if (data.data) {
+      data.data.cultivatives.forEach((cultivative) => {
+        if (cultivative.type === 'phân bón') {
+          fetilizer.push({ name: cultivative.name })
+        } else if (cultivative.type === 'BVTV') {
+          BVTV.push({ name: cultivative.name })
         }
-      ]
-    })
-  }, [])
+      })
 
-  useEffect(() => {
-    setBVTV([
-      {
-        name: 'type 1'
-      },
-      {
-        name: 'type 2'
-      }
-    ])
-
-    setFetilizer([
-      {
-        name: 'Fetilizer 1'
-      },
-      {
-        name: 'Fetilizer 2'
-      }
-    ])
-  }, [])
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await GARDEN.getGardenProject(gardenId)
-      console.log('Data: ', data.data)
-
-      data.data.projects
-        ? setInitData({
-            id: 1,
-            plants: data.data.projects.map((prj) => {
-              return {
-                id: prj.projectId,
-                name: prj.name,
-                status: prj.status,
-                plan: prj.process.map((p) => {
-                  return {
-                    tx: p._id,
-                    time: p.time,
-                    loai_canh_tac: p.type,
-                    detail: p.agroChemicalItems,
-                    note: p.note,
-                    id: p._id
-                  }
-                })
-              }
-            })
-          })
-        : setInitData([])
+      setFetilizer(fetilizer)
+      setBVTV(BVTV)
     }
+  }
 
-    console.log('initData', initData)
-    fetchData()
+  useEffect(() => {
+    loadCultivates()
   }, [])
 
   useEffect(() => {
     async function fetchData() {
       const data = await GARDEN.getGardenProject(gardenId)
 
-      data.data.projects
-        ? setTemplates({
-            id: '1',
-            seeds: data.data.projects.map((s) => {
-              return {
-                id: s.projectId,
-                name: s.name,
-                seed: s.input.seed,
-                img: s.input.images,
-                plan: s.plan.map((p) => {
-                  return {
-                    id: p._id,
-                    time: p.time,
-                    note: p.note,
-                    type: p.type,
-                    agroChemicalItems: p.agroChemicalItems
-                  }
-                })
-              }
-            })
+      if (data.data.projects) {
+        setInitData({
+          id: 1,
+          plants: data.data.projects.map((prj) => {
+            return {
+              id: prj.projectId,
+              name: prj.name,
+              status: prj.status,
+              plan: prj.process.map((p) => {
+                return {
+                  tx: p._id,
+                  time: p.time,
+                  loai_canh_tac: p.type,
+                  detail: p.agroChemicalItems,
+                  note: p.note,
+                  id: p._id,
+                  isEdited: p.isEdited,
+                  historyProcess: p.historyProcess ? p.historyProcess : []
+                }
+              })
+            }
           })
-        : setTemplates([])
+        })
+        setTemplates({
+          id: '1',
+          plants: data.data.projects.map((s) => {
+            return {
+              id: s.projectId,
+              name: s.name,
+              seed: s.input.seed,
+              img: s.input.images,
+              plan: s.plan.map((p) => {
+                return {
+                  id: p._id,
+                  time: p.time,
+                  note: p.note,
+                  type: p.type,
+                  agroChemicalItems: p.agroChemicalItems
+                }
+              })
+            }
+          })
+        })
+      }
     }
+
     fetchData()
   }, [])
 
   const onCreate = (values) => {
     setPlanSelected(values.plant)
-    setPlans(templates.seeds.find((s) => s.id === values.plant)?.plan)
+    setPlans(templates.plants.find((s) => s.id === values.plant)?.plan)
     setOpen(false)
     setOpenPlans(true)
   }
@@ -698,23 +585,6 @@ const GardenProjectHistory = () => {
     const formattedDate = `${yearData}-${monthData}-${dateData}`
     newTemp[0].time = formattedDate
     setDefaultTemplate(newTemp)
-    setBVTV([
-      {
-        name: 'type 1'
-      },
-      {
-        name: 'type 2'
-      }
-    ])
-
-    setFetilizer([
-      {
-        name: 'Fetilizer 1'
-      },
-      {
-        name: 'Fetilizer 2'
-      }
-    ])
     setOpenTemplate(true)
   }
 
@@ -761,7 +631,7 @@ const GardenProjectHistory = () => {
       setInitData({
         id: '1',
         plants: initData?.plants?.map((plant) => {
-          if (plant.id == editData.id) {
+          if (plant.id === editData.id) {
             plant.plan = res?.data.updatedProcess.map((i) => {
               return {
                 detail: i.agroChemicalItems,
@@ -827,14 +697,14 @@ const GardenProjectHistory = () => {
                     }}
                     onClick={() => {
                       setHistory(true)
-                      setHistoryData(rec.tx)
+                      setHistoryData(rec.historyProcess)
                     }}
                   >
                     <HistoryOutlined /> Lịch sử chỉnh sửa
                   </span>
                 </Flex>
                 <p>Transaction hash: {rec.tx}</p>
-                <p>Thời gian: {rec.time}</p>
+                <p>Thời gian: {formatDate(rec.time)}</p>
                 <p>Loại canh tác: {rec.loai_canh_tac}</p>
                 <p>
                   Chi tiết:{' '}
