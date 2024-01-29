@@ -58,6 +58,24 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
     handleSubmitInput(data, params.id)
   }
 
+  //   const update = useMutation({
+  //     mutationFn: () => updateUserInfo({ ...data, userId: userData.id }),
+  //     })
+
+  // const onSubmit = () => {
+  //     console.log(data);
+  //     update.mutate(
+  //         { ...data, userId: userData.id },
+  //         {
+  //             onSuccess: () => {
+  //                 queryClient.invalidateQueries({
+  //                     queryKey: ['getUser'],
+  //                 });
+  //             }
+  //         }
+  //     );
+  // };
+
   const handleSubmitInput = async (data, projectId) => {
     try {
       const res = await FARM.editInput(data, projectId)

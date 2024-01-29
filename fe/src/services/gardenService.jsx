@@ -42,6 +42,19 @@ const GARDEN = {
       })
   },
 
+  getPlantCurrentGarden: async (gardenId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `plantCurrentInGarden/${gardenId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
   getGardenInput: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
@@ -58,13 +71,14 @@ const GARDEN = {
   getGardenOutput: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
-      url: `delivery/${gardenId}`,
-    }).then((res) => {
-      return res;
+      url: `delivery/${gardenId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   getGardenTemplate: async (gardenId) => {
@@ -84,48 +98,50 @@ const GARDEN = {
     return await publicHttp({
       method: 'GET',
       url: `gardenProject/${gardenId}`
+    }).catch((err) => {
+      return err
     })
-    .catch((err) => {
-      return err;
-    });
   },
 
   getRequestGarden: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
-      url: `clientRequests/${gardenId}`,
-    }).then((res) => {
-      return res;
+      url: `clientRequests/${gardenId}`
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   updateDeliveryStatus: async (data, gardenId, deliveryId) => {
-    return await publicHttp({
+    return await privateHttp({
       method: 'POST',
-      url: `clientRequests/${gardenId}/${deliveryId}`,
+      url: `updateDeliveryStatus/${gardenId}/${deliveryId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   },
 
   addDelivery: async (data, gardenId) => {
-    return await publicHttp({
+    return await privateHttp({
       method: 'POST',
-      url: `clientRequests/${gardenId}`,
+      url: `addDelivery/${gardenId}`,
       data
-    }).then((res) => {
-      return res;
     })
-    .catch((err) => {
-      return err;
-    });
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 }
 

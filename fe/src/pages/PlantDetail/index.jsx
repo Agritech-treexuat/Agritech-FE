@@ -7,41 +7,64 @@ import AddPlanPopup from '../../components/ManagePlant/AddPlanPopup'
 import AddTemplatePopup from '../../components/ManagePlant/AddTemplatePopup'
 import UpdateTemplatePopup from '../../components/ManagePlant/UpdateTemplatePopup'
 import { constants } from '../../utils/constant'
+import usePlantDetail from './usePlantDetail'
+import { useMutation } from '@tanstack/react-query'
 
 const { Panel } = Collapse
 
 const PlantDetail = () => {
   const adminId = constants.ADMIN_ID
   const [search, setSearch] = useState('')
-  const params = useParams()
+  const plantId = useParams().id
   const farmId = localStorage.getItem('id')
-  const [plans, setPlans] = useState([])
-  const [allSeedByPlant, setAllSeedByPlant] = useState([])
 
   const [open, setOpen] = useState(false)
   const [openTemplate, setOpenTemplate] = useState(false)
   const [openUpdateTemplate, setOpenUpdateTemplate] = useState(false)
-  const [defaultTemplate, setDefaultTemplate] = useState([])
+  const [template, setTemplate] = useState([])
   const [seed, setSeed] = useState(null)
-  const [fetilizer, setFetilizer] = useState([])
-  const [currentPlant, setCurrentPlant] = useState(null)
-  const [BVTV, setBVTV] = useState([])
+  const [isUseDefault, setIsUseDefault] = useState(false)
+
+  const {
+    plans,
+    isSuccessPlans,
+    refetchPlans,
+    allSeedByPlant,
+    isSuccessAllSeedByPlant,
+    currentPlant,
+    isSuccessCurrentPlant,
+    fetilizer,
+    BVTV,
+    isSuccessCultivatives,
+    defaultTemplate,
+    isSuccessDefaultTemplate,
+    isLoadingDefaultTemplate
+  } = usePlantDetail(farmId, plantId, seed, isUseDefault)
+
+  useEffect(() => {
+    if (isSuccessDefaultTemplate && !isLoadingDefaultTemplate && isUseDefault) {
+      setTemplate(defaultTemplate)
+      setIsUseDefault(false)
+      setOpenTemplate(true)
+    }
+  }, [isSuccessDefaultTemplate, isLoadingDefaultTemplate, seed])
 
   const onCreate = async (values) => {
     setOpen(false)
     if (values.template === 'default') {
-      await loadDefaultTemplate(values.seed)
+      setSeed(values.seed)
+      setIsUseDefault(true)
     } else {
-      setDefaultTemplate([])
+      setSeed(values.seed)
+      setIsUseDefault(false)
+      setTemplate([])
+      setOpenTemplate(true)
     }
-    setSeed(values.seed)
-    loadCultivates()
-    setOpenTemplate(true)
   }
 
   const onCreateTemplate = (values) => {
     const data = {
-      plantId: params.id,
+      plantId,
       seed: seed,
       plan: values.items
     }
@@ -58,68 +81,26 @@ const PlantDetail = () => {
     setOpenUpdateTemplate(false)
   }
 
-  const loadDefaultTemplate = async (seed) => {
-    const data = await FARM.getPlanFromSeed(adminId, seed)
-    setDefaultTemplate(data.data.plantFarming.plan)
-  }
-
-  const loadCultivates = async () => {
-    const data = await FARM.getCultivative()
-    const fetilizer = []
-    const BVTV = []
-
-    data.data.cultivatives.forEach((cultivative) => {
-      if (cultivative.type === 'phân bón') {
-        fetilizer.push(cultivative)
-      } else if (cultivative.type === 'BVTV') {
-        BVTV.push(cultivative)
-      }
-    })
-
-    setFetilizer(fetilizer)
-    setBVTV(BVTV)
-  }
-
   const submitTemplate = async (data) => {
-    const new_data = await FARM.addPlantCultivates(data)
-    const newPlans = [...plans, new_data.data.plantFarming]
-    setPlans(newPlans)
+    await FARM.addPlantCultivates(data)
+    refetchPlans()
   }
+
+  const update = useMutation({
+    mutationFn: (data) => FARM.updatePlantCultivates(data)
+  })
 
   const updateTemplate = async (data) => {
-    const new_data = await FARM.updatePlantCultivates(data)
-    const newPlans = plans.map((item) =>
-      item._id === new_data.data.plantFarming._id ? new_data.data.plantFarming : item
-    )
-    setPlans(newPlans)
+    update.mutate(data, {
+      onSuccess: () => {
+        refetchPlans()
+      }
+    })
   }
-  useEffect(() => {
-    async function fetchData() {
-      const data = await FARM.getPlans(farmId, params.id)
-      if (data.data) setPlans(data.data.plantFarming)
-    }
-    fetchData()
-  }, [])
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await FARM.getAllSeedByPlantId(params.id)
-      if (data.data) setAllSeedByPlant(data.data.seeds)
-    }
-    fetchData()
-  }, [])
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await FARM.getPlantByPlantId(params.id)
-      if (data.data) setCurrentPlant(data.data.plant)
-    }
-    fetchData()
-  }, [])
 
   return (
     <div>
-      {plans && currentPlant ? (
+      {isSuccessPlans && isSuccessAllSeedByPlant && isSuccessCurrentPlant && isSuccessCultivatives ? (
         <>
           <h1>Thông tin cây trồng {currentPlant.name}</h1>
           <Input
@@ -151,7 +132,7 @@ const PlantDetail = () => {
               onCancel={() => {
                 setOpenTemplate(false)
               }}
-              defaultTemplate={defaultTemplate}
+              defaultTemplate={template}
               fetilizer={fetilizer}
               BVTV={BVTV}
             />
@@ -164,7 +145,6 @@ const PlantDetail = () => {
                   <Button
                     type="primary"
                     onClick={() => {
-                      loadCultivates()
                       setOpenUpdateTemplate(true)
                     }}
                   >
