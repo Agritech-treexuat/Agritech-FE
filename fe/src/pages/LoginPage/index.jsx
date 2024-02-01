@@ -2,6 +2,8 @@ import React from 'react'
 import { Button, Checkbox, Form, Input } from 'antd'
 import FARM from '../../services/farmService'
 import { useNavigate } from 'react-router-dom'
+import token from '../../utils/token'
+const { setAccessToken, setRefreshToken } = token
 
 const LoginPage = () => {
   const navigate = useNavigate()
@@ -21,11 +23,15 @@ const LoginPage = () => {
         password: password
       })
       console.log('res: ', res)
-      const token = res?.data?.accessToken
-      if (token) {
-        localStorage.setItem('token', token)
+      const accessToken = res?.data?.metadata?.metadata?.tokens?.accessToken
+      const refreshToken = res?.data?.metadata?.metadata?.tokens?.refreshToken
+      if (accessToken) {
+        setAccessToken(accessToken)
       }
-      const id = res?.data?.id
+      if (refreshToken) {
+        setRefreshToken(refreshToken)
+      }
+      const id = res?.data?.metadata?.metadata?.shop?._id
       if (id) {
         localStorage.setItem('id', id)
       }

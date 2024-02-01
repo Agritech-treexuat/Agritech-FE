@@ -10,7 +10,7 @@ const FARM = {
   login: async ({ email, password }) => {
     let result = await publicHttp({
       method: 'POST',
-      url: 'api/auth/signin',
+      url: 'login',
       data: {
         email,
         password
@@ -232,124 +232,6 @@ const FARM = {
     return await privateHttp({
       method: 'POST',
       url: `/farm/project/exportQR/${projectId}/${outputId}`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getAllPlant: async () => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/plants`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getPlantByPlantId: async (plantId) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/plant/${plantId}`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getPlant: async (farmId) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/farm/plant/${farmId}`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  addPlant: async (data) => {
-    return await privateHttp({
-      method: 'POST',
-      url: `/farm/plant`,
-      data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getPlantWithSeed: async () => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/plants-and-seeds`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getPlans: async (farmId, plantId) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/farm/planInFarmFromPlant/${farmId}/${plantId}`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getAllSeedByPlantId: async (plantId) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/seeds/${plantId}`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getAllSeedByPlantName: async (plantName) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/seedsByPlantName/${plantName}`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getPlanFromSeed: async (farmId, seed) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/plantCultivates/${farmId}/${seed}`
     })
       .then((res) => {
         return res

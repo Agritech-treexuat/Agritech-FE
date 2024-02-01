@@ -1,24 +1,31 @@
 import { useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import FARM from '../../services/farmService'
+import PLANT from '../../services/plantService'
 
 export default function useManagePlant() {
   const farmId = localStorage.getItem('id')
   const parseData = useCallback((data) => {
-    const plant = data
+    const plant = data.map((plant) => ({
+      _id: plant._id,
+      name: plant.plant_name,
+      image: plant.plant_thumb
+    }))
     return { plant }
   }, [])
 
   const parseDataAllPlants = useCallback((data) => {
-    const allPlants = data
+    const allPlants = data.map((plant) => ({
+      _id: plant._id,
+      name: plant.plant_name,
+    }))
     return { allPlants }
   }, [])
 
   const { data, isSuccess, isLoading, refetch } = useQuery({
     queryKey: ['getPlant', farmId],
-    queryFn: () => FARM.getPlant(farmId),
+    queryFn: () => PLANT.getPlantFromFarm(farmId),
     staleTime: 20 * 1000,
-    select: (data) => parseData(data.data.plants),
+    select: (data) => parseData(data.data.metadata),
     enabled: !!farmId
   })
 
@@ -28,9 +35,9 @@ export default function useManagePlant() {
     isLoading: isLoading_2
   } = useQuery({
     queryKey: ['getAllPlant'],
-    queryFn: () => FARM.getAllPlant(),
+    queryFn: () => PLANT.getAllPlant(),
     staleTime: 20 * 1000,
-    select: (data) => parseDataAllPlants(data.data.plants)
+    select: (data) => parseDataAllPlants(data.data.metadata)
   })
 
   return {

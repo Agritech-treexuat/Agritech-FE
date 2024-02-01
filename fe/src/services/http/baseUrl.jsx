@@ -1,1 +1,1 @@
-export const baseUrl = process.env.LINK || 'http://34.142.236.121:8080'
+export const baseUrl = process.env.LINK || 'http://127.0.0.1:3052/v1/api'
