@@ -154,7 +154,7 @@ const PROJECT = {
   getOutput: async (projectId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/project/${projectId}/output`
+      url: `/project/${projectId}/output`
     })
       .then((res) => {
         return res
