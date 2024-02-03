@@ -1,29 +1,18 @@
-import React, { useState } from 'react'
-import FARM from '../../../services/farmService'
+import React from 'react'
 import { useParams } from 'react-router'
-import { useEffect } from 'react'
-import { Image } from 'antd'
 import Loading from '../../../pages/Loading'
 import UpdateInputPopup from './UpdateInputPopup'
-import EditInputHistory from './EditInputHistory'
 import { Col, Row } from 'antd'
 import { formatDate } from '../../../utils/helpers'
+import useProjectInput from './useProjectInput'
 
 const ProjectInput = () => {
-  const [initData, setInitData] = useState(null)
-  const projectID = useParams()
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await FARM.getInit(projectID.id)
-      setInitData(data.data.input)
-    }
-    fetchData()
-  }, [])
+  const projectId = useParams().id
+  const { projectInfo, isSuccess, refetch } = useProjectInput({ projectId })
 
   return (
     <div>
-      {initData ? (
+      {isSuccess ? (
         <div>
           <Row>
             <Col span={4}>
@@ -31,39 +20,24 @@ const ProjectInput = () => {
             </Col>
             <Col span={2}></Col>
             <Col span={18} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <UpdateInputPopup input={initData} setInitData={setInitData} />
-              <> {initData.isEdited ? <EditInputHistory input={initData} /> : <></>}</>
+              <UpdateInputPopup input={projectInfo} refetch={refetch} />
             </Col>
           </Row>
           <div>
-            <label>Transaction hash: </label>
-            <span>{initData.tx}</span>
+            <label>Ngày bắt đầu: </label>
+            <span>{formatDate(projectInfo.startDate)}</span>
           </div>
           <div>
-            <label>Ngày bắt đầu: </label>
-            <span>{formatDate(initData.initDate)}</span>
+            <label>Cây: </label>
+            <span>{projectInfo.plant.plant_name}</span>
           </div>
           <div>
             <label>Hạt giống: </label>
-            <span>{initData.seed}</span>
+            <span>{projectInfo.seed.seed_name}</span>
           </div>
           <div>
-            <label>Lượng: </label>
-            <span>{initData.amount}</span>
-          </div>
-          <div>
-            <label>Ảnh: </label> <br />
-            <Row>
-              {initData.images.length > 0 ? (
-                initData.images.map((image) => (
-                  <Col span={6}>
-                    <Image style={{ width: '100%' }} src={image} />
-                  </Col>
-                ))
-              ) : (
-                <span>Không có ảnh</span>
-              )}
-            </Row>
+            <label>Diện tích trồng: </label>
+            <span>{projectInfo.square || 'Chưa cập nhật'}</span>
           </div>
         </div>
       ) : (

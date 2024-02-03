@@ -14,14 +14,9 @@ const ProjectList = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPlant, setSelectedPlant] = useState(null)
   const [selectedSeed, setSelectedSeed] = useState(null)
-  const {
-    projects,
-    isSuccess,
-    refetch,
-    allPlantsInFarm,
-    isSuccessAllPlantsInFarm,
-    allSeedFromPlant
-  } = useProjectList({ plantId: selectedPlant?.id })
+  const { projects, isSuccess, refetch, allPlantsInFarm, isSuccessAllPlantsInFarm, allSeedFromPlant } = useProjectList({
+    plantId: selectedPlant?.id
+  })
   const [open, setOpen] = useState(false)
   const [openSeed, setOpenSeed] = useState(false)
 
@@ -51,8 +46,8 @@ const ProjectList = () => {
 
   const handleAddProject = async () => {
     // Thực hiện các thao tác khác khi thêm project
-    console.log("plantId", selectedPlant.id)
-    console.log("seedId", selectedSeed.id)
+    console.log('plantId', selectedPlant.id)
+    console.log('seedId', selectedSeed.id)
     try {
       const data = {
         plantId: selectedPlant.id,
@@ -95,10 +90,10 @@ const ProjectList = () => {
                 setSelectedPlant={setSelectedPlant}
                 handleAddPlant={handleAddPlant}
               />
-              <SeedModal 
-                seeds={allSeedFromPlant} 
-                open={openSeed} 
-                onClose={() => setOpenSeed(false)} 
+              <SeedModal
+                seeds={allSeedFromPlant}
+                open={openSeed}
+                onClose={() => setOpenSeed(false)}
                 selectedSeed={selectedSeed}
                 setSelectedSeed={setSelectedSeed}
                 handleAddSeed={handleAddSeed}

@@ -15,6 +15,33 @@ const PROJECT = {
       })
   },
 
+  getProjectByProjectId: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/project/${projectId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  editProjectInfo: async (data, projectId) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `/project/${projectId}`,
+      data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
   initProject: async (data) => {
     return await privateHttp({
       method: 'POST',
