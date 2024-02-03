@@ -73,7 +73,7 @@ const PROJECT = {
   addExpect: async (data, projectId) => {
     return await privateHttp({
       method: 'POST',
-      url: `/farm/project/addExpect/${projectId}`,
+      url: `/project/${projectId}/expect`,
       data
     })
       .then((res) => {
@@ -141,7 +141,7 @@ const PROJECT = {
   getExpect: async (projectId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/project/${projectId}/expect`
+      url: `/project/${projectId}/expect`
     })
       .then((res) => {
         return res
@@ -193,8 +193,8 @@ const PROJECT = {
 
   editExpect: async (data, projectId, expectId) => {
     return await privateHttp({
-      method: 'POST',
-      url: `/farm/project/editExpect/${projectId}/${expectId}`,
+      method: 'PATCH',
+      url: `/project/${projectId}/expect/${expectId}`,
       data
     })
       .then((res) => {

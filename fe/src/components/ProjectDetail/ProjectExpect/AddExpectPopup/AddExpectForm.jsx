@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Form, Input, InputNumber } from 'antd'
 import './style.css'
-import FARM from '../../../../services/farmService'
+import PROJECT from '../../../../services/projectService'
 import { useParams } from 'react-router'
 
 const layout = {
@@ -20,7 +20,7 @@ const tailLayout = {
   }
 }
 
-const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
+const AddExpectForm = ({ handleCloseForm, refetch }) => {
   const today = new Date()
   const year = today.getFullYear()
   const month = (today.getMonth() + 1).toString().padStart(2, '0')
@@ -46,9 +46,9 @@ const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
   const handleSubmitExpect = async (data, projectId) => {
     try {
       console.log('data to send: ', data, projectId)
-      const res = await FARM.addExpect(data, projectId)
+      const res = await PROJECT.addExpect(data, projectId)
       console.log('res: ', res)
-      setExpectData(res.data.updatedProjectExpect)
+      refetch()
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)
@@ -61,7 +61,6 @@ const AddExpectForm = ({ handleCloseForm, setExpectData }) => {
       ref={formRef}
       initialValues={{
         date: currentDate,
-        amount: 1000,
         note: ''
       }}
       name="control-ref"

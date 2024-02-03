@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Form, Input, InputNumber } from 'antd'
-import FARM from '../../../../services/farmService'
+import PROJECT from '../../../../services/projectService'
 import { useParams } from 'react-router'
 import './style.css'
 
@@ -20,7 +20,7 @@ const tailLayout = {
   }
 }
 
-const UpdateExpectForm = ({ handleCloseForm, expect, setExpectData }) => {
+const UpdateExpectForm = ({ handleCloseForm, expect, refetch }) => {
   const params = useParams()
   const dateObj = new Date(expect.time)
 
@@ -37,22 +37,18 @@ const UpdateExpectForm = ({ handleCloseForm, expect, setExpectData }) => {
   }
 
   const onFinish = (values) => {
-    const updatedValue = { ...values, time: values.date }
-    delete updatedValue.date
-    console.log(updatedValue)
     const data = {
-      tx: 'b',
-      ...updatedValue
+      time: values.date,
+      amount: values.amount,
+      note: values.note
     }
-    handleSubmitexpect(data, params.id, expect._id)
+    handleSubmitexpect({ data, projectId: params.id, expectId: expect.id })
   }
 
-  const handleSubmitexpect = async (data, projectId, expectId) => {
+  const handleSubmitexpect = async ({ data, projectId, expectId }) => {
     try {
-      console.log('data to send: ', data, projectId)
-      const res = await FARM.editExpect(data, projectId, expectId)
-      console.log('res: ', res)
-      setExpectData(res.data.updatedExpect)
+      await PROJECT.editExpect(data, projectId, expectId)
+      refetch()
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)

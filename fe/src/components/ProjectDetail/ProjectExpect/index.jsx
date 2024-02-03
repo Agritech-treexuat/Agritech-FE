@@ -1,6 +1,4 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
-import FARM from '../../../services/farmService'
 import Loading from '../../../pages/Loading'
 import { useParams } from 'react-router'
 import { Space, Table } from 'antd'
@@ -8,24 +6,18 @@ import UpdateExpectPopup from './UpdateExpectPopup'
 import EditExpectHistory from './EditExpectHistory'
 import AddExpectPopup from './AddExpectPopup'
 import { formatDate } from '../../../utils/helpers'
+import useProjectExpect from './useProjectExpect'
 
 const { Column } = Table
 
 const ProjectExpect = () => {
-  const [expectData, setExpectData] = useState([])
-  const projectID = useParams()
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await FARM.getExpect(projectID.id)
-      setExpectData(data.data.expects)
-    }
-    fetchData()
-  }, [])
+  const projectId = useParams().id
+  const { expectData, isSuccess, refetch } = useProjectExpect({ projectId })
+  console.log('expectData: ', expectData)
   return (
     <div>
-      <AddExpectPopup setExpectData={setExpectData} />
-      {expectData ? (
+      <AddExpectPopup refetch={refetch} />
+      {isSuccess ? (
         <Table dataSource={expectData}>
           <Column title="Transaction hash" dataIndex="tx" key="tx" />
           <Column title="Thời gian" key="time" render={(_, expect) => <p>{formatDate(expect.time)}</p>} />
@@ -37,7 +29,7 @@ const ProjectExpect = () => {
             key="action"
             render={(_, expect) => (
               <Space size="middle">
-                <UpdateExpectPopup expect={expect} setExpectData={setExpectData} />
+                <UpdateExpectPopup expect={expect} refetch={refetch} />
                 <> {expect.isEdited ? <EditExpectHistory expect={expect} /> : <></>}</>
               </Space>
             )}
