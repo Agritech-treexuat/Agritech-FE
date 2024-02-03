@@ -1,12 +1,23 @@
 import { useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import FARM from '../../services/farmService'
-import { constants } from '../../utils/constant'
+import PLANT from '../../services/plantService'
+import SEED from '../../services/seedService'
+import PLANT_FARMING from '../../services/plantFarmingService'
 
-export default function usePlantDetail(farmId, plantId, seed, isUseDefault) {
-  const adminId = constants.ADMIN_ID
+export default function usePlantDetail(plantId, seedId, isUseDefault) {
   const parseDataPlans = useCallback((data) => {
-    const plans = data
+    const plans = data.map((plan) => ({
+      _id: plan._id,
+      seed: plan.seed.seed_name,
+      timeCultivates: plan.timeCultivates,
+      cultivationActivities: plan.cultivationActivities,
+      plantingActivity: plan.plantingActivity,
+      fertilizationActivities: plan.fertilizationActivities,
+      pestAndDiseaseControlActivities: plan.pestAndDiseaseControlActivities,
+      bestTimeCultivate: plan.bestTimeCultivate,
+      farmingTime: plan.farmingTime,
+      harvestTime: plan.harvestTime
+    }))
     return { plans }
   }, [])
 
@@ -16,15 +27,18 @@ export default function usePlantDetail(farmId, plantId, seed, isUseDefault) {
     isLoading: isLoadingPlans,
     refetch: refetchPlans
   } = useQuery({
-    queryKey: ['getPlans', farmId],
-    queryFn: () => FARM.getPlans(farmId, plantId),
+    queryKey: ['getPlans', plantId],
+    queryFn: () => PLANT_FARMING.getListPlantFarmingFromPlant(plantId),
     staleTime: 20 * 1000,
-    select: (data) => parseDataPlans(data.data.plantFarming),
-    enabled: !!farmId
+    select: (data) => parseDataPlans(data.data.metadata),
+    enabled: !!plantId
   })
 
   const parseDataAllSeedByPlant = useCallback((data) => {
-    const allSeedByPlant = data
+    const allSeedByPlant = data.map((seed) => ({
+      id: seed._id,
+      name: seed.seed_name
+    }))
     return { allSeedByPlant }
   }, [])
 
@@ -34,14 +48,16 @@ export default function usePlantDetail(farmId, plantId, seed, isUseDefault) {
     isLoading: isLoadingAllSeedByPlant
   } = useQuery({
     queryKey: ['getAllSeedByPlantId', plantId],
-    queryFn: () => FARM.getAllSeedByPlantId(plantId),
+    queryFn: () => SEED.getAllSeedByPlantId(plantId),
     staleTime: 20 * 1000,
-    select: (data) => parseDataAllSeedByPlant(data.data.seeds),
+    select: (data) => parseDataAllSeedByPlant(data.data.metadata),
     enabled: !!plantId
   })
 
   const parseDataCurrentPlant = useCallback((data) => {
-    const currentPlant = data
+    const currentPlant = {
+      name: data.plant_name
+    }
     return { currentPlant }
   }, [])
 
@@ -51,39 +67,14 @@ export default function usePlantDetail(farmId, plantId, seed, isUseDefault) {
     isLoading: isLoadingCurrentPlant
   } = useQuery({
     queryKey: ['getPlantByPlantId', plantId],
-    queryFn: () => FARM.getPlantByPlantId(plantId),
+    queryFn: () => PLANT.getPlantByPlantId(plantId),
     staleTime: 20 * 1000,
-    select: (data) => parseDataCurrentPlant(data.data.plant),
-    enabled: !!plantId
-  })
-
-  const parseDataCultivatives = useCallback((data) => {
-    const fetilizer = []
-    const BVTV = []
-    data.forEach((cultivative) => {
-      if (cultivative.type === 'phân bón') {
-        fetilizer.push(cultivative)
-      } else if (cultivative.type === 'BVTV') {
-        BVTV.push(cultivative)
-      }
-    })
-    return { fetilizer, BVTV }
-  }, [])
-
-  const {
-    data: dataCultivatives,
-    isSuccess: isSuccessCultivatives,
-    isLoading: isLoadingCultivatives
-  } = useQuery({
-    queryKey: ['getCultivative'],
-    queryFn: () => FARM.getCultivative(),
-    staleTime: 20 * 1000,
-    select: (data) => parseDataCultivatives(data.data.cultivatives),
+    select: (data) => parseDataCurrentPlant(data.data.metadata),
     enabled: !!plantId
   })
 
   const parseDataDefaultTemplate = useCallback((data) => {
-    const defaultTemplate = data
+    const defaultTemplate = data[0]
     return { defaultTemplate }
   }, [])
 
@@ -92,11 +83,11 @@ export default function usePlantDetail(farmId, plantId, seed, isUseDefault) {
     isSuccess: isSuccessDefaultTemplate,
     isLoading: isLoadingDefaultTemplate
   } = useQuery({
-    queryKey: ['getPlanFromSeed', seed],
-    queryFn: () => FARM.getPlanFromSeed(adminId, seed),
+    queryKey: ['getPlanFromSeed', seedId],
+    queryFn: () => PLANT_FARMING.getPlantFarmingFromSeed(seedId),
     staleTime: 20 * 1000,
-    select: (data) => parseDataDefaultTemplate(data.data.plantFarming.plan),
-    enabled: !!seed && !!isUseDefault
+    select: (data) => parseDataDefaultTemplate(data.data.metadata),
+    enabled: !!seedId && !!isUseDefault
   })
 
   return {
@@ -110,10 +101,6 @@ export default function usePlantDetail(farmId, plantId, seed, isUseDefault) {
     currentPlant: dataCurrentPlant?.currentPlant,
     isSuccessCurrentPlant,
     isLoadingCurrentPlant,
-    fetilizer: dataCultivatives?.fetilizer,
-    BVTV: dataCultivatives?.BVTV,
-    isSuccessCultivatives,
-    isLoadingCultivatives,
     defaultTemplate: dataDefaultTemplate?.defaultTemplate,
     isSuccessDefaultTemplate,
     isLoadingDefaultTemplate

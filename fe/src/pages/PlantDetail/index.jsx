@@ -6,14 +6,12 @@ import Loading from '../Loading'
 import AddPlanPopup from '../../components/ManagePlant/AddPlanPopup'
 import AddTemplatePopup from '../../components/ManagePlant/AddTemplatePopup'
 import UpdateTemplatePopup from '../../components/ManagePlant/UpdateTemplatePopup'
-import { constants } from '../../utils/constant'
 import usePlantDetail from './usePlantDetail'
 import { useMutation } from '@tanstack/react-query'
 
 const { Panel } = Collapse
 
 const PlantDetail = () => {
-  const adminId = constants.ADMIN_ID
   const [search, setSearch] = useState('')
   const plantId = useParams().id
   const farmId = localStorage.getItem('id')
@@ -22,7 +20,7 @@ const PlantDetail = () => {
   const [openTemplate, setOpenTemplate] = useState(false)
   const [openUpdateTemplate, setOpenUpdateTemplate] = useState(false)
   const [template, setTemplate] = useState([])
-  const [seed, setSeed] = useState(null)
+  const [seedId, setSeedId] = useState(null)
   const [isUseDefault, setIsUseDefault] = useState(false)
 
   const {
@@ -33,29 +31,28 @@ const PlantDetail = () => {
     isSuccessAllSeedByPlant,
     currentPlant,
     isSuccessCurrentPlant,
-    fetilizer,
-    BVTV,
-    isSuccessCultivatives,
     defaultTemplate,
     isSuccessDefaultTemplate,
     isLoadingDefaultTemplate
-  } = usePlantDetail(farmId, plantId, seed, isUseDefault)
+  } = usePlantDetail(plantId, seedId, isUseDefault)
 
   useEffect(() => {
     if (isSuccessDefaultTemplate && !isLoadingDefaultTemplate && isUseDefault) {
+      console.log('defaultTemplate init', defaultTemplate)
       setTemplate(defaultTemplate)
       setIsUseDefault(false)
       setOpenTemplate(true)
     }
-  }, [isSuccessDefaultTemplate, isLoadingDefaultTemplate, seed])
+  }, [isSuccessDefaultTemplate, isLoadingDefaultTemplate, seedId])
 
   const onCreate = async (values) => {
     setOpen(false)
     if (values.template === 'default') {
-      setSeed(values.seed)
+      setSeedId(values.seed)
       setIsUseDefault(true)
+      setOpenTemplate(true)
     } else {
-      setSeed(values.seed)
+      setSeedId(values.seed)
       setIsUseDefault(false)
       setTemplate([])
       setOpenTemplate(true)
@@ -65,7 +62,7 @@ const PlantDetail = () => {
   const onCreateTemplate = (values) => {
     const data = {
       plantId,
-      seed: seed,
+      seed: seedId,
       plan: values.items
     }
     submitTemplate(data)
@@ -100,8 +97,9 @@ const PlantDetail = () => {
 
   return (
     <div>
-      {isSuccessPlans && isSuccessAllSeedByPlant && isSuccessCurrentPlant && isSuccessCultivatives ? (
+      {isSuccessPlans && isSuccessAllSeedByPlant && isSuccessCurrentPlant ? (
         <>
+        {console.log('template: ', template)}
           <h1>Thông tin cây trồng {currentPlant.name}</h1>
           <Input
             placeholder="Tìm kiếm"
@@ -133,12 +131,10 @@ const PlantDetail = () => {
                 setOpenTemplate(false)
               }}
               defaultTemplate={template}
-              fetilizer={fetilizer}
-              BVTV={BVTV}
             />
           </div>
           {plans.map((item) => (
-            <Card style={{ marginTop: '16px' }}>
+            <Card style={{ marginTop: '16px' }} key={item._id}>
               <h2>{item.seed}</h2>
               <Collapse>
                 <Panel header="Quy trình chi tiết">
@@ -150,7 +146,7 @@ const PlantDetail = () => {
                   >
                     Chỉnh sửa
                   </Button>
-                  <UpdateTemplatePopup
+                  {/* <UpdateTemplatePopup
                     open={openUpdateTemplate}
                     onCreate={onUpdateTemplate}
                     onCancel={() => {
@@ -160,32 +156,93 @@ const PlantDetail = () => {
                     fetilizer={fetilizer}
                     BVTV={BVTV}
                     plantCultivateId={item._id}
-                  />
-                  {item.plan.map((cultivate) => (
-                    <>
-                      <Divider>
-                        <h3>Thời điểm: {cultivate.time}</h3>
-                      </Divider>
-                      <h3>Ghi chú: {cultivate.note}</h3>
-                      <h3>Loại: {cultivate.type}</h3>
-                      {cultivate.agroChemicalItems.map((cultivativeItem) => (
-                        <>
-                          <Divider></Divider>
-                          <p>Tên: {cultivativeItem.name}</p>
-                          <p>
-                            Lượng: {cultivativeItem.amountPerHa} {cultivate.type === 'phân bón' ? 'kg/ha' : 'lit/ha'}
-                          </p>
-                        </>
-                      ))}
-                    </>
-                  ))}
+                  /> */}
+                  <div>
+                    {/* time cultivates: [{ start, end }] */}
+                    <h2> Thoi gian canh tac </h2>
+                    {item.timeCultivates.map((timeCultivate) => (
+                      <div key={timeCultivate._id}>
+                        <p>Thoi gian bat dau: {timeCultivate.start}</p>
+                        <p>Thoi gian ket thuc: {timeCultivate.end}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Divider />
+                  <div>
+                    {/*  cultivationActivities: [{name, description}] */}
+                    <h2> Hoat dong voi dat </h2>
+                    {item.cultivationActivities.map((cultivationActivity) => (
+                      <div key={cultivationActivity._id}>
+                        <p>Ten hoat dong: {cultivationActivity.name}</p>
+                        <p>Mo ta: {cultivationActivity.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Divider />
+                  <div>
+                    {/*  plantingActivity: {density, description} */}
+                    <h2> Hoat dong trong gieo trong </h2>
+                    <p>Mat do gieo trong: {item.plantingActivity.density}</p>
+                    <p>Mo ta: {item.plantingActivity.description}</p>
+                  </div>
+                  <Divider />
+                  <div>
+                    {/* fertilizationActivities: [fertilizationTime, type, description] */}
+                    <h2> Hoat dong phan bon </h2>
+                    {item.fertilizationActivities.map((fertilizationActivity) => (
+                      <div key={fertilizationActivity._id}>
+                        <p>Thoi gian: {fertilizationActivity.fertilizationTime}</p>
+                        <p>Loai: {fertilizationActivity.type}</p>
+                        <p>Mo ta: {fertilizationActivity.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Divider />
+                  <div>
+                    {/* pestAndDiseaseControlActivities: [{name, type
+                    symptoms
+                    description
+                    solution: [string]
+                    note}] */}
+                    <h2> Hoat dong phong ngua sau, benh </h2>
+                    {item.pestAndDiseaseControlActivities.map((pestAndDiseaseControlActivity) => (
+                      <div key={pestAndDiseaseControlActivity._id}>
+                        <p>Ten: {pestAndDiseaseControlActivity.name}</p>
+                        <p>Loai: {pestAndDiseaseControlActivity.type}</p>
+                        <p>Trieu chung: {pestAndDiseaseControlActivity.symptoms}</p>
+                        <p>Mo ta: {pestAndDiseaseControlActivity.description}</p>
+                        <p>Giai phap:</p>
+                        {pestAndDiseaseControlActivity.solution.map((solution) => (
+                          <p key={solution}>{solution}</p>
+                        ))}
+                        <p>Ghi chu: {pestAndDiseaseControlActivity.note}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Divider />
+                  <div>
+                    {/* bestTimeCultivate: {start, end} */}
+                    <h2> Thoi gian canh tac tot nhat </h2>
+                    <p>Thoi gian bat dau: {item.bestTimeCultivate.start}</p>
+                    <p>Thoi gian ket thuc: {item.bestTimeCultivate.end}</p>
+                  </div>
+
+                  <Divider />
+                  {/* farmingTime: number */}
+                  <p>Thoi gian trong cay: {item.farmingTime}</p>
+                  <Divider />
+                  {/* harvestTime: number */}
+                  <p>Thoi gian thu hoach: {item.harvestTime}</p>
+                  <Divider />
                 </Panel>
               </Collapse>
             </Card>
           ))}
         </>
       ) : (
-        <Loading />
+        <>
+          <Loading />
+        </>
       )}
     </div>
   )

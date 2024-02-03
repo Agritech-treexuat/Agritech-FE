@@ -35,7 +35,7 @@ const AddPlanPopup = ({ open, onCreate, onCancel, allSeedByPlant }) => {
         >
           <Select placeholder="Chọn tên">
             {allSeedByPlant.map((seed) => (
-              <Option key={seed.id} value={seed.name}>
+              <Option key={seed.id} value={seed.id}>
                 {seed.name}
               </Option>
             ))}

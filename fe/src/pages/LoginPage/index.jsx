@@ -31,7 +31,7 @@ const LoginPage = () => {
       if (refreshToken) {
         setRefreshToken(refreshToken)
       }
-      const id = res?.data?.metadata?.metadata?.shop?._id
+      const id = res?.data?.metadata?.metadata?.farm?._id
       if (id) {
         localStorage.setItem('id', id)
       }

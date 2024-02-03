@@ -1,24 +1,11 @@
 import React from 'react'
 import { Modal, Select } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
-import { Button, Card, Form, Input, Space } from 'antd'
+import { Button, Card, Form, Input } from 'antd'
 import './style.css'
-const { Option } = Select
-const AddTemplatePopup = ({ open, onCreate, onCancel, defaultTemplate, fetilizer, BVTV }) => {
+const AddTemplatePopup = ({ open, onCreate, onCancel, defaultTemplate }) => {
   const [form] = Form.useForm()
-  const BVTV_name = BVTV.map((BVTV_item) => {
-    return {
-      value: BVTV_item.name,
-      label: BVTV_item.name
-    }
-  })
-
-  const fetilizer_name = fetilizer.map((fetilizer_item) => {
-    return {
-      value: fetilizer_item.name,
-      label: fetilizer_item.name
-    }
-  })
+  console.log('defaultTemplate', defaultTemplate)
 
   return (
     <Modal
@@ -56,99 +43,53 @@ const AddTemplatePopup = ({ open, onCreate, onCancel, defaultTemplate, fetilizer
           items: defaultTemplate
         }}
       >
-        <Form.List name="items">
-          {(fields, { add, remove }) => (
-            <div
-              style={{
-                display: 'flex',
-                rowGap: 16,
-                flexDirection: 'column'
-              }}
-            >
-              {fields.map((field) => (
-                <Card
-                  size="small"
-                  title={`Việc ${field.name + 1}`}
-                  key={field.key}
-                  extra={
-                    <CloseOutlined
-                      onClick={() => {
-                        remove(field.name)
-                      }}
-                    />
-                  }
-                >
-                  <Form.Item label="Thời điểm" name={[field.name, 'time']}>
-                    <Input />
-                  </Form.Item>
-
-                  <Form.Item label="Ghi chú" name={[field.name, 'note']}>
-                    <Input />
-                  </Form.Item>
-
-                  <Form.Item label="Loại" name={[field.name, 'type']}>
-                    <Select placeholder="Chọn loại">
-                      <Option value="phân bón">Phân bón</Option>
-                      <Option value="BVTV">BVTV</Option>
-                    </Select>
-                  </Form.Item>
-
-                  <Form.Item label="Cụ thể">
-                    <Form.List name={[field.name, 'agroChemicalItems']}>
-                      {(subFields, subOpt) => (
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            rowGap: 16
-                          }}
-                        >
-                          {subFields.map((subField) => (
-                            <Space key={subField.key}>
-                              <Form.Item noStyle name={[subField.name, 'name']}>
-                                <Select
-                                  placeholder="Chọn tên"
-                                  options={
-                                    form.getFieldValue(['items', field.name, 'type']) === 'phân bón'
-                                      ? fetilizer_name
-                                      : BVTV_name
-                                  }
-                                />
-                              </Form.Item>
-                              <Form.Item noStyle name={[subField.name, 'amountPerHa']}>
-                                <Input
-                                  placeholder="Số lượng"
-                                  type="number"
-                                  addonAfter={
-                                    form.getFieldValue(['items', field.name, 'type']) === 'phân bón'
-                                      ? 'kg/ha'
-                                      : 'lit/ha'
-                                  }
-                                />
-                              </Form.Item>
-                              <CloseOutlined
-                                onClick={() => {
-                                  subOpt.remove(subField.name)
-                                }}
-                              />
-                            </Space>
-                          ))}
-                          <Button type="dashed" onClick={() => subOpt.add()} block>
-                            + Thêm
-                          </Button>
-                        </div>
-                      )}
-                    </Form.List>
-                  </Form.Item>
-                </Card>
-              ))}
-
-              <Button type="dashed" onClick={() => add()} block>
-                + Thêm việc
-              </Button>
-            </div>
-          )}
-        </Form.List>
+        {/* with these sample data: "timeCultivates": [
+                {
+                    "start": 5,
+                    "end": 5,
+                    "_id": "659a69ca3fab5ca0a1002065"
+                }
+            ],
+            "cultivationActivities": [
+                {
+                    "name": "Alter patruus amissio attonbitus fugiat curiositas capillus caritas.",
+                    "description": "Totam comptus cena cras id certus tam.",
+                    "_id": "659a69ca3fab5ca0a1002066"
+                }
+            ],
+            "plantingActivity": {
+                "density": "Maxime unus audio cuppedia voluptates voco omnis.",
+                "description": "Vulgus caste velum."
+            },
+            "fertilizationActivities": [
+                {
+                    "fertilizationTime": "Voveo venio defaeco quos sordeo paulatim.",
+                    "type": "baseFertilizer",
+                    "description": "Acsi cinis corrumpo alo viriliter aspernatur concedo vester crudelis advenio.",
+                    "_id": "659a69ca3fab5ca0a1002067"
+                }
+            ],
+            "pestAndDiseaseControlActivities": [
+                {
+                    "name": "Cornu capto varius colo in volo ascit.",
+                    "type": "pest",
+                    "symptoms": "Desipio vacuus patruus ara curo bonus.",
+                    "description": "Campana vomito uxor aestus studio neque suspendo certus subito.",
+                    "solution": [
+                        "Cavus thalassinus pecus adficio coniuratio barba cuius antiquus."
+                    ],
+                    "note": "Conatus utroque delibero.",
+                    "_id": "659a69ca3fab5ca0a1002068"
+                }
+            ],
+            "bestTimeCultivate": {
+                "start": 9,
+                "end": 9
+            },
+            "farmingTime": 185,
+            "harvestTime": 21, 
+          }
+          create a form to add new template (add full data) */}
       </Form>
     </Modal>
   )

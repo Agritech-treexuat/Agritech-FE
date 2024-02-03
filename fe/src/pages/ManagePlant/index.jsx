@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import Loading from '../Loading'
 import { Card } from 'antd'
 import { AddPlantPopup } from '../../components'
-import FARM from '../../services/farmService'
+import PLANT from '../../services/plantService'
 import useManagePlant from './useManagePlant'
 
 const { Meta } = Card
@@ -21,16 +21,14 @@ const ManagePlant = () => {
 
   const [open, setOpen] = useState(false)
   const onCreate = (values) => {
-    const data = {
-      plantId: values._id
-    }
-    handleSubmitPlant(data)
+    const recommentPlantId = values._id
+    handleSubmitPlant(recommentPlantId)
   }
 
-  const handleSubmitPlant = async (data) => {
+  const handleSubmitPlant = async (recommentPlantId) => {
     try {
-      const res = await FARM.addPlant(data)
-      if (res.response && res.response.data.message === 'EXISTED_TREE') {
+      const res = await PLANT.addPlantByRecommendPlantId(recommentPlantId)
+      if (res.response && res.response?.data?.message === 'Plant already exists') {
         alert('Cây đã tồn tại')
       } else {
         refetch()
@@ -82,7 +80,7 @@ const ManagePlant = () => {
               </Row>
               <Row className="plant-grid">
                 {filteredPlants.map((plant) => (
-                  <Col span={4}>
+                  <Col span={4} key={plant._id}>
                     <Link to={`/plant/${plant._id}`} key={plant._id}>
                       <Card
                         hoverable

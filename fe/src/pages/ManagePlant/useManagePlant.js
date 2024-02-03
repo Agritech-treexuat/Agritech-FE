@@ -16,7 +16,7 @@ export default function useManagePlant() {
   const parseDataAllPlants = useCallback((data) => {
     const allPlants = data.map((plant) => ({
       _id: plant._id,
-      name: plant.plant_name,
+      name: plant.plant_name
     }))
     return { allPlants }
   }, [])

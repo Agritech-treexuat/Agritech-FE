@@ -10,6 +10,7 @@ const Auth = (props) => {
       let result = await FARM.me()
       console.log('result: ', result)
       if (result.data.metadata._id) {
+        localStorage.setItem('id', result.data.metadata._id)
         setHandle(true)
       }
     })()
