@@ -99,7 +99,7 @@ const PlantDetail = () => {
     <div>
       {isSuccessPlans && isSuccessAllSeedByPlant && isSuccessCurrentPlant ? (
         <>
-        {console.log('template: ', template)}
+          {console.log('template: ', template)}
           <h1>Thông tin cây trồng {currentPlant.name}</h1>
           <Input
             placeholder="Tìm kiếm"
