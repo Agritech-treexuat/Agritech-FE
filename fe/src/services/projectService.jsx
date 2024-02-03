@@ -18,10 +18,7 @@ const PROJECT = {
   initProject: async (data) => {
     return await privateHttp({
       method: 'POST',
-      url: `/farm/initProject`,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
+      url: `project`,
       data
     })
       .then((res) => {

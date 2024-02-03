@@ -4,23 +4,26 @@ import { Link } from 'react-router-dom'
 import ProjectItem from '../../components/ProjectItem'
 import './style.css'
 import Loading from '../Loading'
-import { Input } from 'antd'
-import { Col, Row } from 'antd'
-import { Button, Flex } from 'antd'
 import useProjectList from './useProjectList'
-import { Form, Modal, Radio } from 'antd'
+import { Input, Button, Flex, Row, Col } from 'antd'
+import PlantModal from '../../components/ProjectDetail/AddProject/AddProjectPlant'
+import SeedModal from '../../components/ProjectDetail/AddProject/AddProjectSeed'
+import PROJECT from '../../services/projectService'
 
 const ProjectList = () => {
   const [searchQuery, setSearchQuery] = useState('')
-  const farmId = localStorage.getItem('id')
-  const { projects, isSuccess, isLoading, allPlantsInFarm, isSuccessAllPlantsInFarm, isLoadingAllPlantsInFarm } = useProjectList(farmId)
   const [selectedPlant, setSelectedPlant] = useState(null)
+  const [selectedSeed, setSelectedSeed] = useState(null)
+  const {
+    projects,
+    isSuccess,
+    refetch,
+    allPlantsInFarm,
+    isSuccessAllPlantsInFarm,
+    allSeedFromPlant
+  } = useProjectList({ plantId: selectedPlant?.id })
   const [open, setOpen] = useState(false)
-  const onCreate = (values) => {
-    console.log('Received values of form: ', values)
-    setSelectedPlant(values)
-    setOpen(false)
-  }
+  const [openSeed, setOpenSeed] = useState(false)
 
   const filteredProjects =
     projects.length > 0
@@ -29,54 +32,39 @@ const ProjectList = () => {
         })
       : []
 
-  const CreatePlantForm = ({ open, onCreate, onCancel }) => {
-    const [form] = Form.useForm()
-    return (
-      <Modal
-        open={open}
-        title="What's plant do you want to add?"
-        okText="Create"
-        cancelText="Cancel"
-        onCancel={onCancel}
-        onOk={() => {
-          form
-            .validateFields()
-            .then((values) => {
-              form.resetFields()
-              onCreate(values)
-            })
-            .catch((info) => {
-              console.log('Validate Failed:', info)
-            })
-        }}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          name="form_in_modal"
-          initialValues={{
-            modifier: 'public'
-          }}
-        >
-        
-          <Form.Item
-            name="plant"
-            label="plant"
-            rules={[
-              {
-                required: true,
-                message: 'Please input the title of collection!'
-              }
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name="description" label="Description">
-            <Input type="textarea" />
-          </Form.Item>
-        </Form>
-      </Modal>
-    )
+  const handleAddPlant = (plant) => {
+    setSelectedPlant(plant)
+    console.log(plant)
+    setOpen(false)
+    console.log('allSeedFromPlant', allSeedFromPlant)
+    setOpenSeed(true)
+  }
+
+  const handleAddSeed = () => {
+    // Thực hiện các thao tác khác khi thêm seed
+    if (selectedSeed) {
+      console.log(selectedSeed)
+      // Do something with the selected seed
+    }
+    handleAddProject()
+  }
+
+  const handleAddProject = async () => {
+    // Thực hiện các thao tác khác khi thêm project
+    console.log("plantId", selectedPlant.id)
+    console.log("seedId", selectedSeed.id)
+    try {
+      const data = {
+        plantId: selectedPlant.id,
+        seedId: selectedSeed.id,
+        startDate: new Date()
+      }
+      await PROJECT.initProject(data)
+      refetch()
+    } catch (error) {
+      console.log(error)
+    }
+    setOpenSeed(false)
   }
 
   return (
@@ -95,22 +83,25 @@ const ProjectList = () => {
             <Col span={1}></Col>
             <Col span={6}>
               <Flex gap="small" wrap="wrap">
-                <Button
-                  style={{ marginRight: '6px' }}
-                  type="primary"
-                  onClick={() => {
-                    setOpen(true)
-                  }}
-                >
-                  New Collection
+                <Button type="primary" onClick={() => setOpen(true)}>
+                  Tạp project mới
                 </Button>
               </Flex>
-              <CreatePlantForm
+              <PlantModal
+                allPlantsInFarm={allPlantsInFarm}
                 open={open}
-                onCreate={onCreate}
-                onCancel={() => {
-                  setOpen(false)
-                }}
+                onClose={() => setOpen(false)}
+                selectedPlant={selectedPlant}
+                setSelectedPlant={setSelectedPlant}
+                handleAddPlant={handleAddPlant}
+              />
+              <SeedModal 
+                seeds={allSeedFromPlant} 
+                open={openSeed} 
+                onClose={() => setOpenSeed(false)} 
+                selectedSeed={selectedSeed}
+                setSelectedSeed={setSelectedSeed}
+                handleAddSeed={handleAddSeed}
               />
             </Col>
           </Row>

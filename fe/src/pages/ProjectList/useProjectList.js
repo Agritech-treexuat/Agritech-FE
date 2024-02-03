@@ -2,8 +2,9 @@ import { useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import PROJECT from '../../services/projectService'
 import PLANT from '../../services/plantService'
+import SEED from '../../services/seedService'
 
-export default function useProjectList() {
+export default function useProjectList({ plantId }) {
   const farmId = localStorage.getItem('id')
   console.log('farm id: ', farmId)
 
@@ -23,7 +24,7 @@ export default function useProjectList() {
     }
   }, [])
 
-  const { data, isSuccess, isLoading } = useQuery({
+  const { data, isSuccess, isLoading, refetch } = useQuery({
     queryKey: ['projects', farmId],
     queryFn: () => PROJECT.getProjects(farmId),
     staleTime: 20 * 1000,
@@ -36,7 +37,8 @@ export default function useProjectList() {
       return {
         id: item?._id,
         name: item?.plant_name,
-        image: item?.plant_thumb
+        image: item?.plant_thumb,
+        type: item?.plant_type
       }
     })
 
@@ -45,7 +47,11 @@ export default function useProjectList() {
     }
   }, [])
 
-  const { data: dataAllPlantInFarm, isSuccess: isSuccessAllPlantsInFarm, isLoading: isLoadingAllPlantsInFarm } = useQuery({
+  const {
+    data: dataAllPlantInFarm,
+    isSuccess: isSuccessAllPlantsInFarm,
+    isLoading: isLoadingAllPlantsInFarm
+  } = useQuery({
     queryKey: ['allPlant', farmId],
     queryFn: () => PLANT.getPlantFromFarm(farmId),
     staleTime: 20 * 1000,
@@ -53,12 +59,43 @@ export default function useProjectList() {
     enabled: !!farmId
   })
 
+  const parseDataAllSeedFromPlant = useCallback((data) => {
+    const allPlantsInFarm = data.map((item) => {
+      return {
+        id: item?._id,
+        name: item?.seed_name,
+        image: item?.seed_thumb,
+        description: item?.seed_description
+      }
+    })
+
+    return {
+      allPlantsInFarm
+    }
+  }, [])
+
+  const {
+    data: dataAllSeedFromPlant,
+    isSuccess: isSuccessAllSeedFromPlant,
+    isLoading: isLoadingAllSeedFromPlant
+  } = useQuery({
+    queryKey: ['getAllSeedFromPlant', plantId],
+    queryFn: () => SEED.getAllSeedByPlantId(plantId),
+    staleTime: 20 * 1000,
+    select: (data) => parseDataAllSeedFromPlant(data.data.metadata),
+    enabled: !!plantId
+  })
+
   return {
     projects: data?.projects || [],
     isSuccess,
     isLoading,
+    refetch,
     allPlantsInFarm: dataAllPlantInFarm?.allPlantsInFarm || [],
     isSuccessAllPlantsInFarm,
-    isLoadingAllPlantsInFarm
+    isLoadingAllPlantsInFarm,
+    allSeedFromPlant: dataAllSeedFromPlant?.allPlantsInFarm || [],
+    isSuccessAllSeedFromPlant,
+    isLoadingAllSeedFromPlant
   }
 }
