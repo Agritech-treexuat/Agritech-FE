@@ -1,11 +1,12 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Row, Col, Button, Form, Modal, InputNumber, Divider, Tooltip, notification } from 'antd'
 import { EditFilled } from '@ant-design/icons'
 import Loading from '../Loading'
 import { Card } from 'antd'
 import './style.css'
-import SERVICE from '../../services/serviceService'
+import GARDEN_SERVICE_TEMPLATE from '../../services/gardenServiceTemplate'
+import useManageTemplate from './useManageTemplate'
 
 const layout = {
   labelCol: {
@@ -93,7 +94,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
         </Form.Item>
         <Form.Item
           name="rootMax"
-          label="Củ, quả"
+          label="Củ"
           rules={[
             {
               required: true,
@@ -101,7 +102,19 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
             }
           ]}
         >
-          <InputNumber addonAfter="củ/quả" style={{ width: 300 }} />
+          <InputNumber addonAfter="củ" style={{ width: 300 }} />
+        </Form.Item>
+        <Form.Item
+          name="fruitMax"
+          label="Quả"
+          rules={[
+            {
+              required: true,
+              message: 'Trường thông tin này không được để trống!'
+            }
+          ]}
+        >
+          <InputNumber addonAfter="quả" style={{ width: 300 }} />
         </Form.Item>
 
         <Divider>Cam kết</Divider>
@@ -146,7 +159,6 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, template2 }) => {
   )
 }
 const ManageTemplate = () => {
-  const farmId = localStorage.getItem('id')
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
@@ -155,17 +167,17 @@ const ManageTemplate = () => {
       duration: 3.5
     })
   }
-  const [templates, setTemplates] = useState([])
+  const { templates, isSuccess, refetch } = useManageTemplate()
   const [template, setTemplate] = useState(null)
   const [open, setOpen] = useState(false)
   const onCreate = (values, template2) => {
     async function fetchData() {
       if (template2) {
-        const data = await SERVICE.updateServiceTemplate(values, template2._id)
-        setTemplates(data?.data.allServiceTemplates)
+        await GARDEN_SERVICE_TEMPLATE.updateServiceTemplate(values, template2._id)
+        refetch()
       } else {
-        const data = await SERVICE.addServiceTemplate(values)
-        setTemplates(data?.data.allServiceTemplates)
+        await GARDEN_SERVICE_TEMPLATE.addServiceTemplate(values)
+        refetch()
       }
     }
     fetchData()
@@ -173,34 +185,10 @@ const ManageTemplate = () => {
     openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = await SERVICE.getServiceTemplate(farmId)
-      if (data.data.serviceTemplates) {
-        setTemplates(
-          data.data.serviceTemplates.map((serviceTemplate) => {
-            return {
-              _id: serviceTemplate._id,
-              square: serviceTemplate.square,
-              herbMax: serviceTemplate.herbMax,
-              leafyMax: serviceTemplate.leafyMax,
-              rootMax: serviceTemplate.rootMax,
-              expectedOutput: serviceTemplate.expectedOutput,
-              expectDeliveryPerWeek: serviceTemplate.expectDeliveryPerWeek,
-              price: serviceTemplate.price,
-              expectDeliveryAmount: serviceTemplate.expectDeliveryAmount
-            }
-          })
-        )
-      }
-    }
-    fetchData()
-  }, [])
-
   return (
     <div>
       {contextHolder}
-      {templates ? (
+      {isSuccess ? (
         <div>
           <h2 style={{ textAlign: 'left' }}>Template List</h2>
           <Row>
@@ -260,7 +248,8 @@ const ManageTemplate = () => {
                   </div>
                   <p>{temp.leafyMax} Rau ăn lá</p>
                   <p>{temp.herbMax} Rau gia vị</p>
-                  <p>{temp.rootMax} Củ, quả</p>
+                  <p>{temp.rootMax} Củ</p>
+                  <p>{temp.fruitMax} Quả</p>
                   <div className="styleText">
                     <p style={{ fontWeight: '600' }}>SẢN LƯỢNG DỰ KIẾN</p>
                     <p>{temp.expectedOutput} kg/tháng</p>

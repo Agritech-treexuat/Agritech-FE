@@ -1,6 +1,5 @@
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import CreateProject from './pages/CreateProject'
 import ProjectList from './pages/ProjectList'
 import MainLayout from './components/layout/MainLayout'
 import AppLayout from './components/layout/AppLayout'
@@ -31,7 +30,6 @@ const App = () => {
           <Route element={<Auth path={'login'}>{<ManageRequest />}</Auth>} path="manage-request" />
           <Route element={<Auth path={'login'}>{<ManageGarden />}</Auth>} path="manage-planting-garden" />
           <Route element={<Auth path={'/login'}>{<GardenProjectDetail />}</Auth>} path="manage-planting-garden/:id" />
-          <Route element={<Auth path={'/login'}>{<CreateProject />}</Auth>} path="create-project" />
           <Route element={<Auth path={'/login'}>{<ProjectDetail />}</Auth>} path="project/:id" />
           <Route element={<Auth path={'/login'}>{<PlantDetail />}</Auth>} path="plant/:id" />
         </Route>
