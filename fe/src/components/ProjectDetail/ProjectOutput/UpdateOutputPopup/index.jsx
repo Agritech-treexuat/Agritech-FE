@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'antd'
 import UpdateOutputForm from './UpdateOutputForm'
 
-const UpdateOutputPopup = ({ output, disabled, setOutputData }) => {
+const UpdateOutputPopup = ({ output, disabled, refetch, alllDistributer }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
     setIsModalOpen(true)
@@ -26,7 +26,7 @@ const UpdateOutputPopup = ({ output, disabled, setOutputData }) => {
         okText="Submit"
         footer={null}
       >
-        <UpdateOutputForm handleCloseForm={handleOk} output={output} setOutputData={setOutputData} />
+        <UpdateOutputForm handleCloseForm={handleOk} output={output} refetch={refetch} alllDistributer={alllDistributer} />
       </Modal>
     </>
   )

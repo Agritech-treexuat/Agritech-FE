@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'antd'
 import AddOutputForm from './AddOutputForm'
 
-const AddOutputPopup = ({ refetch }) => {
+const AddOutputPopup = ({ refetch, alllDistributer }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
     setIsModalOpen(true)
@@ -19,7 +19,7 @@ const AddOutputPopup = ({ refetch }) => {
         Thêm đầu ra
       </Button>
       <Modal title="Thêm đầu ra" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
-        <AddOutputForm handleCloseForm={handleOk} refetch={refetch} />
+        <AddOutputForm handleCloseForm={handleOk} refetch={refetch} alllDistributer={alllDistributer} />
       </Modal>
     </>
   )

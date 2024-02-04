@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import PROJECT from '../../../services/projectService'
+import DISTRIBUTER from '../../../services/distributerService'
 
 export default function useProjectOutput({ projectId }) {
   const parseData = useCallback((data) => {
@@ -27,10 +28,37 @@ export default function useProjectOutput({ projectId }) {
     enabled: !!projectId
   })
 
+  const parseDataDistributer = useCallback((data) => {
+    const allDistributer = data.map((item) => ({
+      id: item?._id,
+      name: item?.name,
+      email: item?.email,
+      status: item?.status,
+      description: item?.description,
+      images: item?.images,
+      address: item?.address
+    }))
+    return { allDistributer }
+  }, [])
+
+  const {
+    data: dataDistributer,
+    isSuccess: isSucessDistributer,
+    isLoading: isLoadingDistributer
+  } = useQuery({
+    queryKey: ['getAllDistributer'],
+    queryFn: () => DISTRIBUTER.getAllDistributer(),
+    staleTime: 20 * 1000,
+    select: (data) => parseDataDistributer(data?.data?.metadata)
+  })
+
   return {
     outputData: data?.output,
     isSuccess,
     isLoading,
-    refetch
+    refetch,
+    alllDistributer: dataDistributer?.allDistributer,
+    isSucessDistributer,
+    isLoadingDistributer
   }
 }

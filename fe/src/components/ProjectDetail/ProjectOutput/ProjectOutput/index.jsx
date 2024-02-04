@@ -13,7 +13,9 @@ const { Column } = Table
 
 const ProjectOutput = () => {
   const params = useParams()
-  const { outputData, isSuccess, refetch } = useProjectOutput({ projectId: params.id })
+  const { outputData, isSuccess, refetch, alllDistributer, isSucessDistributer } = useProjectOutput({
+    projectId: params.id
+  })
   console.log('outputdata: ', outputData)
   const handleQR = (output) => {
     handleExportQR(params.id, output._id)
@@ -42,9 +44,9 @@ const ProjectOutput = () => {
 
   return (
     <div>
-      {isSuccess ? (
+      {isSuccess && isSucessDistributer ? (
         <>
-          <AddOutputPopup refetch={refetch} />
+          <AddOutputPopup refetch={refetch} alllDistributer={alllDistributer} />
           <Table dataSource={outputData}>
             <Column title="Tx" dataIndex="tx" key="tx" />
             <Column title="Thời gian" key="time" render={(_, output) => <p>{formatDate(output.time)}</p>} />
@@ -94,7 +96,12 @@ const ProjectOutput = () => {
               key="action"
               render={(_, output) => (
                 <Space size="middle">
-                  <UpdateOutputPopup output={output} disabled={output.exportQR} refetch={refetch} />
+                  <UpdateOutputPopup
+                    output={output}
+                    disabled={output.exportQR}
+                    refetch={refetch}
+                    alllDistributer={alllDistributer}
+                  />
                   <> {output.isEdited ? <EditOutputHistory output={output} /> : <></>}</>
                   <Button type="primary" onClick={() => handleQR(output)} disabled={output.exportQR}>
                     Xuất QR

@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, Upload, Space } from 'antd'
+import { Button, Form, Input, InputNumber, Upload, Space, Select } from 'antd'
 import { useRef } from 'react'
 import './style.css'
 import { UploadOutlined } from '@ant-design/icons'
@@ -30,7 +30,7 @@ const normFile = (e) => {
   return e?.fileList
 }
 
-const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
+const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer }) => {
   const today = new Date()
   const year = today.getFullYear()
   const month = (today.getMonth() + 1).toString().padStart(2, '0')
@@ -39,6 +39,13 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
   const currentDate = `${year}-${month}-${date}`
   const formRef = useRef(null)
   const params = useParams()
+
+  const onSearch = (value) => {
+    console.log('search:', value)
+  }
+
+  // Filter `option.label` match the user type `input`
+  const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
 
   const onFinish = (values) => {
     const images = values.upload ? values.upload.map((upload) => upload.name) : []
@@ -62,8 +69,8 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
 
   const handleSubmitOutput = async (data, projectId) => {
     try {
-      const res = await FARM.addOutput(data, projectId)
-      setOutputData(res.data.updatedProjectOutput)
+      await FARM.addOutput(data, projectId)
+      refetch()
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)
@@ -164,7 +171,17 @@ const AddOutputForm = ({ handleCloseForm, setOutputData }) => {
                     }
                   ]}
                 >
-                  <Input placeholder="NPP Name" />
+                  <Select
+                    showSearch
+                    placeholder="Select a person"
+                    optionFilterProp="children"
+                    onSearch={onSearch}
+                    filterOption={filterOption}
+                    options={alllDistributer.map((distributer) => ({
+                      value: distributer.id,
+                      label: distributer.name
+                    }))}
+                  />
                 </Form.Item>
                 <Form.Item
                   {...restField}

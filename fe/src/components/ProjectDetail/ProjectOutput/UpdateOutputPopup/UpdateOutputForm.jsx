@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Input, InputNumber, Upload, Space } from 'antd'
+import { Button, Form, Input, InputNumber, Upload, Space, Select } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import { UploadOutlined } from '@ant-design/icons'
 import FARM from '../../../../services/farmService'
@@ -28,7 +28,7 @@ const normFile = (e) => {
   return e?.fileList
 }
 
-const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
+const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer }) => {
   const params = useParams()
   const dateObj = new Date(output.time)
 
@@ -46,6 +46,13 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
     npp: output.npp
   }
 
+  const onSearch = (value) => {
+    console.log('search:', value)
+  }
+
+  // Filter `option.label` match the user type `input`
+  const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+  
   const onFinish = (values) => {
     const images = values.upload.map((item) => (typeof item === 'string' ? item : item.name))
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
@@ -56,6 +63,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
       tx: 'b',
       ...updatedValue
     }
+
     const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0)
     if (values.amount >= totalNppAmount) {
       handleSubmitOutput(data, params.id, output._id)
@@ -66,8 +74,8 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
 
   const handleSubmitOutput = async (data, projectId, outputId) => {
     try {
-      const res = await FARM.editOutput(data, projectId, outputId)
-      setOutputData(res.data.updatedOutput)
+      await FARM.editOutput(data, projectId, outputId)
+      refetch()
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)
@@ -150,7 +158,17 @@ const UpdateOutputForm = ({ handleCloseForm, output, setOutputData }) => {
                     }
                   ]}
                 >
-                  <Input placeholder="NPP Name" />
+                  <Select
+                    showSearch
+                    placeholder="Select a person"
+                    optionFilterProp="children"
+                    onSearch={onSearch}
+                    filterOption={filterOption}
+                    options={alllDistributer.map((distributer) => ({
+                      value: distributer.id,
+                      label: distributer.name
+                    }))}
+                  />
                 </Form.Item>
                 <Form.Item
                   {...restField}
