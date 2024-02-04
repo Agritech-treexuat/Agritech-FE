@@ -15,11 +15,10 @@ const GARDEN_SERVICE_REQUEST = {
       })
   },
 
-  updateGardenServiceRequestStatus: async (data, serviceRequestId) => {
+  updateGardenServiceRequestStatus: async ({ status, serviceRequestId }) => {
     return await privateHttp({
       method: 'PATCH',
-      url: `serviceRequest/update/${serviceRequestId}`,
-      data
+      url: `gardenServiceRequest/${serviceRequestId}/${status}`
     })
       .then((res) => {
         return res

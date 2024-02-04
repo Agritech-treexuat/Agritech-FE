@@ -5,7 +5,7 @@ import { EyeOutlined, CaretRightOutlined } from '@ant-design/icons'
 import Loading from '../Loading'
 import { Card } from 'antd'
 import './style.css'
-import SERVICE from '../../services/serviceService'
+import GARDEN_SERVICE_REQUEST from '../../services/gardenServiceRequest'
 import { formatDateTime } from '../../utils/helpers'
 import useManageRequest from './useManageRequest'
 
@@ -45,10 +45,11 @@ const ManageRequest = () => {
 
   const handleOk = () => {
     async function fetchData() {
-      const data = await SERVICE.updateServiceRequestStatus({ status: 'accepted' }, reqDetail._id)
-      if (data.data.serviceRequest) {
-        refetch()
-      }
+      await GARDEN_SERVICE_REQUEST.updateGardenServiceRequestStatus({
+        status: 'accept',
+        serviceRequestId: reqDetail._id
+      })
+      refetch()
     }
     fetchData()
     setIsModalOpen(false)
@@ -61,10 +62,12 @@ const ManageRequest = () => {
 
   const handleReject = () => {
     async function fetchData() {
-      const data = await SERVICE.updateServiceRequestStatus({ status: 'rejected' }, reqDetail._id)
-      if (data.data.serviceRequest) {
-        refetch()
-      }
+      await GARDEN_SERVICE_REQUEST.updateGardenServiceRequestStatus({
+        status: 'reject',
+        serviceRequestId: reqDetail._id
+      })
+
+      refetch()
     }
     fetchData()
     setIsModalOpen(false)
