@@ -5,7 +5,7 @@ const GARDEN = {
   getGardens: async (farmId) => {
     return await publicHttp({
       method: 'GET',
-      url: `garden/${farmId}`
+      url: `garden/farm/${farmId}`
     })
       .then((res) => {
         return res
