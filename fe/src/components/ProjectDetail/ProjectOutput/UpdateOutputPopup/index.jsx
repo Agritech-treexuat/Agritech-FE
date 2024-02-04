@@ -26,7 +26,12 @@ const UpdateOutputPopup = ({ output, disabled, refetch, alllDistributer }) => {
         okText="Submit"
         footer={null}
       >
-        <UpdateOutputForm handleCloseForm={handleOk} output={output} refetch={refetch} alllDistributer={alllDistributer} />
+        <UpdateOutputForm
+          handleCloseForm={handleOk}
+          output={output}
+          refetch={refetch}
+          alllDistributer={alllDistributer}
+        />
       </Modal>
     </>
   )

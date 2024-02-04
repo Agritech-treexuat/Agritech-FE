@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Row, Col, Input, Button, DatePicker, Flex, Modal, Divider, Tooltip, notification, Collapse, theme } from 'antd'
 import { EyeOutlined, CaretRightOutlined } from '@ant-design/icons'
 import Loading from '../Loading'
@@ -7,9 +7,9 @@ import { Card } from 'antd'
 import './style.css'
 import SERVICE from '../../services/serviceService'
 import { formatDateTime } from '../../utils/helpers'
+import useManageRequest from './useManageRequest'
 
 const ManageRequest = () => {
-  const farmId = localStorage.getItem('id')
   const { token } = theme.useToken()
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
@@ -25,7 +25,8 @@ const ManageRequest = () => {
     borderRadius: token.borderRadiusLG,
     border: 'none'
   }
-  const [requests, setRequests] = useState([])
+
+  const { requests, isSuccess, refetch } = useManageRequest({ status: 'waiting' })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [reqDetail, setReqDetail] = useState({
     _id: '',
@@ -46,7 +47,7 @@ const ManageRequest = () => {
     async function fetchData() {
       const data = await SERVICE.updateServiceRequestStatus({ status: 'accepted' }, reqDetail._id)
       if (data.data.serviceRequest) {
-        setRequests(requests.filter((req) => req._id !== data.data.serviceRequest._id))
+        refetch()
       }
     }
     fetchData()
@@ -62,7 +63,7 @@ const ManageRequest = () => {
     async function fetchData() {
       const data = await SERVICE.updateServiceRequestStatus({ status: 'rejected' }, reqDetail._id)
       if (data.data.serviceRequest) {
-        setRequests(requests.filter((req) => req._id !== data.data.serviceRequest._id))
+        refetch()
       }
     }
     fetchData()
@@ -81,17 +82,13 @@ const ManageRequest = () => {
           {reqDetail.leafyMax ? (
             <>
               <p>{reqDetail.leafyMax} Rau ăn lá</p>
-              {reqDetail.leafyList.map((leafy) => (
-                <p>{leafy.name}</p>
-              ))}
+              {reqDetail.leafyList ? reqDetail.leafyList.map((leafy) => <p>{leafy.name}</p>) : <p>Không có</p>}
               <p>{reqDetail.herbMax} Rau gia vị</p>
-              {reqDetail.herbList.map((herb) => (
-                <p>{herb.name}</p>
-              ))}
-              <p>{reqDetail.rootMax} Củ, quả</p>
-              {reqDetail.rootList.map((root) => (
-                <p>{root.name}</p>
-              ))}
+              {reqDetail.herbList ? reqDetail.herbList.map((herb) => <p>{herb.name}</p>) : <p>Không có</p>}
+              <p>{reqDetail.rootMax} Củ</p>
+              {reqDetail.rootList ? reqDetail.rootList.map((root) => <p>{root.name}</p>) : <p>Không có</p>}
+              <p>{reqDetail.rootMax} Quả</p>
+              {reqDetail.fruitList ? reqDetail.fruitList.map((fruit) => <p>{fruit.name}</p>) : <p>Không có</p>}
               <div className="styleText">
                 <p style={{ fontWeight: '600' }}>SẢN LƯỢNG DỰ KIẾN</p>
                 <p>{reqDetail.expectedOutput} kg/tháng</p>
@@ -117,20 +114,10 @@ const ManageRequest = () => {
     console.log(date, dateString)
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      const data = await SERVICE.getServiceRequest(farmId, 'waiting')
-      if (data.data.requestsAllInformation) {
-        setRequests(data.data.requestsAllInformation)
-      }
-    }
-    fetchData()
-  }, [])
-
   return (
     <div>
       {contextHolder}
-      {requests ? (
+      {isSuccess ? (
         <div>
           <h2 style={{ textAlign: 'left' }}>Quản lý cầu của khách hàng</h2>
           {/* Sreach request */}

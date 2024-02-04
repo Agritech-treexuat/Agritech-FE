@@ -21,7 +21,7 @@ export default function useManageTemplate() {
   }, [])
 
   const { data, isSuccess, isLoading, refetch } = useQuery({
-    queryKey: ['projectOutput', farmId],
+    queryKey: ['getServiceTemplate', farmId],
     queryFn: () => GARDEN_SERVICE_TEMPLATE.getServiceTemplate(farmId),
     staleTime: 20 * 1000,
     select: (data) => parseData(data?.data?.metadata),

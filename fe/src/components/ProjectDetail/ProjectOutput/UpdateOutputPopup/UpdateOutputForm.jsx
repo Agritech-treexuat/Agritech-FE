@@ -52,7 +52,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer })
 
   // Filter `option.label` match the user type `input`
   const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-  
+
   const onFinish = (values) => {
     const images = values.upload.map((item) => (typeof item === 'string' ? item : item.name))
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
