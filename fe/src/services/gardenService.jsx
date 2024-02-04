@@ -29,10 +29,10 @@ const GARDEN = {
       })
   },
 
-  getGardenByGardenId: async (farmId, gardenId) => {
+  getGardenByGardenId: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
-      url: `garden/${farmId}/${gardenId}`
+      url: `garden/${gardenId}`
     })
       .then((res) => {
         return res

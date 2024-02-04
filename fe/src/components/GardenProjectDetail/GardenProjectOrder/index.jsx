@@ -1,30 +1,18 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useParams } from 'react-router'
-import { useEffect } from 'react'
 import { Divider, Alert } from 'antd'
 import Loading from '../../../pages/Loading'
 import { CalendarFilled } from '@ant-design/icons'
-import GARDEN from '../../../services/gardenService'
 import { formatDateTime } from '../../../utils/helpers'
+import useGardenProjectOrder from './useGardenProjectOrder'
 
 const GardenProjectOrder = () => {
-  const [initData, setInitData] = useState(null)
   const gardenId = useParams().id
-  const farmId = localStorage.getItem('id')
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await GARDEN.getGardenByGardenId(farmId, gardenId)
-      if (data.data.garden) {
-        setInitData(data.data.garden)
-      }
-    }
-    fetchData()
-  }, [])
+  const { initData, isSuccess } = useGardenProjectOrder(gardenId)
 
   return (
     <div>
-      {initData ? (
+      {isSuccess ? (
         <div>
           <div>
             <Alert
@@ -83,9 +71,13 @@ const GardenProjectOrder = () => {
               {initData.leafyList.map((leafy) => (
                 <p>{leafy.name}</p>
               ))}
-              <p>{initData.template.rootMax} Củ, quả</p>
+              <p>{initData.template.rootMax} Củ</p>
               {initData.rootList.map((root) => (
                 <p>{root.name}</p>
+              ))}
+              <p>{initData.template.fruitMax} Quả</p>
+              {initData.fruitList.map((fruit) => (
+                <p>{fruit.name}</p>
               ))}
               <div className="styleText">
                 <p style={{ fontWeight: '600' }}>SẢN LƯỢNG DỰ KIẾN</p>
