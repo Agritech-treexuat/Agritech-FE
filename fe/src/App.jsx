@@ -24,7 +24,7 @@ const App = () => {
           <Route element={<LoginPage />} path="/login" />
         </Route>
         <Route path="/" element={<MainLayout />}>
-          <Route index element={<Auth path={'login'}>{<ProjectList />}</Auth>} path="home" />
+          {/* <Route index element={<Auth path={'login'}>{<ProjectList />}</Auth>} path="home" />
           <Route element={<Auth path={'login'}>{<Profile />}</Auth>} path="profile" />
           <Route element={<Auth path={'login'}>{<ManagePlant />}</Auth>} path="manage-plant" />
           <Route element={<Auth path={'login'}>{<ManageTemplate />}</Auth>} path="manage-template" />
@@ -33,7 +33,18 @@ const App = () => {
           <Route element={<Auth path={'/login'}>{<GardenProjectDetail />}</Auth>} path="manage-planting-garden/:id" />
           <Route element={<Auth path={'/login'}>{<CreateProject />}</Auth>} path="create-project" />
           <Route element={<Auth path={'/login'}>{<ProjectDetail />}</Auth>} path="project/:id" />
-          <Route element={<Auth path={'/login'}>{<PlantDetail />}</Auth>} path="plant/:id" />
+          <Route element={<Auth path={'/login'}>{<PlantDetail />}</Auth>} path="plant/:id" /> */}
+
+          <Route index element={<ProjectList />} path="home" />
+          <Route element={<Profile />} path="profile" />
+          <Route element={<ManagePlant />} path="manage-plant" />
+          <Route element={<ManageTemplate />} path="manage-template" />
+          <Route element={<ManageRequest />} path="manage-request" />
+          <Route element={<ManageGarden />} path="manage-planting-garden" />
+          <Route element={<GardenProjectDetail />} path="manage-planting-garden/:id" />
+          <Route element={<CreateProject />} path="create-project" />
+          <Route element={<ProjectDetail />} path="project/:id" />
+          <Route element={<PlantDetail />} path="plant/:id" />
         </Route>
       </Routes>
     </div>

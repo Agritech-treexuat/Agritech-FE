@@ -7,6 +7,7 @@ import { Card } from 'antd'
 import { AddPlantPopup } from '../../components'
 import PLANT from '../../services/plantService'
 import useManagePlant from './useManagePlant'
+import AddTemplatePopup from '../../components/ManagePlant/AddTemplatePopup'
 
 const { Meta } = Card
 const ManagePlant = () => {
@@ -25,6 +26,10 @@ const ManagePlant = () => {
     handleSubmitPlant(recommentPlantId)
   }
 
+  const onCreateAddTemplatePopup = (values) => {
+    
+  }
+
   const handleSubmitPlant = async (recommentPlantId) => {
     try {
       const res = await PLANT.addPlantByRecommendPlantId(recommentPlantId)
@@ -41,6 +46,21 @@ const ManagePlant = () => {
 
   return (
     <>
+      <AddTemplatePopup
+        open={open}
+        onCreate={onCreateAddTemplatePopup}
+        onCancel={() => {
+          setOpen(false)
+        }}
+      />
+      <Button
+        type="primary"
+        onClick={() => {
+        setOpen(true)
+        }}
+        >
+        Thêm template
+      </Button>
       {isLoading && isLoading_2 && <Loading />}
       {
         <div>
