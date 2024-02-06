@@ -26,6 +26,22 @@ const SEED = {
       .catch((err) => {
         return err
       })
+  },
+
+  addSeedByRecommendSeedId: async ({ recommendSeedId, isSeedDefault }) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/seed/add/${recommendSeedId}`,
+      data: {
+        isSeedDefault
+      }
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 }
 

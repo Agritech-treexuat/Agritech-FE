@@ -41,11 +41,10 @@ const PLANT = {
       })
   },
 
-  addPlant: async (data) => {
-    return await privateHttp({
-      method: 'POST',
-      url: `/farm/plant`,
-      data
+  getDefautlPlant: async (plantId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plant/default/${plantId}`
     })
       .then((res) => {
         return res
@@ -54,6 +53,20 @@ const PLANT = {
         return err
       })
   },
+
+  // addPlant: async (data) => {
+  //   return await privateHttp({
+  //     method: 'POST',
+  //     url: `/plant`,
+  //     data
+  //   })
+  //     .then((res) => {
+  //       return res
+  //     })
+  //     .catch((err) => {
+  //       return err
+  //     })
+  // },
 
   addPlantByRecommendPlantId: async (recommentPlantId) => {
     return await privateHttp({

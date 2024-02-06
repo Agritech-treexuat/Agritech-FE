@@ -1,10 +1,9 @@
 import { useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import PLANT from '../../services/plantService'
-import SEED from '../../services/seedService'
 import PLANT_FARMING from '../../services/plantFarmingService'
 
-export default function usePlantDetail(plantId, seedId, isUseDefault) {
+export default function usePlantDetail({ plantId, seedId, isDefaultPlantFarming }) {
   const parseDataPlans = useCallback((data) => {
     const plans = data.map((plan) => ({
       _id: plan._id,
@@ -34,31 +33,14 @@ export default function usePlantDetail(plantId, seedId, isUseDefault) {
     enabled: !!plantId
   })
 
-  const parseDataAllSeedByPlant = useCallback((data) => {
-    const allSeedByPlant = data.map((seed) => ({
-      id: seed._id,
-      name: seed.seed_name
-    }))
-    return { allSeedByPlant }
-  }, [])
-
-  const {
-    data: dataAllSeedByPlant,
-    isSuccess: isSuccessAllSeedByPlant,
-    isLoading: isLoadingAllSeedByPlant
-  } = useQuery({
-    queryKey: ['getAllSeedByPlantId', plantId],
-    queryFn: () => SEED.getAllSeedByPlantId(plantId),
-    staleTime: 20 * 1000,
-    select: (data) => parseDataAllSeedByPlant(data.data.metadata),
-    enabled: !!plantId
-  })
-
   const parseDataCurrentPlant = useCallback((data) => {
     const currentPlant = {
       name: data.plant_name
     }
-    return { currentPlant }
+
+    return {
+      currentPlant
+    }
   }, [])
 
   const {
@@ -73,21 +55,62 @@ export default function usePlantDetail(plantId, seedId, isUseDefault) {
     enabled: !!plantId
   })
 
-  const parseDataDefaultTemplate = useCallback((data) => {
-    const defaultTemplate = data[0]
-    return { defaultTemplate }
+  const parseDataRecommendPlantFarming = useCallback((data) => {
+    const recommendPlantFarmingDefault = data.filter((plantFarming) => plantFarming.isPlantFarmingDefault === true)
+    let recommendPlantFarmingTmp = {}
+    if (recommendPlantFarmingDefault) {
+      recommendPlantFarmingTmp = recommendPlantFarmingDefault[0]
+    } else {
+      recommendPlantFarmingTmp = data[0]
+    }
+    if (recommendPlantFarmingDefault)
+      return {
+        recommendPlantFarming: {
+          timeCultivates: recommendPlantFarmingTmp?.timeCultivates,
+          cultivationActivities: recommendPlantFarmingTmp?.cultivationActivities,
+          plantingActivity: recommendPlantFarmingTmp?.plantingActivity,
+          fertilizationActivities: recommendPlantFarmingTmp?.fertilizationActivities,
+          pestAndDiseaseControlActivities: recommendPlantFarmingTmp?.pestAndDiseaseControlActivities,
+          bestTimeCultivate: recommendPlantFarmingTmp?.bestTimeCultivate,
+          farmingTime: recommendPlantFarmingTmp?.farmingTime,
+          harvestTime: recommendPlantFarmingTmp?.harvestTime
+        }
+      }
   }, [])
 
   const {
-    data: dataDefaultTemplate,
-    isSuccess: isSuccessDefaultTemplate,
-    isLoading: isLoadingDefaultTemplate
+    data: dataRecommendPlantFarming,
+    isSuccess: isSuccessRecommendPlantFarming,
+    isLoading: isLoadingRecommendPlantFarming
   } = useQuery({
     queryKey: ['getPlanFromSeed', seedId],
     queryFn: () => PLANT_FARMING.getPlantFarmingFromSeed(seedId),
     staleTime: 20 * 1000,
-    select: (data) => parseDataDefaultTemplate(data.data.metadata),
-    enabled: !!seedId && !!isUseDefault
+    select: (data) => parseDataRecommendPlantFarming(data.data.metadata),
+    enabled: !!seedId && !!isDefaultPlantFarming
+  })
+
+  const parseDataDefaultPlant = useCallback((data) => {
+    const defaultPlant = {
+      id: data._id,
+      name: data.plant_name
+    }
+
+    return {
+      defaultPlant
+    }
+  }, [])
+
+  const {
+    data: dataDefaultPlant,
+    isSuccess: isSuccessDefaultPlant,
+    isLoading: isLoadingDefaultPlant
+  } = useQuery({
+    queryKey: ['defaultPlant'],
+    queryFn: () => PLANT.getDefautlPlant(plantId),
+    staleTime: 20 * 1000,
+    select: (data) => parseDataDefaultPlant(data.data.metadata),
+    enabled: !!plantId
   })
 
   return {
@@ -95,14 +118,14 @@ export default function usePlantDetail(plantId, seedId, isUseDefault) {
     isSuccessPlans,
     isLoadingPlans,
     refetchPlans,
-    allSeedByPlant: dataAllSeedByPlant?.allSeedByPlant,
-    isSuccessAllSeedByPlant,
-    isLoadingAllSeedByPlant,
     currentPlant: dataCurrentPlant?.currentPlant,
     isSuccessCurrentPlant,
     isLoadingCurrentPlant,
-    defaultTemplate: dataDefaultTemplate?.defaultTemplate,
-    isSuccessDefaultTemplate,
-    isLoadingDefaultTemplate
+    recommendPlantFarming: dataRecommendPlantFarming?.recommendPlantFarming,
+    isSuccessRecommendPlantFarming,
+    isLoadingRecommendPlantFarming,
+    defaultPlant: dataDefaultPlant?.defaultPlant,
+    isSuccessDefaultPlant,
+    isLoadingDefaultPlant
   }
 }

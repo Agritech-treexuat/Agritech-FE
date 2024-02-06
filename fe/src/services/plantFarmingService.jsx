@@ -26,6 +26,47 @@ const PLANT_FARMING = {
       .catch((err) => {
         return err
       })
+  },
+
+  getRecommendPlantFarmingFromPlantNameAndSeedName: async (plantName, seedName) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/plantFarming/recommend/${plantName}?seedName=${seedName}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  addPlantFarming: async (data) => {
+    return await privateHttp({
+      method: 'POST',
+      url: '/plantFarming',
+      data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  addPlantFarmingWithRecommendPlantIdAndSeedId: async ({ plantId, seedId, data }) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/plantFarming/add/${plantId}/${seedId}`,
+      data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 }
 
