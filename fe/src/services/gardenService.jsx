@@ -42,10 +42,11 @@ const GARDEN = {
       })
   },
 
-  getPlantCurrentGarden: async (gardenId) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `plantCurrentInGarden/${gardenId}`
+  addNewProjectToGarden: async (data, gardenId) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `garden/${gardenId}/addNewProject`,
+      data
     })
       .then((res) => {
         return res
@@ -58,7 +59,21 @@ const GARDEN = {
   getGardenInput: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
-      url: `projects/${gardenId}`
+      url: `garden/${gardenId}/projects`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  // not use
+  getPlantCurrentGarden: async (gardenId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `plantCurrentInGarden/${gardenId}`
     })
       .then((res) => {
         return res

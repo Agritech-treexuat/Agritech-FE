@@ -14,7 +14,7 @@ const ProjectList = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPlant, setSelectedPlant] = useState(null)
   const [selectedSeed, setSelectedSeed] = useState(null)
-  const { projects, isSuccess, refetch, allPlantsInFarm, isSuccessAllPlantsInFarm, allSeedFromPlant } = useProjectList({
+  const { projects, isSuccess, refetch } = useProjectList({
     plantId: selectedPlant?.id
   })
   const [open, setOpen] = useState(false)
@@ -31,7 +31,6 @@ const ProjectList = () => {
     setSelectedPlant(plant)
     console.log(plant)
     setOpen(false)
-    console.log('allSeedFromPlant', allSeedFromPlant)
     setOpenSeed(true)
   }
 
@@ -64,7 +63,7 @@ const ProjectList = () => {
 
   return (
     <div>
-      {isSuccess && isSuccessAllPlantsInFarm ? (
+      {isSuccess ? (
         <div>
           <h1>Danh sách các dự án</h1>
           <Row>
@@ -83,7 +82,6 @@ const ProjectList = () => {
                 </Button>
               </Flex>
               <PlantModal
-                allPlantsInFarm={allPlantsInFarm}
                 open={open}
                 onClose={() => setOpen(false)}
                 selectedPlant={selectedPlant}
@@ -91,7 +89,7 @@ const ProjectList = () => {
                 handleAddPlant={handleAddPlant}
               />
               <SeedModal
-                seeds={allSeedFromPlant}
+                selectedPlant={selectedPlant}
                 open={openSeed}
                 onClose={() => setOpenSeed(false)}
                 selectedSeed={selectedSeed}

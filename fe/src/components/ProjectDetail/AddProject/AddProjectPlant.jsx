@@ -1,10 +1,15 @@
 import React, { useState } from 'react'
 import { Modal, Input, Button, Card, Space, Row, Col } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
+import useAddProject from './useAddProject'
+import Loading from '../../../pages/Loading'
 
-const PlantModal = ({ allPlantsInFarm, open, onClose, selectedPlant, setSelectedPlant, handleAddPlant }) => {
+const PlantModal = ({ open, onClose, selectedPlant, setSelectedPlant, handleAddPlant }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedType, setSelectedType] = useState(null)
+  const { allPlantsInFarm, isSuccessAllPlantsInFarm } = useAddProject({
+    plantId: selectedPlant?.id
+  })
 
   const handleSearch = (value) => {
     setSearchTerm(value)
@@ -20,7 +25,7 @@ const PlantModal = ({ allPlantsInFarm, open, onClose, selectedPlant, setSelected
       (selectedType === null || plant.type === selectedType)
   )
 
-  return (
+  return isSuccessAllPlantsInFarm ? (
     <Modal
       open={open}
       title="Chọn cây"
@@ -70,6 +75,8 @@ const PlantModal = ({ allPlantsInFarm, open, onClose, selectedPlant, setSelected
         ))}
       </Row>
     </Modal>
+  ) : (
+    <Loading />
   )
 }
 

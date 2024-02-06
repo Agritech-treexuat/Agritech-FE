@@ -1,25 +1,28 @@
 import React, { useState } from 'react'
 import { Modal, Input, Button, Card, Row, Col } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
+import useAddProject from './useAddProject'
 
-const SeedModal = ({ seeds, open, onClose, selectedSeed, setSelectedSeed, handleAddSeed }) => {
+const SeedModal = ({ selectedPlant, open, onClose, selectedSeed, setSelectedSeed, handleAddSeed, isAddSeed }) => {
   const [searchTerm, setSearchTerm] = useState('')
-
+  const { allSeedFromPlant, isSuccessAllSeedFromPlant } = useAddProject({
+    plantId: selectedPlant?.id
+  })
   const handleSearch = (value) => {
     setSearchTerm(value)
   }
 
-  const filteredSeeds = seeds.filter(
+  const filteredSeeds = allSeedFromPlant.filter(
     (seed) =>
       searchTerm === '' ||
       seed.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       seed.description.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  return (
+  return isSuccessAllSeedFromPlant ? (
     <Modal
       open={open}
-      title="Chọn hạt giống"
+      title={isAddSeed ? 'Chọn hạt giống' : 'Chỉnh sửa hạt giống'}
       onCancel={onClose}
       width={1000}
       footer={[
@@ -27,7 +30,7 @@ const SeedModal = ({ seeds, open, onClose, selectedSeed, setSelectedSeed, handle
           Hủy
         </Button>,
         <Button key="add" type="primary" disabled={!selectedSeed} onClick={handleAddSeed}>
-          Thêm
+          {isAddSeed ? 'Thêm' : 'Cập nhật'}
         </Button>
       ]}
     >
@@ -54,6 +57,8 @@ const SeedModal = ({ seeds, open, onClose, selectedSeed, setSelectedSeed, handle
         ))}
       </Row>
     </Modal>
+  ) : (
+    <></>
   )
 }
 
