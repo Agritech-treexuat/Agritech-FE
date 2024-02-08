@@ -2,15 +2,15 @@ import React from 'react'
 import { Modal, InputNumber, Input, Space, Form, Button, Row, Col, Select, Divider } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 
-const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming }) => {
+const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming, isUpdate }) => {
   const [form] = Form.useForm()
   console.log('recommendPlantFarming', recommendPlantFarming)
 
   return (
     <Modal
       open={open}
-      title="Thêm quy trình mới"
-      okText="Thêm"
+      title={isUpdate ? 'Cập nhật quy trình trồng' : 'Thêm quy trình trồng'}
+      okText={isUpdate ? 'Cập nhật' : 'Thêm'}
       cancelText="Hủy"
       width={1500}
       onCancel={onCancel}

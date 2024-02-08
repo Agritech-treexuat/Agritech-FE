@@ -83,6 +83,19 @@ const PlantDetail = () => {
     setOpenPlantFarming(true)
   }
 
+  const handleUpdatePlantFarming = async (values) => {
+    try {
+      await PLANT_FARMING.updatePlantFarming({
+        plantFarmingId: selectedPlantFarmming._id,
+        data: values
+      })
+      refetchPlans()
+      setOpenUpdatePlantFarming(false)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <div>
       {isSuccessPlans && isSuccessCurrentPlant && isSuccessDefaultPlant ? (
@@ -146,6 +159,7 @@ const PlantDetail = () => {
                 onCancel={() => setOpenPlantFarming(false)}
                 onCreate={onCreate}
                 recommendPlantFarming={null}
+                isUpdate={false}
               />
             </>
           )}
@@ -166,10 +180,9 @@ const PlantDetail = () => {
                   <AddPlantFarmingPopup
                     open={openUpdatePlantFarming}
                     onCancel={() => setOpenUpdatePlantFarming(false)}
-                    onCreate={(values) => {
-                      console.log('values', values)
-                    }}
+                    onCreate={handleUpdatePlantFarming}
                     recommendPlantFarming={item}
+                    isUpdate={true}
                   />
                   <div>
                     {/* time cultivates: [{ start, end }] */}

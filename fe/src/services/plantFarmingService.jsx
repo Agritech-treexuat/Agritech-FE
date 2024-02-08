@@ -67,6 +67,20 @@ const PLANT_FARMING = {
       .catch((err) => {
         return err
       })
+  },
+
+  updatePlantFarming: async ({ plantFarmingId, data }) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `/plantFarming/${plantFarmingId}`,
+      data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 }
 
