@@ -1,6 +1,7 @@
 import React from 'react'
 import { Tabs } from 'antd'
-import { ProjectOutput, ProjectProcess, ProjectInput, ProjectExpect, ProjectTemplate } from '../../components'
+import { ProjectOutput, ProjectProcess, ProjectInput, ProjectExpect } from '../../components'
+import ProjectFarming from '../../components/ProjectDetail/ProjectPlantFarming'
 
 const ProjectDetail = () => {
   const items = [
@@ -12,7 +13,7 @@ const ProjectDetail = () => {
     {
       key: '2',
       label: 'Quy trình canh tác',
-      children: <ProjectTemplate />
+      children: <ProjectFarming />
     },
     {
       key: '3',

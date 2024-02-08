@@ -63,19 +63,18 @@ export default function usePlantDetail({ plantId, seedId, isDefaultPlantFarming 
     } else {
       recommendPlantFarmingTmp = data[0]
     }
-    if (recommendPlantFarmingDefault)
-      return {
-        recommendPlantFarming: {
-          timeCultivates: recommendPlantFarmingTmp?.timeCultivates,
-          cultivationActivities: recommendPlantFarmingTmp?.cultivationActivities,
-          plantingActivity: recommendPlantFarmingTmp?.plantingActivity,
-          fertilizationActivities: recommendPlantFarmingTmp?.fertilizationActivities,
-          pestAndDiseaseControlActivities: recommendPlantFarmingTmp?.pestAndDiseaseControlActivities,
-          bestTimeCultivate: recommendPlantFarmingTmp?.bestTimeCultivate,
-          farmingTime: recommendPlantFarmingTmp?.farmingTime,
-          harvestTime: recommendPlantFarmingTmp?.harvestTime
-        }
+    return {
+      recommendPlantFarming: {
+        timeCultivates: recommendPlantFarmingTmp?.timeCultivates,
+        cultivationActivities: recommendPlantFarmingTmp?.cultivationActivities,
+        plantingActivity: recommendPlantFarmingTmp?.plantingActivity,
+        fertilizationActivities: recommendPlantFarmingTmp?.fertilizationActivities,
+        pestAndDiseaseControlActivities: recommendPlantFarmingTmp?.pestAndDiseaseControlActivities,
+        bestTimeCultivate: recommendPlantFarmingTmp?.bestTimeCultivate,
+        farmingTime: recommendPlantFarmingTmp?.farmingTime,
+        harvestTime: recommendPlantFarmingTmp?.harvestTime
       }
+    }
   }, [])
 
   const {

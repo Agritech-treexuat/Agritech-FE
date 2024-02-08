@@ -28,7 +28,7 @@ const PLANT_FARMING = {
       })
   },
 
-  getRecommendPlantFarmingFromPlantNameAndSeedName: async (plantName, seedName) => {
+  getRecommendPlantFarmingFromPlantNameAndSeedName: async ({ plantName, seedName }) => {
     return await publicHttp({
       method: 'GET',
       url: `/plantFarming/recommend/${plantName}?seedName=${seedName}`

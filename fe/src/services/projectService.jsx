@@ -28,6 +28,19 @@ const PROJECT = {
       })
   },
 
+  getPlantFarmingFromProject: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/project/${projectId}/plantFarming`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
   editProjectInfo: async (data, projectId) => {
     return await privateHttp({
       method: 'PATCH',
@@ -46,6 +59,20 @@ const PROJECT = {
     return await privateHttp({
       method: 'POST',
       url: `project`,
+      data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  addPlantFarmingToProject: async ({ data, projectId }) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/project/${projectId}/plantFarming`,
       data
     })
       .then((res) => {
