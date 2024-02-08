@@ -15,7 +15,8 @@ const PlantDetail = () => {
   const [search, setSearch] = useState('')
   const plantId = useParams().id
 
-  const [openUpdateTemplate, setOpenUpdateTemplate] = useState(false)
+  const [openUpdatePlantFarming, setOpenUpdatePlantFarming] = useState(false)
+  const [selectedPlantFarmming, setSelectedPlantFarmming] = useState(null)
   const [selectedSeed, setSelectedSeed] = useState(null)
   const [openSeed, setOpenSeed] = useState(false)
   const [isDefaultSeed, setIsDefaultSeed] = useState(false)
@@ -156,22 +157,20 @@ const PlantDetail = () => {
                   <Button
                     type="primary"
                     onClick={() => {
-                      setOpenUpdateTemplate(true)
+                      setSelectedPlantFarmming(item)
+                      setOpenUpdatePlantFarming(true)
                     }}
                   >
                     Chỉnh sửa
                   </Button>
-                  {/* <UpdateTemplatePopup
-                    open={openUpdateTemplate}
-                    onCreate={onUpdateTemplate}
-                    onCancel={() => {
-                      setOpenUpdateTemplate(false)
+                  <AddPlantFarmingPopup
+                    open={openUpdatePlantFarming}
+                    onCancel={() => setOpenUpdatePlantFarming(false)}
+                    onCreate={(values) => {
+                      console.log('values', values)
                     }}
-                    template={item.plan}
-                    fetilizer={fetilizer}
-                    BVTV={BVTV}
-                    plantCultivateId={item._id}
-                  /> */}
+                    recommendPlantFarming={item}
+                  />
                   <div>
                     {/* time cultivates: [{ start, end }] */}
                     <h2> Thoi gian canh tac </h2>
