@@ -155,7 +155,7 @@ const PROJECT = {
   getProcess: async (projectId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/farm/project/${projectId}/process`
+      url: `/project/${projectId}/process`
     })
       .then((res) => {
         return res
