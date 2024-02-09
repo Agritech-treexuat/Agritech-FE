@@ -34,7 +34,7 @@ export default function useProjectProcess({ projectId }) {
     const plantFarming = {
       id: data?._id,
       cultivationActivities: data?.cultivationActivities,
-      plantingActivity: data?.plantingActivity,
+      plantingActivity: [data?.plantingActivity],
       fertilizationActivities: data?.fertilizationActivities,
       pestAndDiseaseControlActivities: data?.pestAndDiseaseControlActivities
     }
