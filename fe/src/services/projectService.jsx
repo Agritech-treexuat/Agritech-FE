@@ -111,10 +111,10 @@ const PROJECT = {
       })
   },
 
-  addProcess: async (data, projectId) => {
+  addProcess: async ({ data, projectId }) => {
     return await privateHttp({
       method: 'POST',
-      url: `/farm/project/addProcess/${projectId}`,
+      url: `/project/${projectId}/process`,
       data
     })
       .then((res) => {
@@ -204,10 +204,10 @@ const PROJECT = {
       })
   },
 
-  editProcess: async (data, projectId, processId) => {
+  updateProcess: async ({ data, projectId, processId }) => {
     return await privateHttp({
-      method: 'POST',
-      url: `/farm/project/editProcess/${projectId}/${processId}`,
+      method: 'PATCH',
+      url: `/project/${projectId}/process/${processId}`,
       data
     })
       .then((res) => {

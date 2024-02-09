@@ -20,6 +20,7 @@
     "assert": "^2.0.0",
     "babel-plugin-macros": "^3.1.0",
     "browserify-zlib": "latest",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.4.1",
     "eslint": "^8.56.0",
     "ethers": "^5",

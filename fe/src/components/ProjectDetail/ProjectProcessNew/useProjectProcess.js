@@ -26,6 +26,33 @@ export default function useProjectProcess({ projectId }) {
     enabled: !!projectId
   })
 
+  const parseDataPlantFarming = useCallback((data) => {
+    if (!data)
+      return {
+        plantFarming: null
+      }
+    const plantFarming = {
+      id: data?._id,
+      cultivationActivities: data?.cultivationActivities,
+      plantingActivity: data?.plantingActivity,
+      fertilizationActivities: data?.fertilizationActivities,
+      pestAndDiseaseControlActivities: data?.pestAndDiseaseControlActivities
+    }
+    return { plantFarming }
+  }, [])
+
+  const {
+    data: dataPlantFarming,
+    isSuccess: isSuccessPlantFarming,
+    isLoading: isLoadingPlantFarming
+  } = useQuery({
+    queryKey: ['getPlantFarmingFromProject', projectId],
+    queryFn: () => PROJECT.getPlantFarmingFromProject(projectId),
+    staleTime: 20 * 1000,
+    select: (data) => parseDataPlantFarming(data?.data?.metadata),
+    enabled: !!projectId
+  })
+
   return {
     cultivation: data?.process?.cultivation,
     planting: data?.process?.planting,
@@ -34,6 +61,12 @@ export default function useProjectProcess({ projectId }) {
     other: data?.process?.other,
     isSuccess,
     isLoading,
-    refetch
+    refetch,
+    cultivationPlantFarming: dataPlantFarming?.plantFarming?.cultivationActivities,
+    plantingPlantFarming: dataPlantFarming?.plantFarming?.plantingActivity,
+    fertilizePlantFarming: dataPlantFarming?.plantFarming?.fertilizationActivities,
+    pesticidePlantFarming: dataPlantFarming?.plantFarming?.pestAndDiseaseControlActivities,
+    isSuccessPlantFarming,
+    isLoadingPlantFarming
   }
 }
