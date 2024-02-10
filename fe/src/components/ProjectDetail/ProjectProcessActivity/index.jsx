@@ -6,12 +6,14 @@ import { formatDateTime } from '../../../utils/helpers'
 import CultivationTable from './CultivationActivity'
 import PlantingTable from './PlantingActivity'
 import FertilizeTable from './FertilizationActivity'
+import OtherTable from './OtherActivity'
+import PesticideTable from './PesticideActivity'
 
 import { Table } from 'antd'
 import PROJECT from '../../../services/projectService'
 
-// fertilize: [{  time: Date, tx: String, fertilizationActivity: [{fertilizationTime: String, type: { type: String, enum: ['baseFertilizer', 'topFertilizer'] }, description: String }]}]
-// const FertilizeTable = ({ fertilize }) => {
+// pesticide: [{  time: Date, tx: String, pestAndDiseaseControlActivity: [{name: String, type: { type: String, enum: ['pest', 'disease'] }, symptoms: String, description: String, solution: [String], note: String }]}]
+// const PesticideTable = ({ pesticide }) => {
 //   const columns = [
 //     {
 //       title: 'Time',
@@ -27,22 +29,41 @@ import PROJECT from '../../../services/projectService'
 //       width: 150
 //     },
 //     {
-//       title: 'Fertilization Time',
-//       dataIndex: 'fertilizationTime',
-//       key: 'fertilizationTime',
-//       render: (text, record) => record.fertilizationActivity.fertilizationTime
+//       title: 'Name',
+//       dataIndex: 'name',
+//       key: 'name',
+//       render: (text, record) => record.pestAndDiseaseControlActivity.name
 //     },
 //     {
 //       title: 'Type',
 //       dataIndex: 'type',
 //       key: 'type',
-//       render: (text, record) => record.fertilizationActivity.type
+//       render: (text, record) => record.pestAndDiseaseControlActivity.type
+//     },
+//     {
+//       title: 'Symptoms',
+//       dataIndex: 'symptoms',
+//       key: 'symptoms',
+//       render: (text, record) => record.pestAndDiseaseControlActivity.symptoms
 //     },
 //     {
 //       title: 'Description',
 //       dataIndex: 'description',
 //       key: 'description',
-//       render: (text, record) => record.fertilizationActivity.description
+//       render: (text, record) => record.pestAndDiseaseControlActivity.description
+//     },
+//     {
+//       title: 'Solution',
+//       dataIndex: 'solution',
+//       key: 'solution',
+//       render: (text, record) =>
+//         record.pestAndDiseaseControlActivity.solution.map((sol, index) => <div key={index}>{sol}</div>)
+//     },
+//     {
+//       title: 'Note',
+//       dataIndex: 'note',
+//       key: 'note',
+//       render: (text, record) => record.pestAndDiseaseControlActivity.note
 //     },
 //     {
 //       title: 'Actions',
@@ -67,143 +88,12 @@ import PROJECT from '../../../services/projectService'
 //           Thêm
 //         </Button>
 //       </div>
-//       <Table dataSource={fertilize} columns={columns} pagination={false} />
+//       <Table dataSource={pesticide} columns={columns} pagination={false} />
 //     </div>
 //   )
 // }
 
-// pesticide: [{  time: Date, tx: String, pestAndDiseaseControlActivity: [{name: String, type: { type: String, enum: ['pest', 'disease'] }, symptoms: String, description: String, solution: [String], note: String }]}]
-const PesticideTable = ({ pesticide }) => {
-  const columns = [
-    {
-      title: 'Time',
-      dataIndex: 'time',
-      key: 'time',
-      width: 150,
-      render: (text, record) => formatDateTime(record.time)
-    },
-    {
-      title: 'Tx',
-      dataIndex: 'tx',
-      key: 'tx',
-      width: 150
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text, record) => record.pestAndDiseaseControlActivity.name
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
-      render: (text, record) => record.pestAndDiseaseControlActivity.type
-    },
-    {
-      title: 'Symptoms',
-      dataIndex: 'symptoms',
-      key: 'symptoms',
-      render: (text, record) => record.pestAndDiseaseControlActivity.symptoms
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      render: (text, record) => record.pestAndDiseaseControlActivity.description
-    },
-    {
-      title: 'Solution',
-      dataIndex: 'solution',
-      key: 'solution',
-      render: (text, record) =>
-        record.pestAndDiseaseControlActivity.solution.map((sol, index) => <div key={index}>{sol}</div>)
-    },
-    {
-      title: 'Note',
-      dataIndex: 'note',
-      key: 'note',
-      render: (text, record) => record.pestAndDiseaseControlActivity.note
-    },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
-      key: 'actions',
-      render: (text, record) => (
-        <>
-          <Button type="default" style={{ marginRight: '8px' }}>
-            Chỉnh sửa
-          </Button>
-          <Button type="default">Lịch sử chỉnh sửa</Button>
-        </>
-      ),
-      width: 350
-    }
-  ]
-
-  return (
-    <div>
-      <div style={{ marginBottom: '16px' }}>
-        <Button type="primary" style={{ marginRight: '8px' }}>
-          Thêm
-        </Button>
-      </div>
-      <Table dataSource={pesticide} columns={columns} pagination={false} />
-    </div>
-  )
-}
-
-// other: [{  time: Date, tx: String, other: [{description: String}]}]
-const OtherTable = ({ other }) => {
-  const columns = [
-    {
-      title: 'Time',
-      dataIndex: 'time',
-      key: 'time',
-      width: 150,
-      render: (text, record) => formatDateTime(record.time)
-    },
-    {
-      title: 'Tx',
-      dataIndex: 'tx',
-      key: 'tx',
-      width: 150
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      render: (text, record) => record.other.description
-    },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
-      key: 'actions',
-      render: (text, record) => (
-        <>
-          <Button type="default" style={{ marginRight: '8px' }}>
-            Chỉnh sửa
-          </Button>
-          <Button type="default">Lịch sử chỉnh sửa</Button>
-        </>
-      ),
-      width: 350
-    }
-  ]
-
-  return (
-    <div>
-      <div style={{ marginBottom: '16px' }}>
-        <Button type="primary" style={{ marginRight: '8px' }}>
-          Thêm
-        </Button>
-      </div>
-      <Table dataSource={other} columns={columns} pagination={false} />
-    </div>
-  )
-}
-
-const ProcessPage = ({ projectId }) => {
+const ProcessActivityPage = ({ projectId }) => {
   const {
     cultivation,
     planting,
@@ -279,7 +169,12 @@ const ProcessPage = ({ projectId }) => {
         <Col span={24}>
           <Card title="Hoạt động phòng ngừa sâu bệnh">
             {/* Display pest and disease control activity */}
-            <PesticideTable pesticide={pesticide} />
+            <PesticideTable
+              pesticide={pesticide}
+              pesticidePlantFarming={pesticidePlantFarming}
+              handleAddProcess={handleAddProcess}
+              handleUpdateProcess={handleUpdateProcess}
+            />
           </Card>
         </Col>
 
@@ -287,7 +182,7 @@ const ProcessPage = ({ projectId }) => {
         <Col span={24}>
           <Card title="Hoạt động khác">
             {/* Display other activity */}
-            <OtherTable other={other} />
+            <OtherTable other={other} handleAddProcess={handleAddProcess} handleUpdateProcess={handleUpdateProcess} />
           </Card>
         </Col>
       </Row>
@@ -297,4 +192,4 @@ const ProcessPage = ({ projectId }) => {
   )
 }
 
-export default ProcessPage
+export default ProcessActivityPage

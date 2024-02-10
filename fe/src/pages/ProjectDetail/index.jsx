@@ -2,7 +2,7 @@ import React from 'react'
 import { Tabs } from 'antd'
 import { ProjectOutput, ProjectProcess, ProjectInput, ProjectExpect } from '../../components'
 import ProjectFarming from '../../components/ProjectDetail/ProjectPlantFarming'
-import ProcessPage from '../../components/ProjectDetail/ProjectProcessNew'
+import ProcessActivityPage from '../../components/ProjectDetail/ProjectProcessActivity'
 import { useParams } from 'react-router-dom'
 
 const ProjectDetail = () => {
@@ -21,7 +21,7 @@ const ProjectDetail = () => {
     {
       key: '3',
       label: 'Quá trình canh tác',
-      children: <ProcessPage projectId={projectId} />
+      children: <ProcessActivityPage projectId={projectId} />
     },
     {
       key: '4',
