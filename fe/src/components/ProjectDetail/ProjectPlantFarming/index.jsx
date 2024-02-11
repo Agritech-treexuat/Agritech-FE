@@ -57,7 +57,7 @@ const ProjectFarming = ({ projectId }) => {
     }
   }
 
-  if (!isSuccessPlantFarming) {
+  if (!isSuccessPlantFarming || !isSuccess) {
     return <Loading />
   }
   if (plantFarming === null && isSuccessPlantFarming) {
