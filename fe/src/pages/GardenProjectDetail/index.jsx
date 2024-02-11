@@ -3,9 +3,9 @@ import { Tabs } from 'antd'
 import GardenProjectInput from '../../components/GardenProjectDetail/GardenProjectInput'
 import GardenProjectOrder from '../../components/GardenProjectDetail/GardenProjectOrder'
 import GardenProjectProcess from '../../components/GardenProjectDetail/GardenProjectProcess'
-import GardenProjectTemplate from '../../components/GardenProjectDetail/GardenProjectTemplate'
 import GardenProjectExpect from '../../components/GardenProjectDetail/GardenProjectExpect'
 import GardenProjectOutput from '../../components/GardenProjectDetail/GardenProjectOutput'
+import GardenProjectPlantFarming from '../../components/GardenProjectDetail/GardenProjectPlantFarming'
 
 const onChange = (key) => {
   console.log(key)
@@ -26,7 +26,7 @@ const GardenProjectDetail = () => {
     {
       key: '3',
       label: 'Quy trình canh tác',
-      children: <GardenProjectTemplate />
+      children: <GardenProjectPlantFarming />
     },
     {
       key: '4',

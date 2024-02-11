@@ -9,8 +9,7 @@ import SelectOptionConfirmationModal from './SelectOptionConfirmationModal'
 import useProjectInput from '../ProjectInput/useProjectInput'
 import PROJECT from '../../../services/projectService'
 
-const ProjectFarming = () => {
-  const projectId = useParams().id
+const ProjectFarming = ({ projectId }) => {
   const [openUpdatePlantFarming, setOpenUpdatePlantFarming] = useState(false)
   const [openAddPlantFarming, setOpenAddPlantFarming] = useState(false)
   const [opneConfirmPlantFarming, setOpenConfirmPlantFarming] = useState(false)

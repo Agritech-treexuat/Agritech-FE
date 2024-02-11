@@ -16,7 +16,7 @@ const ProjectDetail = () => {
     {
       key: '2',
       label: 'Quy trình canh tác',
-      children: <ProjectFarming />
+      children: <ProjectFarming projectId={projectId} />
     },
     {
       key: '3',

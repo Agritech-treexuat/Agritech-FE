@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Button } from 'antd'
+import ProjectFarming from '../../ProjectDetail/ProjectPlantFarming'
 import Loading from '../../../pages/Loading'
 import useGardenProjectInput from '../GardenProjectInput/useGardenProjectInput'
 import { useParams } from 'react-router-dom'
 import { formatDateTime } from '../../../utils/helpers'
-import ProcessActivityPage from '../../ProjectDetail/ProjectProcessActivity'
 
-const GardenProjectProcess = () => {
+const GardenProjectPlantFarming = () => {
   const gardenId = useParams().id
   const [selectedPlant, setSelectedPlant] = useState(null)
   const { initData, isSuccess } = useGardenProjectInput(gardenId)
@@ -29,12 +29,12 @@ const GardenProjectProcess = () => {
           </Button>
         ))}
       </div>
-      {/* Render ProcessActivityPage component if a plant is selected */}
-      {selectedPlant && <ProcessActivityPage projectId={selectedPlant} />}
+      {/* Render ProjectFarming component if a plant is selected */}
+      {selectedPlant && <ProjectFarming projectId={selectedPlant} />}
     </div>
   ) : (
     <Loading />
   )
 }
 
-export default GardenProjectProcess
+export default GardenProjectPlantFarming
