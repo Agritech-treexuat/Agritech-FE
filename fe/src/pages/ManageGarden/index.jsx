@@ -1,56 +1,21 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
 import { Input, Button, Flex, DatePicker } from 'antd'
 import { Link } from 'react-router-dom'
 import Loading from '../Loading'
 import { Card } from 'antd'
-import GARDEN from '../../services/gardenService'
 import { formatDateTime } from '../../utils/helpers'
+import useManageGarden from './useManageGarden'
 
 const { Meta } = Card
 const ManageGarden = () => {
-  const farmId = localStorage.getItem('id')
-  const [projects, setProjects] = useState([])
-
   const onChange = (date, dateString) => {
     console.log(date, dateString)
   }
 
-  const handleStart = (project) => {
-    const dataStatus = {
-      status: 'started'
-    }
-    async function fetchData() {
-      const data = await GARDEN.updateStatusGarden(dataStatus, project._id)
-      if (data.data.garden) {
-        setProjects(
-          projects.map((project) => {
-            if (project._id === data.data.garden._id) {
-              project.status = data.data.garden.status
-              project.startDate = data.data.garden.startDate
-            }
-            return project
-          })
-        )
-      }
-    }
-    fetchData()
-  }
-
-  useEffect(() => {
-    // Gọi api list
-    async function fetchData() {
-      const data = await GARDEN.getGardens(farmId)
-      if (data.data.gardens) {
-        setProjects(data.data.gardens)
-      }
-    }
-    fetchData()
-  }, [])
-
+  const { gardens, isSuccess } = useManageGarden()
   return (
     <div>
-      {projects ? (
+      {isSuccess ? (
         <div>
           <h2 style={{ textAlign: 'left' }}>Quản lý mảnh vườn TRỒNG RAU HỘ</h2>
           {/* Sreach request */}
@@ -80,7 +45,7 @@ const ManageGarden = () => {
               flexWrap: 'wrap'
             }}
           >
-            {projects?.map((project) => (
+            {gardens?.map((garden) => (
               <Card
                 hoverable
                 cover={
@@ -91,26 +56,20 @@ const ManageGarden = () => {
                 }
                 style={{ width: '23%', marginBottom: '1.5rem', marginRight: '1.5rem' }}
               >
-                <Link to={`/manage-planting-garden/${project._id}`}>
+                <Link to={`/manage-planting-garden/${garden._id}`}>
                   <Meta
                     align={'center'}
                     style={{ fontStyle: 'italic' }}
-                    title={project.startDate ? `Ngày bắt đầu ${formatDateTime(project.startDate)}` : 'Chưa bắt đầu'}
+                    title={`Ngày bắt đầu ${formatDateTime(garden.startDate)}`}
                   />
                   <div style={{ textAlign: 'left' }}>
-                    <p>Dịch vụ: {project.template.square} M2</p>
-                    <p>Khách hàng: {project.client.name ? project.client.name : 'Không có thông tin'}</p>
-                    <p>Email: {project.client.email ? project.client.email : 'Không có thông tin'}</p>
-                    <p>Thông tin liên lạc: {project.client.phone ? project.client.phone : 'Không có thông tin'}</p>
+                    <p>Dịch vụ: {garden.template.square} M2</p>
+                    <p>Khách hàng: {garden.client.name ? garden.client.name : 'Không có thông tin'}</p>
+                    <p>Email: {garden.client.email ? garden.client.email : 'Không có thông tin'}</p>
+                    <p>Thông tin liên lạc: {garden.client.phone ? garden.client.phone : 'Không có thông tin'}</p>
                   </div>
                 </Link>
-                <div>
-                  {project.status === 'waiting' ? (
-                    <Button onClick={() => handleStart(project)}> Bắt đầu </Button>
-                  ) : (
-                    'Đã bắt đầu'
-                  )}
-                </div>
+                <div>{garden.status === 'started' ? 'Đã bắt đầu' : 'Đã kết thúc'}</div>
               </Card>
             ))}
           </div>

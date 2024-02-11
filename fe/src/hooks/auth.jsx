@@ -8,7 +8,9 @@ const Auth = (props) => {
   useEffect(() => {
     ;(async () => {
       let result = await FARM.me()
-      if (result.data._id && result.data.roles[0] == 'farm') {
+      console.log('result: ', result)
+      if (result.data.metadata._id) {
+        localStorage.setItem('id', result.data.metadata._id)
         setHandle(true)
       }
     })()
@@ -17,6 +19,6 @@ const Auth = (props) => {
   if (handle === false) {
     return <> </>
   }
-  return <>{handle == true ? props.children : <Navigate to={props.path} />}</>
+  return <>{handle === true ? props.children : <Navigate to={props.path} />}</>
 }
 export default Auth

@@ -36,5 +36,4 @@ const token = {
   setRefreshToken,
   removeRefreshToken
 }
-
 export default token

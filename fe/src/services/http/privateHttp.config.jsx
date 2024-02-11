@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { baseUrl } from './baseUrl'
 import token from '../../utils/token'
+const { getAccessToken, getRefreshToken } = token
 
 console.log('Base: ', baseUrl)
 
@@ -13,10 +14,13 @@ const privateHttp = axios.create({
 
 privateHttp.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
-    console.log('token: ', token)
-    if (token) {
-      config.headers['x-access-token'] = token
+    const accessToken = getAccessToken()
+    const refreshToken = getRefreshToken()
+    console.log('accessToken: ', accessToken)
+    console.log('refreshToken: ', refreshToken)
+    if (accessToken) {
+      config.headers['authorization'] = accessToken
+      config.headers['x-rtoken-id'] = refreshToken
     }
     return config
   },
@@ -30,6 +34,7 @@ privateHttp.interceptors.response.use(
     return response
   },
   (error) => {
+    console.log('error: ', error)
     if (error.response.status === 401 && error.response.statusText === 'Unauthorized') {
       token.removeAccessToken()
       alert('Need to login')

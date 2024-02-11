@@ -1,39 +1,69 @@
 // src/components/ProjectList.js
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import ProjectItem from '../../components/ProjectItem'
 import './style.css'
-import FARM from '../../services/farmService'
-import parseData from './helper'
 import Loading from '../Loading'
-import { Input } from 'antd'
-import { Col, Row } from 'antd'
-import { Button, Flex } from 'antd'
+import useProjectList from './useProjectList'
+import { Input, Button, Flex, Row, Col } from 'antd'
+import PlantModal from '../../components/ProjectDetail/AddProject/AddProjectPlant'
+import SeedModal from '../../components/ProjectDetail/AddProject/AddProjectSeed'
+import PROJECT from '../../services/projectService'
 
 const ProjectList = () => {
   const [searchQuery, setSearchQuery] = useState('')
-  const [projects, setProjects] = useState([])
-  const farmId = localStorage.getItem('id')
-  useEffect(() => {
-    async function fetchData() {
-      const data = await FARM.getProjects(farmId)
-      console.log('Data: ', parseData(data.data).projects)
-
-      setProjects(parseData(data.data).projects)
-    }
-    fetchData()
-  }, [])
+  const [selectedPlant, setSelectedPlant] = useState(null)
+  const [selectedSeed, setSelectedSeed] = useState(null)
+  const { projects, isSuccess, refetch } = useProjectList({
+    plantId: selectedPlant?.id
+  })
+  const [open, setOpen] = useState(false)
+  const [openSeed, setOpenSeed] = useState(false)
 
   const filteredProjects =
     projects.length > 0
       ? projects.filter((project) => {
-          if (project.title) return project.title.toLowerCase().includes(searchQuery.toLowerCase())
+          return project.title.toLowerCase().includes(searchQuery.toLowerCase())
         })
       : []
 
+  const handleAddPlant = (plant) => {
+    setSelectedPlant(plant)
+    console.log(plant)
+    setOpen(false)
+    setOpenSeed(true)
+  }
+
+  const handleAddSeed = () => {
+    // Thực hiện các thao tác khác khi thêm seed
+    if (selectedSeed) {
+      console.log(selectedSeed)
+      // Do something with the selected seed
+    }
+    handleAddProject()
+  }
+
+  const handleAddProject = async () => {
+    // Thực hiện các thao tác khác khi thêm project
+    console.log('plantId', selectedPlant.id)
+    console.log('seedId', selectedSeed.id)
+    try {
+      const data = {
+        plantId: selectedPlant.id,
+        seedId: selectedSeed.id,
+        startDate: new Date()
+      }
+      await PROJECT.initProject(data)
+      refetch()
+    } catch (error) {
+      console.log(error)
+    }
+    setOpenSeed(false)
+  }
+
   return (
     <div>
-      {projects ? (
+      {isSuccess ? (
         <div>
           <h1>Danh sách các dự án</h1>
           <Row>
@@ -46,18 +76,31 @@ const ProjectList = () => {
             </Col>
             <Col span={1}></Col>
             <Col span={6}>
-              <Link to="/create-project">
-                <Flex gap="small" wrap="wrap">
-                  <Button style={{ marginRight: '6px' }} type="primary">
-                    Tạo mới
-                  </Button>
-                </Flex>
-              </Link>
+              <Flex gap="small" wrap="wrap">
+                <Button type="primary" onClick={() => setOpen(true)}>
+                  Tạp project mới
+                </Button>
+              </Flex>
+              <PlantModal
+                open={open}
+                onClose={() => setOpen(false)}
+                selectedPlant={selectedPlant}
+                setSelectedPlant={setSelectedPlant}
+                handleAddPlant={handleAddPlant}
+              />
+              <SeedModal
+                selectedPlant={selectedPlant}
+                open={openSeed}
+                onClose={() => setOpenSeed(false)}
+                selectedSeed={selectedSeed}
+                setSelectedSeed={setSelectedSeed}
+                handleAddSeed={handleAddSeed}
+              />
             </Col>
           </Row>
           <Row className="project-grid">
             {filteredProjects.map((project) => (
-              <Col span={4}>
+              <Col span={4} key={project.id}>
                 <Link to={`/project/${project.id}`} key={project.id}>
                   <ProjectItem project={project} />
                 </Link>

@@ -1,21 +1,19 @@
 import { useCallback } from 'react'
-import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import FARM from '../../services/farmService'
+import PROJECT from '../../services/projectService'
 
-export default function useProjectList() {
+export default function useProjectList({ plantId }) {
   const farmId = localStorage.getItem('id')
   console.log('farm id: ', farmId)
 
   const parseData = useCallback((data) => {
-    console.log('after api data: ', data)
     const projects = data.map((item) => {
       return {
-        id: item?.id,
-        title: item?.name,
-        seed: item.seed ? item.seed : 'basic',
-        startDate: item?.initDate,
-        image: item.image ? item.image : 'some_url'
+        id: item?._id,
+        title: item?.plant?.plant_name,
+        seed: item.seed ? item?.seed?.seed_name : 'basic',
+        startDate: item?.startDate,
+        image: item?.plant?.plant_thumb
       }
     })
 
@@ -24,17 +22,18 @@ export default function useProjectList() {
     }
   }, [])
 
-  const { data, isSuccess, isLoading } = useQuery({
+  const { data, isSuccess, isLoading, refetch } = useQuery({
     queryKey: ['projects', farmId],
-    queryFn: () => FARM.getProjects(farmId),
-    select: (data) => parseData(data.data)
+    queryFn: () => PROJECT.getProjects(farmId),
+    staleTime: 20 * 1000,
+    select: (data) => parseData(data.data.metadata),
+    enabled: !!farmId
   })
 
-  console.log('data here: ', data, isSuccess, isLoading)
-
   return {
-    data,
+    projects: data?.projects || [],
     isSuccess,
-    isLoading
+    isLoading,
+    refetch
   }
 }

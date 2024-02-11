@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'antd'
 import UpdateInputForm from './UpdateInputForm'
 
-const UpdateInputPopup = ({ input, setInitData }) => {
+const UpdateInputPopup = ({ input, refetch }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
     setIsModalOpen(true)
@@ -26,7 +26,7 @@ const UpdateInputPopup = ({ input, setInitData }) => {
         okText="Cập nhật"
         footer={null}
       >
-        <UpdateInputForm handleCloseForm={handleOk} input={input} setInitData={setInitData} />
+        <UpdateInputForm handleCloseForm={handleOk} input={input} refetch={refetch} />
       </Modal>
     </>
   )

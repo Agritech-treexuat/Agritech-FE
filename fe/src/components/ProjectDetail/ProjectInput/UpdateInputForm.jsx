@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, Select, InputNumber, Upload } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
-import FARM from '../../../services/farmService'
+import React from 'react'
+import { Button, Form, Input, InputNumber } from 'antd'
+import PROJECT from '../../../services/projectService'
 import { useParams } from 'react-router'
 import './style.css'
-const { Option } = Select
 
 const layout = {
   labelCol: {
@@ -21,16 +19,10 @@ const tailLayout = {
     span: 16
   }
 }
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e
-  }
-  return e?.fileList
-}
 
-const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
+const UpdateInputForm = ({ handleCloseForm, input, refetch }) => {
   const params = useParams()
-  const dateObj = new Date(input.initDate)
+  const dateObj = new Date(input.startDate)
 
   const yearData = dateObj.getFullYear()
   const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0')
@@ -40,20 +32,13 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
   const formRef = React.useRef(null)
   const initValue = {
     date: formattedDate,
-    seed: input.seed,
-    amount: input.amount,
-    upload: input.images
+    square: input.square
   }
-  const [seeds, setSeeds] = useState([])
 
   const onFinish = (values) => {
-    const images = values.upload.map((item) => (typeof item === 'string' ? item : item.name))
-    const updatedValue = { ...values, initDate: values.date, images: images }
-    delete updatedValue.date
-    delete updatedValue.upload
     const data = {
-      tx: 'b',
-      ...updatedValue
+      startDate: values.date,
+      square: values.square
     }
     handleSubmitInput(data, params.id)
   }
@@ -78,21 +63,13 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
 
   const handleSubmitInput = async (data, projectId) => {
     try {
-      const res = await FARM.editInput(data, projectId)
-      setInitData(res.data.updatedInput)
+      await PROJECT.editProjectInfo(data, projectId)
+      refetch()
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)
     }
   }
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await FARM.getAllSeedByPlantId(input.plantId)
-      data.data ? setSeeds(data.data.seeds.map((item) => item.name)) : setSeeds([])
-    }
-    fetchData()
-  }, [])
 
   return (
     <Form
@@ -118,40 +95,17 @@ const UpdateInputForm = ({ handleCloseForm, input, setInitData }) => {
         <Input type="date" />
       </Form.Item>
       {/* seed */}
-      <Form.Item
-        name="seed"
-        label="Hạt giống"
-        rules={[
-          {
-            required: true
-          }
-        ]}
-      >
-        <Select placeholder="Chọn hạt giống">
-          {seeds.map((seed) => (
-            <Option key={seed} value={seed}>
-              {seed}
-            </Option>
-          ))}
-        </Select>
-      </Form.Item>
       {/* amount */}
       <Form.Item
-        name="amount"
-        label="Lượng"
+        name="square"
+        label="Diện tích trồng"
         rules={[
           {
             required: true
           }
         ]}
       >
-        <InputNumber defaultValue={3} addonAfter="kg" />
-      </Form.Item>
-
-      <Form.Item name="upload" label="Ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
-        <Upload name="logo" action="/upload.do" listType="picture">
-          <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
-        </Upload>
+        <InputNumber addonAfter="m2" />
       </Form.Item>
       {/* submit button */}
       <Form.Item {...tailLayout}>

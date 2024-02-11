@@ -20,7 +20,7 @@ const EditExpectHistory = ({ expect }) => {
       <Modal title="Lịch sử chỉnh sửa" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         {expect.historyExpect.map((expect) => (
           <>
-            <Divider>Chỉnh sửa lúc: {formatDateTime(expect.modified_at)}</Divider>
+            <Divider>Chỉnh sửa lúc: {formatDateTime(expect.modifiedAt)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>Tx: {expect.tx}</p>
               <p>Thời gian: {formatDate(expect.time)}</p>

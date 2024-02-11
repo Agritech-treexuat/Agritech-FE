@@ -1,8 +1,12 @@
 import React from 'react'
 import { Tabs } from 'antd'
-import { ProjectOutput, ProjectProcess, ProjectInput, ProjectExpect, ProjectTemplate } from '../../components'
+import { ProjectOutput, ProjectInput, ProjectExpect } from '../../components'
+import ProjectFarming from '../../components/ProjectDetail/ProjectPlantFarming'
+import ProcessActivityPage from '../../components/ProjectDetail/ProjectProcessActivity'
+import { useParams } from 'react-router-dom'
 
 const ProjectDetail = () => {
+  const projectId = useParams().id
   const items = [
     {
       key: '1',
@@ -12,12 +16,12 @@ const ProjectDetail = () => {
     {
       key: '2',
       label: 'Quy trình canh tác',
-      children: <ProjectTemplate />
+      children: <ProjectFarming projectId={projectId} />
     },
     {
       key: '3',
       label: 'Quá trình canh tác',
-      children: <ProjectProcess />
+      children: <ProcessActivityPage projectId={projectId} />
     },
     {
       key: '4',
