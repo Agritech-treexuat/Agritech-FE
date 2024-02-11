@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tabs } from 'antd'
-import { ProjectOutput, ProjectProcess, ProjectInput, ProjectExpect } from '../../components'
+import { ProjectOutput, ProjectInput, ProjectExpect } from '../../components'
 import ProjectFarming from '../../components/ProjectDetail/ProjectPlantFarming'
 import ProcessActivityPage from '../../components/ProjectDetail/ProjectProcessActivity'
 import { useParams } from 'react-router-dom'

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import useProjectPlantFarming from './useProjectPlantFarming'
-import { useParams } from 'react-router-dom'
 import Loading from '../../../pages/Loading'
 import AddPlantFarmingPopup from '../../ManagePlant/AddPlantFarmingPopup'
 import PLANT_FARMING from '../../../services/plantFarmingService'

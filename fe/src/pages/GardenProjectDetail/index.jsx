@@ -3,7 +3,7 @@ import { Tabs } from 'antd'
 import GardenProjectInput from '../../components/GardenProjectDetail/GardenProjectInput'
 import GardenProjectOrder from '../../components/GardenProjectDetail/GardenProjectOrder'
 import GardenProjectProcess from '../../components/GardenProjectDetail/GardenProjectProcess'
-import GardenProjectExpect from '../../components/GardenProjectDetail/GardenProjectExpect'
+import GardenProjectClientRequest from '../../components/GardenProjectDetail/GardenProjectClientRequest'
 import GardenProjectOutput from '../../components/GardenProjectDetail/GardenProjectOutput'
 import GardenProjectPlantFarming from '../../components/GardenProjectDetail/GardenProjectPlantFarming'
 
@@ -36,7 +36,7 @@ const GardenProjectDetail = () => {
     {
       key: '5',
       label: 'Mong muốn người dùng',
-      children: <GardenProjectExpect />
+      children: <GardenProjectClientRequest />
     },
     {
       key: '6',
