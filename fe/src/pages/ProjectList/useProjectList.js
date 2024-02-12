@@ -13,7 +13,8 @@ export default function useProjectList({ plantId }) {
         title: item?.plant?.plant_name,
         seed: item.seed ? item?.seed?.seed_name : 'basic',
         startDate: item?.startDate,
-        image: item?.plant?.plant_thumb
+        image: item?.plant?.plant_thumb,
+        description: item?.description || ''
       }
     })
 

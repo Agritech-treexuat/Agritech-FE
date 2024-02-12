@@ -1,24 +1,26 @@
-// src/components/ProjectList.js
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import ProjectItem from '../../components/ProjectItem'
-import './style.css'
 import Loading from '../Loading'
 import useProjectList from './useProjectList'
 import { Input, Button, Flex, Row, Col } from 'antd'
 import PlantModal from '../../components/ProjectDetail/AddProject/AddProjectPlant'
 import SeedModal from '../../components/ProjectDetail/AddProject/AddProjectSeed'
+import LargeDescriptionModal from '../../components/ProjectDetail/AddProject/AddLargeDescription'
 import PROJECT from '../../services/projectService'
 
 const ProjectList = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPlant, setSelectedPlant] = useState(null)
   const [selectedSeed, setSelectedSeed] = useState(null)
+  const [description, setDescription] = useState('')
+  const [isAddSeed, setIsAddSeed] = useState(false)
   const { projects, isSuccess, refetch } = useProjectList({
     plantId: selectedPlant?.id
   })
   const [open, setOpen] = useState(false)
   const [openSeed, setOpenSeed] = useState(false)
+  const [openDescription, setOpenDescription] = useState(false)
 
   const filteredProjects =
     projects.length > 0
@@ -31,6 +33,7 @@ const ProjectList = () => {
     setSelectedPlant(plant)
     console.log(plant)
     setOpen(false)
+    setIsAddSeed(true)
     setOpenSeed(true)
   }
 
@@ -40,18 +43,28 @@ const ProjectList = () => {
       console.log(selectedSeed)
       // Do something with the selected seed
     }
-    handleAddProject()
+    setIsAddSeed(false)
+    setOpenSeed(false)
+    setOpenDescription(true)
+    // handleAddProject()
+  }
+
+  const handleSubmit = () => {
+  console.log(selectedSeed);
+  console.log(selectedPlant);
+  console.log(description);
+  handleAddProject()
+  setOpenDescription(false)
   }
 
   const handleAddProject = async () => {
     // Thực hiện các thao tác khác khi thêm project
-    console.log('plantId', selectedPlant.id)
-    console.log('seedId', selectedSeed.id)
     try {
       const data = {
         plantId: selectedPlant.id,
         seedId: selectedSeed.id,
-        startDate: new Date()
+        startDate: new Date(),
+        description: description
       }
       await PROJECT.initProject(data)
       refetch()
@@ -69,7 +82,7 @@ const ProjectList = () => {
           <Row>
             <Col span={8}>
               <Input
-                placeholder="Search projects"
+                placeholder="Tìm kiếm các dự án"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -78,12 +91,15 @@ const ProjectList = () => {
             <Col span={6}>
               <Flex gap="small" wrap="wrap">
                 <Button type="primary" onClick={() => setOpen(true)}>
-                  Tạp project mới
+                  Tạo project mới
                 </Button>
               </Flex>
               <PlantModal
                 open={open}
-                onClose={() => setOpen(false)}
+                onClose={() => {
+                  setOpen(false)
+                  setIsAddSeed(false)
+                }}
                 selectedPlant={selectedPlant}
                 setSelectedPlant={setSelectedPlant}
                 handleAddPlant={handleAddPlant}
@@ -95,12 +111,23 @@ const ProjectList = () => {
                 selectedSeed={selectedSeed}
                 setSelectedSeed={setSelectedSeed}
                 handleAddSeed={handleAddSeed}
+                isAddSeed={isAddSeed}
               />
+              <LargeDescriptionModal
+              visible={openDescription}
+              onCancel={() => {
+                setOpenDescription(false)
+              }} 
+              onSubmit={handleSubmit}
+              description={description}
+              setDescription={setDescription}
+              />
+
             </Col>
           </Row>
           <Row className="project-grid">
             {filteredProjects.map((project) => (
-              <Col span={4} key={project.id}>
+              <Col span={6} key={project.id}>
                 <Link to={`/project/${project.id}`} key={project.id}>
                   <ProjectItem project={project} />
                 </Link>

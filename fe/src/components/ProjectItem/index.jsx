@@ -1,15 +1,19 @@
 import React from 'react'
 import './style.css'
 import { formatDate } from '../../utils/helpers'
+import { Card } from 'antd'
+const { Meta } = Card
 
 const ProjectItem = ({ project }) => {
   return (
-    <div className="project-item">
-      <img src={project.image} alt={project.title} style={{ width: '100%', height: '200px' }} />
-      <h2>{project.title}</h2>
-      <p className="bold-text">Hạt giống: {project.seed}</p>
-      <p>Ngày bắt đầu: {formatDate(new Date(project.startDate))}</p>
-    </div>
+    <Card hoverable cover={<img alt={project.title} src={project.image} />} style={{ width: '90%' , margin: '1.5rem'}}>
+      <Meta align={'center'} style={{ fontStyle: 'italic' }} title={project.title} />
+      <div style={{ textAlign: 'left' }}>
+        <p>Hạt giống: {project.seed}</p>
+        <p>Ngày bắt đầu: {formatDate(new Date(project.startDate))}</p>
+        <p>Mo ta: {project.description}</p>
+      </div>
+    </Card>
   )
 }
 
