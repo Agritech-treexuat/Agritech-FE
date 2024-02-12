@@ -1,8 +1,7 @@
-import React from 'react';
-import { Modal, Button, Input } from 'antd';
+import React from 'react'
+import { Modal, Button, Input } from 'antd'
 
 const LargeDescriptionModal = ({ visible, onCancel, onSubmit, description, setDescription }) => {
-
   return (
     <Modal
       title="Nhập Mô tả"
@@ -14,7 +13,7 @@ const LargeDescriptionModal = ({ visible, onCancel, onSubmit, description, setDe
         </Button>,
         <Button key="submit" type="primary" onClick={onSubmit}>
           Xác nhận
-        </Button>,
+        </Button>
       ]}
       width={800} // Kích thước modal
     >
@@ -26,7 +25,7 @@ const LargeDescriptionModal = ({ visible, onCancel, onSubmit, description, setDe
         style={{ width: '100%' }} // Chiều rộng
       />
     </Modal>
-  );
-};
+  )
+}
 
-export default LargeDescriptionModal;
+export default LargeDescriptionModal

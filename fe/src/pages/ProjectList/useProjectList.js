@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import PROJECT from '../../services/projectService'
+import { formatDateToInput } from '../../utils/helpers'
 
 export default function useProjectList({ plantId }) {
   const farmId = localStorage.getItem('id')
@@ -11,10 +12,17 @@ export default function useProjectList({ plantId }) {
       return {
         id: item?._id,
         title: item?.plant?.plant_name,
+        plantId: item?.plant?._id,
         seed: item.seed ? item?.seed?.seed_name : 'basic',
         startDate: item?.startDate,
         image: item?.plant?.plant_thumb,
-        description: item?.description || ''
+        square: item?.square,
+        status: item?.status,
+        description:
+          item?.description ||
+          `Đây là dự án được khởi tạo vào ngày ${formatDateToInput(item?.startDate)}, cho ${
+            item?.plant?.plant_name
+          } với hạt giống là ${item?.seed?.seed_name}`
       }
     })
 

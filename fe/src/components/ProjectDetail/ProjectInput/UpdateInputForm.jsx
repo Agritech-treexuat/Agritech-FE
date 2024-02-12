@@ -1,7 +1,5 @@
 import React from 'react'
-import { Button, Form, Input, InputNumber } from 'antd'
-import PROJECT from '../../../services/projectService'
-import { useParams } from 'react-router'
+import { Form, Input, InputNumber } from 'antd'
 import './style.css'
 
 const layout = {
@@ -13,15 +11,7 @@ const layout = {
   }
 }
 
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16
-  }
-}
-
-const UpdateInputForm = ({ handleCloseForm, input, refetch }) => {
-  const params = useParams()
+const UpdateInputForm = ({ input, form }) => {
   const dateObj = new Date(input.startDate)
 
   const yearData = dateObj.getFullYear()
@@ -29,18 +19,10 @@ const UpdateInputForm = ({ handleCloseForm, input, refetch }) => {
   const dateData = dateObj.getDate().toString().padStart(2, '0')
 
   const formattedDate = `${yearData}-${monthData}-${dateData}`
-  const formRef = React.useRef(null)
   const initValue = {
     date: formattedDate,
-    square: input.square
-  }
-
-  const onFinish = (values) => {
-    const data = {
-      startDate: values.date,
-      square: values.square
-    }
-    handleSubmitInput(data, params.id)
+    square: input.square,
+    description: input.description
   }
 
   //   const update = useMutation({
@@ -61,22 +43,11 @@ const UpdateInputForm = ({ handleCloseForm, input, refetch }) => {
   //     );
   // };
 
-  const handleSubmitInput = async (data, projectId) => {
-    try {
-      await PROJECT.editProjectInfo(data, projectId)
-      refetch()
-      handleCloseForm()
-    } catch (error) {
-      console.error(error?.response?.data?.message)
-    }
-  }
-
   return (
     <Form
       {...layout}
-      ref={formRef}
+      form={form}
       name="control-ref"
-      onFinish={onFinish}
       initialValues={initValue}
       style={{
         maxWidth: 600
@@ -107,11 +78,16 @@ const UpdateInputForm = ({ handleCloseForm, input, refetch }) => {
       >
         <InputNumber addonAfter="m2" />
       </Form.Item>
-      {/* submit button */}
-      <Form.Item {...tailLayout}>
-        <Button type="primary" htmlType="submit">
-          Cập nhật
-        </Button>
+      <Form.Item
+        name="description"
+        label="Mô tả"
+        rules={[
+          {
+            required: true
+          }
+        ]}
+      >
+        <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 3 }} />
       </Form.Item>
     </Form>
   )

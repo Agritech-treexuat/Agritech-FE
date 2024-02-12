@@ -39,6 +39,10 @@ const ProjectInput = () => {
             <label>Diện tích trồng: </label>
             <span>{projectInfo.square || 'Chưa cập nhật'}</span>
           </div>
+          <div>
+            <label>Mô tả: </label>
+            <span>{projectInfo.description || 'Chưa cập nhật'}</span>
+          </div>
         </div>
       ) : (
         <Loading />
