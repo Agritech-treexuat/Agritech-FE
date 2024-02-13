@@ -16,7 +16,8 @@ export default function useGardenProjectInput(gardenId) {
       plant: {
         id: item?.plant._id,
         name: item?.plant.plant_name
-      }
+      },
+      status: item?.status
     }))
     return { gardens }
   }, [])
