@@ -1,17 +1,13 @@
 import React, { useState } from 'react'
-import { Input, Button, Flex, Row, Col, List, notification, Radio, Space } from 'antd'
+import { Input, Flex, Row, Col, List, Radio, Space } from 'antd'
 import { Link } from 'react-router-dom'
 import Loading from '../Loading'
-import { Card } from 'antd'
-import { formatDateTime, formatDateToInput } from '../../utils/helpers'
+import { formatDateToInput } from '../../utils/helpers'
 import useManageGarden from './useManageGarden'
 
-const { Meta } = Card
 const ManageGarden = () => {
   const { gardens, isSuccess } = useManageGarden()
-  const [gardenId, setGardenId] = useState('')
   const [value, setValue] = useState('all')
-  const [selectedItem, setSelectedItem] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   const onChange = (e) => {
@@ -56,40 +52,6 @@ const ManageGarden = () => {
             </Flex>
           </div>
           <h2 style={{ textAlign: 'left', fontSize: '18px' }}>Danh sách dự án TRỒNG RAU HỘ</h2>
-          {/* <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap'
-            }}
-          >
-            {filteredGardens?.map((garden) => (
-              <Card
-                hoverable
-                cover={
-                  <img
-                    alt="example"
-                    src="https://media.istockphoto.com/id/1323663582/vi/anh/tr%E1%BA%BB-em-v%C3%A0-m%E1%BA%B9-l%C3%A0m-v%C6%B0%E1%BB%9Dn-trong-v%C6%B0%E1%BB%9Dn-rau-%E1%BB%9F-s%C3%A2n-sau.jpg?s=612x612&w=0&k=20&c=wU9d5Vwf0Rmb6B7jZOU0T6KgcceeTrGU99lCT2XfH-Q="
-                  />
-                }
-                style={{ width: '23%', marginBottom: '1.5rem', marginRight: '1.5rem' }}
-              >
-                <Link to={`/manage-planting-garden/${garden._id}`}>
-                  <Meta
-                    align={'center'}
-                    style={{ fontStyle: 'italic' }}
-                    title={`Ngày bắt đầu ${formatDateTime(garden.startDate)}`}
-                  />
-                  <div style={{ textAlign: 'left' }}>
-                    <p>Dịch vụ: {garden.template.square} M2</p>
-                    <p>Khách hàng: {garden.client.name ? garden.client.name : 'Không có thông tin'}</p>
-                    <p>Email: {garden.client.email ? garden.client.email : 'Không có thông tin'}</p>
-                    <p>Thông tin liên lạc: {garden.client.phone ? garden.client.phone : 'Không có thông tin'}</p>
-                  </div>
-                </Link>
-                <div>{garden.status === 'started' ? 'Đã bắt đầu' : 'Đã kết thúc'}</div>
-              </Card>
-            ))}
-          </div> */}
           <Row>
             <Col span={4}>
               <div style={{ marginTop: '2rem', marginLeft: '2rem', padding: '2rem', backgroundColor: '#f1f4ed' }}>
