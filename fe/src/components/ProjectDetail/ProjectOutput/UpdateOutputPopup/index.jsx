@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'antd'
 import UpdateOutputForm from './UpdateOutputForm'
 
-const UpdateOutputPopup = ({ output, disabled, refetch, alllDistributer }) => {
+const UpdateOutputPopup = ({ output, disabled, refetch, alllDistributer, openNotificationWithIcon }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
     setIsModalOpen(true)
@@ -31,6 +31,7 @@ const UpdateOutputPopup = ({ output, disabled, refetch, alllDistributer }) => {
           output={output}
           refetch={refetch}
           alllDistributer={alllDistributer}
+          openNotificationWithIcon={openNotificationWithIcon}
         />
       </Modal>
     </>

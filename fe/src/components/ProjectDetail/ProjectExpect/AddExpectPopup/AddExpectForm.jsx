@@ -20,7 +20,7 @@ const tailLayout = {
   }
 }
 
-const AddExpectForm = ({ handleCloseForm, refetch }) => {
+const AddExpectForm = ({ handleCloseForm, refetch, openNotificationWithIcon }) => {
   const today = new Date()
   const year = today.getFullYear()
   const month = (today.getMonth() + 1).toString().padStart(2, '0')
@@ -47,8 +47,12 @@ const AddExpectForm = ({ handleCloseForm, refetch }) => {
     try {
       console.log('data to send: ', data, projectId)
       const res = await PROJECT.addExpect(data, projectId)
-      console.log('res: ', res)
-      refetch()
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
+      }
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)

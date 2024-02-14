@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'antd'
 import AddExpectForm from './AddExpectForm'
 
-const AddExpectPopup = ({ refetch }) => {
+const AddExpectPopup = ({ refetch, openNotificationWithIcon }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
     setIsModalOpen(true)
@@ -19,7 +19,11 @@ const AddExpectPopup = ({ refetch }) => {
         Thêm dự kiến
       </Button>
       <Modal title="Thêm dự kiến" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
-        <AddExpectForm handleCloseForm={handleOk} refetch={refetch} />
+        <AddExpectForm
+          handleCloseForm={handleOk}
+          refetch={refetch}
+          openNotificationWithIcon={openNotificationWithIcon}
+        />
       </Modal>
     </>
   )

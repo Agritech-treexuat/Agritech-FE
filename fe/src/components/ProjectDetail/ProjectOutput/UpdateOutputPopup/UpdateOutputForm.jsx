@@ -28,7 +28,7 @@ const normFile = (e) => {
   return e?.fileList
 }
 
-const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer }) => {
+const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, openNotificationWithIcon }) => {
   const params = useParams()
   const dateObj = new Date(output.time)
 
@@ -74,8 +74,13 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer })
 
   const handleSubmitOutput = async (data, projectId, outputId) => {
     try {
-      await FARM.editOutput(data, projectId, outputId)
-      refetch()
+      const res = await FARM.editOutput(data, projectId, outputId)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+      }
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)

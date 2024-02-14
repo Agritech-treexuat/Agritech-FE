@@ -30,7 +30,7 @@ const normFile = (e) => {
   return e?.fileList
 }
 
-const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer }) => {
+const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotificationWithIcon }) => {
   const today = new Date()
   const year = today.getFullYear()
   const month = (today.getMonth() + 1).toString().padStart(2, '0')
@@ -69,8 +69,13 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer }) => {
 
   const handleSubmitOutput = async (data, projectId) => {
     try {
-      await FARM.addOutput(data, projectId)
-      refetch()
+      const res = await FARM.addOutput(data, projectId)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thành công', 'Thêm đầu ra thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thất bại', 'Thêm đầu ra thất bại')
+      }
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)

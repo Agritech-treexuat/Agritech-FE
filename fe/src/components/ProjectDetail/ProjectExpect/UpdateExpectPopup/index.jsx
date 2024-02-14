@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Modal } from 'antd'
 import UpdateExpectForm from './UpdateExpectForm'
 
-const UpdateExpectPopup = ({ expect, refetch }) => {
+const UpdateExpectPopup = ({ expect, refetch, openNotificationWithIcon }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
     setIsModalOpen(true)
@@ -26,7 +26,12 @@ const UpdateExpectPopup = ({ expect, refetch }) => {
         okText="Submit"
         footer={null}
       >
-        <UpdateExpectForm handleCloseForm={handleOk} expect={expect} refetch={refetch} />
+        <UpdateExpectForm
+          handleCloseForm={handleOk}
+          expect={expect}
+          refetch={refetch}
+          openNotificationWithIcon={openNotificationWithIcon}
+        />
       </Modal>
     </>
   )

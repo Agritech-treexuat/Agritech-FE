@@ -324,6 +324,32 @@ const PROJECT = {
       .catch((err) => {
         return err
       })
+  },
+
+  deleteExpect: async ({ projectId, expectId }) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/project/${projectId}/expect/${expectId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  deleteOutput: async ({ projectId, outputId }) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/project/${projectId}/output/${outputId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 }
 
