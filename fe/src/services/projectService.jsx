@@ -311,6 +311,19 @@ const PROJECT = {
       .catch((err) => {
         return err
       })
+  },
+
+  deleteProcess: async ({ projectId, processId }) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/project/${projectId}/process/${processId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 }
 

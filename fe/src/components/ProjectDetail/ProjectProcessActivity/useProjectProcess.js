@@ -22,7 +22,7 @@ export default function useProjectProcess({ projectId }) {
     queryKey: ['getProcess', projectId],
     queryFn: () => PROJECT.getProcess(projectId),
     staleTime: 20 * 1000,
-    select: (data) => parseData(data?.data?.metadata.process),
+    select: (data) => parseData(data?.data?.metadata),
     enabled: !!projectId
   })
 

@@ -88,7 +88,7 @@ const GardenProjectInput = () => {
   const [value, setValue] = useState('all')
 
   const filteredProjects =
-    initData.length > 0
+    initData && initData.length > 0
       ? initData.filter((project) => {
           if (value === 'all') return project
           else {

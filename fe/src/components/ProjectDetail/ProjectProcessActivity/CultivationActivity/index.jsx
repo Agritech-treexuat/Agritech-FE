@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }) => {
@@ -127,7 +127,13 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
   )
 }
 
-const CultivationTable = ({ cultivation, cultivationPlantFarming, handleAddProcess, handleUpdateProcess }) => {
+const CultivationTable = ({
+  cultivation,
+  cultivationPlantFarming,
+  handleAddProcess,
+  handleUpdateProcess,
+  handleDeleteProcess
+}) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
   const [modalUpdateVisible, setModalUpdateVisible] = useState(false)
@@ -204,6 +210,15 @@ const CultivationTable = ({ cultivation, cultivationPlantFarming, handleAddProce
           >
             Chỉnh sửa
           </Button>
+          <Popconfirm
+            title="Xóa"
+            description="Bạn có chắc chắn muốn xóa không"
+            onConfirm={handleDeleteProcess.bind(this, record._id)}
+          >
+            <Button type="primary" style={{ marginRight: '8px' }}>
+              Xóa
+            </Button>
+          </Popconfirm>
           {record.isEdited ? (
             <Button
               type="default"
