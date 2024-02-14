@@ -51,7 +51,8 @@ const ManageRequest = () => {
     address: '',
     phone: '',
     square: 0,
-    price: 0
+    price: 0,
+    status: 'waiting'
   })
 
   const showModal = (_id) => {
@@ -241,12 +242,16 @@ const ManageRequest = () => {
             onOk={handleOk}
             onCancel={handleCancel}
             footer={(_, { OkBtn }) => (
-              <>
-                <Button onClick={handleReject} style={{ backgroundColor: 'red', color: 'white' }}>
-                  Từ chối
-                </Button>
-                <OkBtn />
-              </>
+              
+                reqDetail.status === 'waiting' ? (
+                  <>
+                    <Button onClick={handleReject} style={{ backgroundColor: 'red', color: 'white' }}>
+                      Từ chối
+                    </Button>
+                    <OkBtn />
+                  </>
+                ) : <p>Status: {reqDetail.status}</p>
+              
             )}
           >
             <Divider orientation="left" style={{ fontSize: '14px' }}>
