@@ -1,6 +1,20 @@
 import React from 'react'
 import { useState } from 'react'
-import { Row, Col, Input, Button, DatePicker, Flex, Modal, Divider, Tooltip, notification, Collapse, theme } from 'antd'
+import {
+  Row,
+  Col,
+  Input,
+  Button,
+  DatePicker,
+  Flex,
+  Modal,
+  Divider,
+  Tooltip,
+  notification,
+  Collapse,
+  theme,
+  Radio
+} from 'antd'
 import { EyeOutlined, CaretRightOutlined } from '@ant-design/icons'
 import Loading from '../Loading'
 import { Card } from 'antd'
@@ -12,6 +26,7 @@ import useManageRequest from './useManageRequest'
 const ManageRequest = () => {
   const { token } = theme.useToken()
   const [api, contextHolder] = notification.useNotification()
+  const [value, setValue] = useState('waiting')
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
       message: title,
@@ -26,8 +41,9 @@ const ManageRequest = () => {
     border: 'none'
   }
 
-  const { requests, isSuccess, refetch } = useManageRequest({ status: 'waiting' })
+  const { requests, isSuccess, refetch } = useManageRequest()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [reqDetail, setReqDetail] = useState({
     _id: '',
     date: '',
@@ -113,9 +129,23 @@ const ManageRequest = () => {
     }
   ]
 
-  const onChange = (date, dateString) => {
-    console.log(date, dateString)
+  const onChangeSelectStatus = (e) => {
+    setValue(e.target.value)
   }
+
+  const filteredProjects =
+    requests && requests.length > 0
+      ? requests
+          .filter((request) => {
+            return (
+              request.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              request.phone?.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+          })
+          .filter((request) => {
+            return request.status.toLowerCase().includes(value.toLowerCase())
+          })
+      : []
 
   return (
     <div>
@@ -130,27 +160,29 @@ const ManageRequest = () => {
             </p>
             <Flex style={{ marginBottom: '2rem' }} align="flex-end">
               <Flex vertical style={{ marginRight: '1rem' }}>
-                <label style={{ marginBottom: '0.5rem' }}>Nội dung/Tên người đặt/Dịch vụ đơn hàng: </label>
-                <Input style={{ width: '100%' }} placeholder="Search" />
-              </Flex>
-              <Flex vertical style={{ marginRight: '1rem' }}>
-                <label style={{ marginBottom: '0.5rem' }}>Ngày đặt hàng: </label>
-                <DatePicker onChange={onChange} />
-              </Flex>
-              <Flex gap="small" wrap="wrap">
-                <Button type="primary">Tìm kiếm</Button>
-                <Button>Đặt lại</Button>
+                <label style={{ marginBottom: '0.5rem' }}>Tên / Sđt / Email của khách hàng: </label>
+                <Input
+                  placeholder="Tìm kiếm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ width: '100%' }}
+                />
               </Flex>
             </Flex>
           </div>
           <h2 style={{ textAlign: 'left', fontSize: '18px' }}>Danh sách yêu cầu của khách hàng</h2>
+          <Radio.Group onChange={onChangeSelectStatus} value={value}>
+            <Radio value="waiting"> Đang đợi </Radio>
+            <Radio value="accepted"> Đã chấp nhận </Radio>
+            <Radio value="rejected"> Đã từ chối </Radio>
+          </Radio.Group>
           <div
             style={{
               display: 'flex',
               flexWrap: 'wrap'
             }}
           >
-            {requests.map((req) => (
+            {filteredProjects.map((req) => (
               <Card
                 title={`Ngày đặt hàng: ${formatDateTime(req.date)}`}
                 hoverable
