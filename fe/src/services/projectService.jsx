@@ -128,7 +128,7 @@ const PROJECT = {
   addOutput: async (data, projectId) => {
     return await privateHttp({
       method: 'POST',
-      url: `/farm/project/addOutput/${projectId}`,
+      url: `project/${projectId}/output`,
       data
     })
       .then((res) => {
@@ -234,8 +234,8 @@ const PROJECT = {
 
   editOutput: async (data, projectId, outputId) => {
     return await privateHttp({
-      method: 'POST',
-      url: `/farm/project/editOutput/${projectId}/${outputId}`,
+      method: 'PATCH',
+      url: `project/${projectId}/output${outputId}`,
       data
     })
       .then((res) => {

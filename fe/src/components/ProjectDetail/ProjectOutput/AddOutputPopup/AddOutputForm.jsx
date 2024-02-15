@@ -3,8 +3,10 @@ import { useRef } from 'react'
 import './style.css'
 import { UploadOutlined } from '@ant-design/icons'
 import { useParams } from 'react-router'
-import FARM from '../../../../services/farmService'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+import PROJECT from '../../../../services/projectService'
+import token from '../../../../utils/token'
+const {getAccessToken, getRefreshToken} = token
 
 const layout = {
   labelCol: {
@@ -48,7 +50,8 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
   const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
 
   const onFinish = (values) => {
-    const images = values.upload ? values.upload.map((upload) => upload.name) : []
+    console.log("values", values)
+    const images = values.upload ? values.upload.map((upload) => upload.response.metadata.thumb_url) : []
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
     delete updatedValue.date
     delete updatedValue['amount per one']
@@ -56,12 +59,17 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
     const data = {
       tx: 'b',
       ...updatedValue,
-      exportQR: false
+      exportQR: false,
+      distributerWithAmount: updatedValue.npp.map((item) => ({
+        distributer: item.name,
+        amount: item.amount
+      }))
     }
     const totalNppAmount = values.npp ? values.npp.reduce((total, item) => total + item.amount, 0) : 0
 
     if (values.amount >= totalNppAmount) {
       handleSubmitOutput(data, params.id)
+      console.log("data", data)
     } else {
       alert('Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế')
     }
@@ -69,7 +77,7 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
 
   const handleSubmitOutput = async (data, projectId) => {
     try {
-      const res = await FARM.addOutput(data, projectId)
+      const res = await PROJECT.addOutput(data, projectId)
       if (res.status === 200) {
         refetch()
         openNotificationWithIcon('success', 'Thành công', 'Thêm đầu ra thành công')
@@ -83,10 +91,15 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
   }
 
   const uploadProps = {
-    name: 'logo',
-    action: 'http://35.247.150.142:8080/upload/error',
+    action: 'http://127.0.0.1:3052/v1/api/upload/single',
+    multiple: true,
     method: 'post',
     accept: 'image/*',
+    name: 'file',
+    headers: {
+      'authorization': getAccessToken(),
+      'x-rtoken-id': getRefreshToken()
+    },
     onChange(info) {
       if (info.file.status === 'done') {
         console.log(`${info.file.name} file uploaded successfully`)
