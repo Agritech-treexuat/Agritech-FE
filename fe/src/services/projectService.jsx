@@ -235,7 +235,7 @@ const PROJECT = {
   editOutput: async (data, projectId, outputId) => {
     return await privateHttp({
       method: 'PATCH',
-      url: `project/${projectId}/output${outputId}`,
+      url: `project/${projectId}/output/${outputId}`,
       data
     })
       .then((res) => {

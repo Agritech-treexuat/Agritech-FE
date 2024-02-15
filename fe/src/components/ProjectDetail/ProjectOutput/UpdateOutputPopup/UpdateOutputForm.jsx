@@ -25,6 +25,7 @@ const tailLayout = {
   }
 }
 const normFile = (e) => {
+  console.log('Upload event:', e)
   if (Array.isArray(e)) {
     return e
   }
@@ -48,6 +49,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
     'amount per one': output.amountPerOne,
     upload: output.images,
     npp: output.distributerWithAmount.map((item) => ({
+      id: item.distributer._id,
       name: item.distributer.name,
       amount: item.amount
     }))
@@ -64,16 +66,17 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
 
   const onFinish = (values) => {
     console.log("values", values)
-    const images = values.upload ? values.upload.map((upload) => upload.response.metadata.thumb_url) : []
+    const images = values.upload ? values.upload.map((upload) => upload.response ? upload.response.metadata.thumb_url : upload) : []
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
     delete updatedValue.date
     delete updatedValue.upload
     delete updatedValue['amount per one']
+    console.log("updatedValue: ", updatedValue)
     const data = {
       tx: 'b',
       ...updatedValue,
       distributerWithAmount: updatedValue.npp.map((item) => ({
-        distributer: item.name,
+        distributer: item.id || item.name,
         amount: item.amount
       }))
     }
@@ -82,7 +85,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
 
     const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0)
     if (values.amount >= totalNppAmount) {
-      // handleSubmitOutput(data, params.id, output._id)
+      handleSubmitOutput(data, params.id, output.id)
     } else {
       alert('Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế')
     }
@@ -113,6 +116,12 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
       'authorization': getAccessToken(),
       'x-rtoken-id': getRefreshToken()
     },
+    fileList: output.images.map((image, index) => ({
+      uid: index,
+      name: image,
+      status: 'done',
+      url: image
+    })),
     onChange(info) {
       if (info.file.status === 'done') {
         console.log(`${info.file.name} file uploaded successfully`)
@@ -121,6 +130,8 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
       }
     }
   }
+
+  console.log("uploadProps: ", uploadProps)
 
 
   return (
@@ -192,6 +203,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
                 <Form.Item
                   {...restField}
                   name={[name, 'name']}
+                  value={[name, 'id']}
                   rules={[
                     {
                       required: true,
