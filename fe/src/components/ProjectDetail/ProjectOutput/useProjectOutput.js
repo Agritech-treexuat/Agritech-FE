@@ -24,7 +24,7 @@ export default function useProjectOutput({ projectId }) {
     queryKey: ['projectOutput', projectId],
     queryFn: () => PROJECT.getOutput(projectId),
     staleTime: 20 * 1000,
-    select: (data) => parseData(data?.data?.metadata.output),
+    select: (data) => parseData(data?.data?.metadata),
     enabled: !!projectId
   })
 

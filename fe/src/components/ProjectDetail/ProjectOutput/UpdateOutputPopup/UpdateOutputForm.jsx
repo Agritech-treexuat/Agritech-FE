@@ -5,6 +5,9 @@ import { UploadOutlined } from '@ant-design/icons'
 import FARM from '../../../../services/farmService'
 import { useParams } from 'react-router'
 import './style.css'
+import PROJECT from '../../../../services/projectService'
+import token from '../../../../utils/token'
+const {getAccessToken, getRefreshToken} = token
 
 const layout = {
   labelCol: {
@@ -22,13 +25,14 @@ const tailLayout = {
   }
 }
 const normFile = (e) => {
+  console.log('Upload event:', e)
   if (Array.isArray(e)) {
     return e
   }
   return e?.fileList
 }
 
-const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer }) => {
+const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, openNotificationWithIcon }) => {
   const params = useParams()
   const dateObj = new Date(output.time)
 
@@ -38,13 +42,20 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer })
 
   const formattedDate = `${yearData}-${monthData}-${dateData}`
   const formRef = React.useRef(null)
+  console.log("output: ", output)
   const initValue = {
     date: formattedDate,
     amount: output.amount,
     'amount per one': output.amountPerOne,
     upload: output.images,
-    npp: output.npp
+    npp: output.distributerWithAmount.map((item) => ({
+      id: item.distributer._id,
+      name: item.distributer.name,
+      amount: item.amount
+    }))
   }
+
+  console.log("init: ", initValue)
 
   const onSearch = (value) => {
     console.log('search:', value)
@@ -54,19 +65,27 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer })
   const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
 
   const onFinish = (values) => {
-    const images = values.upload.map((item) => (typeof item === 'string' ? item : item.name))
+    console.log("values", values)
+    const images = values.upload ? values.upload.map((upload) => upload.response ? upload.response.metadata.thumb_url : upload) : []
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
     delete updatedValue.date
     delete updatedValue.upload
     delete updatedValue['amount per one']
+    console.log("updatedValue: ", updatedValue)
     const data = {
       tx: 'b',
-      ...updatedValue
+      ...updatedValue,
+      distributerWithAmount: updatedValue.npp.map((item) => ({
+        distributer: item.id || item.name,
+        amount: item.amount
+      }))
     }
+
+    console.log("data: ", data)
 
     const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0)
     if (values.amount >= totalNppAmount) {
-      handleSubmitOutput(data, params.id, output._id)
+      handleSubmitOutput(data, params.id, output.id)
     } else {
       alert('Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế')
     }
@@ -74,13 +93,46 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer })
 
   const handleSubmitOutput = async (data, projectId, outputId) => {
     try {
-      await FARM.editOutput(data, projectId, outputId)
-      refetch()
+      const res = await PROJECT.editOutput(data, projectId, outputId)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+      }
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)
     }
   }
+
+  const uploadProps = {
+    action: 'http://127.0.0.1:3052/v1/api/upload/single',
+    multiple: true,
+    method: 'post',
+    accept: 'image/*',
+    name: 'file',
+    headers: {
+      'authorization': getAccessToken(),
+      'x-rtoken-id': getRefreshToken()
+    },
+    fileList: output.images.map((image, index) => ({
+      uid: index,
+      name: image,
+      status: 'done',
+      url: image
+    })),
+    onChange(info) {
+      if (info.file.status === 'done') {
+        console.log(`${info.file.name} file uploaded successfully`)
+      } else if (info.file.status === 'error') {
+        console.error(`${info.file.name} file upload failed.`)
+      }
+    }
+  }
+
+  console.log("uploadProps: ", uploadProps)
+
 
   return (
     <Form
@@ -131,7 +183,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer })
       </Form.Item>
 
       <Form.Item name="upload" label="Ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
-        <Upload name="logo" action="/upload.do" listType="picture">
+      <Upload {...uploadProps} listType="picture">
           <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
         </Upload>
       </Form.Item>
@@ -151,6 +203,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer })
                 <Form.Item
                   {...restField}
                   name={[name, 'name']}
+                  value={[name, 'id']}
                   rules={[
                     {
                       required: true,

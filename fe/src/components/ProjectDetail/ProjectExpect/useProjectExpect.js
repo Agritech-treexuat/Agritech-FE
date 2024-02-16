@@ -20,7 +20,7 @@ export default function useProjectExpect({ projectId }) {
     queryKey: ['projectExpect', projectId],
     queryFn: () => PROJECT.getExpect(projectId),
     staleTime: 20 * 1000,
-    select: (data) => parseData(data?.data?.metadata.expect),
+    select: (data) => parseData(data?.data?.metadata),
     enabled: !!projectId
   })
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router'
-import { Card, Tooltip, Button, Flex, notification } from 'antd'
+import { Card, Tooltip, Button, Flex, notification, Modal, Radio } from 'antd'
 import { EditFilled } from '@ant-design/icons'
 import Loading from '../../../pages/Loading'
 import { formatDate } from '../../../utils/helpers'
@@ -11,6 +11,58 @@ import GARDEN from '../../../services/gardenService'
 import PROJECT from '../../../services/projectService'
 
 const { Meta } = Card
+
+const UpdateStatusModal = ({
+  visible,
+  onCancel,
+  onInProgressUpdate,
+  onHarvestingUpdate,
+  onAlmostFinishedUpdate,
+  onFinishedUpdate,
+  onCancelUpdate,
+  selectedItem
+}) => {
+  return (
+    selectedItem && (
+      <Modal
+        open={visible}
+        title="Upate status"
+        onCancel={onCancel}
+        footer={null}
+        width={400} // Đặt độ rộng cho Modal
+      >
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ marginBottom: '20px', fontSize: '16px' }}>Vui lòng chọn một lựa chọn để tiếp tục:</p>
+          {selectedItem.status !== 'inProgress' && (
+            <Button onClick={onInProgressUpdate} style={{ marginBottom: '10px', width: '100%' }}>
+              Đang thực hiện
+            </Button>
+          )}
+          {selectedItem.status !== 'harvesting' && (
+            <Button onClick={onHarvestingUpdate} style={{ marginBottom: '10px', width: '100%' }}>
+              Đang thu hoạch
+            </Button>
+          )}
+          {selectedItem.status !== 'almostFinished' && (
+            <Button onClick={onAlmostFinishedUpdate} style={{ marginBottom: '10px', width: '100%' }}>
+              Sắp thu hoạch xong
+            </Button>
+          )}
+          {selectedItem.status !== 'finished' && (
+            <Button onClick={onFinishedUpdate} style={{ marginBottom: '10px', width: '100%' }}>
+              Hoàn thành
+            </Button>
+          )}
+          {selectedItem.status !== 'cancel' && (
+            <Button onClick={onCancelUpdate} style={{ marginBottom: '10px', width: '100%' }}>
+              Đã hủy
+            </Button>
+          )}
+        </div>
+      </Modal>
+    )
+  )
+}
 
 const GardenProjectInput = () => {
   const [api, contextHolder] = notification.useNotification()
@@ -30,12 +82,26 @@ const GardenProjectInput = () => {
   const [selectedPlant, setSelectedPlant] = useState(null)
   const [selectedSeed, setSelectedSeed] = useState(null)
   const [openSeed, setOpenSeed] = useState(false)
+  const [openUpdateStatus, setOpenUpdateStatus] = useState(false)
   const [isAddSeed, setIsAddSeed] = useState(false)
   const { initData, isSuccess, refetch } = useGardenProjectInput(gardenId)
+  const [value, setValue] = useState('all')
+
+  const filteredProjects =
+    initData && initData.length > 0
+      ? initData.filter((project) => {
+          if (value === 'all') return project
+          else {
+            return project.status.toLowerCase().includes(value.toLowerCase())
+          }
+        })
+      : []
+  const onChange = (e) => {
+    setValue(e.target.value)
+  }
 
   const handleAddPlant = (plant) => {
     setSelectedPlant(plant)
-    console.log(plant)
     setOpen(false)
     setIsAddSeed(true)
     setOpenSeed(true)
@@ -74,8 +140,26 @@ const GardenProjectInput = () => {
       openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
     } catch (error) {
       console.log(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
     }
     setOpenEdit(false)
+  }
+
+  const handleUpdateStatus = async (status) => {
+    try {
+      const data = {
+        status: status
+      }
+      const res = await PROJECT.editProjectInfo(data, projectDetail._id)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      }
+    } catch (error) {
+      console.log(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
+    }
+    setOpenUpdateStatus(false)
   }
 
   return (
@@ -94,13 +178,21 @@ const GardenProjectInput = () => {
               Thêm cây mới
             </Button>
           </Flex>
+          <Radio.Group onChange={onChange} value={value}>
+            <Radio value="all"> Tất cả </Radio>
+            <Radio value="inProgress"> Đang thực hiện </Radio>
+            <Radio value="harvesting"> Đang thu hoạch </Radio>
+            <Radio value="almostFinished"> Sắp thu hoạch xong </Radio>
+            <Radio value="finished"> Hoàn thành </Radio>
+            <Radio value="cancel"> Đã hủy </Radio>
+          </Radio.Group>
           <div
             style={{
               display: 'flex',
               flexWrap: 'wrap'
             }}
           >
-            {initData.map((project) => (
+            {filteredProjects.map((project) => (
               <Card
                 style={{
                   width: '23%',
@@ -121,26 +213,39 @@ const GardenProjectInput = () => {
                       }}
                     >
                       <span>Cây: {project.name}</span>{' '}
-                      <Tooltip title="Sửa/Cập nhật thông tin">
-                        <EditFilled
-                          style={{ color: '#476930' }}
-                          onClick={() => {
-                            console.log(project)
-                            setProjectDetail(project)
-                            setSelectedPlantEdit(project.plant)
-                            setIsAddSeed(false)
-                            setOpenEdit(true)
-                          }}
-                        />
-                      </Tooltip>{' '}
                     </div>
                   }
                 />
                 <div style={{ textAlign: 'left' }}>
-                  <p>Hạt giống: {project.input.seed || 'Chưa có thông tin'}</p>
+                  <div style={{ display: 'flex' }}>
+                    <p>Hạt giống: {project.input.seed || 'Chưa có thông tin'}</p>
+                    <Tooltip title="Sửa/Cập nhật Hạt giống">
+                      <EditFilled
+                        style={{ color: '#476930' }}
+                        onClick={() => {
+                          setProjectDetail(project)
+                          setSelectedPlantEdit(project.plant)
+                          setIsAddSeed(false)
+                          setOpenEdit(true)
+                        }}
+                      />
+                    </Tooltip>{' '}
+                  </div>
                   <p>
                     Ngày bắt đầu: {project.input.initDate ? formatDate(project.input.initDate) : 'Chưa có thông tin'}
                   </p>
+                  <div style={{ display: 'flex' }}>
+                    <p>Trạng thái: {project.status || 'Chưa có thông tin'}</p>
+                    <Tooltip title="Sửa/Cập nhật Trạng thái">
+                      <EditFilled
+                        style={{ color: '#476930' }}
+                        onClick={() => {
+                          setProjectDetail(project)
+                          setOpenUpdateStatus(true)
+                        }}
+                      />
+                    </Tooltip>{' '}
+                  </div>
                 </div>
               </Card>
             ))}
@@ -170,6 +275,33 @@ const GardenProjectInput = () => {
             setSelectedSeed={setSelectedSeed}
             handleAddSeed={handleUpdateProject}
             isAddSeed={isAddSeed}
+          />
+          <UpdateStatusModal
+            visible={openUpdateStatus}
+            onCancel={() => {
+              setOpenUpdateStatus(false)
+            }}
+            onInProgressUpdate={() => {
+              handleUpdateStatus('inProgress')
+              setOpenUpdateStatus(false)
+            }}
+            onCancelUpdate={() => {
+              handleUpdateStatus('cancel')
+              setOpenUpdateStatus(false)
+            }}
+            onHarvestingUpdate={() => {
+              handleUpdateStatus('harvesting')
+              setOpenUpdateStatus(false)
+            }}
+            onAlmostFinishedUpdate={() => {
+              handleUpdateStatus('almostFinished')
+              setOpenUpdateStatus(false)
+            }}
+            onFinishedUpdate={() => {
+              handleUpdateStatus('finished')
+              setOpenUpdateStatus(false)
+            }}
+            selectedItem={projectDetail}
           />
         </div>
       ) : (

@@ -128,7 +128,7 @@ const PROJECT = {
   addOutput: async (data, projectId) => {
     return await privateHttp({
       method: 'POST',
-      url: `/farm/project/addOutput/${projectId}`,
+      url: `project/${projectId}/output`,
       data
     })
       .then((res) => {
@@ -234,8 +234,8 @@ const PROJECT = {
 
   editOutput: async (data, projectId, outputId) => {
     return await privateHttp({
-      method: 'POST',
-      url: `/farm/project/editOutput/${projectId}/${outputId}`,
+      method: 'PATCH',
+      url: `project/${projectId}/output/${outputId}`,
       data
     })
       .then((res) => {
@@ -304,6 +304,45 @@ const PROJECT = {
       method: 'POST',
       url: `/farm/addPlantCultivate/${projectId}`,
       data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  deleteProcess: async ({ projectId, processId }) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/project/${projectId}/process/${processId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  deleteExpect: async ({ projectId, expectId }) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/project/${projectId}/expect/${expectId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  deleteOutput: async ({ projectId, outputId }) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/project/${projectId}/output/${outputId}`
     })
       .then((res) => {
         return res

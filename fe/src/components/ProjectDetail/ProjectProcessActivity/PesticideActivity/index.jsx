@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Select } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 const { Option } = Select
@@ -177,7 +177,13 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
   )
 }
 
-const PesticideTable = ({ pesticide, pesticidePlantFarming, handleAddProcess, handleUpdateProcess }) => {
+const PesticideTable = ({
+  pesticide,
+  pesticidePlantFarming,
+  handleAddProcess,
+  handleUpdateProcess,
+  handleDeleteProcess
+}) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
   const [modalUpdateVisible, setModalUpdateVisible] = useState(false)
@@ -272,6 +278,15 @@ const PesticideTable = ({ pesticide, pesticidePlantFarming, handleAddProcess, ha
           >
             Chỉnh sửa
           </Button>
+          <Popconfirm
+            title="Xóa"
+            description="Bạn có chắc chắn muốn xóa không"
+            onConfirm={handleDeleteProcess.bind(this, record._id)}
+          >
+            <Button type="primary" style={{ marginRight: '8px' }}>
+              Xóa
+            </Button>
+          </Popconfirm>
           {record.isEdited ? (
             <Button
               type="default"

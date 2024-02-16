@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
-import { Row, Col, Button, Form, Modal, InputNumber, Divider, Tooltip, notification } from 'antd'
-import { EditFilled } from '@ant-design/icons'
+import { Row, Col, Button, Form, Modal, InputNumber, Divider, Tooltip, notification, Popconfirm } from 'antd'
+import { DeleteFilled, EditFilled } from '@ant-design/icons'
 import Loading from '../Loading'
 import { Card } from 'antd'
 import './style.css'
@@ -170,19 +170,27 @@ const ManageTemplate = () => {
   const { templates, isSuccess, refetch } = useManageTemplate()
   const [template, setTemplate] = useState(null)
   const [open, setOpen] = useState(false)
-  const onCreate = (values, template2) => {
-    async function fetchData() {
-      if (template2) {
-        await GARDEN_SERVICE_TEMPLATE.updateServiceTemplate(values, template2._id)
-        refetch()
-      } else {
-        await GARDEN_SERVICE_TEMPLATE.addServiceTemplate(values)
-        refetch()
-      }
+  const onCreate = async (values, template2) => {
+    if (template2) {
+      await GARDEN_SERVICE_TEMPLATE.updateServiceTemplate(values, template2._id)
+      refetch()
+      openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+    } else {
+      await GARDEN_SERVICE_TEMPLATE.addServiceTemplate(values)
+      refetch()
+      openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
     }
-    fetchData()
     setOpen(false)
-    openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+  }
+
+  const handleDeleteTemplate = async (templateId) => {
+    const res = await GARDEN_SERVICE_TEMPLATE.deleteServiceTemplate(templateId)
+    if (res.status === 200) {
+      refetch()
+      openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
+    } else {
+      openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+    }
   }
 
   return (
@@ -224,15 +232,26 @@ const ManageTemplate = () => {
               <Card
                 title={`Diện tích ${temp.square} M2`}
                 extra={
-                  <Tooltip title="Chỉnh sửa dịch vụ">
-                    <EditFilled
-                      onClick={() => {
-                        setTemplate(temp)
-                        setOpen(true)
-                      }}
-                      style={{ color: '#fff', cursor: 'pointer' }}
-                    />
-                  </Tooltip>
+                  <>
+                    <Tooltip title="Chỉnh sửa dịch vụ">
+                      <EditFilled
+                        onClick={() => {
+                          setTemplate(temp)
+                          setOpen(true)
+                        }}
+                        style={{ color: '#fff', cursor: 'pointer', marginRight: '1.5rem' }}
+                      />
+                    </Tooltip>
+                    <Tooltip title="Xóa dịch vụ">
+                      <Popconfirm
+                        title="Xóa"
+                        description="Bạn có chắc chắn muốn xóa không"
+                        onConfirm={handleDeleteTemplate.bind(this, temp._id)}
+                      >
+                        <DeleteFilled style={{ color: '#fff', cursor: 'pointer' }} />
+                      </Popconfirm>
+                    </Tooltip>
+                  </>
                 }
                 style={{
                   width: '30%',

@@ -15,20 +15,6 @@ const GARDEN = {
       })
   },
 
-  updateStatusGarden: async (data, gardenId) => {
-    return await privateHttp({
-      method: 'PATCH',
-      url: `updateGardenStatus/${gardenId}`,
-      data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
   getGardenByGardenId: async (gardenId) => {
     return await publicHttp({
       method: 'GET',
@@ -127,6 +113,20 @@ const GARDEN = {
     return await privateHttp({
       method: 'DELETE',
       url: `garden/${gardenId}/delivery/${deliveryId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  updateStatusGarden: async (data, gardenId) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `garden/${gardenId}`,
+      data
     })
       .then((res) => {
         return res

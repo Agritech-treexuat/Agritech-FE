@@ -40,6 +40,19 @@ const GARDEN_SERVICE_TEMPLATE = {
       .catch((err) => {
         return err
       })
+  },
+
+  deleteServiceTemplate: async (serviceTemplateId) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `gardenServiceTemplate/${serviceTemplateId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 }
 

@@ -1,22 +1,42 @@
 import React from 'react'
 import Loading from '../../../pages/Loading'
 import { useParams } from 'react-router'
-import { Space, Table } from 'antd'
+import { Button, Popconfirm, Space, Table, notification } from 'antd'
 import UpdateExpectPopup from './UpdateExpectPopup'
 import EditExpectHistory from './EditExpectHistory'
 import AddExpectPopup from './AddExpectPopup'
 import { formatDate } from '../../../utils/helpers'
 import useProjectExpect from './useProjectExpect'
+import PROJECT from '../../../services/projectService'
 
 const { Column } = Table
 
 const ProjectExpect = () => {
   const projectId = useParams().id
   const { expectData, isSuccess, refetch } = useProjectExpect({ projectId })
-  console.log('expectData: ', expectData)
+  const [api, contextHolder] = notification.useNotification()
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5
+    })
+  }
+
+  const handleDeleteExpect = async (expectId) => {
+    const res = await PROJECT.deleteExpect({ projectId, expectId: expectId })
+    if (res.status === 200) {
+      refetch()
+      openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
+    } else {
+      openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+    }
+  }
+
   return (
     <div>
-      <AddExpectPopup refetch={refetch} />
+      {contextHolder}
+      <AddExpectPopup refetch={refetch} openNotificationWithIcon={openNotificationWithIcon} />
       {isSuccess ? (
         <Table dataSource={expectData}>
           <Column title="Transaction hash" dataIndex="tx" key="tx" />
@@ -29,7 +49,20 @@ const ProjectExpect = () => {
             key="action"
             render={(_, expect) => (
               <Space size="middle">
-                <UpdateExpectPopup expect={expect} refetch={refetch} />
+                <UpdateExpectPopup
+                  expect={expect}
+                  refetch={refetch}
+                  openNotificationWithIcon={openNotificationWithIcon}
+                />
+                <Popconfirm
+                  title="Xóa"
+                  description="Bạn có chắc chắn muốn xóa không"
+                  onConfirm={handleDeleteExpect.bind(this, expect.id)}
+                >
+                  <Button type="primary" style={{ marginRight: '8px' }}>
+                    Xóa
+                  </Button>
+                </Popconfirm>
                 <> {expect.isEdited ? <EditExpectHistory expect={expect} /> : <></>}</>
               </Space>
             )}

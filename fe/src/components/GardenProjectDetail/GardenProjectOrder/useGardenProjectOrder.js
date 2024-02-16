@@ -24,7 +24,8 @@ export default function useGardenProjectOrder(gardenId) {
       fruitList: data?.gardenServiceRequest?.fruitList.map((item) => ({
         _id: item?._id,
         name: item?.plant_name
-      }))
+      })),
+      status: data?.status
     }
     return { garden }
   }, [])

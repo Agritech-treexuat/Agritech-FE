@@ -2,14 +2,16 @@ import { useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import GARDEN_SERVICE_REQUEST from '../../services/gardenServiceRequest'
 
-export default function useManageRequest({ status }) {
+export default function useManageRequest() {
   const farmId = localStorage.getItem('id')
   const parseData = useCallback((data) => {
     const gardenServiceRequest = data.map((item) => ({
       _id: item?._id,
+      status: item?.status,
       date: item?.time,
       name: item?.client.name,
       phone: item?.client.phone || 'N/A',
+      address: item?.client.address || 'N/A',
       square: item?.gardenServiceTemplate.square,
       price: item?.gardenServiceTemplate.price,
       herbMax: item?.gardenServiceTemplate.herbMax,
@@ -44,12 +46,13 @@ export default function useManageRequest({ status }) {
           }))
         : []
     }))
+
     return { gardenServiceRequest }
   }, [])
 
   const { data, isSuccess, isLoading, refetch } = useQuery({
     queryKey: ['getGardenServiceRequest', farmId],
-    queryFn: () => GARDEN_SERVICE_REQUEST.getGardenServiceRequest(farmId, status),
+    queryFn: () => GARDEN_SERVICE_REQUEST.getGardenServiceRequest(farmId),
     staleTime: 20 * 1000,
     select: (data) => parseData(data?.data?.metadata),
     enabled: !!farmId

@@ -20,7 +20,7 @@ const tailLayout = {
   }
 }
 
-const UpdateExpectForm = ({ handleCloseForm, expect, refetch }) => {
+const UpdateExpectForm = ({ handleCloseForm, expect, refetch, openNotificationWithIcon }) => {
   const params = useParams()
   const dateObj = new Date(expect.time)
 
@@ -47,8 +47,13 @@ const UpdateExpectForm = ({ handleCloseForm, expect, refetch }) => {
 
   const handleSubmitexpect = async ({ data, projectId, expectId }) => {
     try {
-      await PROJECT.editExpect(data, projectId, expectId)
-      refetch()
+      const res = await PROJECT.editExpect(data, projectId, expectId)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+      }
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)

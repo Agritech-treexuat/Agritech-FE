@@ -1,17 +1,77 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router'
-import { Divider, Alert } from 'antd'
+import { Divider, Alert, Tooltip, Modal, Button, notification } from 'antd'
 import Loading from '../../../pages/Loading'
-import { CalendarFilled } from '@ant-design/icons'
+import { CalendarFilled, EditFilled } from '@ant-design/icons'
 import { formatDateTime } from '../../../utils/helpers'
 import useGardenProjectOrder from './useGardenProjectOrder'
+import GARDEN from '../../../services/gardenService'
+
+const UpdateStatusModal = ({ visible, onCancel, onInProgressUpdate, onCancelUpdate, onDoneUpdate, selectedItem }) => {
+  return (
+    selectedItem && (
+      <Modal
+        open={visible}
+        title="Upate status"
+        onCancel={onCancel}
+        footer={null}
+        width={400} // Đặt độ rộng cho Modal
+      >
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ marginBottom: '20px', fontSize: '16px' }}>Vui lòng chọn một lựa chọn để tiếp tục:</p>
+          {selectedItem.status !== 'started' && (
+            <Button onClick={onInProgressUpdate} style={{ marginBottom: '10px', width: '100%' }}>
+              Đang thực hiện
+            </Button>
+          )}
+          {selectedItem.status !== 'end' && (
+            <Button onClick={onDoneUpdate} style={{ marginBottom: '10px', width: '100%' }}>
+              Hoàn thành
+            </Button>
+          )}
+          {selectedItem.status !== 'cancel' && (
+            <Button onClick={onCancelUpdate} style={{ marginBottom: '10px', width: '100%' }}>
+              Đã hủy
+            </Button>
+          )}
+        </div>
+      </Modal>
+    )
+  )
+}
 
 const GardenProjectOrder = () => {
   const gardenId = useParams().id
-  const { initData, isSuccess } = useGardenProjectOrder(gardenId)
+  const [openUpdateStatus, setOpenUpdateStatus] = useState(false)
+  const { initData, isSuccess, refetch } = useGardenProjectOrder(gardenId)
+
+  const [api, contextHolder] = notification.useNotification()
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5
+    })
+  }
+
+  const handleUpdateStatus = async (status) => {
+    try {
+      const data = {
+        status: status
+      }
+      const res = await GARDEN.updateStatusGarden(data, gardenId)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      }
+    } catch (error) {
+      openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
+    }
+  }
 
   return (
     <div>
+      {contextHolder}
       {isSuccess ? (
         <div>
           <div>
@@ -21,6 +81,47 @@ const GardenProjectOrder = () => {
               showIcon
               icon={<CalendarFilled />}
               type="success"
+            />
+            <div
+              style={{
+                display: 'flex'
+              }}
+            >
+              <h3 style={{ marginRight: '5px' }}>
+                Trạng thái:{' '}
+                {initData.status === 'started'
+                  ? 'Đang thực hiện'
+                  : initData.status === 'end'
+                    ? 'Đã kết thúc'
+                    : 'Đã hủy'}{' '}
+              </h3>
+              <Tooltip title="Sửa/Cập nhật trạng thái">
+                <EditFilled
+                  style={{ color: '#476930' }}
+                  onClick={() => {
+                    setOpenUpdateStatus(true)
+                  }}
+                />
+              </Tooltip>{' '}
+            </div>
+            <UpdateStatusModal
+              visible={openUpdateStatus}
+              onCancel={() => {
+                setOpenUpdateStatus(false)
+              }}
+              onInProgressUpdate={() => {
+                handleUpdateStatus('started')
+                setOpenUpdateStatus(false)
+              }}
+              onCancelUpdate={() => {
+                handleUpdateStatus('cancel')
+                setOpenUpdateStatus(false)
+              }}
+              onDoneUpdate={() => {
+                handleUpdateStatus('end')
+                setOpenUpdateStatus(false)
+              }}
+              selectedItem={initData}
             />
             <Divider orientationMargin={0} orientation="left">
               <h3>Thông tin khách hàng</h3>

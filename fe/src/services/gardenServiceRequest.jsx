@@ -2,10 +2,10 @@ import publicHttp from './http/publicHttp.config'
 import privateHttp from './http/privateHttp.config'
 
 const GARDEN_SERVICE_REQUEST = {
-  getGardenServiceRequest: async (farmId, status) => {
+  getGardenServiceRequest: async (farmId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/gardenServiceRequest/farm/${farmId}/${status}`
+      url: `/gardenServiceRequest/farm/${farmId}`
     })
       .then((res) => {
         return res

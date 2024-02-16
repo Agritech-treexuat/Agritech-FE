@@ -25,7 +25,7 @@ const GardenProjectPlantFarming = () => {
             style={{ marginRight: '8px', marginBottom: '8px' }}
             onClick={() => handlePlantSelect(project._id)}
           >
-            {project.name} - {formatDateTime(project.startDate)}
+            {project.name} - {formatDateTime(project.startDate)} - {project.status}
           </Button>
         ))}
       </div>

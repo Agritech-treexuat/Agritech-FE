@@ -10,7 +10,8 @@ export default function useManageGarden() {
       startDate: item?.startDate,
       template: item?.gardenServiceTemplate,
       client: item?.client,
-      status: item?.status
+      status: item?.status,
+      gardenServiceRequest: item?.gardenServiceRequest
     }))
     return { gardens }
   }, [])
