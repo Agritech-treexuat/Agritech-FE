@@ -5,7 +5,7 @@ const FARM = {
   me: () =>
     privateHttp({
       method: 'GET',
-      url: '/farm/me'
+      url: '/access/me'
     }),
   login: async ({ email, password }) => {
     let result = await publicHttp({
@@ -21,45 +21,23 @@ const FARM = {
     return result
   },
 
-  addPlantCultivates: async (data) => {
-    return await privateHttp({
-      method: 'POST',
-      url: `/farm/plantCultivates`,
-      data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  updatePlantCultivates: async (data) => {
-    return await privateHttp({
-      method: 'PUT',
-      url: `/farm/plantCultivates`,
-      data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getCultivative: async () => {
-    return await publicHttp({
+  getProfile: async ({ farmId }) => {
+    let result = await publicHttp({
       method: 'GET',
-      url: `/cultivative`
+      url: `/farm/${farmId}`
     })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
+
+    return result
+  },
+
+  updateProfile: async ({ data }) => {
+    let result = await privateHttp({
+      method: 'PATCH',
+      url: `/farm`,
+      data
+    })
+
+    return result
   }
 }
 
