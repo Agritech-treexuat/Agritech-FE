@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
+import { metamaskWallet } from '@thirdweb-dev/react'
+const metamaskConfig = metamaskWallet()
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }) => {
   return (
@@ -107,7 +109,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
   )
 }
 
-const OtherTable = ({ other, handleAddProcess, handleUpdateProcess, handleDeleteProcess }) => {
+const OtherTable = ({ other, handleAddProcess, handleUpdateProcess, handleDeleteProcess, address, connect }) => {
   const [modal2Visible, setModal2Visible] = useState(false)
   const [modalUpdateVisible, setModalUpdateVisible] = useState(false)
   const [modalHistoryVisible, setModalHistoryVisible] = useState(false)
@@ -191,8 +193,18 @@ const OtherTable = ({ other, handleAddProcess, handleUpdateProcess, handleDelete
   return (
     <div>
       <div style={{ marginBottom: '16px' }}>
-        <Button type="primary" style={{ marginRight: '8px' }} onClick={() => setModal2Visible(true)}>
-          Thêm
+        <Button
+          type="primary"
+          style={{ marginRight: '8px' }}
+          onClick={async () => {
+            if (!address) await connect(metamaskConfig)
+            else {
+              console.log('address: ', address)
+              setModal2Visible(true)
+            }
+          }}
+        >
+          {address ? 'Thêm' : 'Connect'}
         </Button>
       </div>
       <Table dataSource={other} columns={columns} pagination={false} />

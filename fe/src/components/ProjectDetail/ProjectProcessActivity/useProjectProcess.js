@@ -53,6 +53,32 @@ export default function useProjectProcess({ projectId }) {
     enabled: !!projectId
   })
 
+  const parseDataProjectInfo = useCallback((data) => {
+    console.log('data: ', data)
+    const project = {
+      id: data?._id,
+      plant: data?.plant,
+      seed: data?.seed,
+      startDate: data?.startDate,
+      square: data?.square,
+      status: data?.status,
+      description: data?.description,
+      isGarden: data?.isGarden,
+      projectIndex: data?.projectIndex
+    }
+    return {
+      project
+    }
+  }, [])
+
+  const { data: dataProjectInfo, isSuccess: isSuccessProjectInfo } = useQuery({
+    queryKey: ['projectInfo', projectId],
+    queryFn: () => PROJECT.getProjectByProjectId(projectId),
+    staleTime: 20 * 1000,
+    select: (data) => parseDataProjectInfo(data?.data?.metadata),
+    enabled: !!projectId
+  })
+
   return {
     cultivation: data?.process?.cultivation,
     planting: data?.process?.planting,
@@ -67,6 +93,8 @@ export default function useProjectProcess({ projectId }) {
     fertilizePlantFarming: dataPlantFarming?.plantFarming?.fertilizationActivities,
     pesticidePlantFarming: dataPlantFarming?.plantFarming?.pestAndDiseaseControlActivities,
     isSuccessPlantFarming,
-    isLoadingPlantFarming
+    isLoadingPlantFarming,
+    projectInfo: dataProjectInfo.project,
+    isSuccessProjectInfo
   }
 }

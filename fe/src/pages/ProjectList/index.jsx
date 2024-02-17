@@ -10,6 +10,10 @@ import PROJECT from '../../services/projectService'
 import { formatDateToInput } from '../../utils/helpers'
 import UpdateInputForm from '../../components/ProjectDetail/ProjectInput/UpdateInputForm'
 
+import { useStateContext } from '../../context'
+import { metamaskWallet } from '@thirdweb-dev/react'
+const metamaskConfig = metamaskWallet()
+
 const UpdateStatusModal = ({ visible, onCancel, onInProgressUpdate, onCancelUpdate, onDoneUpdate, selectedItem }) => {
   return (
     selectedItem && (
@@ -44,7 +48,9 @@ const UpdateStatusModal = ({ visible, onCancel, onInProgressUpdate, onCancelUpda
 }
 
 const ProjectList = () => {
+  const { createProject, connect, address } = useStateContext()
   const [form] = Form.useForm()
+  const farmId = localStorage.getItem('id')
 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPlant, setSelectedPlant] = useState(null)
@@ -109,15 +115,29 @@ const ProjectList = () => {
   const handleAddProject = async () => {
     // Thực hiện các thao tác khác khi thêm project
     try {
+      const receip = await createProject({
+        title: farmId,
+        input: `${selectedPlant.id} - ${selectedSeed.id} - ${new Date()} - ${description}`
+      })
+      const txHash = receip.transactionHash
+      console.log('txhash: ', txHash)
+      const projectIndex = receip.events[0].args[0].toNumber()
+      console.log('projectIndex: ', projectIndex)
       const data = {
         plantId: selectedPlant.id,
         seedId: selectedSeed.id,
         startDate: new Date(),
-        description: description
+        description: description,
+        txHash: txHash,
+        projectIndex: projectIndex
       }
-      await PROJECT.initProject(data)
-      refetch()
-      openNotificationWithIcon('success', 'Thông báo', 'Khởi tạo thành công')
+      const res = await PROJECT.initProject(data)
+      console.log('res: ', res)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Khởi tạo thành công in db')
+      }
+      // openNotificationWithIcon('success', 'Thông báo', 'Khởi tạo thành công')
     } catch (error) {
       console.log(error)
       openNotificationWithIcon('error', 'Thông báo', 'Khởi tạo thất bại ')
@@ -198,8 +218,17 @@ const ProjectList = () => {
             <Col span={1}></Col>
             <Col span={6}>
               <Flex gap="small" wrap="wrap">
-                <Button type="primary" onClick={() => setOpen(true)}>
-                  Tạo project mới
+                <Button
+                  type="primary"
+                  onClick={async () => {
+                    if (!address) await connect(metamaskConfig)
+                    else {
+                      console.log('address: ', address)
+                      setOpen(true)
+                    }
+                  }}
+                >
+                  {address ? 'Tạo project mới' : 'Kết nối với ví để tạo project mới'}
                 </Button>
               </Flex>
               <PlantModal

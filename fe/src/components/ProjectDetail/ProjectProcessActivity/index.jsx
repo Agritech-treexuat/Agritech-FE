@@ -9,8 +9,10 @@ import OtherTable from './OtherActivity'
 import PesticideTable from './PesticideActivity'
 
 import PROJECT from '../../../services/projectService'
+import { useStateContext } from '../../../context'
 
 const ProcessActivityPage = ({ projectId }) => {
+  const { insertProcess, connect, address } = useStateContext()
   const {
     cultivation,
     planting,
@@ -23,7 +25,9 @@ const ProcessActivityPage = ({ projectId }) => {
     plantingPlantFarming,
     fertilizePlantFarming,
     pesticidePlantFarming,
-    isSuccessPlantFarming
+    isSuccessPlantFarming,
+    projectInfo,
+    isSuccessProjectInfo
   } = useProjectProcess({
     projectId
   })
@@ -39,11 +43,38 @@ const ProcessActivityPage = ({ projectId }) => {
 
   const handleAddProcess = async (values) => {
     console.log('Received values of form: ', values)
-    const res = await PROJECT.addProcess({ data: values, projectId })
-    if (res.status === 200) {
-      refetch()
-      openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
-    } else {
+    let txHash = 'none'
+    console.log('projectInfo?.projectIndex:', projectInfo?.projectIndex)
+
+    try {
+      if (!projectInfo?.isGarden) {
+        // write to blockchain
+        const receip = await insertProcess({
+          pId: projectInfo?.projectIndex,
+          process: 'inserted process test'
+        })
+        txHash = receip.transactionHash
+        console.log('txhash: ', txHash)
+        console.log('data send: ', {
+          ...values,
+          tx: txHash
+        })
+      }
+      const res = await PROJECT.addProcess({
+        data: {
+          ...values,
+          tx: txHash
+        },
+        projectId
+      })
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
+      }
+    } catch (error) {
+      console.log('error: ', error)
       openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
     }
   }
@@ -71,7 +102,7 @@ const ProcessActivityPage = ({ projectId }) => {
     }
   }
 
-  return isSuccess && isSuccessPlantFarming ? (
+  return isSuccess && isSuccessPlantFarming && isSuccessProjectInfo ? (
     <>
       {contextHolder}
       <div style={{ padding: '24px' }}>
@@ -86,6 +117,8 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleAddProcess={handleAddProcess}
                 handleUpdateProcess={handleUpdateProcess}
                 handleDeleteProcess={handleDeleteProcess}
+                address={address}
+                connect={connect}
               />
             </Card>
           </Col>
@@ -100,6 +133,8 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleAddProcess={handleAddProcess}
                 handleUpdateProcess={handleUpdateProcess}
                 handleDeleteProcess={handleDeleteProcess}
+                address={address}
+                connect={connect}
               />
             </Card>
           </Col>
@@ -114,6 +149,8 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleAddProcess={handleAddProcess}
                 handleUpdateProcess={handleUpdateProcess}
                 handleDeleteProcess={handleDeleteProcess}
+                address={address}
+                connect={connect}
               />
             </Card>
           </Col>
@@ -128,6 +165,8 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleAddProcess={handleAddProcess}
                 handleUpdateProcess={handleUpdateProcess}
                 handleDeleteProcess={handleDeleteProcess}
+                address={address}
+                connect={connect}
               />
             </Card>
           </Col>
@@ -141,6 +180,8 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleAddProcess={handleAddProcess}
                 handleUpdateProcess={handleUpdateProcess}
                 handleDeleteProcess={handleDeleteProcess}
+                address={address}
+                connect={connect}
               />
             </Card>
           </Col>

@@ -12,7 +12,11 @@ export default function useProjectInput({ projectId }) {
       startDate: data?.startDate,
       square: data?.square,
       status: data?.status,
-      description: data?.description
+      description: data?.description,
+      txHash: data?.txHash,
+      createdAtTime: data?.createdAtTime,
+      isInfoEdited: data?.isInfoEdited,
+      historyInfo: data?.historyInfo
     }
     return {
       project

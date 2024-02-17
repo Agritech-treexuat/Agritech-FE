@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
+import { metamaskWallet } from '@thirdweb-dev/react'
+const metamaskConfig = metamaskWallet()
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }) => {
   return (
@@ -125,7 +127,9 @@ const PlantingTable = ({
   plantingPlantFarming,
   handleAddProcess,
   handleUpdateProcess,
-  handleDeleteProcess
+  handleDeleteProcess,
+  address,
+  connect
 }) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
@@ -234,8 +238,18 @@ const PlantingTable = ({
   return (
     <div>
       <div style={{ marginBottom: '16px' }}>
-        <Button type="primary" style={{ marginRight: '8px' }} onClick={() => setModal1Visible(true)}>
-          Thêm
+        <Button
+          type="primary"
+          style={{ marginRight: '8px' }}
+          onClick={async () => {
+            if (!address) await connect(metamaskConfig)
+            else {
+              console.log('address: ', address)
+              setModal1Visible(true)
+            }
+          }}
+        >
+          {address ? 'Thêm' : 'Connect'}
         </Button>
       </div>
       <Table dataSource={planting} columns={columns} pagination={false} />

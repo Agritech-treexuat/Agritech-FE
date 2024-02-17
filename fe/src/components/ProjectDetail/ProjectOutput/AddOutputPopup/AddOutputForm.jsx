@@ -6,7 +6,7 @@ import { useParams } from 'react-router'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import PROJECT from '../../../../services/projectService'
 import token from '../../../../utils/token'
-const {getAccessToken, getRefreshToken} = token
+const { getAccessToken, getRefreshToken } = token
 
 const layout = {
   labelCol: {
@@ -50,7 +50,7 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
   const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
 
   const onFinish = (values) => {
-    console.log("values", values)
+    console.log('values', values)
     const images = values.upload ? values.upload.map((upload) => upload.response.metadata.thumb_url) : []
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
     delete updatedValue.date
@@ -69,7 +69,7 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
 
     if (values.amount >= totalNppAmount) {
       handleSubmitOutput(data, params.id)
-      console.log("data", data)
+      console.log('data', data)
     } else {
       alert('Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế')
     }
@@ -97,7 +97,7 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
     accept: 'image/*',
     name: 'file',
     headers: {
-      'authorization': getAccessToken(),
+      authorization: getAccessToken(),
       'x-rtoken-id': getRefreshToken()
     },
     onChange(info) {

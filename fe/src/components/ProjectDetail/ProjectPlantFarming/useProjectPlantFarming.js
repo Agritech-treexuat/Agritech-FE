@@ -26,7 +26,10 @@ export default function useProjectPlantFarming({
       pestAndDiseaseControlActivities: data?.pestAndDiseaseControlActivities,
       bestTimeCultivate: data?.bestTimeCultivate,
       farmingTime: data?.farmingTime,
-      harvestTime: data?.harvestTime
+      harvestTime: data?.harvestTime,
+      isEdited: data?.isEdited,
+      historyPlantFarmingEdit: data?.historyPlantFarmingEdit,
+      createdAtTime: data?.createdAtTime
     }
     return { plantFarming }
   }, [])
