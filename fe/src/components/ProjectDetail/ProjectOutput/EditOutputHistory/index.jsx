@@ -22,6 +22,7 @@ const EditOutputHistory = ({ output }) => {
       <Modal title="Lịch sử chỉnh sửa" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         {output.historyOutput.map((output) => (
           <>
+            <Divider>Created lúc: {formatDateTime(output.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(output.modifiedAt)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>Tx: {output.tx}</p>

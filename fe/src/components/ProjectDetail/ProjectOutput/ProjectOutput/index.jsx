@@ -14,9 +14,10 @@ const { Column } = Table
 
 const ProjectOutput = () => {
   const params = useParams()
-  const { outputData, isSuccess, refetch, alllDistributer, isSucessDistributer } = useProjectOutput({
-    projectId: params.id
-  })
+  const { outputData, isSuccess, refetch, alllDistributer, isSucessDistributer, projectInfo, isSuccessProjectInfo } =
+    useProjectOutput({
+      projectId: params.id
+    })
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
@@ -63,12 +64,13 @@ const ProjectOutput = () => {
   return (
     <div>
       {contextHolder}
-      {isSuccess && isSucessDistributer ? (
+      {isSuccess && isSucessDistributer && isSuccessProjectInfo ? (
         <>
           <AddOutputPopup
             refetch={refetch}
             alllDistributer={alllDistributer}
             openNotificationWithIcon={openNotificationWithIcon}
+            projectIndex={projectInfo.projectIndex}
           />
           <Table dataSource={outputData}>
             <Column title="Tx" dataIndex="tx" key="tx" />

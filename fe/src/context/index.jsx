@@ -1,8 +1,6 @@
 import React, { useContext, createContext } from 'react'
 
-import { useAddress, useContract, useContractWrite, useConnect, metamaskWallet } from '@thirdweb-dev/react'
-import { ethers } from 'ethers'
-import { EditionMetadataWithOwnerOutputSchema } from '@thirdweb-dev/sdk'
+import { useAddress, useContract, useContractWrite, useConnect } from '@thirdweb-dev/react'
 
 const StateContext = createContext()
 
@@ -36,34 +34,34 @@ export const StateContextProvider = ({ children }) => {
         args: [pId, process]
       })
 
-      return data.receipt
       console.log('contract call success', data)
+      return data.receipt
     } catch (error) {
       console.log('contract call failure', error)
     }
   }
 
-  const _insertExpect = async (pId, expect) => {
+  const _insertExpect = async ({ pId, expect }) => {
     try {
       const data = await insertExpect({
         args: [pId, expect]
       })
 
-      return data.receipt
       console.log('contract call success', data)
+      return data.receipt
     } catch (error) {
       console.log('contract call failure', error)
     }
   }
 
-  const _insertOutput = async (pId, output) => {
+  const _insertOutput = async ({ pId, output }) => {
     try {
       const data = await insertOutput({
         args: [pId, output]
       })
 
-      return data.receipt
       console.log('contract call success', data)
+      return data.receipt
     } catch (error) {
       console.log('contract call failure', error)
     }

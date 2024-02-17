@@ -12,6 +12,10 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
             <p>
+              <span style={{ fontWeight: 'bold' }}>Created time: </span>
+              {formatDateTime(item.createdAtTime)}
+            </p>
+            <p>
               <span style={{ fontWeight: 'bold' }}>Updated time: </span>
               {formatDateTime(item.modifiedAt)}
             </p>
@@ -109,7 +113,15 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
   )
 }
 
-const OtherTable = ({ other, handleAddProcess, handleUpdateProcess, handleDeleteProcess, address, connect }) => {
+const OtherTable = ({
+  other,
+  handleAddProcess,
+  handleUpdateProcess,
+  handleDeleteProcess,
+  address,
+  connect,
+  isGarden
+}) => {
   const [modal2Visible, setModal2Visible] = useState(false)
   const [modalUpdateVisible, setModalUpdateVisible] = useState(false)
   const [modalHistoryVisible, setModalHistoryVisible] = useState(false)
@@ -204,7 +216,7 @@ const OtherTable = ({ other, handleAddProcess, handleUpdateProcess, handleDelete
             }
           }}
         >
-          {address ? 'Thêm' : 'Connect'}
+          {address || isGarden ? 'Thêm' : 'Connect'}
         </Button>
       </div>
       <Table dataSource={other} columns={columns} pagination={false} />

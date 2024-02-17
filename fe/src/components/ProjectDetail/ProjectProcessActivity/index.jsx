@@ -119,6 +119,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleDeleteProcess={handleDeleteProcess}
                 address={address}
                 connect={connect}
+                isGarden={projectInfo.isGarden}
               />
             </Card>
           </Col>
@@ -135,6 +136,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleDeleteProcess={handleDeleteProcess}
                 address={address}
                 connect={connect}
+                isGarden={projectInfo.isGarden}
               />
             </Card>
           </Col>
@@ -151,6 +153,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleDeleteProcess={handleDeleteProcess}
                 address={address}
                 connect={connect}
+                isGarden={projectInfo.isGarden}
               />
             </Card>
           </Col>
@@ -167,6 +170,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleDeleteProcess={handleDeleteProcess}
                 address={address}
                 connect={connect}
+                isGarden={projectInfo.isGarden}
               />
             </Card>
           </Col>
@@ -182,6 +186,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 handleDeleteProcess={handleDeleteProcess}
                 address={address}
                 connect={connect}
+                isGarden={projectInfo.isGarden}
               />
             </Card>
           </Col>

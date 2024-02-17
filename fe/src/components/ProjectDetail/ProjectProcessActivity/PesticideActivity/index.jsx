@@ -14,6 +14,10 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
             <p>
+              <span style={{ fontWeight: 'bold' }}>Created time: </span>
+              {formatDateTime(item.createdAtTime)}
+            </p>
+            <p>
               <span style={{ fontWeight: 'bold' }}>Updated time: </span>
               {formatDateTime(item.modifiedAt)}
             </p>
@@ -186,7 +190,8 @@ const PesticideTable = ({
   handleUpdateProcess,
   handleDeleteProcess,
   address,
-  connect
+  connect,
+  isGarden
 }) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
@@ -322,7 +327,7 @@ const PesticideTable = ({
             }
           }}
         >
-          {address ? 'Thêm' : 'Connect'}
+          {address || isGarden ? 'Thêm' : 'Connect'}
         </Button>
       </div>
       <Table dataSource={pesticide} columns={columns} pagination={false} />

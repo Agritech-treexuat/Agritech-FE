@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Modal, Image, Divider } from 'antd'
+import { Button, Modal, Divider } from 'antd'
 import { formatDate, formatDateTime } from '../../../utils/helpers'
 
 const EditInputHistory = ({ historyInfo }) => {

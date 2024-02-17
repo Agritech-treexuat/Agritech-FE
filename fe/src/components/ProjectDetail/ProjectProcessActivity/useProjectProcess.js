@@ -94,7 +94,7 @@ export default function useProjectProcess({ projectId }) {
     pesticidePlantFarming: dataPlantFarming?.plantFarming?.pestAndDiseaseControlActivities,
     isSuccessPlantFarming,
     isLoadingPlantFarming,
-    projectInfo: dataProjectInfo.project,
+    projectInfo: dataProjectInfo?.project,
     isSuccessProjectInfo
   }
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Button, Modal, Image, Divider } from 'antd'
-import { formatDate, formatDateTime } from '../../../utils/helpers'
+import { Button, Modal, Divider } from 'antd'
+import { formatDateTime } from '../../../utils/helpers'
 
 const EditPlantFarmingHistory = ({ historyPlantFarmingEdit }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
