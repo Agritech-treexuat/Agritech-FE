@@ -4,6 +4,7 @@ import { formatDateTime } from '../../../../utils/helpers'
 
 const EditOutputHistory = ({ output }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  console.log('Output: ', output)
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -31,11 +32,11 @@ const EditOutputHistory = ({ output }) => {
               <p>Lượng trên 1 sản phẩm: {output.amountPerOne}</p>
 
               <div>
-                {output.npp ? (
-                  output.npp.map((npp_item) => (
+                {output.distributerWithAmount ? (
+                  output.distributerWithAmount.map((npp_item) => (
                     <div>
                       <p>
-                        NPP: {npp_item.name} with amount: {npp_item.amount}
+                        {npp_item.distributer.name} cùng lượng {npp_item.amount}
                       </p>
                     </div>
                   ))
@@ -48,7 +49,7 @@ const EditOutputHistory = ({ output }) => {
                 {output.images ? (
                   output.images.map((image) => (
                     <span>
-                      <Image class={'process-img'} src={image} />
+                      <Image className={'process-img'} src={image} />
                     </span>
                   ))
                 ) : (

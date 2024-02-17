@@ -260,10 +260,11 @@ const PROJECT = {
       })
   },
 
-  exportQR: async (projectId, outputId) => {
+  exportQR: async ({ projectId, outputId, data }) => {
     return await privateHttp({
       method: 'POST',
-      url: `/farm/project/exportQR/${projectId}/${outputId}`
+      url: `/qr/export/${projectId}/${outputId}`,
+      data
     })
       .then((res) => {
         return res
