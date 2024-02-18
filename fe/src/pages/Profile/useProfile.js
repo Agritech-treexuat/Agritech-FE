@@ -15,8 +15,7 @@ export default function useProfile() {
       lat: data?.lat,
       lng: data?.lng,
       phone: data?.phone,
-      email: data?.email,
-      avatar: data?.avatar
+      email: data?.email
     }
     return { profile }
   }, [])

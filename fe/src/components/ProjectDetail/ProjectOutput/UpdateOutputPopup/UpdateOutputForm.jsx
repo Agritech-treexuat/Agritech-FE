@@ -119,7 +119,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
       'x-rtoken-id': getRefreshToken()
     },
     fileList: output.images.map((image, index) => ({
-      uid: index,
+      uid: String(index),
       name: image,
       status: 'done',
       url: image
