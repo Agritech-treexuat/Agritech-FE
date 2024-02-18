@@ -54,6 +54,19 @@ const PLANT = {
       })
   },
 
+  deletePlant: async (plantId) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/plant/${plantId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
   // addPlant: async (data) => {
   //   return await privateHttp({
   //     method: 'POST',

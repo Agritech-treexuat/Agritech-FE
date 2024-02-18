@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { Row, Col, Input, Button } from 'antd'
+import { Row, Col, Input, Button, Popconfirm, notification } from 'antd'
 import { Link } from 'react-router-dom'
 import Loading from '../Loading'
 import { Card } from 'antd'
@@ -12,6 +12,7 @@ import PLANT from '../../services/plantService'
 import useManagePlant from './useManagePlant'
 import SEED from '../../services/seedService'
 import PLANT_FARMING from '../../services/plantFarmingService'
+import { DeleteFilled, DeleteOutlined } from '@ant-design/icons'
 
 const { Meta } = Card
 const ManagePlant = () => {
@@ -19,11 +20,19 @@ const ManagePlant = () => {
   const [selectedPlant, setSelectedPlant] = useState(null)
   const [selectedSeed, setSelectedSeed] = useState(null)
   const [openSeed, setOpenSeed] = useState(false)
-  const [isDefaultSeed, setIsDefaultSeed] = useState(false)
   const [open, setOpen] = useState(false)
   const [openPlantFarming, setOpenPlantFarming] = useState(false)
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false)
   const [isDefaultPlantFarming, setIsDefaultPlantFarming] = useState(false)
+
+  const [api, contextHolder] = notification.useNotification()
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5
+    })
+  }
 
   const { plantData, isSuccess, isLoading, refetch, recommendPlantFarming, isSuccessRecommendPlantFarming } =
     useManagePlant({
@@ -34,16 +43,15 @@ const ManagePlant = () => {
     try {
       const res = await PLANT.addPlantByRecommendPlantId(selectedPlant.id)
       if (res.response && res.response?.data?.message === 'Plant already exists') {
-        alert('Cây đã tồn tại')
+        openNotificationWithIcon('error', 'Thông báo', 'Cây đã tồn tại')
       } else {
         const resSeed = await SEED.addSeedByRecommendSeedId({
-          recommendSeedId: selectedSeed.id,
-          isSeedDefault: isDefaultSeed
+          recommendSeedId: selectedSeed.id
         })
         if (resSeed.response && resSeed.response?.data?.message === 'Seed already exists') {
-          alert('Hạt giống đã tồn tại')
+          openNotificationWithIcon('error', 'Thông báo', 'Hạt giống đã tồn tại')
         } else {
-          await PLANT_FARMING.addPlantFarmingWithRecommendPlantIdAndSeedId({
+          const res = await PLANT_FARMING.addPlantFarmingWithRecommendPlantIdAndSeedId({
             plantId: selectedPlant.id,
             seedId: selectedSeed.id,
             data: {
@@ -51,8 +59,12 @@ const ManagePlant = () => {
               ...values
             }
           })
-          refetch()
-          setIsDefaultSeed(false)
+          if (res.status === 200) {
+            refetch()
+            openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
+          } else {
+            openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
+          }
           setOpen(false)
           setOpenSeed(false)
           setOpenPlantFarming(false)
@@ -60,6 +72,7 @@ const ManagePlant = () => {
       }
     } catch (error) {
       console.error(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
     }
   }
 
@@ -86,6 +99,21 @@ const ManagePlant = () => {
     setConfirmationModalVisible(false)
     setIsDefaultPlantFarming(false)
     setOpenPlantFarming(true)
+  }
+
+  const handleDelete = async (plantId) => {
+    try {
+      const res = await PLANT.deletePlant(plantId)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+      }
+    } catch (error) {
+      console.log(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+    }
   }
 
   return (
@@ -125,13 +153,11 @@ const ManagePlant = () => {
                   selectedPlant={selectedPlant}
                   open={openSeed}
                   onClose={() => {
-                    setIsDefaultSeed(false)
                     setOpenSeed(false)
                   }}
                   selectedSeed={selectedSeed}
                   setSelectedSeed={setSelectedSeed}
                   handleAddSeed={handleAddSeed}
-                  setIsDefaultSeed={setIsDefaultSeed}
                 />
                 <AddSeedConfirmationModal
                   visible={confirmationModalVisible}
@@ -166,12 +192,20 @@ const ManagePlant = () => {
           <Row className="plant-grid">
             {plantData.map((plant) => (
               <Col span={4} key={plant._id}>
+                <Popconfirm
+                  title="Are you sure to delete this plant?"
+                  onConfirm={() => handleDelete(plant._id)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <div style={{ position: 'absolute', zIndex: '99', right: '2rem' }}>
+                    <DeleteFilled style={{ fontSize: '24px', color: 'red' }} />
+                  </div>
+                </Popconfirm>
                 <Link to={`/plant/${plant._id}`} key={plant._id}>
                   <Card
                     hoverable
-                    style={{
-                      width: 240
-                    }}
+                    style={{ width: 240, position: 'relative' }}
                     cover={<img alt="plant" src={plant.image} />}
                   >
                     <Meta title={plant.name} />

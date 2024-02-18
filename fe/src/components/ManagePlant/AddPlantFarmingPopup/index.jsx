@@ -4,7 +4,6 @@ import { CloseOutlined } from '@ant-design/icons'
 
 const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming, isUpdate }) => {
   const [form] = Form.useForm()
-  console.log('recommendPlantFarming', recommendPlantFarming)
 
   return (
     <Modal

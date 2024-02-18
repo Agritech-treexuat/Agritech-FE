@@ -7,7 +7,7 @@ import Loading from '../../../pages/Loading'
 const AddPlantPopup = ({ open, onClose, selectedPlant, setSelectedPlant, handleAddPlant }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedType, setSelectedType] = useState(null)
-  const { allPlants, isSuccessAllPlants } = useAddPlantPopup()
+  const { allPlants, isSuccessAllPlants, plantInFarm, isSuccess } = useAddPlantPopup()
 
   const handleSearch = (value) => {
     setSearchTerm(value)
@@ -20,10 +20,11 @@ const AddPlantPopup = ({ open, onClose, selectedPlant, setSelectedPlant, handleA
   const filteredPlants = allPlants.filter(
     (plant) =>
       (searchTerm === '' || plant.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (selectedType === null || plant.type === selectedType)
+      (selectedType === null || plant.type === selectedType) &&
+      !plantInFarm.some((p) => p.name === plant.name)
   )
 
-  return isSuccessAllPlants ? (
+  return isSuccessAllPlants && isSuccess ? (
     <Modal
       open={open}
       title="Chọn cây"

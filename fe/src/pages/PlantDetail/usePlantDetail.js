@@ -8,6 +8,8 @@ export default function usePlantDetail({ plantId, seedId, isDefaultPlantFarming 
     const plans = data.map((plan) => ({
       _id: plan._id,
       seed: plan.seed.seed_name,
+      seedId: plan.seed._id,
+      isSeedDefault: plan.seed.isSeedDefault,
       timeCultivates: plan.timeCultivates,
       cultivationActivities: plan.cultivationActivities,
       plantingActivity: plan.plantingActivity,

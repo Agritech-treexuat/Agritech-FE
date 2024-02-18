@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Collapse, Button, Input, Card, Divider } from 'antd'
+import { Collapse, Button, Card, Divider, Popconfirm, Tooltip, notification, Select } from 'antd'
 import { useParams } from 'react-router-dom'
 import Loading from '../Loading'
 import usePlantDetail from './usePlantDetail'
@@ -8,18 +8,18 @@ import AddSeedConfirmationModal from '../../components/ManagePlant/AddSeedConfir
 import AddPlantFarmingPopup from '../../components/ManagePlant/AddPlantFarmingPopup'
 import PLANT_FARMING from '../../services/plantFarmingService'
 import SEED from '../../services/seedService'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+const { Option } = Select
 
 const { Panel } = Collapse
 
 const PlantDetail = () => {
-  const [search, setSearch] = useState('')
   const plantId = useParams().id
 
   const [openUpdatePlantFarming, setOpenUpdatePlantFarming] = useState(false)
   const [selectedPlantFarmming, setSelectedPlantFarmming] = useState(null)
   const [selectedSeed, setSelectedSeed] = useState(null)
   const [openSeed, setOpenSeed] = useState(false)
-  const [isDefaultSeed, setIsDefaultSeed] = useState(false)
   const [openPlantFarming, setOpenPlantFarming] = useState(false)
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false)
   const [isDefaultPlantFarming, setIsDefaultPlantFarming] = useState(false)
@@ -36,26 +36,48 @@ const PlantDetail = () => {
     isSuccessDefaultPlant
   } = usePlantDetail({ plantId, seedId: selectedSeed?.id, isDefaultPlantFarming })
 
+  const [selectedDefaultSeed, setSelectedDefaultSeed] = useState(
+    plans?.find((item) => item.isSeedDefault)?.seedId || ''
+  )
+  const [isUpdateDefaultSeed, setIsUpdateDefaultSeed] = useState(false)
+
+  const [api, contextHolder] = notification.useNotification()
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5
+    })
+  }
+
   const onCreate = async (values) => {
     try {
       const resSeed = await SEED.addSeedByRecommendSeedId({
-        recommendSeedId: selectedSeed.id,
-        isSeedDefault: isDefaultSeed
+        recommendSeedId: selectedSeed.id
       })
       if (resSeed.response && resSeed.response?.data?.message === 'Seed already exists') {
-        alert('Hạt giống đã tồn tại')
-      } else {
-        await PLANT_FARMING.addPlantFarmingWithRecommendPlantIdAndSeedId({
-          plantId,
-          seedId: selectedSeed.id,
-          data: {
-            isPlantFarmingDefault: true,
-            ...values
-          }
-        })
+        openNotificationWithIcon('error', 'Thông báo', 'Hạt giống đã tồn tại')
+        return
       }
-      refetchPlans()
-      setIsDefaultSeed(false)
+      if (resSeed.status !== 200) {
+        openNotificationWithIcon('error', 'Thông báo', 'Thêm Seed thất bại')
+        return
+      }
+      const res = await PLANT_FARMING.addPlantFarmingWithRecommendPlantIdAndSeedId({
+        plantId,
+        seedId: selectedSeed.id,
+        data: {
+          isPlantFarmingDefault: true,
+          ...values
+        }
+      })
+      if (res.status === 200) {
+        refetchPlans()
+        openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
+      } else {
+        refetchPlans()
+        openNotificationWithIcon('error', 'Thông báo', 'Thêm plant farming thất bại')
+      }
       setIsDefaultPlantFarming(false)
       setOpenSeed(false)
       setOpenPlantFarming(false)
@@ -85,28 +107,126 @@ const PlantDetail = () => {
 
   const handleUpdatePlantFarming = async (values) => {
     try {
-      await PLANT_FARMING.updatePlantFarming({
+      const res = await PLANT_FARMING.updatePlantFarming({
         plantFarmingId: selectedPlantFarmming._id,
         data: values
       })
-      refetchPlans()
+      if (res.status === 200) {
+        refetchPlans()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+      }
       setOpenUpdatePlantFarming(false)
     } catch (error) {
       console.error(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
     }
+  }
+
+  const handleDeleteConfirm = async (item) => {
+    try {
+      const res = await PLANT_FARMING.deletePlantFarming(item._id)
+      if (res.status === 200) {
+        const resSeed = await SEED.deleteSeed(item.seedId)
+        if (resSeed.status === 200) {
+          refetchPlans()
+          openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
+        } else {
+          openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+        }
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+      }
+    } catch (error) {
+      console.error(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+    }
+  }
+
+  const handleUpdateDefaultSeed = async (seedId) => {
+    console.log('seedId:', seedId)
+    try {
+      const res = await SEED.updateSeedDefault(seedId)
+      if (res.status === 200) {
+        refetchPlans()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+      }
+    } catch (error) {
+      console.error(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+    }
+  }
+
+  const handleChange = (value) => {
+    setSelectedDefaultSeed(value)
+  }
+
+  const handleSave = () => {
+    if (selectedDefaultSeed) {
+      handleUpdateDefaultSeed(selectedDefaultSeed)
+      setSelectedDefaultSeed('')
+    }
+    setIsUpdateDefaultSeed(false)
+  }
+
+  const handleCancel = () => {
+    setSelectedDefaultSeed('')
+    setIsUpdateDefaultSeed(false)
   }
 
   return (
     <div>
+      {contextHolder}
       {isSuccessPlans && isSuccessCurrentPlant && isSuccessDefaultPlant ? (
         <>
           <h1>Thông tin cây trồng {currentPlant.name}</h1>
-          <Input
-            placeholder="Tìm kiếm"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{ width: '200px', marginBottom: '16px' }}
-          />
+          <>
+            <h2>Default seed is:</h2>
+            {plans.map((item) => {
+              if (item.isSeedDefault) {
+                return (
+                  <div key={item._id} style={{ display: 'flex' }}>
+                    <p style={{ marginRight: '1rem' }}>Hạt giống mặc định là: {item.seed}</p>
+                    <Tooltip title="Cập nhật hạt giống mặc định">
+                      <Button
+                        shape="circle"
+                        icon={<EditOutlined />}
+                        onClick={() => {
+                          setSelectedDefaultSeed(item.seeedId)
+                          setIsUpdateDefaultSeed(true)
+                        }}
+                      />
+                    </Tooltip>
+                  </div>
+                )
+              }
+              return null
+            })}
+            {isUpdateDefaultSeed && (
+              <div style={{ marginTop: '16px', marginBottom: '16px' }}>
+                <Select
+                  style={{ width: 200, marginRight: '8px' }}
+                  defaultValue={selectedDefaultSeed}
+                  onChange={handleChange}
+                  showSearch
+                  filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                  {plans.map((item) => (
+                    <Option key={item._id} value={item.seedId}>
+                      {item.seed}
+                    </Option>
+                  ))}
+                </Select>
+                <Button type="primary" onClick={handleSave}>
+                  Lưu
+                </Button>
+                <Button onClick={handleCancel}>Hủy</Button>
+              </div>
+            )}
+          </>
           <div>
             <Button
               type="primary"
@@ -123,13 +243,11 @@ const PlantDetail = () => {
             }}
             open={openSeed}
             onClose={() => {
-              setIsDefaultSeed(false)
               setOpenSeed(false)
             }}
             selectedSeed={selectedSeed}
             setSelectedSeed={setSelectedSeed}
             handleAddSeed={handleAddSeed}
-            setIsDefaultSeed={setIsDefaultSeed}
           />
           <AddSeedConfirmationModal
             visible={confirmationModalVisible}
@@ -143,7 +261,6 @@ const PlantDetail = () => {
                 <AddPlantFarmingPopup
                   open={openPlantFarming}
                   onCancel={() => {
-                    setIsDefaultSeed(false)
                     setIsDefaultPlantFarming(false)
                     setOpenPlantFarming(false)
                   }}
@@ -165,7 +282,32 @@ const PlantDetail = () => {
           )}
           {plans.map((item) => (
             <Card style={{ marginTop: '16px' }} key={item._id}>
-              <h2>{item.seed}</h2>
+              <h2>
+                {item.seed} {item.isSeedDefault ? '(default)' : ''}
+                <Popconfirm
+                  title={
+                    item.isSeedDefault
+                      ? 'Bạn không thể xóa hạt giống mặc định, hãy đổi hạt giống mặc định trước'
+                      : 'Xóa hạt giống kèm quy trình canh tác'
+                  }
+                  onConfirm={() => handleDeleteConfirm(item)}
+                  okText="Yes"
+                  cancelText="No"
+                  disabled={item.isSeedDefault}
+                >
+                  <Tooltip
+                    title={
+                      item.isSeedDefault
+                        ? 'Bạn không thể xóa hạt giống mặc định, hãy đổi hạt giống mặc định trước'
+                        : 'Xóa hạt giống kèm quy trình canh tác'
+                    }
+                  >
+                    <span>
+                      <DeleteOutlined style={{ fontSize: '18px', color: item.isSeedDefault ? 'gray' : 'red' }} />
+                    </span>
+                  </Tooltip>
+                </Popconfirm>
+              </h2>
               <Collapse>
                 <Panel header="Quy trình chi tiết">
                   <Button

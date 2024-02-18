@@ -3,15 +3,7 @@ import { Modal, Input, Button, Card, Row, Col, Checkbox } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import useAddSeedPopup from './useAddSeedPopup'
 
-const AddSeedPopup = ({
-  selectedPlant,
-  open,
-  onClose,
-  selectedSeed,
-  setSelectedSeed,
-  handleAddSeed,
-  setIsDefaultSeed
-}) => {
+const AddSeedPopup = ({ selectedPlant, open, onClose, selectedSeed, setSelectedSeed, handleAddSeed }) => {
   const [searchTerm, setSearchTerm] = useState('')
 
   const { allSeedFromPlant, isSuccessAllSeedFromPlant } = useAddSeedPopup({
@@ -49,10 +41,6 @@ const AddSeedPopup = ({
         onChange={(e) => handleSearch(e.target.value)}
         style={{ marginBottom: 16 }}
       />
-
-      <Checkbox onChange={(e) => setIsDefaultSeed(e.target.checked)} style={{ marginBottom: 16 }}>
-        Chọn làm hạt giống mặc định
-      </Checkbox>
 
       <Row gutter={16}>
         {filteredSeeds.map((seed) => (
