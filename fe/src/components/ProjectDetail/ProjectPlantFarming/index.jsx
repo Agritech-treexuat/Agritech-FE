@@ -7,6 +7,7 @@ import { Button, Divider } from 'antd'
 import SelectOptionConfirmationModal from './SelectOptionConfirmationModal'
 import useProjectInput from '../ProjectInput/useProjectInput'
 import PROJECT from '../../../services/projectService'
+import EditPlantFarmingHistory from './EditPlantFarmingHistory'
 
 const ProjectFarming = ({ projectId }) => {
   const [openUpdatePlantFarming, setOpenUpdatePlantFarming] = useState(false)
@@ -136,6 +137,9 @@ const ProjectFarming = ({ projectId }) => {
         >
           Chỉnh sửa
         </Button>
+        {plantFarming.isEdited ? (
+          <EditPlantFarmingHistory historyPlantFarmingEdit={plantFarming.historyPlantFarmingEdit} />
+        ) : null}
         <AddPlantFarmingPopup
           open={openUpdatePlantFarming}
           onCancel={() => setOpenUpdatePlantFarming(false)}

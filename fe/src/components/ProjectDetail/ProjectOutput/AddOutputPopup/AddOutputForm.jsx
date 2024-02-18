@@ -6,7 +6,8 @@ import { useParams } from 'react-router'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import PROJECT from '../../../../services/projectService'
 import token from '../../../../utils/token'
-const {getAccessToken, getRefreshToken} = token
+import { useStateContext } from '../../../../context'
+const { getAccessToken, getRefreshToken } = token
 
 const layout = {
   labelCol: {
@@ -32,7 +33,8 @@ const normFile = (e) => {
   return e?.fileList
 }
 
-const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotificationWithIcon }) => {
+const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotificationWithIcon, projectIndex }) => {
+  const { insertOutput } = useStateContext()
   const today = new Date()
   const year = today.getFullYear()
   const month = (today.getMonth() + 1).toString().padStart(2, '0')
@@ -50,14 +52,13 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
   const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
 
   const onFinish = (values) => {
-    console.log("values", values)
+    console.log('values', values)
     const images = values.upload ? values.upload.map((upload) => upload.response.metadata.thumb_url) : []
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
     delete updatedValue.date
     delete updatedValue['amount per one']
     delete updatedValue.upload
-    const data = {
-      tx: 'b',
+    const dataWithoutTx = {
       ...updatedValue,
       exportQR: false,
       distributerWithAmount: updatedValue.npp.map((item) => ({
@@ -68,15 +69,29 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
     const totalNppAmount = values.npp ? values.npp.reduce((total, item) => total + item.amount, 0) : 0
 
     if (values.amount >= totalNppAmount) {
-      handleSubmitOutput(data, params.id)
-      console.log("data", data)
+      handleSubmitOutput(dataWithoutTx, params.id)
+      console.log('data', dataWithoutTx)
     } else {
       alert('Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế')
     }
   }
 
-  const handleSubmitOutput = async (data, projectId) => {
+  const handleSubmitOutput = async (dataWithoutTx, projectId) => {
     try {
+      const receip = await insertOutput({
+        pId: projectIndex,
+        output: 'inserted output test'
+      })
+      const txHash = receip.transactionHash
+      console.log('txhash: ', txHash)
+      console.log('data send: ', {
+        ...dataWithoutTx,
+        tx: txHash
+      })
+      const data = {
+        ...dataWithoutTx,
+        tx: txHash
+      }
       const res = await PROJECT.addOutput(data, projectId)
       if (res.status === 200) {
         refetch()
@@ -87,6 +102,7 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)
+      openNotificationWithIcon('error', 'Thất bại', 'Thêm đầu ra thất bại')
     }
   }
 
@@ -97,7 +113,7 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
     accept: 'image/*',
     name: 'file',
     headers: {
-      'authorization': getAccessToken(),
+      authorization: getAccessToken(),
       'x-rtoken-id': getRefreshToken()
     },
     onChange(info) {

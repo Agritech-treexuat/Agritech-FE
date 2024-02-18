@@ -7,6 +7,7 @@ import { formatDate } from '../../../utils/helpers'
 import useProjectInput from './useProjectInput'
 import SeedModal from '../AddProject/AddProjectSeed'
 import PROJECT from '../../../services/projectService'
+import EditInputHistory from './EditInputHistory'
 
 const UpdateStatusModal = ({ visible, onCancel, onInProgressUpdate, onCancelUpdate, onDoneUpdate, selectedItem }) => {
   return (
@@ -149,8 +150,17 @@ const ProjectInput = () => {
                 }}
                 selectedItem={projectInfo}
               />
+              {projectInfo.isInfoEdited ? <EditInputHistory historyInfo={projectInfo.historyInfo} /> : null}
             </Col>
           </Row>
+          <div>
+            <label>Current data at time: </label>
+            <span>{projectInfo.createdAtTime}</span>
+          </div>
+          <div>
+            <label>Transaction hash: </label>
+            <span>{projectInfo.txHash}</span>
+          </div>
           <div>
             <label>Trạng thái: </label>
             <span>{projectInfo.status}</span>

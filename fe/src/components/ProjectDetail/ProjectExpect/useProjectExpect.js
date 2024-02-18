@@ -11,7 +11,8 @@ export default function useProjectExpect({ projectId }) {
       amount: item?.amount,
       note: item?.note,
       isEdited: item?.isEdited,
-      historyExpect: item?.historyExpect
+      historyExpect: item?.historyExpect,
+      createdAtTime: item?.createdAtTime
     }))
     return { expect }
   }, [])
@@ -24,10 +25,38 @@ export default function useProjectExpect({ projectId }) {
     enabled: !!projectId
   })
 
+  const parseDataProjectInfo = useCallback((data) => {
+    console.log('data: ', data)
+    const project = {
+      id: data?._id,
+      plant: data?.plant,
+      seed: data?.seed,
+      startDate: data?.startDate,
+      square: data?.square,
+      status: data?.status,
+      description: data?.description,
+      isGarden: data?.isGarden,
+      projectIndex: data?.projectIndex
+    }
+    return {
+      project
+    }
+  }, [])
+
+  const { data: dataProjectInfo, isSuccess: isSuccessProjectInfo } = useQuery({
+    queryKey: ['projectInfo', projectId],
+    queryFn: () => PROJECT.getProjectByProjectId(projectId),
+    staleTime: 20 * 1000,
+    select: (data) => parseDataProjectInfo(data?.data?.metadata),
+    enabled: !!projectId
+  })
+
   return {
     expectData: data?.expect,
     isSuccess,
     isLoading,
-    refetch
+    refetch,
+    projectInfo: dataProjectInfo?.project,
+    isSuccessProjectInfo
   }
 }

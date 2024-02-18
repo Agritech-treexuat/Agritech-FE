@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
+import { metamaskWallet } from '@thirdweb-dev/react'
+const metamaskConfig = metamaskWallet()
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }) => {
   // write a modal history (do not use table), updateTime is modifiedAt and make it highlight. The other information is time, tx, cultivationActivity.name, cultivationActivity.description
@@ -10,6 +12,10 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
+            <p>
+              <span style={{ fontWeight: 'bold' }}>Created time: </span>
+              {formatDateTime(item.createdAtTime)}
+            </p>
             <p>
               <span style={{ fontWeight: 'bold' }}>Updated time: </span>
               {formatDateTime(item.modifiedAt)}
@@ -67,7 +73,6 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
               }
             } else {
               data = {
-                tx: 'tx',
                 time: values.time.toDate(),
                 type: 'cultivation',
                 cultivationActivity: {
@@ -132,7 +137,10 @@ const CultivationTable = ({
   cultivationPlantFarming,
   handleAddProcess,
   handleUpdateProcess,
-  handleDeleteProcess
+  handleDeleteProcess,
+  address,
+  connect,
+  isGarden
 }) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
@@ -239,8 +247,18 @@ const CultivationTable = ({
   return (
     <div>
       <div style={{ marginBottom: '16px' }}>
-        <Button type="primary" style={{ marginRight: '8px' }} onClick={() => setModal1Visible(true)}>
-          Thêm
+        <Button
+          type="primary"
+          style={{ marginRight: '8px' }}
+          onClick={async () => {
+            if (!address) await connect(metamaskConfig)
+            else {
+              console.log('address: ', address)
+              setModal1Visible(true)
+            }
+          }}
+        >
+          {address || isGarden ? 'Thêm' : 'Connect'}
         </Button>
       </div>
       <Table dataSource={cultivation} columns={columns} pagination={false} />

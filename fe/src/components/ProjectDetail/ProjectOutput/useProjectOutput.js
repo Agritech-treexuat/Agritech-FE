@@ -15,7 +15,8 @@ export default function useProjectOutput({ projectId }) {
       distributerWithAmount: item?.distributerWithAmount,
       isEdited: item?.isEdited,
       historyOutput: item?.historyOutput,
-      exportQR: item?.exportQR
+      exportQR: item?.exportQR,
+      createdAtTime: item?.createdAtTime
     }))
     return { output }
   }, [])
@@ -52,6 +53,32 @@ export default function useProjectOutput({ projectId }) {
     select: (data) => parseDataDistributer(data?.data?.metadata)
   })
 
+  const parseDataProjectInfo = useCallback((data) => {
+    console.log('data: ', data)
+    const project = {
+      id: data?._id,
+      plant: data?.plant,
+      seed: data?.seed,
+      startDate: data?.startDate,
+      square: data?.square,
+      status: data?.status,
+      description: data?.description,
+      isGarden: data?.isGarden,
+      projectIndex: data?.projectIndex
+    }
+    return {
+      project
+    }
+  }, [])
+
+  const { data: dataProjectInfo, isSuccess: isSuccessProjectInfo } = useQuery({
+    queryKey: ['projectInfo', projectId],
+    queryFn: () => PROJECT.getProjectByProjectId(projectId),
+    staleTime: 20 * 1000,
+    select: (data) => parseDataProjectInfo(data?.data?.metadata),
+    enabled: !!projectId
+  })
+
   return {
     outputData: data?.output,
     isSuccess,
@@ -59,6 +86,8 @@ export default function useProjectOutput({ projectId }) {
     refetch,
     alllDistributer: dataDistributer?.allDistributer,
     isSucessDistributer,
-    isLoadingDistributer
+    isLoadingDistributer,
+    projectInfo: dataProjectInfo?.project,
+    isSuccessProjectInfo
   }
 }

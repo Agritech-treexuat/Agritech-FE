@@ -14,9 +14,11 @@ const { Column } = Table
 
 const ProjectOutput = () => {
   const params = useParams()
-  const { outputData, isSuccess, refetch, alllDistributer, isSucessDistributer } = useProjectOutput({
-    projectId: params.id
-  })
+  const projectId = useParams().id
+  const { outputData, isSuccess, refetch, alllDistributer, isSucessDistributer, projectInfo, isSuccessProjectInfo } =
+    useProjectOutput({
+      projectId: params.id
+    })
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
@@ -25,17 +27,31 @@ const ProjectOutput = () => {
       duration: 3.5
     })
   }
-  const handleQR = (output) => {
-    handleExportQR(params.id, output._id)
-  }
 
-  const handleExportQR = async (projectId, outputId) => {
+  const handleExportQR = async (output) => {
     try {
-      await FARM.exportQR(projectId, outputId)
-      refetch()
-      alert('Eport QR thanh cong')
+      console.log('output: ', output)
+      const outputId = output.id
+      const data = {
+        amount: output.amount,
+        amountPerOne: output.amountPerOne,
+        distributerWithAmount: output.distributerWithAmount.map((item) => {
+          return {
+            distributer: item.distributer._id,
+            amount: item.amount
+          }
+        })
+      }
+      const res = await PROJECT.exportQR({ projectId, outputId, data })
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Export QR thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Export QR thất bại')
+      }
     } catch (error) {
       console.error(error?.response?.data?.message)
+      openNotificationWithIcon('error', 'Thông báo', 'Export QR thất bại')
     }
   }
 
@@ -63,12 +79,13 @@ const ProjectOutput = () => {
   return (
     <div>
       {contextHolder}
-      {isSuccess && isSucessDistributer ? (
+      {isSuccess && isSucessDistributer && isSuccessProjectInfo ? (
         <>
           <AddOutputPopup
             refetch={refetch}
             alllDistributer={alllDistributer}
             openNotificationWithIcon={openNotificationWithIcon}
+            projectIndex={projectInfo.projectIndex}
           />
           <Table dataSource={outputData}>
             <Column title="Tx" dataIndex="tx" key="tx" />
@@ -131,14 +148,20 @@ const ProjectOutput = () => {
                     description="Bạn có chắc chắn muốn xóa không"
                     onConfirm={handleDeleteOutput.bind(this, output.id)}
                   >
-                    <Button type="primary" style={{ marginRight: '8px' }}>
+                    <Button type="primary" style={{ marginRight: '8px' }} disabled={output.exportQR}>
                       Xóa
                     </Button>
                   </Popconfirm>
                   <> {output.isEdited ? <EditOutputHistory output={output} /> : <></>}</>
-                  <Button type="primary" onClick={() => handleQR(output)} disabled={output.exportQR}>
-                    Xuất QR
-                  </Button>
+                  <Popconfirm
+                    title="Xóa"
+                    description="Bạn có chắc chắn muốn export không"
+                    onConfirm={handleExportQR.bind(this, output)}
+                  >
+                    <Button type="primary" disabled={output.exportQR}>
+                      Xuất QR
+                    </Button>
+                  </Popconfirm>
                 </Space>
               )}
             />

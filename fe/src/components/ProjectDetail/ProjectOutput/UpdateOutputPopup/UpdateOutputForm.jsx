@@ -7,7 +7,7 @@ import { useParams } from 'react-router'
 import './style.css'
 import PROJECT from '../../../../services/projectService'
 import token from '../../../../utils/token'
-const {getAccessToken, getRefreshToken} = token
+const { getAccessToken, getRefreshToken } = token
 
 const layout = {
   labelCol: {
@@ -42,7 +42,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
 
   const formattedDate = `${yearData}-${monthData}-${dateData}`
   const formRef = React.useRef(null)
-  console.log("output: ", output)
+  console.log('output: ', output)
   const initValue = {
     date: formattedDate,
     amount: output.amount,
@@ -55,7 +55,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
     }))
   }
 
-  console.log("init: ", initValue)
+  console.log('init: ', initValue)
 
   const onSearch = (value) => {
     console.log('search:', value)
@@ -65,13 +65,15 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
   const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
 
   const onFinish = (values) => {
-    console.log("values", values)
-    const images = values.upload ? values.upload.map((upload) => upload.response ? upload.response.metadata.thumb_url : upload) : []
+    console.log('values', values)
+    const images = values.upload
+      ? values.upload.map((upload) => (upload.response ? upload.response.metadata.thumb_url : upload))
+      : []
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
     delete updatedValue.date
     delete updatedValue.upload
     delete updatedValue['amount per one']
-    console.log("updatedValue: ", updatedValue)
+    console.log('updatedValue: ', updatedValue)
     const data = {
       tx: 'b',
       ...updatedValue,
@@ -81,7 +83,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
       }))
     }
 
-    console.log("data: ", data)
+    console.log('data: ', data)
 
     const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0)
     if (values.amount >= totalNppAmount) {
@@ -113,11 +115,11 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
     accept: 'image/*',
     name: 'file',
     headers: {
-      'authorization': getAccessToken(),
+      authorization: getAccessToken(),
       'x-rtoken-id': getRefreshToken()
     },
     fileList: output.images.map((image, index) => ({
-      uid: index,
+      uid: String(index),
       name: image,
       status: 'done',
       url: image
@@ -131,8 +133,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
     }
   }
 
-  console.log("uploadProps: ", uploadProps)
-
+  console.log('uploadProps: ', uploadProps)
 
   return (
     <Form
@@ -183,7 +184,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
       </Form.Item>
 
       <Form.Item name="upload" label="Ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
-      <Upload {...uploadProps} listType="picture">
+        <Upload {...uploadProps} listType="picture">
           <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
         </Upload>
       </Form.Item>

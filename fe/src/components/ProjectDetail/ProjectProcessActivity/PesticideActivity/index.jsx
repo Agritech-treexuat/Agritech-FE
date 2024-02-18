@@ -3,6 +3,8 @@ import dayjs from 'dayjs'
 import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+import { metamaskWallet } from '@thirdweb-dev/react'
+const metamaskConfig = metamaskWallet()
 const { Option } = Select
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }) => {
@@ -11,6 +13,10 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
+            <p>
+              <span style={{ fontWeight: 'bold' }}>Created time: </span>
+              {formatDateTime(item.createdAtTime)}
+            </p>
             <p>
               <span style={{ fontWeight: 'bold' }}>Updated time: </span>
               {formatDateTime(item.modifiedAt)}
@@ -182,7 +188,10 @@ const PesticideTable = ({
   pesticidePlantFarming,
   handleAddProcess,
   handleUpdateProcess,
-  handleDeleteProcess
+  handleDeleteProcess,
+  address,
+  connect,
+  isGarden
 }) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
@@ -307,8 +316,18 @@ const PesticideTable = ({
   return (
     <div>
       <div style={{ marginBottom: '16px' }}>
-        <Button type="primary" style={{ marginRight: '8px' }} onClick={() => setModal1Visible(true)}>
-          Thêm
+        <Button
+          type="primary"
+          style={{ marginRight: '8px' }}
+          onClick={async () => {
+            if (!address) await connect(metamaskConfig)
+            else {
+              console.log('address: ', address)
+              setModal1Visible(true)
+            }
+          }}
+        >
+          {address || isGarden ? 'Thêm' : 'Connect'}
         </Button>
       </div>
       <Table dataSource={pesticide} columns={columns} pagination={false} />

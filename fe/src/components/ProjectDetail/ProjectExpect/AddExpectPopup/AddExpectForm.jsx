@@ -3,6 +3,7 @@ import { Button, Form, Input, InputNumber } from 'antd'
 import './style.css'
 import PROJECT from '../../../../services/projectService'
 import { useParams } from 'react-router'
+import { useStateContext } from '../../../../context'
 
 const layout = {
   labelCol: {
@@ -20,7 +21,8 @@ const tailLayout = {
   }
 }
 
-const AddExpectForm = ({ handleCloseForm, refetch, openNotificationWithIcon }) => {
+const AddExpectForm = ({ handleCloseForm, refetch, openNotificationWithIcon, projectIndex }) => {
+  const { insertExpect } = useStateContext()
   const today = new Date()
   const year = today.getFullYear()
   const month = (today.getMonth() + 1).toString().padStart(2, '0')
@@ -36,16 +38,25 @@ const AddExpectForm = ({ handleCloseForm, refetch, openNotificationWithIcon }) =
     const updatedValue = { ...values, time: values.date }
     delete updatedValue.date
     console.log(updatedValue)
-    const data = {
-      tx: 'b',
-      ...updatedValue
-    }
-    handleSubmitExpect(data, params.id)
+    handleSubmitExpect(updatedValue, params.id)
   }
 
-  const handleSubmitExpect = async (data, projectId) => {
+  const handleSubmitExpect = async (updatedValue, projectId) => {
     try {
-      console.log('data to send: ', data, projectId)
+      const receip = await insertExpect({
+        pId: projectIndex,
+        expect: 'inserted expect test'
+      })
+      const txHash = receip.transactionHash
+      console.log('txhash: ', txHash)
+      console.log('data send: ', {
+        ...updatedValue,
+        tx: txHash
+      })
+      const data = {
+        ...updatedValue,
+        tx: txHash
+      }
       const res = await PROJECT.addExpect(data, projectId)
       if (res.status === 200) {
         refetch()
@@ -56,6 +67,7 @@ const AddExpectForm = ({ handleCloseForm, refetch, openNotificationWithIcon }) =
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)
+      openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
     }
   }
 

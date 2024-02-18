@@ -1,11 +1,19 @@
 import React, { useState } from 'react'
 import { Button, Modal } from 'antd'
 import AddOutputForm from './AddOutputForm'
+import { useStateContext } from '../../../../context'
+import { metamaskWallet } from '@thirdweb-dev/react'
+const metamaskConfig = metamaskWallet()
 
-const AddOutputPopup = ({ refetch, alllDistributer, openNotificationWithIcon }) => {
+const AddOutputPopup = ({ refetch, alllDistributer, openNotificationWithIcon, projectIndex }) => {
+  const { connect, address } = useStateContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
-    setIsModalOpen(true)
+    if (address) {
+      setIsModalOpen(true)
+    } else {
+      connect(metamaskConfig)
+    }
   }
   const handleOk = () => {
     setIsModalOpen(false)
@@ -16,7 +24,7 @@ const AddOutputPopup = ({ refetch, alllDistributer, openNotificationWithIcon }) 
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Thêm đầu ra
+        {address ? 'Thêm đầu ra' : 'connect'}
       </Button>
       <Modal title="Thêm đầu ra" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         <AddOutputForm
@@ -24,6 +32,7 @@ const AddOutputPopup = ({ refetch, alllDistributer, openNotificationWithIcon }) 
           refetch={refetch}
           alllDistributer={alllDistributer}
           openNotificationWithIcon={openNotificationWithIcon}
+          projectIndex={projectIndex}
         />
       </Modal>
     </>

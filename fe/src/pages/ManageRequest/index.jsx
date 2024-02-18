@@ -241,18 +241,18 @@ const ManageRequest = () => {
             okText="Chấp nhận"
             onOk={handleOk}
             onCancel={handleCancel}
-            footer={(_, { OkBtn }) => (
-              
-                reqDetail.status === 'waiting' ? (
-                  <>
-                    <Button onClick={handleReject} style={{ backgroundColor: 'red', color: 'white' }}>
-                      Từ chối
-                    </Button>
-                    <OkBtn />
-                  </>
-                ) : <p>Status: {reqDetail.status}</p>
-              
-            )}
+            footer={(_, { OkBtn }) =>
+              reqDetail.status === 'waiting' ? (
+                <>
+                  <Button onClick={handleReject} style={{ backgroundColor: 'red', color: 'white' }}>
+                    Từ chối
+                  </Button>
+                  <OkBtn />
+                </>
+              ) : (
+                <p>Status: {reqDetail.status}</p>
+              )
+            }
           >
             <Divider orientation="left" style={{ fontSize: '14px' }}>
               Thông tin khách hàng

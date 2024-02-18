@@ -13,7 +13,7 @@ const { Column } = Table
 
 const ProjectExpect = () => {
   const projectId = useParams().id
-  const { expectData, isSuccess, refetch } = useProjectExpect({ projectId })
+  const { expectData, isSuccess, refetch, projectInfo, isSuccessProjectInfo } = useProjectExpect({ projectId })
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
@@ -36,8 +36,12 @@ const ProjectExpect = () => {
   return (
     <div>
       {contextHolder}
-      <AddExpectPopup refetch={refetch} openNotificationWithIcon={openNotificationWithIcon} />
-      {isSuccess ? (
+      <AddExpectPopup
+        refetch={refetch}
+        openNotificationWithIcon={openNotificationWithIcon}
+        projectIndex={projectInfo.projectIndex}
+      />
+      {isSuccess && isSuccessProjectInfo ? (
         <Table dataSource={expectData}>
           <Column title="Transaction hash" dataIndex="tx" key="tx" />
           <Column title="Thời gian" key="time" render={(_, expect) => <p>{formatDate(expect.time)}</p>} />

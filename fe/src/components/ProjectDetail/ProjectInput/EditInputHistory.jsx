@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Button, Modal, Image, Divider } from 'antd'
+import { Button, Modal, Divider } from 'antd'
 import { formatDate, formatDateTime } from '../../../utils/helpers'
 
-const EditInputHistory = ({ input }) => {
+const EditInputHistory = ({ historyInfo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
     setIsModalOpen(true)
@@ -27,36 +27,29 @@ const EditInputHistory = ({ input }) => {
         onCancel={handleCancel}
         footer={null}
       >
-        {input.historyInput.map((input) => (
+        {historyInfo.map((input) => (
           <div style={{ width: 'fit-content' }}>
-            <Divider>Chỉnh sửa lúc: {formatDateTime(input.modified_at)}</Divider>
+            <Divider>Created lúc: {formatDateTime(input.createdAtTime)}</Divider>
+            <Divider>Chỉnh sửa lúc: {formatDateTime(input.modifiedAt)}</Divider>
             <div>
               <label>Transaction hash: </label>
-              <span>{input.tx}</span>
+              <span>{input.txHash}</span>
             </div>
             <div>
               <label>Ngày bắt đầu: </label>
-              <span>{formatDate(input.initDate)}</span>
+              <span>{formatDate(input.startDate)}</span>
             </div>
             <div>
               <label>Hạt giống: </label>
-              <span>{input.seed}</span>
+              <span>{input.seed.seed_name}</span>
             </div>
             <div>
-              <label>Lượng: </label>
-              <span>{input.amount}</span>
+              <label>Square: </label>
+              <span>{input.square}</span>
             </div>
             <div>
-              <label>Ảnh: </label>
-              {input.images.length > 0 ? (
-                input.images.map((image) => (
-                  <span>
-                    <Image class={'process-img'} src={image} />
-                  </span>
-                ))
-              ) : (
-                <span>Không có ảnh</span>
-              )}
+              <label>Description: </label>
+              <span>{input.description}</span>
             </div>
           </div>
         ))}
