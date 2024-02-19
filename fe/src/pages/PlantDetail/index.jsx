@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Collapse, Button, Card, Divider, Popconfirm, Tooltip, notification, Select } from 'antd'
+import { Collapse, Button, Divider, Popconfirm, Tooltip, notification, Select, List } from 'antd'
 import { useParams } from 'react-router-dom'
 import Loading from '../Loading'
 import usePlantDetail from './usePlantDetail'
@@ -9,6 +9,7 @@ import AddPlantFarmingPopup from '../../components/ManagePlant/AddPlantFarmingPo
 import PLANT_FARMING from '../../services/plantFarmingService'
 import SEED from '../../services/seedService'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import UpdateSeedInfo from '../../components/ManagePlant/UpdateSeedInfo'
 const { Option } = Select
 
 const { Panel } = Collapse
@@ -19,6 +20,7 @@ const PlantDetail = () => {
   const [openUpdatePlantFarming, setOpenUpdatePlantFarming] = useState(false)
   const [selectedPlantFarmming, setSelectedPlantFarmming] = useState(null)
   const [selectedSeed, setSelectedSeed] = useState(null)
+  const [openUpdateSeed, setOpenUpdateSeed] = useState(false)
   const [openSeed, setOpenSeed] = useState(false)
   const [openPlantFarming, setOpenPlantFarming] = useState(false)
   const [confirmationModalVisible, setConfirmationModalVisible] = useState(false)
@@ -55,12 +57,19 @@ const PlantDetail = () => {
       const resSeed = await SEED.addSeedByRecommendSeedId({
         recommendSeedId: selectedSeed.id
       })
+
       if (resSeed.response && resSeed.response?.data?.message === 'Seed already exists') {
         openNotificationWithIcon('error', 'Thông báo', 'Hạt giống đã tồn tại')
+        setIsDefaultPlantFarming(false)
+        setOpenSeed(false)
+        setOpenPlantFarming(false)
         return
       }
       if (resSeed.status !== 200) {
         openNotificationWithIcon('error', 'Thông báo', 'Thêm Seed thất bại')
+        setIsDefaultPlantFarming(false)
+        setOpenSeed(false)
+        setOpenPlantFarming(false)
         return
       }
       const res = await PLANT_FARMING.addPlantFarmingWithRecommendPlantIdAndSeedId({
@@ -83,6 +92,10 @@ const PlantDetail = () => {
       setOpenPlantFarming(false)
     } catch (error) {
       console.error(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Thêm plant farming thất bại')
+      setIsDefaultPlantFarming(false)
+      setOpenSeed(false)
+      setOpenPlantFarming(false)
     }
   }
 
@@ -177,6 +190,29 @@ const PlantDetail = () => {
     setIsUpdateDefaultSeed(false)
   }
 
+  const handleUpdateSeed = async (values) => {
+    try {
+      const res = await SEED.updateSeed({
+        seedId: selectedSeed.seedId,
+        data: {
+          seed_name: values.name,
+          seed_description: values.description,
+          seed_thumb: values.thumb[0].url || values.thumb[0].response.metadata.thumb_url
+        }
+      })
+      if (res.status === 200) {
+        refetchPlans()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+      }
+      setOpenUpdateSeed(false)
+    } catch (error) {
+      console.error(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+    }
+  }
+
   return (
     <div>
       {contextHolder}
@@ -184,12 +220,11 @@ const PlantDetail = () => {
         <>
           <h1>Thông tin cây trồng {currentPlant.name}</h1>
           <>
-            <h2>Default seed is:</h2>
             {plans.map((item) => {
               if (item.isSeedDefault) {
                 return (
                   <div key={item._id} style={{ display: 'flex' }}>
-                    <p style={{ marginRight: '1rem' }}>Hạt giống mặc định là: {item.seed}</p>
+                    <p style={{ marginRight: '1rem' }}>Hạt giống mặc định là: {item.name}</p>
                     <Tooltip title="Cập nhật hạt giống mặc định">
                       <Button
                         shape="circle"
@@ -216,7 +251,7 @@ const PlantDetail = () => {
                 >
                   {plans.map((item) => (
                     <Option key={item._id} value={item.seedId}>
-                      {item.seed}
+                      {item.name}
                     </Option>
                   ))}
                 </Select>
@@ -255,6 +290,14 @@ const PlantDetail = () => {
             onContinueWithEmpty={handleContinueWithEmpty}
             onContinueWithTemplate={handleContinueWithTemplate}
           />
+
+          <UpdateSeedInfo
+            visible={openUpdateSeed}
+            onCreate={handleUpdateSeed}
+            onCancel={() => setOpenUpdateSeed(false)}
+            isUpdate={true}
+            seed={selectedSeed}
+          />
           {isDefaultPlantFarming ? (
             <>
               {isSuccessRecommendPlantFarming && (
@@ -280,133 +323,157 @@ const PlantDetail = () => {
               />
             </>
           )}
-          {plans.map((item) => (
-            <Card style={{ marginTop: '16px' }} key={item._id}>
-              <h2>
-                {item.seed} {item.isSeedDefault ? '(default)' : ''}
-                <Popconfirm
-                  title={
-                    item.isSeedDefault
-                      ? 'Bạn không thể xóa hạt giống mặc định, hãy đổi hạt giống mặc định trước'
-                      : 'Xóa hạt giống kèm quy trình canh tác'
-                  }
-                  onConfirm={() => handleDeleteConfirm(item)}
-                  okText="Yes"
-                  cancelText="No"
-                  disabled={item.isSeedDefault}
-                >
-                  <Tooltip
+          <List
+            itemLayout="vertical"
+            size="large"
+            pagination={{
+              onChange: (page) => {
+                console.log(page)
+              },
+              pageSize: 3
+            }}
+            dataSource={plans}
+            renderItem={(item) => (
+              <List.Item
+                key={item.name}
+                actions={[
+                  <Popconfirm
                     title={
                       item.isSeedDefault
                         ? 'Bạn không thể xóa hạt giống mặc định, hãy đổi hạt giống mặc định trước'
                         : 'Xóa hạt giống kèm quy trình canh tác'
                     }
+                    onConfirm={() => handleDeleteConfirm(item)}
+                    okText="Yes"
+                    cancelText="No"
+                    disabled={item.isSeedDefault}
                   >
-                    <span>
-                      <DeleteOutlined style={{ fontSize: '18px', color: item.isSeedDefault ? 'gray' : 'red' }} />
-                    </span>
+                    <Tooltip
+                      title={
+                        item.isSeedDefault
+                          ? 'Bạn không thể xóa hạt giống mặc định, hãy đổi hạt giống mặc định trước'
+                          : 'Xóa hạt giống kèm quy trình canh tác'
+                      }
+                    >
+                      <span>
+                        <DeleteOutlined style={{ fontSize: '18px', color: item.isSeedDefault ? 'gray' : 'red' }} />
+                      </span>
+                    </Tooltip>
+                  </Popconfirm>,
+                  <Tooltip title="Chỉnh sửa hạt giống">
+                    <EditOutlined
+                      onClick={() => {
+                        setSelectedSeed(item)
+                        setOpenUpdateSeed(true)
+                      }}
+                    />
                   </Tooltip>
-                </Popconfirm>
-              </h2>
-              <Collapse>
-                <Panel header="Quy trình chi tiết">
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      setSelectedPlantFarmming(item)
-                      setOpenUpdatePlantFarming(true)
-                    }}
-                  >
-                    Chỉnh sửa
-                  </Button>
-                  <AddPlantFarmingPopup
-                    open={openUpdatePlantFarming}
-                    onCancel={() => setOpenUpdatePlantFarming(false)}
-                    onCreate={handleUpdatePlantFarming}
-                    recommendPlantFarming={item}
-                    isUpdate={true}
-                  />
-                  <div>
-                    {/* time cultivates: [{ start, end }] */}
-                    <h2> Thoi gian canh tac </h2>
-                    {item.timeCultivates.map((timeCultivate) => (
-                      <div key={timeCultivate._id}>
-                        <p>Thoi gian bat dau: {timeCultivate.start}</p>
-                        <p>Thoi gian ket thuc: {timeCultivate.end}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <Divider />
-                  <div>
-                    {/*  cultivationActivities: [{name, description}] */}
-                    <h2> Hoat dong voi dat </h2>
-                    {item.cultivationActivities.map((cultivationActivity) => (
-                      <div key={cultivationActivity._id}>
-                        <p>Ten hoat dong: {cultivationActivity.name}</p>
-                        <p>Mo ta: {cultivationActivity.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <Divider />
-                  <div>
-                    {/*  plantingActivity: {density, description} */}
-                    <h2> Hoat dong trong gieo trong </h2>
-                    <p>Mat do gieo trong: {item.plantingActivity.density}</p>
-                    <p>Mo ta: {item.plantingActivity.description}</p>
-                  </div>
-                  <Divider />
-                  <div>
-                    {/* fertilizationActivities: [fertilizationTime, type, description] */}
-                    <h2> Hoat dong phan bon </h2>
-                    {item.fertilizationActivities.map((fertilizationActivity) => (
-                      <div key={fertilizationActivity._id}>
-                        <p>Thoi gian: {fertilizationActivity.fertilizationTime}</p>
-                        <p>Loai: {fertilizationActivity.type}</p>
-                        <p>Mo ta: {fertilizationActivity.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <Divider />
-                  <div>
-                    {/* pestAndDiseaseControlActivities: [{name, type
+                ]}
+                extra={<img width={272} alt="logo" src={item.image} />}
+              >
+                <List.Item.Meta title={item.name} description={item.description} />
+                <Collapse>
+                  <Panel header="Quy trình chi tiết">
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        setSelectedPlantFarmming(item)
+                        setOpenUpdatePlantFarming(true)
+                      }}
+                    >
+                      Chỉnh sửa
+                    </Button>
+                    <AddPlantFarmingPopup
+                      open={openUpdatePlantFarming}
+                      onCreate={handleUpdatePlantFarming}
+                      onCancel={() => {
+                        setOpenUpdatePlantFarming(false)
+                      }}
+                      isUpdate={true}
+                      recommendPlantFarming={selectedPlantFarmming}
+                    />
+                    <div>
+                      {/* time cultivates: [{ start, end }] */}
+                      <h2> Thoi gian canh tac </h2>
+                      {item.timeCultivates.map((timeCultivate) => (
+                        <div key={timeCultivate._id}>
+                          <p>Thoi gian bat dau: {timeCultivate.start}</p>
+                          <p>Thoi gian ket thuc: {timeCultivate.end}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <Divider />
+                    <div>
+                      {/*  cultivationActivities: [{name, description}] */}
+                      <h2> Hoat dong voi dat </h2>
+                      {item.cultivationActivities.map((cultivationActivity) => (
+                        <div key={cultivationActivity._id}>
+                          <p>Ten hoat dong: {cultivationActivity.name}</p>
+                          <p>Mo ta: {cultivationActivity.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <Divider />
+                    <div>
+                      {/*  plantingActivity: {density, description} */}
+                      <h2> Hoat dong trong gieo trong </h2>
+                      <p>Mat do gieo trong: {item.plantingActivity.density}</p>
+                      <p>Mo ta: {item.plantingActivity.description}</p>
+                    </div>
+                    <Divider />
+                    <div>
+                      {/* fertilizationActivities: [fertilizationTime, type, description] */}
+                      <h2> Hoat dong phan bon </h2>
+                      {item.fertilizationActivities.map((fertilizationActivity) => (
+                        <div key={fertilizationActivity._id}>
+                          <p>Thoi gian: {fertilizationActivity.fertilizationTime}</p>
+                          <p>Loai: {fertilizationActivity.type}</p>
+                          <p>Mo ta: {fertilizationActivity.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <Divider />
+                    <div>
+                      {/* pestAndDiseaseControlActivities: [{name, type
                     symptoms
                     description
                     solution: [string]
                     note}] */}
-                    <h2> Hoat dong phong ngua sau, benh </h2>
-                    {item.pestAndDiseaseControlActivities.map((pestAndDiseaseControlActivity) => (
-                      <div key={pestAndDiseaseControlActivity._id}>
-                        <p>Ten: {pestAndDiseaseControlActivity.name}</p>
-                        <p>Loai: {pestAndDiseaseControlActivity.type}</p>
-                        <p>Trieu chung: {pestAndDiseaseControlActivity.symptoms}</p>
-                        <p>Mo ta: {pestAndDiseaseControlActivity.description}</p>
-                        <p>Giai phap:</p>
-                        {pestAndDiseaseControlActivity.solution.map((solution) => (
-                          <p key={solution}>{solution}</p>
-                        ))}
-                        <p>Ghi chu: {pestAndDiseaseControlActivity.note}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <Divider />
-                  <div>
-                    {/* bestTimeCultivate: {start, end} */}
-                    <h2> Thoi gian canh tac tot nhat </h2>
-                    <p>Thoi gian bat dau: {item.bestTimeCultivate.start}</p>
-                    <p>Thoi gian ket thuc: {item.bestTimeCultivate.end}</p>
-                  </div>
+                      <h2> Hoat dong phong ngua sau, benh </h2>
+                      {item.pestAndDiseaseControlActivities.map((pestAndDiseaseControlActivity) => (
+                        <div key={pestAndDiseaseControlActivity._id}>
+                          <p>Ten: {pestAndDiseaseControlActivity.name}</p>
+                          <p>Loai: {pestAndDiseaseControlActivity.type}</p>
+                          <p>Trieu chung: {pestAndDiseaseControlActivity.symptoms}</p>
+                          <p>Mo ta: {pestAndDiseaseControlActivity.description}</p>
+                          <p>Giai phap:</p>
+                          {pestAndDiseaseControlActivity.solution.map((solution) => (
+                            <p key={solution}>{solution}</p>
+                          ))}
+                          <p>Ghi chu: {pestAndDiseaseControlActivity.note}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <Divider />
+                    <div>
+                      {/* bestTimeCultivate: {start, end} */}
+                      <h2> Thoi gian canh tac tot nhat </h2>
+                      <p>Thoi gian bat dau: {item.bestTimeCultivate.start}</p>
+                      <p>Thoi gian ket thuc: {item.bestTimeCultivate.end}</p>
+                    </div>
 
-                  <Divider />
-                  {/* farmingTime: number */}
-                  <p>Thoi gian trong cay: {item.farmingTime}</p>
-                  <Divider />
-                  {/* harvestTime: number */}
-                  <p>Thoi gian thu hoach: {item.harvestTime}</p>
-                  <Divider />
-                </Panel>
-              </Collapse>
-            </Card>
-          ))}
+                    <Divider />
+                    {/* farmingTime: number */}
+                    <p>Thoi gian trong cay: {item.farmingTime}</p>
+                    <Divider />
+                    {/* harvestTime: number */}
+                    <p>Thoi gian thu hoach: {item.harvestTime}</p>
+                    <Divider />
+                  </Panel>
+                </Collapse>
+              </List.Item>
+            )}
+          />
         </>
       ) : (
         <>
