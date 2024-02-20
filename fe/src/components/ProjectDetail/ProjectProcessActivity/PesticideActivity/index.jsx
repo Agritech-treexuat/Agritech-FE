@@ -134,7 +134,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
           </Select>
         </Form.Item>
         <Form.Item name="symptoms" label="Symptoms" rules={[{ required: true, message: 'Please input symptoms!' }]}>
-          <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 3 }} />
+          <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
         </Form.Item>
         <Form.Item name="solution" label="Solution" rules={[{ required: true, message: 'Please input solution!' }]}>
           <Form.List name="solution">
@@ -154,7 +154,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                       ]}
                       noStyle
                     >
-                      <Input.TextArea placeholder="Giải pháp" style={{ width: '100%' }} autoSize={{ minRows: 3 }} />
+                      <Input.TextArea placeholder="Giải pháp" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
                     </Form.Item>
                     {fields.length > 1 ? (
                       <MinusCircleOutlined className="dynamic-delete-button" onClick={() => remove(field.name)} />

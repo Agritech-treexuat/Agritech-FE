@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { Modal, Input, Button, Card, Row, Col, Checkbox } from 'antd'
+import { Modal, Input, Button, Card, Row, Col, Checkbox, Typography } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import useAddSeedPopup from './useAddSeedPopup'
+
+const { Paragraph } = Typography
 
 const AddSeedPopup = ({ selectedPlant, open, onClose, selectedSeed, setSelectedSeed, handleAddSeed }) => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -52,7 +54,25 @@ const AddSeedPopup = ({ selectedPlant, open, onClose, selectedSeed, setSelectedS
             >
               <img src={seed.image} alt={seed.name} style={{ width: '100%', height: 120, objectFit: 'cover' }} />
               <p style={{ marginTop: 8, fontWeight: 'bold' }}>{seed.name}</p>
-              <p style={{ color: '#888' }}>{seed.description}</p>
+              <p style={{ color: '#888' }}>
+                {
+                  <Paragraph
+                    ellipsis={{
+                      rows: 3,
+                      expandable: true,
+                      symbol: 'đọc thêm',
+                      tooltip: true,
+                      onExpand: function (event) {
+                        console.log('onExpand', event)
+                        event.stopPropagation()
+                        event.preventDefault()
+                      }
+                    }}
+                  >
+                    {seed.description}
+                  </Paragraph>
+                }
+              </p>
             </Card>
           </Col>
         ))}

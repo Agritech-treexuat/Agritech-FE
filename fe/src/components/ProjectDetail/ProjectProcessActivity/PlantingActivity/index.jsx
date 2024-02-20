@@ -119,7 +119,7 @@ const Modal2 = ({
           label="Description"
           rules={[{ required: true, message: 'Please input description!' }]}
         >
-          <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 3 }} />
+          <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
         </Form.Item>
       </Form>
     </Modal>
