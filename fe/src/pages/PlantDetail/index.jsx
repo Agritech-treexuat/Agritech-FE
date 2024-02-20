@@ -391,6 +391,7 @@ const PlantDetail = () => {
             selectedSeed={selectedSeed}
             setSelectedSeed={setSelectedSeed}
             handleAddSeed={handleAddSeed}
+            currentPlantId={plantId}
           />
           <AddSeedConfirmationModal
             visible={confirmationModalVisible}

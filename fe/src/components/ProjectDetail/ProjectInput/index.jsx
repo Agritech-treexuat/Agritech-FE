@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import { useParams } from 'react-router'
 import Loading from '../../../pages/Loading'
 import UpdateInputPopup from './UpdateInputPopup'
-import { Col, Row, notification, Button, Modal } from 'antd'
-import { formatDate } from '../../../utils/helpers'
+import { Col, Row, notification, Button, Modal, Tooltip, Divider, Form } from 'antd'
+import { formatDate, formatDateTime } from '../../../utils/helpers'
 import useProjectInput from './useProjectInput'
 import SeedModal from '../AddProject/AddProjectSeed'
 import PROJECT from '../../../services/projectService'
 import EditInputHistory from './EditInputHistory'
+import { EditFilled } from '@ant-design/icons'
+import UpdateInputForm from './UpdateInputForm'
 
 const UpdateStatusModal = ({ visible, onCancel, onInProgressUpdate, onCancelUpdate, onDoneUpdate, selectedItem }) => {
   return (
@@ -50,6 +52,8 @@ const ProjectInput = () => {
   const [selectedSeed, setSelectedSeed] = useState(null)
   const { projectInfo, isSuccess, refetch } = useProjectInput({ projectId })
 
+  const [form] = Form.useForm()
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
@@ -93,27 +97,67 @@ const ProjectInput = () => {
     setOpenUpdateStatus(false)
   }
 
+  const handleUpdateOverview = async (values) => {
+    const data = {
+      startDate: values.date,
+      square: values.square,
+      description: values.description
+    }
+    try {
+      await PROJECT.editProjectInfo(data, projectId)
+      refetch()
+    } catch (error) {
+      console.error(error?.response?.data?.message)
+    }
+    setIsModalOpen(false)
+  }
+
+  const renderStatus = (status) => {
+    switch (status) {
+      case 'inProgress':
+        return 'Đang thực hiện'
+      case 'finished':
+        return 'Hoàn thành'
+      case 'cancel':
+        return 'Đã hủy'
+      default:
+        return 'Chưa cập nhật'
+    }
+  }
+
   return (
     <div>
       {contextHolder}
       {isSuccess ? (
         <div>
           <Row>
-            <Col span={4}>
-              <h2 style={{ margin: '0px' }}>Thông tin khởi tạo</h2>
+            <Col span={10}>
+              <h2 style={{ margin: '0px' }}>
+                Thông tin dự án (cập nhật lúc {formatDateTime(projectInfo.createdAtTime)})
+              </h2>
+              {projectInfo.isInfoEdited ? <EditInputHistory historyInfo={projectInfo.historyInfo} /> : null}
             </Col>
-            <Col span={2}></Col>
-            <Col span={18} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <UpdateInputPopup input={projectInfo} refetch={refetch} />
-              <Button
-                style={{ marginRight: '1rem' }}
-                onClick={() => {
-                  setOpenUpdateSeed(true)
+            <Col span={14} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Modal
+                title="Chỉnh sửa đầu vào"
+                open={isModalOpen}
+                onOk={() => {
+                  form
+                    .validateFields()
+                    .then((values) => {
+                      form.resetFields()
+                      handleUpdateOverview(values)
+                    })
+                    .catch((info) => {
+                      console.log('Validate Failed:', info)
+                    })
                 }}
+                onCancel={() => setIsModalOpen(false)}
+                okText="Cập nhật"
+                cancelText="Hủy"
               >
-                Update Seed
-              </Button>
-
+                <UpdateInputForm input={projectInfo} form={form} />
+              </Modal>
               <SeedModal
                 selectedPlant={{ id: projectInfo?.plant._id }}
                 open={openUpdateSeed}
@@ -123,14 +167,6 @@ const ProjectInput = () => {
                 handleAddSeed={handleUpdateSeed}
                 isAddSeed={false}
               />
-              <Button
-                onClick={() => {
-                  setOpenUpdateStatus(true)
-                }}
-                style={{ marginRight: '1rem' }}
-              >
-                Update Status
-              </Button>
               <UpdateStatusModal
                 visible={openUpdateStatus}
                 onCancel={() => {
@@ -150,40 +186,66 @@ const ProjectInput = () => {
                 }}
                 selectedItem={projectInfo}
               />
-              {projectInfo.isInfoEdited ? <EditInputHistory historyInfo={projectInfo.historyInfo} /> : null}
             </Col>
           </Row>
-          <div>
-            <label>Current data at time: </label>
-            <span>{projectInfo.createdAtTime}</span>
-          </div>
-          <div>
-            <label>Transaction hash: </label>
-            <span>{projectInfo.txHash}</span>
-          </div>
-          <div>
-            <label>Trạng thái: </label>
-            <span>{projectInfo.status}</span>
-          </div>
-          <div>
-            <label>Ngày bắt đầu: </label>
-            <span>{formatDate(projectInfo.startDate)}</span>
-          </div>
-          <div>
-            <label>Cây: </label>
-            <span>{projectInfo.plant.plant_name}</span>
-          </div>
-          <div>
-            <label>Hạt giống: </label>
-            <span>{projectInfo.seed.seed_name}</span>
-          </div>
-          <div>
-            <label>Diện tích trồng: </label>
-            <span>{projectInfo.square || 'Chưa cập nhật'}</span>
-          </div>
-          <div>
-            <label>Mô tả: </label>
-            <span>{projectInfo.description || 'Chưa cập nhật'}</span>
+          <div style={{fontSize: '1.2rem'}}>
+            <div style={{ marginBottom: '1rem' }}>
+              <Divider />
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ fontWeight: 'bold' }}>Cây: </label>
+                <span>{projectInfo.plant.plant_name}</span>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ fontWeight: 'bold' }}>Transaction hash: </label>
+                <span>{projectInfo.txHash}</span>
+              </div>
+              <Divider />
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ fontWeight: 'bold' }}>Trạng thái: </label>
+                <span>{renderStatus(projectInfo.status)}</span>
+                <Tooltip title="Chỉnh sửa trạng thái">
+                  <EditFilled
+                    style={{ marginLeft: '0.5rem' }}
+                    onClick={() => {
+                      setOpenUpdateStatus(true)
+                    }}
+                  />
+                </Tooltip>
+              </div>
+              <Divider />
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ fontWeight: 'bold' }}>Hạt giống: </label>
+                <span>{projectInfo.seed.seed_name}</span>
+                <Tooltip title="Chỉnh sửa hạt giống">
+                  <EditFilled
+                    style={{ marginLeft: '0.5rem' }}
+                    onClick={() => {
+                      setOpenUpdateSeed(true)
+                    }}
+                  />
+                </Tooltip>
+              </div>
+              <Divider />
+              <div style={{ marginBottom: '1rem', display: 'flex' }}>
+                <h3> Thông tin khác </h3>
+                <Tooltip title="Chỉnh sửa thông tin khác">
+                  <EditFilled style={{ marginLeft: '0.5rem' }} onClick={() => setIsModalOpen(true)} />
+                </Tooltip>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ fontWeight: 'bold' }}>Diện tích trồng: </label>
+                <span>{projectInfo.square || 'Chưa cập nhật'}</span>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ fontWeight: 'bold' }}>Ngày bắt đầu: </label>
+                <span>{formatDate(projectInfo.startDate)}</span>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ fontWeight: 'bold' }}>Mô tả: </label>
+                <span>{projectInfo.description || 'Chưa cập nhật'}</span>
+              </div>
+              <Divider />
+            </div>
           </div>
         </div>
       ) : (

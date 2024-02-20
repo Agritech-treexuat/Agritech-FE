@@ -22,14 +22,17 @@ export default function useAddProject() {
   })
 
   const parseDataAllPlants = useCallback((data) => {
-    const allPlants = data.map((item) => {
-      return {
-        id: item?._id,
-        name: item?.plant_name,
-        image: item?.plant_thumb,
-        type: item?.plant_type
-      }
-    })
+    const allPlants = data
+      .map((item) => {
+        return {
+          id: item?._id,
+          name: item?.plant_name,
+          image: item?.plant_thumb,
+          type: item?.plant_type,
+          isActive: item?.isActive
+        }
+      })
+      .filter((item) => item.isActive)
 
     return {
       allPlants

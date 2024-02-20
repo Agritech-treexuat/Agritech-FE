@@ -1,26 +1,39 @@
 import React, { useState } from 'react'
-import { Modal, Input, Button, Card, Row, Col, Checkbox, Typography } from 'antd'
+import { Modal, Input, Button, Card, Row, Col, Typography } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import useAddSeedPopup from './useAddSeedPopup'
 
 const { Paragraph } = Typography
 
-const AddSeedPopup = ({ selectedPlant, open, onClose, selectedSeed, setSelectedSeed, handleAddSeed }) => {
+const AddSeedPopup = ({
+  selectedPlant,
+  open,
+  onClose,
+  selectedSeed,
+  setSelectedSeed,
+  handleAddSeed,
+  currentPlantId
+}) => {
   const [searchTerm, setSearchTerm] = useState('')
 
-  const { allSeedFromPlant, isSuccessAllSeedFromPlant } = useAddSeedPopup({
-    plantId: selectedPlant?.id
-  })
+  const { allSeedFromPlant, isSuccessAllSeedFromPlant, allSeedFromPlantInFarm, isSuccessAllSeedFromPlantInFarm } =
+    useAddSeedPopup({
+      plantId: selectedPlant?.id,
+      currentPlantId: currentPlantId
+    })
   const handleSearch = (value) => {
     setSearchTerm(value)
   }
 
-  const filteredSeeds = allSeedFromPlant.filter(
-    (seed) =>
-      searchTerm === '' ||
-      seed.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      seed.description.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // filter seeds by search term and seed not has in farm
+  const filteredSeeds = allSeedFromPlant
+    .filter(
+      (seed) =>
+        searchTerm === '' ||
+        seed.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        seed.description.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((seed) => !allSeedFromPlantInFarm.find((seedInFarm) => seedInFarm.name === seed.name))
 
   return isSuccessAllSeedFromPlant ? (
     <Modal

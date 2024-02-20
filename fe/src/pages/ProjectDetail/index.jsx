@@ -10,7 +10,7 @@ const ProjectDetail = () => {
   const items = [
     {
       key: '1',
-      label: 'Đầu vào',
+      label: 'Thông tin chung',
       children: <ProjectInput />
     },
     {

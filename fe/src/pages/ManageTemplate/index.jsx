@@ -198,7 +198,7 @@ const ManageTemplate = () => {
       {contextHolder}
       {isSuccess ? (
         <div>
-          <h2 style={{ textAlign: 'left' }}>Template List</h2>
+          <h2 style={{ textAlign: 'left' }}>Danh sách các bản mẫu của dịch vụ</h2>
           <Row>
             <Col span={6}>
               <div style={{ marginBottom: '1.5rem' }}>

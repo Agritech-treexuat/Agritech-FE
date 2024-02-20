@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Modal, Divider } from 'antd'
+import { Modal, Divider, Tooltip } from 'antd'
 import { formatDate, formatDateTime } from '../../../utils/helpers'
 
 const EditInputHistory = ({ historyInfo }) => {
@@ -16,9 +16,26 @@ const EditInputHistory = ({ historyInfo }) => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Lịch sử chỉnh sửa
-      </Button>
+    <Tooltip title="Xem lịch sử chỉnh sửa">
+      <p
+  style={{
+    fontStyle: 'italic',
+    fontSize: '1.2rem',
+    cursor: 'pointer',
+    transition: 'box-shadow 0.3s',
+    borderBottom: '1px solid transparent',
+    marginRight: '0.5rem',
+    display: 'inline-block',
+    color: 'grey'
+  }}
+  onMouseEnter={(e) => { e.target.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.2)'; }}
+  onMouseLeave={(e) => { e.target.style.boxShadow = 'none'; }}
+  onClick={showModal}
+>
+    Đã chỉnh sửa
+</p>
+  </Tooltip>
+
       <Modal
         title="Lịch sử chỉnh sửa"
         style={{ width: 'fit-content' }}
