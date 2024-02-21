@@ -16,25 +16,29 @@ const EditInputHistory = ({ historyInfo }) => {
 
   return (
     <>
-    <Tooltip title="Xem lịch sử chỉnh sửa">
-      <p
-  style={{
-    fontStyle: 'italic',
-    fontSize: '1.2rem',
-    cursor: 'pointer',
-    transition: 'box-shadow 0.3s',
-    borderBottom: '1px solid transparent',
-    marginRight: '0.5rem',
-    display: 'inline-block',
-    color: 'grey'
-  }}
-  onMouseEnter={(e) => { e.target.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.2)'; }}
-  onMouseLeave={(e) => { e.target.style.boxShadow = 'none'; }}
-  onClick={showModal}
->
-    Đã chỉnh sửa
-</p>
-  </Tooltip>
+      <Tooltip title="Xem lịch sử chỉnh sửa">
+        <p
+          style={{
+            fontStyle: 'italic',
+            fontSize: '1.2rem',
+            cursor: 'pointer',
+            transition: 'box-shadow 0.3s',
+            borderBottom: '1px solid transparent',
+            marginRight: '0.5rem',
+            display: 'inline-block',
+            color: 'grey'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.2)'
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.boxShadow = 'none'
+          }}
+          onClick={showModal}
+        >
+          Đã chỉnh sửa
+        </p>
+      </Tooltip>
 
       <Modal
         title="Lịch sử chỉnh sửa"

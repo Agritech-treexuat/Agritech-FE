@@ -244,7 +244,7 @@ const ManagePlant = () => {
           </Row>
           <Row>
             <List
-              grid={{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 4 }}
+              grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 4, xl: 4, xxl: 4 }}
               dataSource={plantData.filter((plant) =>
                 plant.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
               )}

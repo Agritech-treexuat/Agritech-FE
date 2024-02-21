@@ -188,7 +188,7 @@ const ProjectInput = () => {
               />
             </Col>
           </Row>
-          <div style={{fontSize: '1.2rem'}}>
+          <div style={{ fontSize: '1.2rem' }}>
             <div style={{ marginBottom: '1rem' }}>
               <Divider />
               <div style={{ marginBottom: '1rem' }}>
