@@ -182,12 +182,16 @@ const FertilizeTable = ({
       width: 150,
       render: (text, record) => formatDateTime(record.time)
     },
-    {
-      title: 'Tx',
-      dataIndex: 'tx',
-      key: 'tx',
-      width: 150
-    },
+    ...(isGarden
+      ? []
+      : [
+          {
+            title: 'Tx',
+            dataIndex: 'tx',
+            key: 'tx',
+            width: 150
+          }
+        ]),
     {
       title: 'Fertilization Time',
       dataIndex: 'fertilizationTime',
@@ -261,10 +265,14 @@ const FertilizeTable = ({
           type="primary"
           style={{ marginRight: '8px' }}
           onClick={async () => {
-            if (!address) await connect(metamaskConfig)
-            else {
-              console.log('address: ', address)
+            if(isGarden) {
               setModal1Visible(true)
+            } else {
+              if (!address) await connect(metamaskConfig)
+              else {
+                console.log('address: ', address)
+                setModal1Visible(true)
+              }
             }
           }}
         >

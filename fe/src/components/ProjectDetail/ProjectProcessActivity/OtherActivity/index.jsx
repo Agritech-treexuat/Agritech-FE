@@ -143,12 +143,16 @@ const OtherTable = ({
       width: 150,
       render: (text, record) => formatDateTime(record.time)
     },
-    {
-      title: 'Tx',
-      dataIndex: 'tx',
-      key: 'tx',
-      width: 150
-    },
+    ...(isGarden
+      ? []
+      : [
+          {
+            title: 'Tx',
+            dataIndex: 'tx',
+            key: 'tx',
+            width: 150
+          }
+        ]),
     {
       title: 'Description',
       dataIndex: 'description',
@@ -209,10 +213,14 @@ const OtherTable = ({
           type="primary"
           style={{ marginRight: '8px' }}
           onClick={async () => {
-            if (!address) await connect(metamaskConfig)
-            else {
-              console.log('address: ', address)
+            if(isGarden) {
               setModal2Visible(true)
+            } else {
+              if (!address) await connect(metamaskConfig)
+              else {
+                console.log('address: ', address)
+                setModal2Visible(true)
+              }
             }
           }}
         >

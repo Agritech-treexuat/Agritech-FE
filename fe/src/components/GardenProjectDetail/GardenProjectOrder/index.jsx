@@ -95,14 +95,14 @@ const GardenProjectOrder = () => {
                     ? 'Đã kết thúc'
                     : 'Đã hủy'}{' '}
               </h3>
-              <Tooltip title="Sửa/Cập nhật trạng thái">
+              <Tooltip title="Cập nhật trạng thái">
                 <EditFilled
                   style={{ color: '#476930' }}
                   onClick={() => {
                     setOpenUpdateStatus(true)
                   }}
                 />
-              </Tooltip>{' '}
+              </Tooltip>
             </div>
             <UpdateStatusModal
               visible={openUpdateStatus}
@@ -147,8 +147,8 @@ const GardenProjectOrder = () => {
 
             <p>
               <i>
-                <strong>Dịch vụ</strong>:
-                <span>Diện tích: {initData.template?.square ? initData.template.square : 'Không có thông tin'} M2</span>
+                <strong>Diện tích: </strong>
+                <span>{initData.template?.square ? initData.template.square : 'Không có thông tin'} M2</span>
               </i>
             </p>
             <p>
@@ -164,22 +164,38 @@ const GardenProjectOrder = () => {
               <div className="styleText">
                 <p style={{ fontWeight: '600' }}>CHỦNG LOẠI GIEO TRỒNG</p>
               </div>
-              <p>{initData.template.herbMax} Rau gia vị</p>
-              {initData.herbList.map((herb) => (
-                <p>{herb.name}</p>
-              ))}
-              <p>{initData.template.leafyMax} Rau ăn lá</p>
-              {initData.leafyList.map((leafy) => (
-                <p>{leafy.name}</p>
-              ))}
-              <p>{initData.template.rootMax} Củ</p>
-              {initData.rootList.map((root) => (
-                <p>{root.name}</p>
-              ))}
-              <p>{initData.template.fruitMax} Quả</p>
-              {initData.fruitList.map((fruit) => (
-                <p>{fruit.name}</p>
-              ))}
+              <div className="styleText">
+                <p style={{ fontWeight: '600' }}>{initData.leafyList.length} Rau ăn lá</p>
+                <ul>
+                  {initData.leafyList.map((leafy) => (
+                    <li>{leafy.name}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="styleText">
+                <p style={{ fontWeight: '600' }}>{initData.herbList.length} Rau gia vị</p>
+                <ul>
+                  {initData.herbList.map((herb) => (
+                    <li>{herb.name}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="styleText">
+                <p style={{ fontWeight: '600' }}>{initData.rootList.length} Củ</p>
+                <ul>
+                  {initData.rootList.map((root) => (
+                    <li>{root.name}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="styleText">
+                <p style={{ fontWeight: '600' }}>{initData.fruitList.length} Quả</p>
+                <ul>
+                  {initData.fruitList.map((fruit) => (
+                    <li>{fruit.name}</li>
+                  ))}
+                </ul>
+              </div>
               <div className="styleText">
                 <p style={{ fontWeight: '600' }}>SẢN LƯỢNG DỰ KIẾN</p>
                 <p>{initData.template.expectedOutput} kg/tháng</p>

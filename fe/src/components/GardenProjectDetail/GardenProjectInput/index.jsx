@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router'
-import { Card, Tooltip, Button, Flex, notification, Modal, Radio } from 'antd'
+import { Card, Tooltip, Button, Flex, notification, Modal, Radio, List } from 'antd'
 import { EditFilled } from '@ant-design/icons'
 import Loading from '../../../pages/Loading'
 import { formatDate } from '../../../utils/helpers'
@@ -162,6 +162,23 @@ const GardenProjectInput = () => {
     setOpenUpdateStatus(false)
   }
 
+  const renderStatus = (status) => {
+    switch (status) {
+      case 'inProgress':
+        return 'Đang thực hiện'
+      case 'harvesting':
+        return 'Đang thu hoạch'
+      case 'almostFinished':
+        return 'Sắp thu hoạch xong'
+      case 'finished':
+        return 'Hoàn thành'
+      case 'cancel':
+        return 'Đã hủy'
+      default:
+        return 'Chưa có thông tin'
+    }
+  }
+
   return (
     <div>
       {contextHolder}
@@ -178,7 +195,7 @@ const GardenProjectInput = () => {
               Thêm cây mới
             </Button>
           </Flex>
-          <Radio.Group onChange={onChange} value={value}>
+          <Radio.Group onChange={onChange} value={value} style={{marginTop: "1rem", fontSize: "1rem"}}>
             <Radio value="all"> Tất cả </Radio>
             <Radio value="inProgress"> Đang thực hiện </Radio>
             <Radio value="harvesting"> Đang thu hoạch </Radio>
@@ -186,70 +203,74 @@ const GardenProjectInput = () => {
             <Radio value="finished"> Hoàn thành </Radio>
             <Radio value="cancel"> Đã hủy </Radio>
           </Radio.Group>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap'
+          <List
+            grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 4, xl: 4, xxl: 4 }}
+            dataSource={filteredProjects}
+            pagination={{
+              onChange: (page) => {
+                console.log(page)
+              },
+              pageSize: 8
             }}
-          >
-            {filteredProjects.map((project) => (
-              <Card
-                style={{
-                  width: '23%',
-                  marginBottom: '1.5rem',
-                  marginRight: '1.5rem'
-                }}
-                hoverable
-                cover={<img alt="example" src={project.plantImage} />}
-              >
-                <Meta
-                  align={'center'}
-                  style={{ fontStyle: 'italic' }}
-                  title={
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between'
-                      }}
-                    >
-                      <span>Cây: {project.name}</span>{' '}
+            style={{ width: '100%', marginTop: '1.5rem' }}
+            renderItem={(project) => (
+              <List.Item key={project._id}>
+                <Card
+                  style={{
+                    marginBottom: '1.5rem'
+                  }}
+                  hoverable
+                  cover={<img alt="example" src={project.plantImage} />}
+                >
+                  <Meta
+                    align={'center'}
+                    style={{ fontStyle: 'italic' }}
+                    title={
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between'
+                        }}
+                      >
+                        <span>{project.name}</span>{' '}
+                      </div>
+                    }
+                  />
+                  <div style={{ textAlign: 'left' }}>
+                    <div style={{ display: 'flex' }}>
+                      <p>Hạt giống: {project.input.seed || 'Chưa có thông tin'}</p>
+                      <Tooltip title="Sửa/Cập nhật Hạt giống">
+                        <EditFilled
+                          style={{ color: '#476930' }}
+                          onClick={() => {
+                            setProjectDetail(project)
+                            setSelectedPlantEdit(project.plant)
+                            setIsAddSeed(false)
+                            setOpenEdit(true)
+                          }}
+                        />
+                      </Tooltip>{' '}
                     </div>
-                  }
-                />
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ display: 'flex' }}>
-                    <p>Hạt giống: {project.input.seed || 'Chưa có thông tin'}</p>
-                    <Tooltip title="Sửa/Cập nhật Hạt giống">
-                      <EditFilled
-                        style={{ color: '#476930' }}
-                        onClick={() => {
-                          setProjectDetail(project)
-                          setSelectedPlantEdit(project.plant)
-                          setIsAddSeed(false)
-                          setOpenEdit(true)
-                        }}
-                      />
-                    </Tooltip>{' '}
+                    <p>
+                      Ngày bắt đầu: {project.input.initDate ? formatDate(project.input.initDate) : 'Chưa có thông tin'}
+                    </p>
+                    <div style={{ display: 'flex' }}>
+                      <p>Trạng thái: {renderStatus(project.status) || 'Chưa có thông tin'}</p>
+                      <Tooltip title="Sửa/Cập nhật Trạng thái">
+                        <EditFilled
+                          style={{ color: '#476930' }}
+                          onClick={() => {
+                            setProjectDetail(project)
+                            setOpenUpdateStatus(true)
+                          }}
+                        />
+                      </Tooltip>{' '}
+                    </div>
                   </div>
-                  <p>
-                    Ngày bắt đầu: {project.input.initDate ? formatDate(project.input.initDate) : 'Chưa có thông tin'}
-                  </p>
-                  <div style={{ display: 'flex' }}>
-                    <p>Trạng thái: {project.status || 'Chưa có thông tin'}</p>
-                    <Tooltip title="Sửa/Cập nhật Trạng thái">
-                      <EditFilled
-                        style={{ color: '#476930' }}
-                        onClick={() => {
-                          setProjectDetail(project)
-                          setOpenUpdateStatus(true)
-                        }}
-                      />
-                    </Tooltip>{' '}
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+                </Card>
+              </List.Item>
+            )}
+          />
 
           <PlantModal
             open={open}

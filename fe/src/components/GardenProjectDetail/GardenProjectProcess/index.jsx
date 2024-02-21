@@ -15,6 +15,23 @@ const GardenProjectProcess = () => {
     setSelectedPlant(plantId)
   }
 
+  const renderStatus = (status) => {
+    switch (status) {
+      case 'inProgress':
+        return 'Đang thực hiện'
+      case 'harvesting':
+        return 'Đang thu hoạch'
+      case 'almostFinished':
+        return 'Sắp thu hoạch xong'
+      case 'finished':
+        return 'Hoàn thành'
+      case 'cancel':
+        return 'Đã hủy'
+      default:
+        return 'Chưa có thông tin'
+    }
+  }
+
   return isSuccess ? (
     <div>
       <div style={{ marginBottom: '16px' }}>
@@ -25,7 +42,7 @@ const GardenProjectProcess = () => {
             style={{ marginRight: '8px', marginBottom: '8px' }}
             onClick={() => handlePlantSelect(project._id)}
           >
-            {project.name} - {formatDateTime(project.startDate)} - {project.status}
+            {project.name} - {formatDateTime(project.startDate)} - {renderStatus(project.status)}
           </Button>
         ))}
       </div>
