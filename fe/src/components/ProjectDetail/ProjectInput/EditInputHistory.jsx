@@ -55,7 +55,7 @@ const EditInputHistory = ({ historyInfo }) => {
             <div>
               <label>Transaction hash: </label>
               <span>
-                <a href={`https://escan.live/tx/${input.txHash}`} target="_blank">
+                <a href={`https://escan.live/tx/${input.txHash}`} target="_blank" rel="noreferrer">
                   {input.txHash}
                 </a>
               </span>

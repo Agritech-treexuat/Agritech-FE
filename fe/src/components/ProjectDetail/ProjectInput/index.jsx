@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router'
 import Loading from '../../../pages/Loading'
-import UpdateInputPopup from './UpdateInputPopup'
 import { Col, Row, notification, Button, Modal, Tooltip, Divider, Form } from 'antd'
 import { formatDate, formatDateTime } from '../../../utils/helpers'
 import useProjectInput from './useProjectInput'
@@ -232,7 +231,7 @@ const ProjectInput = () => {
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Transaction hash: </label>
                 <span>
-                  <a href={`https://escan.live/tx/${projectInfo.txHash}`} target="_blank">
+                  <a href={`https://escan.live/tx/${projectInfo.txHash}`} target="_blank" rel="noreferrer">
                     {projectInfo.txHash}
                   </a>
                 </span>

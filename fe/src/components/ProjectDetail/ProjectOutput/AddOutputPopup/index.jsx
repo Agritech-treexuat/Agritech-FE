@@ -24,7 +24,7 @@ const AddOutputPopup = ({ refetch, alllDistributer, openNotificationWithIcon, pr
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        {address ? 'Thêm đầu ra' : 'connect'}
+        {address ? 'Thêm đầu ra' : 'Kết nối với ví để thêm'}
       </Button>
       <Modal title="Thêm đầu ra" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         <AddOutputForm

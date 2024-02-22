@@ -1,7 +1,7 @@
 import React from 'react'
 import Loading from '../../../pages/Loading'
 import { useParams } from 'react-router'
-import { Button, Popconfirm, Space, Table, Tooltip, notification } from 'antd'
+import { Popconfirm, Space, Table, Tooltip, notification } from 'antd'
 import UpdateExpectPopup from './UpdateExpectPopup'
 import EditExpectHistory from './EditExpectHistory'
 import AddExpectPopup from './AddExpectPopup'
@@ -49,7 +49,7 @@ const ProjectExpect = () => {
             dataIndex="tx"
             key="tx"
             render={(_, expect) => (
-              <a href={`https://escan.live/tx/${expect.tx}`} target="_blank">
+              <a href={`https://escan.live/tx/${expect.tx}`} target="_blank" rel="noreferrer">
                 {expect.tx}
               </a>
             )}

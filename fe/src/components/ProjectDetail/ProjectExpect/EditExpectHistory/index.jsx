@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Modal, Divider, Tooltip } from 'antd'
+import { Modal, Divider, Tooltip } from 'antd'
 import { formatDate, formatDateTime } from '../../../../utils/helpers'
 import { HistoryOutlined } from '@ant-design/icons'
 const EditExpectHistory = ({ expect }) => {
@@ -26,7 +26,7 @@ const EditExpectHistory = ({ expect }) => {
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>
                 Tx:{' '}
-                <a href={`https://escan.live/tx/${expect.tx}`} target="_blank">
+                <a href={`https://escan.live/tx/${expect.tx}`} target="_blank" rel="noreferrer">
                   {expect.tx}
                 </a>
               </p>

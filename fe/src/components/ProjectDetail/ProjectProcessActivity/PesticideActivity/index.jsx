@@ -34,8 +34,7 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
             {!isGarden && (
               <p>
-                <span>Tx: </span>
-                {item.tx}
+                <span>Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a></span>
               </p>
             )}
             <p>
@@ -69,9 +68,9 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
   return (
     <Modal
       open={modal2Visible}
-      title={isUpdate ? 'Update' : 'Create'}
-      okText={isUpdate ? 'Update' : 'Create'}
-      cancelText="Cancel"
+      title={isUpdate ? 'Cập nhật hành động' : 'Thêm hành động'}
+      okText={isUpdate ? 'Cập nhật' : 'Thêm'}
+      cancelText="Hủy"
       onCancel={() => {
         form.resetFields()
         handleModal2Cancel()
@@ -128,22 +127,22 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
         }}
       >
         {/* pick time */}
-        <Form.Item name="time" label="Time" rules={[{ required: true, message: 'Please pick time!' }]}>
+        <Form.Item name="time" label="Thời gian" rules={[{ required: true, message: 'Hãy chọn thời gian!' }]}>
           <DatePicker showTime />
         </Form.Item>
-        <Form.Item name="name" label="name" rules={[{ required: true, message: 'Please input name!' }]}>
+        <Form.Item name="name" label="Tên" rules={[{ required: true, message: 'Hãy nhập tên hoạt động!' }]}>
           <Input />
         </Form.Item>
-        <Form.Item name="type" label="Type" rules={[{ required: true, message: 'Please input type!' }]}>
+        <Form.Item name="type" label="Tác nhân" rules={[{ required: true, message: 'Hãy nhập tác nhân!' }]}>
           <Select>
             <Option value="pest">Sâu bệnh</Option>
             <Option value="disease">Dịch hại</Option>
           </Select>
         </Form.Item>
-        <Form.Item name="symptoms" label="Symptoms" rules={[{ required: true, message: 'Please input symptoms!' }]}>
+        <Form.Item name="symptoms" label="Triệu chứng" rules={[{ required: true, message: 'Hãy nhập triệu chứng!' }]}>
           <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
         </Form.Item>
-        <Form.Item name="solution" label="Solution" rules={[{ required: true, message: 'Please input solution!' }]}>
+        <Form.Item name="solution" label="Giải pháp" rules={[{ required: true, message: 'Hãy nhập giải pháp!' }]}>
           <Form.List name="solution">
             {(fields, { add, remove }, { errors }) => (
               <>
@@ -156,7 +155,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                         {
                           required: true,
                           whitespace: true,
-                          message: 'Please input Solution or delete this field.'
+                          message: 'Hãy nhập giải pháp hoặc xóa trường này!'
                         }
                       ]}
                       noStyle
@@ -177,7 +176,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                     }}
                     icon={<PlusOutlined />}
                   >
-                    Add Solution
+                    Thêm giải pháp
                   </Button>
                   <Form.ErrorList errors={errors} />
                 </Form.Item>
@@ -230,7 +229,7 @@ const PesticideTable = ({
 
   const columns = [
     {
-      title: 'Time',
+      title: 'Thời gian',
       dataIndex: 'time',
       key: 'time',
       width: 150,
@@ -240,32 +239,37 @@ const PesticideTable = ({
       ? []
       : [
           {
-            title: 'Tx',
+            title: 'Transaction hash',
             dataIndex: 'tx',
             key: 'tx',
-            width: 150
+            width: 150,
+            render: (text, record) => (
+              <a href={`https://escan.live/tx/${record.tx}`} target="_blank" rel="noreferrer">
+                {record.tx}
+              </a>
+            )
           }
         ]),
     {
-      title: 'name',
+      title: 'Tên',
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => record.pestAndDiseaseControlActivity.name
     },
     {
-      title: 'Type',
+      title: 'Tác nhân',
       dataIndex: 'type',
       key: 'type',
       render: (text, record) => record.pestAndDiseaseControlActivity.type
     },
     {
-      title: 'Symptoms',
+      title: 'Triệu chứng',
       dataIndex: 'symptoms',
       key: 'symptoms',
       render: (text, record) => record.pestAndDiseaseControlActivity.symptoms
     },
     {
-      title: 'Solution',
+      title: 'Giải pháp',
       dataIndex: 'solution',
       key: 'solution',
       render: (text, record) =>
@@ -276,7 +280,7 @@ const PesticideTable = ({
         ))
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       dataIndex: 'actions',
       key: 'actions',
       render: (text, record) => (
@@ -352,7 +356,7 @@ const PesticideTable = ({
             }
           }}
         >
-          {address || isGarden ? 'Thêm' : 'Connect'}
+          {address || isGarden ? 'Thêm' : 'Kết nối với ví để thêm'}
         </Button>
       </div>
       <Table dataSource={pesticide} columns={columns} pagination={false} />

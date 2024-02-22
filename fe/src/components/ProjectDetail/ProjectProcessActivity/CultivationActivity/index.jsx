@@ -28,7 +28,7 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             {!isGarden && (
               <p>
                 <span>
-                  Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank">{`${item.tx}`}</a>
+                  Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
                 </span>
               </p>
             )}
@@ -51,9 +51,9 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
   return (
     <Modal
       open={modal2Visible}
-      title={isUpdate ? 'Update' : 'Create'}
-      okText={isUpdate ? 'Update' : 'Create'}
-      cancelText="Cancel"
+      title={isUpdate ? 'Cập nhật hành động' : 'Thêm hành động'}
+      okText={isUpdate ? 'Cập nhật' : 'Thêm'}
+      cancelText="Hủy"
       onCancel={() => {
         form.resetFields()
         handleModal2Cancel()
@@ -103,16 +103,16 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
         }}
       >
         {/* pick time */}
-        <Form.Item name="time" label="Time" rules={[{ required: true, message: 'Please pick time!' }]}>
+        <Form.Item name="time" label="Thời gian" rules={[{ required: true, message: 'Hãy chọn thời gian!' }]}>
           <DatePicker showTime />
         </Form.Item>
         <Form.Item
           name="name"
-          label="name"
+          label="Tên"
           rules={[
             {
               required: true,
-              message: 'Please input name!'
+              message: 'Hãy nhập tên hoạt động!'
             }
           ]}
         >
@@ -120,11 +120,11 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
         </Form.Item>
         <Form.Item
           name="description"
-          label="Description"
+          label="Mô tả"
           rules={[
             {
               required: true,
-              message: 'Please input description!'
+              message: 'Hãy nhập mô tả!'
             }
           ]}
         >
@@ -175,7 +175,7 @@ const CultivationTable = ({
 
   const columns = [
     {
-      title: 'Time',
+      title: 'Thời gian',
       dataIndex: 'time',
       key: 'time',
       width: 150,
@@ -185,29 +185,29 @@ const CultivationTable = ({
       ? []
       : [
           {
-            title: 'Tx',
+            title: 'Transaction hash',
             dataIndex: 'tx',
             key: 'tx',
             width: 150,
             render: (text, record) => (
-              <a href={`https://escan.live/tx/${record.tx}`} target="_blank">{`${record.tx}`}</a>
+              <a href={`https://escan.live/tx/${record.tx}`} target="_blank" rel="noreferrer">{`${record.tx}`}</a>
             )
           }
         ]),
     {
-      title: 'Name',
+      title: 'Tên',
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => record.cultivationActivity.name
     },
     {
-      title: 'Description',
+      title: 'Mô tả',
       dataIndex: 'description',
       key: 'description',
       render: (text, record) => record.cultivationActivity.description
     },
     {
-      title: 'Actions',
+      title: 'Hoạt động',
       dataIndex: 'actions',
       key: 'actions',
       render: (text, record) => (
@@ -282,7 +282,7 @@ const CultivationTable = ({
             }
           }}
         >
-          {address || isGarden ? 'Thêm' : 'Connect'}
+          {address || isGarden ? 'Thêm' : 'Kết nối với ví để thêm'}
         </Button>
       </div>
       <Table dataSource={cultivation} columns={columns} pagination={false} />
