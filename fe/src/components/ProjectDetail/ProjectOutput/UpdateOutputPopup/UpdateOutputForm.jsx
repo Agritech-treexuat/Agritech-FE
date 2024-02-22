@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Form, Input, InputNumber, Upload, Space, Select } from 'antd'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import { UploadOutlined } from '@ant-design/icons'
@@ -36,26 +36,37 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
   const params = useParams()
   const dateObj = new Date(output.time)
 
+  const [fileList, setFileList] = useState(
+    output.images.map((image, index) => ({
+      uid: String(-index),
+      name: `image-${index}.png`,
+      status: 'done',
+      thumb: image
+    }))
+  )
+
   const yearData = dateObj.getFullYear()
   const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0')
   const dateData = dateObj.getDate().toString().padStart(2, '0')
 
   const formattedDate = `${yearData}-${monthData}-${dateData}`
   const formRef = React.useRef(null)
-  console.log('output: ', output)
   const initValue = {
     date: formattedDate,
     amount: output.amount,
     'amount per one': output.amountPerOne,
-    upload: output.images,
     npp: output.distributerWithAmount.map((item) => ({
       id: item.distributer._id,
       name: item.distributer.name,
       amount: item.amount
+    })),
+    upload: output.images.map((image, index) => ({
+      uid: String(-index),
+      name: `image-${index}.png`,
+      status: 'done',
+      url: image
     }))
   }
-
-  console.log('init: ', initValue)
 
   const onSearch = (value) => {
     console.log('search:', value)
@@ -65,15 +76,13 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
   const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
 
   const onFinish = (values) => {
-    console.log('values', values)
     const images = values.upload
-      ? values.upload.map((upload) => (upload.response ? upload.response.metadata.thumb_url : upload))
+      ? values.upload.map((upload) => (upload.response ? upload.response.metadata.thumb_url : upload.url))
       : []
     const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
     delete updatedValue.date
     delete updatedValue.upload
     delete updatedValue['amount per one']
-    console.log('updatedValue: ', updatedValue)
     const data = {
       tx: 'b',
       ...updatedValue,
@@ -82,8 +91,6 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
         amount: item.amount
       }))
     }
-
-    console.log('data: ', data)
 
     const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0)
     if (values.amount >= totalNppAmount) {
@@ -118,22 +125,15 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
       authorization: getAccessToken(),
       'x-rtoken-id': getRefreshToken()
     },
-    fileList: output.images.map((image, index) => ({
-      uid: String(index),
-      name: `image-${index}.png`,
-      status: 'done',
-      url: image
-    })),
     onChange(info) {
       if (info.file.status === 'done') {
         console.log(`${info.file.name} file uploaded successfully`)
       } else if (info.file.status === 'error') {
         console.error(`${info.file.name} file upload failed.`)
       }
+      setFileList(info.fileList)
     }
   }
-
-  console.log('uploadProps: ', uploadProps)
 
   return (
     <Form
@@ -184,7 +184,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
       </Form.Item>
 
       <Form.Item name="upload" label="Ảnh" valuePropName="fileList" getValueFromEvent={normFile}>
-        <Upload {...uploadProps} listType="picture">
+        <Upload {...uploadProps} fileList={fileList} listType="picture">
           <Button icon={<UploadOutlined />}>Đăng ảnh</Button>
         </Upload>
       </Form.Item>
