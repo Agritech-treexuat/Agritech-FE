@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
-import { Button, Modal } from 'antd'
+import { Button, Modal, Tooltip } from 'antd'
 import UpdateExpectForm from './UpdateExpectForm'
+import { metamaskWallet } from '@thirdweb-dev/react'
+import { EditFilled, EditOutlined } from '@ant-design/icons'
+import { useStateContext } from '../../../../context'
+const metamaskConfig = metamaskWallet()
 
-const UpdateExpectPopup = ({ expect, refetch, openNotificationWithIcon }) => {
+const UpdateExpectPopup = ({ expect, refetch, openNotificationWithIcon, projectIndex }) => {
+  const { address, connect } = useStateContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = () => {
     setIsModalOpen(true)
@@ -15,9 +20,18 @@ const UpdateExpectPopup = ({ expect, refetch, openNotificationWithIcon }) => {
   }
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Chỉnh sửa
-      </Button>
+      <Tooltip title={address ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
+        {address ? (
+          <EditFilled style={{ marginRight: '2rem', cursor: 'pointer' }} onClick={showModal} />
+        ) : (
+          <EditOutlined
+            style={{ marginRight: '2rem', cursor: 'pointer' }}
+            onClick={async () => {
+              await connect(metamaskConfig)
+            }}
+          />
+        )}
+      </Tooltip>
       <Modal
         title="Basic Modal"
         open={isModalOpen}
@@ -31,6 +45,7 @@ const UpdateExpectPopup = ({ expect, refetch, openNotificationWithIcon }) => {
           expect={expect}
           refetch={refetch}
           openNotificationWithIcon={openNotificationWithIcon}
+          projectIndex={projectIndex}
         />
       </Modal>
     </>

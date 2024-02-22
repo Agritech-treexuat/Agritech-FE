@@ -218,7 +218,7 @@ const PROJECT = {
       })
   },
 
-  editExpect: async (data, projectId, expectId) => {
+  editExpect: async ({ data, projectId, expectId }) => {
     return await privateHttp({
       method: 'PATCH',
       url: `/project/${projectId}/expect/${expectId}`,

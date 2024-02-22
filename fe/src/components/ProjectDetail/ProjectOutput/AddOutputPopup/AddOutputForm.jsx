@@ -82,7 +82,7 @@ const AddOutputForm = ({ handleCloseForm, refetch, alllDistributer, openNotifica
         pId: projectIndex,
         output: 'inserted output test'
       })
-      const txHash = receip.transactionHash
+      const txHash = receip?.transactionHash
       console.log('txhash: ', txHash)
       console.log('data send: ', {
         ...dataWithoutTx,

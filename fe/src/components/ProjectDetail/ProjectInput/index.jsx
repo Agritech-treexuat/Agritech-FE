@@ -71,12 +71,12 @@ const ProjectInput = () => {
     try {
       const receip = await updateInput({
         pId: projectInfo?.projectIndex,
-        input: `update seed: ${selectedSeed.name}`
+        input: `Update seed: projectId: ${projectId}, seed: ${selectedSeed.name}`
       })
-      const tx = receip.transactionHash
+      const tx = receip?.transactionHash
       const data = {
         seed: selectedSeed.id,
-        tx: tx
+        txHash: tx
       }
       const res = await PROJECT.editProjectInfo(data, projectId)
       if (res.status === 200) {
@@ -96,12 +96,12 @@ const ProjectInput = () => {
     try {
       const receip = await updateInput({
         pId: projectInfo?.projectIndex,
-        input: `update status: ${status}`
+        input: `Update status: projectId: ${projectId}, status: ${status}`
       })
-      const tx = receip.transactionHash
+      const tx = receip?.transactionHash
       const data = {
         status: status,
-        tx: tx
+        txHash: tx
       }
       const res = await PROJECT.editProjectInfo(data, projectId)
       if (res.status === 200) {
@@ -121,14 +121,14 @@ const ProjectInput = () => {
     try {
       const receip = await updateInput({
         pId: projectInfo?.projectIndex,
-        input: `update overview: ${values.square} - ${values.date} - ${values.description}`
+        input: `Update overview: projectId: ${projectId}, square: ${values.square}, date: ${values.date}, description: ${values.description}`
       })
-      const tx = receip.transactionHash
+      const tx = receip?.transactionHash
       const data = {
         startDate: values.date,
         square: values.square,
         description: values.description,
-        tx: tx
+        txHash: tx
       }
 
       const res = await PROJECT.editProjectInfo(data, projectId)
@@ -231,7 +231,11 @@ const ProjectInput = () => {
               </div>
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Transaction hash: </label>
-                <span>{projectInfo.txHash}</span>
+                <span>
+                  <a href={`https://escan.live/tx/${projectInfo.txHash}`} target="_blank">
+                    {projectInfo.txHash}
+                  </a>
+                </span>
               </div>
               <Divider />
               <div style={{ marginBottom: '1rem' }}>
@@ -300,7 +304,7 @@ const ProjectInput = () => {
               </div>
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Diện tích trồng: </label>
-                <span>{projectInfo.square || 'Chưa cập nhật'}</span>
+                <span>{projectInfo.square || 'Chưa cập nhật'} m2</span>
               </div>
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Ngày bắt đầu: </label>

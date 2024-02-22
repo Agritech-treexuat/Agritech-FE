@@ -33,21 +33,25 @@ const AddExpectForm = ({ handleCloseForm, refetch, openNotificationWithIcon, pro
   const params = useParams()
 
   const onFinish = (values) => {
-    console.log('Values: ', values)
-
     const updatedValue = { ...values, time: values.date }
     delete updatedValue.date
-    console.log(updatedValue)
+    console.log('Values :', updatedValue)
     handleSubmitExpect(updatedValue, params.id)
   }
 
   const handleSubmitExpect = async (updatedValue, projectId) => {
+    // {
+    //   "amount": 1,
+    //   "note": "1111",
+    //   "time": "2024-02-22"
+    // }
+    console.log('updatedValue: ', updatedValue)
     try {
       const receip = await insertExpect({
         pId: projectIndex,
-        expect: 'inserted expect test'
+        expect: `Add expect: projectId: ${projectId}, time: ${updatedValue.time}, amount: ${updatedValue.amount}, note: ${updatedValue.note}`
       })
-      const txHash = receip.transactionHash
+      const txHash = receip?.transactionHash
       console.log('txhash: ', txHash)
       console.log('data send: ', {
         ...updatedValue,

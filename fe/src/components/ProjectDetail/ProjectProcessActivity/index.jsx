@@ -41,6 +41,50 @@ const ProcessActivityPage = ({ projectId }) => {
     })
   }
 
+  const renderProcessDataToWriteAdd = ({ values }) => {
+    switch (values?.type) {
+      case 'cultivation':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, name: ${values?.cultivationActivity?.name}, description: ${values?.cultivationActivity?.description}`
+      case 'planting':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, density: ${values?.plantingActivity?.density}, description: ${values?.plantingActivity?.description}`
+      case 'fertilize':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, fertilizationTime: ${values?.fertilizationActivity?.fertilizationTime}, type: ${values?.fertilizationActivity?.type}, description: ${values?.fertilizationActivity?.description}`
+      case 'pesticide':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, name: ${
+          values?.pestAndDiseaseControlActivity?.name
+        }, type: ${values?.pestAndDiseaseControlActivity?.type}, symptoms: ${
+          values?.pestAndDiseaseControlActivity?.symptoms
+        }, solutions: ${values?.solution && values?.solution?.length > 0 ? values?.solution.join(', ') : 'not have'}`
+      case 'other':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, description: ${values?.other?.description}`
+      default:
+        return 'none'
+    }
+  }
+
+  const renderProcessDataToWriteUpdate = ({ values, processId }) => {
+    switch (values?.type) {
+      case 'cultivation':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${values?.type}, name: ${values?.cultivationActivity?.name}, description: ${values?.cultivationActivity?.description}`
+      case 'planting':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${values?.type}, density: ${values?.plantingActivity?.density}, description: ${values?.plantingActivity?.description}`
+      case 'fertilize':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${values?.type}, fertilizationTime: ${values?.fertilizationActivity?.fertilizationTime}, type: ${values?.fertilizationActivity?.type}, description: ${values?.fertilizationActivity?.description}`
+      case 'pesticide':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${
+          values?.type
+        }, name: ${values?.pestAndDiseaseControlActivity?.name}, type: ${
+          values?.pestAndDiseaseControlActivity?.type
+        }, symptoms: ${values?.pestAndDiseaseControlActivity?.symptoms}, solutions: ${
+          values?.solution && values?.solution?.length > 0 ? values?.solution.join(', ') : 'not have'
+        }`
+      case 'other':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${values?.type}, description: ${values?.other?.description}`
+      default:
+        return 'none'
+    }
+  }
+
   const handleAddProcess = async (values) => {
     //     {
     //   "time": "2024-02-22T02:46:53.882Z",
@@ -59,9 +103,9 @@ const ProcessActivityPage = ({ projectId }) => {
         // write to blockchain
         const receip = await insertProcess({
           pId: projectInfo?.projectIndex,
-          process: `Add process: ${values?.time} - ${values?.type} - ${values?.cultivationActivity?.name} - ${values?.cultivationActivity?.description}`
+          process: renderProcessDataToWriteAdd({ values })
         })
-        tx = receip.transactionHash
+        tx = receip?.transactionHash
       }
       const res = await PROJECT.addProcess({
         data: {
@@ -99,9 +143,9 @@ const ProcessActivityPage = ({ projectId }) => {
         // write to blockchain
         const receip = await insertProcess({
           pId: projectInfo?.projectIndex,
-          process: `Update process: ${values?.time} - ${values?.type} - ${values?.cultivationActivity?.name} - ${values?.cultivationActivity?.description}`
+          process: renderProcessDataToWriteUpdate({ values, processId: values?.processId })
         })
-        tx = receip.transactionHash
+        tx = receip?.transactionHash
       }
       const { processId, ...updateProcess } = values
       const res = await PROJECT.updateProcess({

@@ -54,7 +54,11 @@ const EditInputHistory = ({ historyInfo }) => {
             <Divider>Chỉnh sửa lúc: {formatDateTime(input.modifiedAt)}</Divider>
             <div>
               <label>Transaction hash: </label>
-              <span>{input.txHash}</span>
+              <span>
+                <a href={`https://escan.live/tx/${input.txHash}`} target="_blank">
+                  {input.txHash}
+                </a>
+              </span>
             </div>
             <div>
               <label>Ngày bắt đầu: </label>

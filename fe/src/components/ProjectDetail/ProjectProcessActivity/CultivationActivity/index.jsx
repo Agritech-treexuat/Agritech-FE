@@ -27,8 +27,9 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
             {!isGarden && (
               <p>
-                <span>Tx: </span>
-                {item.tx}
+                <span>
+                  Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank">{`${item.tx}`}</a>
+                </span>
               </p>
             )}
             <p>
@@ -187,7 +188,10 @@ const CultivationTable = ({
             title: 'Tx',
             dataIndex: 'tx',
             key: 'tx',
-            width: 150
+            width: 150,
+            render: (text, record) => (
+              <a href={`https://escan.live/tx/${record.tx}`} target="_blank">{`${record.tx}`}</a>
+            )
           }
         ]),
     {

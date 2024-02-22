@@ -24,7 +24,7 @@ const AddExpectPopup = ({ refetch, openNotificationWithIcon, projectIndex }) => 
   return (
     <>
       <Button type="primary" onClick={showModal} style={{ marginBottom: '15px' }}>
-        {address ? 'Thêm dự kiến' : 'connect'}
+        {address ? 'Thêm dự kiến' : 'Kết nối với ví để thêm dự kiến'}
       </Button>
       <Modal title="Thêm dự kiến" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         <AddExpectForm

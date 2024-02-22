@@ -3,6 +3,7 @@ import { Button, Form, Input, InputNumber } from 'antd'
 import PROJECT from '../../../../services/projectService'
 import { useParams } from 'react-router'
 import './style.css'
+import { useStateContext } from '../../../../context'
 
 const layout = {
   labelCol: {
@@ -20,7 +21,8 @@ const tailLayout = {
   }
 }
 
-const UpdateExpectForm = ({ handleCloseForm, expect, refetch, openNotificationWithIcon }) => {
+const UpdateExpectForm = ({ handleCloseForm, expect, refetch, openNotificationWithIcon, projectIndex }) => {
+  const { updateExpect } = useStateContext()
   const params = useParams()
   const dateObj = new Date(expect.time)
 
@@ -42,12 +44,25 @@ const UpdateExpectForm = ({ handleCloseForm, expect, refetch, openNotificationWi
       amount: values.amount,
       note: values.note
     }
-    handleSubmitexpect({ data, projectId: params.id, expectId: expect.id })
+    handleSubmitExpect({ data, projectId: params.id, expectId: expect.id })
   }
 
-  const handleSubmitexpect = async ({ data, projectId, expectId }) => {
+  const handleSubmitExpect = async ({ data, projectId, expectId }) => {
     try {
-      const res = await PROJECT.editExpect(data, projectId, expectId)
+      const receip = await updateExpect({
+        pId: projectIndex,
+        expect: `Update expect: projectId: ${projectId}, expectId: ${expectId}, time: ${data.time}, amount: ${data.amount}, note: ${data.note}`
+      })
+      const txHash = receip?.transactionHash
+      console.log('txhash: ', txHash)
+      const res = await PROJECT.editExpect({
+        data: {
+          ...data,
+          tx: txHash
+        },
+        projectId,
+        expectId
+      })
       if (res.status === 200) {
         refetch()
         openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
@@ -57,6 +72,7 @@ const UpdateExpectForm = ({ handleCloseForm, expect, refetch, openNotificationWi
       handleCloseForm()
     } catch (error) {
       console.error(error?.response?.data?.message)
+      openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
     }
   }
 
