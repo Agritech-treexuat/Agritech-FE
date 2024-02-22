@@ -120,7 +120,7 @@ const UpdateOutputForm = ({ handleCloseForm, output, refetch, alllDistributer, o
     },
     fileList: output.images.map((image, index) => ({
       uid: String(index),
-      name: image,
+      name: `image-${index}.png`,
       status: 'done',
       url: image
     })),

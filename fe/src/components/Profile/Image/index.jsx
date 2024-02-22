@@ -1,10 +1,53 @@
-import React from 'react'
-import { Button, Upload, message, Space, Image, Tooltip } from 'antd'
-import { EditFilled, UploadOutlined } from '@ant-design/icons'
+import React, { useState } from 'react'
+import { Button, Upload, message, Space, Image, Tooltip, Modal } from 'antd'
+import { EditFilled, PlusOutlined } from '@ant-design/icons'
 import token from '../../../utils/token'
 const { getAccessToken, getRefreshToken } = token
 
 const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImageList, handleSave, profile }) => {
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = (error) => reject(error)
+    })
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [previewImage, setPreviewImage] = useState('')
+  const [previewTitle, setPreviewTitle] = useState('')
+  const [fileList, setFileList] = useState([])
+
+  const uploadButton = (
+    <button
+      style={{
+        border: 0,
+        background: 'none',
+        marginBottom: '1rem'
+      }}
+      type="button"
+    >
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8
+        }}
+      >
+        Tải lên
+      </div>
+    </button>
+  )
+
+  const handleCancelPreview = () => setPreviewOpen(false)
+
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj)
+    }
+    setPreviewImage(file.url || file.preview)
+    setPreviewOpen(true)
+    setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1))
+  }
+
   const handleCancel = () => {
     // Code để hủy chỉnh sửa ảnh
     setIsEditingImages(false)
@@ -12,7 +55,6 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
   }
 
   const handleImageChange = (info) => {
-    console.log('info: ', info)
     // Code để xử lý khi có thay đổi trong danh sách ảnh
     if (info.file.status === 'done') {
       message.success(`${info.file.name} file uploaded successfully`)
@@ -21,17 +63,8 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
     } else if (info.file.status === 'error') {
       message.error(`${info.file.name} file upload failed.`)
     }
-  }
-
-  const uploadProps = {
-    action: 'http://127.0.0.1:3052/v1/api/upload/single',
-    method: 'post',
-    accept: 'image/*',
-    name: 'file',
-    headers: {
-      authorization: getAccessToken(),
-      'x-rtoken-id': getRefreshToken()
-    }
+    const newFileList = info.fileList
+    setFileList([...newFileList])
   }
 
   const handleRemoveImage = (index) => {
@@ -41,45 +74,51 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
     setImageList(newList)
   }
 
-  const uploadButton = (
-    <div>
-      <UploadOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  )
+  const uploadProps = {
+    action: 'http://127.0.0.1:3052/v1/api/upload/single',
+    method: 'post',
+    accept: 'image/*',
+    name: 'file',
+    listType: 'picture-card',
+    headers: {
+      authorization: getAccessToken(),
+      'x-rtoken-id': getRefreshToken()
+    },
+    onChange: (info) => handleImageChange(info),
+    onPreview: handlePreview,
+    onRemove: (file) => {
+      handleRemoveImage(parseInt(file.uid))
+    }
+  }
 
   return (
     <div>
       <div style={{ display: 'flex' }}>
-        <h2 style={{ marginRight: '1rem' }}>Images</h2>
-        <Tooltip title="Edit images">
+        <h2 style={{ marginRight: '1rem' }}>Hình ảnh</h2>
+        <Tooltip title="Chỉnh sửa hình ảnh">
           <EditFilled style={{ color: '#476930' }} onClick={() => setIsEditingImages(true)} />
         </Tooltip>
       </div>
       {isEditingImages ? (
         <div>
-          <Upload
-            {...uploadProps}
-            listType="picture-card"
-            fileList={imageList?.map((image, index) => ({
-              uid: String(index),
-              name: 'image',
-              status: 'done',
-              url: image
-            }))}
-            onChange={handleImageChange}
-            onRemove={(file) => {
-              handleRemoveImage(parseInt(file.uid))
-            }}
-          >
-            {imageList?.length >= 10 ? null : uploadButton}
+          <Upload {...uploadProps} fileList={fileList}>
+            {uploadButton}
           </Upload>
           <Space>
             <Button type="primary" onClick={handleSave}>
-              Save
+              Lưu
             </Button>
-            <Button onClick={handleCancel}>Cancel</Button>
+            <Button onClick={handleCancel}>Hủy</Button>
           </Space>
+          <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancelPreview}>
+            <img
+              alt="example"
+              style={{
+                width: '100%'
+              }}
+              src={previewImage}
+            />
+          </Modal>
         </div>
       ) : (
         <div>
@@ -93,7 +132,7 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
             </div>
           ) : (
             <div>
-              <p>Not has yet</p>
+              <p>Chưa có ảnh nào</p>
             </div>
           )}
         </div>
