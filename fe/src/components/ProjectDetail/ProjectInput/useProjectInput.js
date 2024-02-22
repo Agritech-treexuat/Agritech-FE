@@ -16,7 +16,8 @@ export default function useProjectInput({ projectId }) {
       txHash: data?.txHash,
       createdAtTime: data?.createdAtTime,
       isInfoEdited: data?.isInfoEdited,
-      historyInfo: data?.historyInfo
+      historyInfo: data?.historyInfo,
+      projectIndex: data?.projectIndex
     }
     return {
       project

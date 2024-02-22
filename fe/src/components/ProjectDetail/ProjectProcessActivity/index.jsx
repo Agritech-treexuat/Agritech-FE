@@ -42,8 +42,16 @@ const ProcessActivityPage = ({ projectId }) => {
   }
 
   const handleAddProcess = async (values) => {
+    //     {
+    //   "time": "2024-02-22T02:46:53.882Z",
+    //   "type": "cultivation",
+    //   "cultivationActivity": {
+    //     "name": "Vệ sinh vườn",
+    //     "description": "Vệ sinh vườn, dọn sạch các tàn dư thực vật của vụ trước, rải vôi cày xới kỹ sâu khoảng 20-25cm. "
+    //   }
+    // }
     console.log('Received values of form: ', values)
-    let txHash = 'none'
+    let tx = 'none'
     console.log('projectInfo?.projectIndex:', projectInfo?.projectIndex)
 
     try {
@@ -51,19 +59,14 @@ const ProcessActivityPage = ({ projectId }) => {
         // write to blockchain
         const receip = await insertProcess({
           pId: projectInfo?.projectIndex,
-          process: 'inserted process test'
+          process: `Add process: ${values?.time} - ${values?.type} - ${values?.cultivationActivity?.name} - ${values?.cultivationActivity?.description}`
         })
-        txHash = receip.transactionHash
-        console.log('txhash: ', txHash)
-        console.log('data send: ', {
-          ...values,
-          tx: txHash
-        })
+        tx = receip.transactionHash
       }
       const res = await PROJECT.addProcess({
         data: {
           ...values,
-          tx: txHash
+          tx: tx
         },
         projectId
       })
@@ -80,13 +83,43 @@ const ProcessActivityPage = ({ projectId }) => {
   }
 
   const handleUpdateProcess = async (values) => {
+    // {
+    //   "processId": "65d6b5a0f0e5b78ef7694aa2",
+    //   "time": "2024-02-22T02:46:53.882Z",
+    //   "type": "cultivation",
+    //   "cultivationActivity": {
+    //     "name": "Vệ sinh vườn",
+    //     "description": "Vệ sinh vườn, dọn sạch các tàn dư thực vật của vụ trước, rải vôi cày xới kỹ sâu khoảng 20-25cm. Update ở đây."
+    //   }
+    // }
+    let tx = 'none'
     console.log('Received values of form: ', values)
-    const { processId, ...updateProcess } = values
-    const res = await PROJECT.updateProcess({ data: updateProcess, projectId, processId })
-    if (res.status === 200) {
-      refetch()
-      openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
-    } else {
+    try {
+      if (!projectInfo?.isGarden) {
+        // write to blockchain
+        const receip = await insertProcess({
+          pId: projectInfo?.projectIndex,
+          process: `Update process: ${values?.time} - ${values?.type} - ${values?.cultivationActivity?.name} - ${values?.cultivationActivity?.description}`
+        })
+        tx = receip.transactionHash
+      }
+      const { processId, ...updateProcess } = values
+      const res = await PROJECT.updateProcess({
+        data: {
+          ...updateProcess,
+          tx: tx
+        },
+        projectId,
+        processId
+      })
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+      }
+    } catch (error) {
+      console.log('error: ', error)
       openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
     }
   }

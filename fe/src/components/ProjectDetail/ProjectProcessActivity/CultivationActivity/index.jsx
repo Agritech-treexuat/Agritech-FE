@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
+import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
 const metamaskConfig = metamaskWallet()
 
-const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }) => {
+const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   // write a modal history (do not use table), updateTime is modifiedAt and make it highlight. The other information is time, tx, cultivationActivity.name, cultivationActivity.description
   return (
     <Modal title="Lịch sử chỉnh sửa" open={historyModalVisible} onCancel={handleHistoryModalCancel} footer={null}>
@@ -24,10 +25,12 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }
               <span>Time: </span>
               {formatDateTime(item.time)}
             </p>
-            <p>
-              <span>Tx: </span>
-              {item.tx}
-            </p>
+            {!isGarden && (
+              <p>
+                <span>Tx: </span>
+                {item.tx}
+              </p>
+            )}
             <p>
               <span>Name: </span>
               {item.cultivationActivity.name}
@@ -63,7 +66,6 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
             if (isUpdate) {
               data = {
                 processId: selectedPlantFarming.processId,
-                tx: 'tx',
                 time: values.time.toDate(),
                 type: 'cultivation',
                 cultivationActivity: {
@@ -206,41 +208,51 @@ const CultivationTable = ({
       key: 'actions',
       render: (text, record) => (
         <>
-          <Button
-            type="default"
-            style={{ marginRight: '8px' }}
-            onClick={() => {
-              console.log(record)
-              setSelectedPlantFarming({
-                processId: record._id,
-                time: record.time,
-                name: record.cultivationActivity.name,
-                description: record.cultivationActivity.description
-              })
-              setModalUpdateVisible(true)
-            }}
-          >
-            Chỉnh sửa
-          </Button>
+          <Tooltip title={address || isGarden ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
+            {address || isGarden ? (
+              <EditFilled
+                style={{ marginRight: '2rem', cursor: 'pointer' }}
+                onClick={() => {
+                  console.log(record)
+                  setSelectedPlantFarming({
+                    processId: record._id,
+                    time: record.time,
+                    name: record.cultivationActivity.name,
+                    description: record.cultivationActivity.description
+                  })
+                  setModalUpdateVisible(true)
+                }}
+              />
+            ) : (
+              <EditOutlined
+                style={{ marginRight: '2rem', cursor: 'pointer' }}
+                onClick={async () => {
+                  await connect(metamaskConfig)
+                }}
+              />
+            )}
+          </Tooltip>
           <Popconfirm
             title="Xóa"
             description="Bạn có chắc chắn muốn xóa không"
             onConfirm={handleDeleteProcess.bind(this, record._id)}
+            okText="Có"
+            cancelText="Không"
           >
-            <Button type="primary" style={{ marginRight: '8px' }}>
-              Xóa
-            </Button>
+            <Tooltip title="Xóa">
+              <DeleteFilled style={{ cursor: 'pointer', marginRight: '2rem' }} />
+            </Tooltip>
           </Popconfirm>
           {record.isEdited ? (
-            <Button
-              type="default"
-              onClick={() => {
-                setSelectedPlantFarming(record)
-                setModalHistoryVisible(true)
-              }}
-            >
-              Lịch sử chỉnh sửa
-            </Button>
+            <Tooltip title="Xem lịch sử chỉnh sửa">
+              <HistoryOutlined
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setSelectedPlantFarming(record)
+                  setModalHistoryVisible(true)
+                }}
+              />
+            </Tooltip>
           ) : null}
         </>
       ),
@@ -255,7 +267,7 @@ const CultivationTable = ({
           type="primary"
           style={{ marginRight: '8px' }}
           onClick={async () => {
-            if(isGarden) {
+            if (isGarden) {
               setModal1Visible(true)
             } else {
               if (!address) await connect(metamaskConfig)
@@ -321,6 +333,7 @@ const CultivationTable = ({
         history={selectedPlantFarming?.historyProcess}
         historyModalVisible={modalHistoryVisible}
         handleHistoryModalCancel={() => setModalHistoryVisible(false)}
+        isGarden={isGarden}
       />
     </div>
   )

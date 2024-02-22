@@ -76,8 +76,10 @@ const ProjectList = () => {
     // Thực hiện các thao tác khác khi thêm project
     try {
       const receip = await createProject({
-        title: farmId,
-        input: `${selectedPlant.id} - ${selectedSeed.id} - ${new Date()} - ${description}`
+        farm: farmId,
+        input: `plant: ${selectedPlant.name} - seed: ${
+          selectedSeed.name
+        } - startDate: ${new Date()} - description: ${description}`
       })
       const txHash = receip.transactionHash
       const projectIndex = receip.events[0].args[0].toNumber()

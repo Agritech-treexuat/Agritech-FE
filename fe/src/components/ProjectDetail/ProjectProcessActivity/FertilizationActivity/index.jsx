@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
+import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
 const metamaskConfig = metamaskWallet()
 const { Option } = Select
 
-const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }) => {
+const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   return (
-    <Modal title="Lịch sử chỉnh sửa" visible={historyModalVisible} onCancel={handleHistoryModalCancel} footer={null}>
+    <Modal title="Lịch sử chỉnh sửa" open={historyModalVisible} onCancel={handleHistoryModalCancel} footer={null}>
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
@@ -24,10 +25,12 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }
               <span>Time: </span>
               {formatDateTime(item.time)}
             </p>
-            <p>
-              <span>Tx: </span>
-              {item.tx}
-            </p>
+            {!isGarden && (
+              <p>
+                <span>Tx: </span>
+                {item.tx}
+              </p>
+            )}
             <p>
               <span>fertilizationTime: </span>
               {item.fertilizationActivity.fertilizationTime}
@@ -67,7 +70,6 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
             if (isUpdate) {
               data = {
                 processId: selectedPlantFarming.processId,
-                tx: 'tx',
                 time: values.time.toDate(),
                 type: 'fertilize',
                 fertilizationActivity: {
@@ -78,7 +80,6 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
               }
             } else {
               data = {
-                tx: 'tx',
                 time: values.time.toDate(),
                 type: 'fertilize',
                 fertilizationActivity: {
@@ -216,41 +217,51 @@ const FertilizeTable = ({
       key: 'actions',
       render: (text, record) => (
         <>
-          <Button
-            type="default"
-            style={{ marginRight: '8px' }}
-            onClick={() => {
-              setSelectedPlantFarming({
-                processId: record._id,
-                time: record.time,
-                fertilizationTime: record.fertilizationActivity.fertilizationTime,
-                type: record.fertilizationActivity.type,
-                description: record.fertilizationActivity.description
-              })
-              setModalUpdateVisible(true)
-            }}
-          >
-            Chỉnh sửa
-          </Button>
+          <Tooltip title={address || isGarden ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
+            {address || isGarden ? (
+              <EditFilled
+                style={{ marginRight: '2rem', cursor: 'pointer' }}
+                onClick={() => {
+                  setSelectedPlantFarming({
+                    processId: record._id,
+                    time: record.time,
+                    fertilizationTime: record.fertilizationActivity.fertilizationTime,
+                    type: record.fertilizationActivity.type,
+                    description: record.fertilizationActivity.description
+                  })
+                  setModalUpdateVisible(true)
+                }}
+              />
+            ) : (
+              <EditOutlined
+                style={{ marginRight: '2rem', cursor: 'pointer' }}
+                onClick={async () => {
+                  await connect(metamaskConfig)
+                }}
+              />
+            )}
+          </Tooltip>
           <Popconfirm
             title="Xóa"
             description="Bạn có chắc chắn muốn xóa không"
             onConfirm={handleDeleteProcess.bind(this, record._id)}
+            okText="Có"
+            cancelText="Không"
           >
-            <Button type="primary" style={{ marginRight: '8px' }}>
-              Xóa
-            </Button>
+            <Tooltip title="Xóa">
+              <DeleteFilled style={{ cursor: 'pointer', marginRight: '2rem' }} />
+            </Tooltip>
           </Popconfirm>
           {record.isEdited ? (
-            <Button
-              type="default"
-              onClick={() => {
-                setSelectedPlantFarming(record)
-                setModalHistoryVisible(true)
-              }}
-            >
-              Lịch sử chỉnh sửa
-            </Button>
+            <Tooltip title="Xem lịch sử chỉnh sửa">
+              <HistoryOutlined
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setSelectedPlantFarming(record)
+                  setModalHistoryVisible(true)
+                }}
+              />
+            </Tooltip>
           ) : null}
         </>
       ),
@@ -265,7 +276,7 @@ const FertilizeTable = ({
           type="primary"
           style={{ marginRight: '8px' }}
           onClick={async () => {
-            if(isGarden) {
+            if (isGarden) {
               setModal1Visible(true)
             } else {
               if (!address) await connect(metamaskConfig)
@@ -333,6 +344,7 @@ const FertilizeTable = ({
         history={selectedPlantFarming?.historyProcess}
         historyModalVisible={modalHistoryVisible}
         handleHistoryModalCancel={() => setModalHistoryVisible(false)}
+        isGarden={isGarden}
       />
     </div>
   )

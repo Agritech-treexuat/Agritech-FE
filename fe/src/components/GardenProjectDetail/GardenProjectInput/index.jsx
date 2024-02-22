@@ -195,7 +195,7 @@ const GardenProjectInput = () => {
               Thêm cây mới
             </Button>
           </Flex>
-          <Radio.Group onChange={onChange} value={value} style={{marginTop: "1rem", fontSize: "1rem"}}>
+          <Radio.Group onChange={onChange} value={value} style={{ marginTop: '1rem', fontSize: '1rem' }}>
             <Radio value="all"> Tất cả </Radio>
             <Radio value="inProgress"> Đang thực hiện </Radio>
             <Radio value="harvesting"> Đang thu hoạch </Radio>

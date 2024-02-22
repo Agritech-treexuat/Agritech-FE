@@ -8,8 +8,11 @@ import useProjectInput from './useProjectInput'
 import SeedModal from '../AddProject/AddProjectSeed'
 import PROJECT from '../../../services/projectService'
 import EditInputHistory from './EditInputHistory'
-import { EditFilled } from '@ant-design/icons'
+import { EditFilled, EditOutlined } from '@ant-design/icons'
 import UpdateInputForm from './UpdateInputForm'
+import { useStateContext } from '../../../context'
+import { metamaskWallet } from '@thirdweb-dev/react'
+const metamaskConfig = metamaskWallet()
 
 const UpdateStatusModal = ({ visible, onCancel, onInProgressUpdate, onCancelUpdate, onDoneUpdate, selectedItem }) => {
   return (
@@ -45,6 +48,7 @@ const UpdateStatusModal = ({ visible, onCancel, onInProgressUpdate, onCancelUpda
 }
 
 const ProjectInput = () => {
+  const { updateInput, connect, address } = useStateContext()
   const projectId = useParams().id
   const [openUpdateSeed, setOpenUpdateSeed] = useState(false)
   const [openUpdateStatus, setOpenUpdateStatus] = useState(false)
@@ -65,13 +69,21 @@ const ProjectInput = () => {
 
   const handleUpdateSeed = async () => {
     try {
+      const receip = await updateInput({
+        pId: projectInfo?.projectIndex,
+        input: `update seed: ${selectedSeed.name}`
+      })
+      const tx = receip.transactionHash
       const data = {
-        seed: selectedSeed.id
+        seed: selectedSeed.id,
+        tx: tx
       }
       const res = await PROJECT.editProjectInfo(data, projectId)
       if (res.status === 200) {
         refetch()
         openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
       }
     } catch (error) {
       console.log(error)
@@ -82,13 +94,21 @@ const ProjectInput = () => {
 
   const handleUpdateStatus = async (status) => {
     try {
+      const receip = await updateInput({
+        pId: projectInfo?.projectIndex,
+        input: `update status: ${status}`
+      })
+      const tx = receip.transactionHash
       const data = {
-        status: status
+        status: status,
+        tx: tx
       }
       const res = await PROJECT.editProjectInfo(data, projectId)
       if (res.status === 200) {
         refetch()
         openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
       }
     } catch (error) {
       console.log(error)
@@ -98,17 +118,31 @@ const ProjectInput = () => {
   }
 
   const handleUpdateOverview = async (values) => {
-    const data = {
-      startDate: values.date,
-      square: values.square,
-      description: values.description
-    }
     try {
-      await PROJECT.editProjectInfo(data, projectId)
-      refetch()
+      const receip = await updateInput({
+        pId: projectInfo?.projectIndex,
+        input: `update overview: ${values.square} - ${values.date} - ${values.description}`
+      })
+      const tx = receip.transactionHash
+      const data = {
+        startDate: values.date,
+        square: values.square,
+        description: values.description,
+        tx: tx
+      }
+
+      const res = await PROJECT.editProjectInfo(data, projectId)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
+      }
     } catch (error) {
-      console.error(error?.response?.data?.message)
+      console.log(error)
+      openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
     }
+
     setIsModalOpen(false)
   }
 
@@ -203,33 +237,65 @@ const ProjectInput = () => {
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Trạng thái: </label>
                 <span>{renderStatus(projectInfo.status)}</span>
-                <Tooltip title="Chỉnh sửa trạng thái">
-                  <EditFilled
-                    style={{ marginLeft: '0.5rem' }}
-                    onClick={() => {
-                      setOpenUpdateStatus(true)
-                    }}
-                  />
+                <Tooltip title={address ? 'Chỉnh sửa trạng thái' : 'Kết nối với ví để chỉnh sửa trạng thái'}>
+                  {address ? (
+                    <EditFilled
+                      style={{ marginLeft: '0.5rem' }}
+                      onClick={() => {
+                        setOpenUpdateStatus(true)
+                      }}
+                    />
+                  ) : (
+                    <EditOutlined
+                      style={{ marginLeft: '0.5rem' }}
+                      onClick={async () => {
+                        await connect(metamaskConfig)
+                      }}
+                    />
+                  )}
                 </Tooltip>
               </div>
               <Divider />
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Hạt giống: </label>
                 <span>{projectInfo.seed.seed_name}</span>
-                <Tooltip title="Chỉnh sửa hạt giống">
-                  <EditFilled
-                    style={{ marginLeft: '0.5rem' }}
-                    onClick={() => {
-                      setOpenUpdateSeed(true)
-                    }}
-                  />
+                <Tooltip title={address ? 'Chỉnh sửa hạt giống' : 'Kết nối với ví để chỉnh sửa hạt giống'}>
+                  {address ? (
+                    <EditFilled
+                      style={{ marginLeft: '0.5rem' }}
+                      onClick={() => {
+                        setOpenUpdateSeed(true)
+                      }}
+                    />
+                  ) : (
+                    <EditOutlined
+                      style={{ marginLeft: '0.5rem' }}
+                      onClick={async () => {
+                        await connect(metamaskConfig)
+                      }}
+                    />
+                  )}
                 </Tooltip>
               </div>
               <Divider />
               <div style={{ marginBottom: '1rem', display: 'flex' }}>
                 <h3> Thông tin khác </h3>
-                <Tooltip title="Chỉnh sửa thông tin khác">
-                  <EditFilled style={{ marginLeft: '0.5rem' }} onClick={() => setIsModalOpen(true)} />
+                <Tooltip title={address ? 'Chỉnh sửa thông tin khác' : 'Kết nối với ví để chỉnh sửa khác'}>
+                  {address ? (
+                    <EditFilled
+                      style={{ marginLeft: '0.5rem' }}
+                      onClick={() => {
+                        setIsModalOpen(true)
+                      }}
+                    />
+                  ) : (
+                    <EditOutlined
+                      style={{ marginLeft: '0.5rem' }}
+                      onClick={async () => {
+                        await connect(metamaskConfig)
+                      }}
+                    />
+                  )}
                 </Tooltip>
               </div>
               <div style={{ marginBottom: '1rem' }}>
