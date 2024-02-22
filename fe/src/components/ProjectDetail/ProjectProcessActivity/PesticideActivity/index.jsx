@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip, Typography } from 'antd'
-import { formatDateTime } from '../../../../utils/helpers'
+import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip } from 'antd'
+import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import {
   DeleteFilled,
   EditFilled,
@@ -13,7 +13,6 @@ import {
 import { metamaskWallet } from '@thirdweb-dev/react'
 const metamaskConfig = metamaskWallet()
 const { Option } = Select
-const { Paragraph } = Typography
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   return (
@@ -46,7 +45,7 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
             <p>
               <span>Type: </span>
-              {item.pestAndDiseaseControlActivity.type}
+              {item.pestAndDiseaseControlActivity.type === 'pest' ? 'Sâu bệnh' : 'Dịch hại'}
             </p>
             <p>
               <span>Symtoms: </span>
@@ -235,7 +234,7 @@ const PesticideTable = ({
       title: 'Thời gian',
       dataIndex: 'time',
       key: 'time',
-      width: 150,
+      width: '150px',
       render: (text, record) => formatDateTime(record.time)
     },
     ...(isGarden
@@ -245,47 +244,37 @@ const PesticideTable = ({
             title: 'Transaction hash',
             dataIndex: 'tx',
             key: 'tx',
-            width: 150,
-            render: (text, record) => (
-              <a href={`https://escan.live/tx/${record.tx}`} target="_blank" rel="noreferrer">
-                {record.tx}
-              </a>
-            )
+            width: '150px',
+            render: (text, record) =>
+              formatTransactionHashTable({
+                str: record.tx,
+                a: 8,
+                b: 6
+              })
           }
         ]),
     {
       title: 'Tên',
       dataIndex: 'name',
       key: 'name',
+      width: '150px',
       render: (text, record) => record.pestAndDiseaseControlActivity.name
     },
     {
       title: 'Tác nhân',
       dataIndex: 'type',
       key: 'type',
-      render: (text, record) => record.pestAndDiseaseControlActivity.type
+      render: (text, record) => (record.pestAndDiseaseControlActivity.type === 'pest' ? 'Sâu bệnh' : 'Dịch hại'),
+      width: '100px'
     },
     {
       title: 'Triệu chứng',
       dataIndex: 'symptoms',
       key: 'symptoms',
+      width: 400,
       render: (text, record) => (
         <p>
-          <Paragraph
-            ellipsis={{
-              rows: 5,
-              expandable: true,
-              symbol: 'đọc thêm',
-              tooltip: true,
-              onExpand: function (event) {
-                console.log('onExpand', event)
-                event.stopPropagation()
-                event.preventDefault()
-              }
-            }}
-          >
-            {record.pestAndDiseaseControlActivity.symptoms}
-          </Paragraph>
+          <ParagraphWithEllipsis text={record.pestAndDiseaseControlActivity.symptoms} rows={5} />
         </p>
       )
     },
@@ -293,25 +282,12 @@ const PesticideTable = ({
       title: 'Giải pháp',
       dataIndex: 'solution',
       key: 'solution',
+      width: 500,
       render: (text, record) =>
         record.pestAndDiseaseControlActivity.solution.map((sol, index) => (
           <ul>
             <li key={index}>
-              <Paragraph
-                ellipsis={{
-                  rows: 5,
-                  expandable: true,
-                  symbol: 'đọc thêm',
-                  tooltip: true,
-                  onExpand: function (event) {
-                    console.log('onExpand', event)
-                    event.stopPropagation()
-                    event.preventDefault()
-                  }
-                }}
-              >
-                {sol}
-              </Paragraph>
+              <ParagraphWithEllipsis text={sol} rows={5} />
             </li>
           </ul>
         ))
@@ -320,6 +296,7 @@ const PesticideTable = ({
       title: 'Hành động',
       dataIndex: 'actions',
       key: 'actions',
+      width: '150px',
       render: (text, record) => (
         <>
           <Tooltip title={address || isGarden ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
@@ -370,8 +347,7 @@ const PesticideTable = ({
             </Tooltip>
           ) : null}
         </>
-      ),
-      width: 350
+      )
     }
   ]
 

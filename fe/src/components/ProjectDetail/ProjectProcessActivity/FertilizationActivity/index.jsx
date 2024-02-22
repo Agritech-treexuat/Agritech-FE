@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip } from 'antd'
-import { formatDateTime } from '../../../../utils/helpers'
+import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
 const metamaskConfig = metamaskWallet()
@@ -188,9 +188,12 @@ const FertilizeTable = ({
             dataIndex: 'tx',
             key: 'tx',
             width: 150,
-            render: (text, record) => (
-              <a href={`https://escan.live/tx/${record.tx}`} target="_blank" rel="noreferrer">{`${record.tx}`}</a>
-            )
+            render: (text, record) =>
+              formatTransactionHashTable({
+                str: record.tx,
+                a: 8,
+                b: 6
+              })
           }
         ]),
     {
@@ -203,18 +206,20 @@ const FertilizeTable = ({
       title: 'Kiểu bón',
       dataIndex: 'type',
       key: 'type',
-      render: (text, record) => record.fertilizationActivity.type
+      width: 120,
+      render: (text, record) => (record.fertilizationActivity.type === 'baseFertilizer' ? 'Bón lót' : 'Bón thúc')
     },
     {
       title: 'Mô tả',
       dataIndex: 'description',
       key: 'description',
-      render: (text, record) => record.fertilizationActivity.description
+      render: (text, record) => <ParagraphWithEllipsis text={record.fertilizationActivity.description} rows={3} />
     },
     {
       title: 'Hoạt động',
       dataIndex: 'actions',
       key: 'actions',
+      width: 150,
       render: (text, record) => (
         <>
           <Tooltip title={address || isGarden ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
@@ -264,8 +269,7 @@ const FertilizeTable = ({
             </Tooltip>
           ) : null}
         </>
-      ),
-      width: 350
+      )
     }
   ]
 

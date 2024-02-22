@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip } from 'antd'
-import { formatDateTime } from '../../../../utils/helpers'
+import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
 const metamaskConfig = metamaskWallet()
@@ -38,7 +38,7 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
             <p>
               <span>Description: </span>
-              {item.plantingActivity.description}
+              <ParagraphWithEllipsis text={item.plantingActivity.description} rows={3} />
             </p>
           </div>
         ))}
@@ -181,9 +181,12 @@ const PlantingTable = ({
             dataIndex: 'tx',
             key: 'tx',
             width: 150,
-            render: (text, record) => (
-              <a href={`https://escan.live/tx/${record.tx}`} target="_blank" rel="noreferrer">{`${record.tx}`}</a>
-            )
+            render: (text, record) =>
+              formatTransactionHashTable({
+                str: record.tx,
+                a: 8,
+                b: 6
+              })
           }
         ]),
     {
@@ -193,7 +196,7 @@ const PlantingTable = ({
       render: (text, record) => record.plantingActivity.density
     },
     {
-      title: 'Mô tả!',
+      title: 'Mô tả',
       dataIndex: 'description',
       key: 'description',
       render: (text, record) => record.plantingActivity.description
@@ -202,6 +205,7 @@ const PlantingTable = ({
       title: 'Hoạt động',
       dataIndex: 'actions',
       key: 'actions',
+      width: 150,
       render: (text, record) => (
         <>
           <Tooltip title={address || isGarden ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
@@ -251,8 +255,7 @@ const PlantingTable = ({
             </Tooltip>
           ) : null}
         </>
-      ),
-      width: 350
+      )
     }
   ]
 

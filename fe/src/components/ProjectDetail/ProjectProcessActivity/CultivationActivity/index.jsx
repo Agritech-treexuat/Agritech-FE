@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip } from 'antd'
-import { formatDateTime } from '../../../../utils/helpers'
+import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
 const metamaskConfig = metamaskWallet()
@@ -178,7 +178,7 @@ const CultivationTable = ({
       title: 'Thời gian',
       dataIndex: 'time',
       key: 'time',
-      width: 150,
+      width: '150px',
       render: (text, record) => formatDateTime(record.time)
     },
     ...(isGarden
@@ -188,28 +188,33 @@ const CultivationTable = ({
             title: 'Transaction hash',
             dataIndex: 'tx',
             key: 'tx',
-            width: 150,
-            render: (text, record) => (
-              <a href={`https://escan.live/tx/${record.tx}`} target="_blank" rel="noreferrer">{`${record.tx}`}</a>
-            )
+            width: '150px',
+            render: (text, record) =>
+              formatTransactionHashTable({
+                str: record.tx,
+                a: 8,
+                b: 6
+              })
           }
         ]),
     {
       title: 'Tên',
       dataIndex: 'name',
       key: 'name',
+      width: '150px',
       render: (text, record) => record.cultivationActivity.name
     },
     {
       title: 'Mô tả',
       dataIndex: 'description',
       key: 'description',
-      render: (text, record) => record.cultivationActivity.description
+      render: (text, record) => <ParagraphWithEllipsis text={record.cultivationActivity.description} rows={3} />
     },
     {
       title: 'Hoạt động',
       dataIndex: 'actions',
       key: 'actions',
+      width: '150px',
       render: (text, record) => (
         <>
           <Tooltip title={address || isGarden ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
@@ -259,8 +264,7 @@ const CultivationTable = ({
             </Tooltip>
           ) : null}
         </>
-      ),
-      width: 350
+      )
     }
   ]
 

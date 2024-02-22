@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip } from 'antd'
-import { formatDateTime } from '../../../../utils/helpers'
+import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
 const metamaskConfig = metamaskWallet()
@@ -154,21 +154,25 @@ const OtherTable = ({
             dataIndex: 'tx',
             key: 'tx',
             width: 150,
-            render: (text, record) => (
-              <a href={`https://escan.live/tx/${record.tx}`} target="_blank" rel="noreferrer">{`${record.tx}`}</a>
-            )
+            render: (text, record) =>
+              formatTransactionHashTable({
+                str: record.tx,
+                a: 8,
+                b: 6
+              })
           }
         ]),
     {
       title: 'Mô tả',
       dataIndex: 'description',
       key: 'description',
-      render: (text, record) => record.other.description
+      render: (text, record) => <ParagraphWithEllipsis text={record.other.description} rows={3} />
     },
     {
       title: 'Hoạt động',
       dataIndex: 'actions',
       key: 'actions',
+      width: 150,
       render: (text, record) => (
         <>
           <Tooltip title={address || isGarden ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
@@ -216,8 +220,7 @@ const OtherTable = ({
             </Tooltip>
           ) : null}
         </>
-      ),
-      width: 350
+      )
     }
   ]
 

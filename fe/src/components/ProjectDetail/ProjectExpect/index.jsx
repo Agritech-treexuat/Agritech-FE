@@ -5,7 +5,7 @@ import { Popconfirm, Space, Table, Tooltip, notification } from 'antd'
 import UpdateExpectPopup from './UpdateExpectPopup'
 import EditExpectHistory from './EditExpectHistory'
 import AddExpectPopup from './AddExpectPopup'
-import { formatDate } from '../../../utils/helpers'
+import { formatDate, formatTransactionHashTable } from '../../../utils/helpers'
 import useProjectExpect from './useProjectExpect'
 import PROJECT from '../../../services/projectService'
 import { DeleteFilled } from '@ant-design/icons'
@@ -48,19 +48,23 @@ const ProjectExpect = () => {
             title="Transaction hash"
             dataIndex="tx"
             key="tx"
-            render={(_, expect) => (
-              <a href={`https://escan.live/tx/${expect.tx}`} target="_blank" rel="noreferrer">
-                {expect.tx}
-              </a>
-            )}
+            width="150px"
+            render={(_, expect) =>
+              formatTransactionHashTable({
+                str: expect.tx,
+                a: 8,
+                b: 5
+              })
+            }
           />
           <Column title="Thời gian" key="time" render={(_, expect) => <p>{formatDate(expect.time)}</p>} />
-          <Column title="Lượng" dataIndex="amount" key="amount" />
+          <Column title="Lượng (kg)" dataIndex="amount" key="amount" />
           <Column title="Ghi chú" dataIndex="note" key="note" />
 
           <Column
-            title="Chỉnh sửa"
+            title="Hành động"
             key="action"
+            width="150px"
             render={(_, expect) => (
               <Space size="middle">
                 <UpdateExpectPopup
