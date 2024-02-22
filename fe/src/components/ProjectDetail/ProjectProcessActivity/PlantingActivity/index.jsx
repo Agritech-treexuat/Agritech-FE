@@ -26,7 +26,10 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
             {!isGarden && (
               <p>
-                <span>Transaction hash: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a></span>
+                <span>
+                  Transaction hash:{' '}
+                  <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                </span>
               </p>
             )}
             <p>
@@ -114,11 +117,7 @@ const Modal2 = ({
         <Form.Item name="density" label="Mật độ" rules={[{ required: true, message: 'Hãy nhập mật độ!' }]}>
           <Input />
         </Form.Item>
-        <Form.Item
-          name="description"
-          label="Mô tả"
-          rules={[{ required: true, message: 'Hãy nhập mô tả!' }]}
-        >
+        <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Hãy nhập mô tả!' }]}>
           <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
         </Form.Item>
       </Form>

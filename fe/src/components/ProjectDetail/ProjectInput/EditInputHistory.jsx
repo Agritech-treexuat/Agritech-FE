@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Modal, Divider, Tooltip } from 'antd'
+import { Modal, Divider, Tooltip, Typography } from 'antd'
 import { formatDate, formatDateTime } from '../../../utils/helpers'
+const { Paragraph } = Typography
 
 const EditInputHistory = ({ historyInfo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -74,7 +75,25 @@ const EditInputHistory = ({ historyInfo }) => {
             </div>
             <div>
               <label>Description: </label>
-              <span>{input.description}</span>
+              <span>
+                {
+                  <Paragraph
+                    ellipsis={{
+                      rows: 3,
+                      expandable: true,
+                      symbol: 'đọc thêm',
+                      tooltip: true,
+                      onExpand: function (event) {
+                        console.log('onExpand', event)
+                        event.stopPropagation()
+                        event.preventDefault()
+                      }
+                    }}
+                  >
+                    {input.description}
+                  </Paragraph>
+                }
+              </span>
             </div>
           </div>
         ))}

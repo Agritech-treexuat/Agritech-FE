@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip, Typography } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
 import {
   DeleteFilled,
@@ -13,6 +13,7 @@ import {
 import { metamaskWallet } from '@thirdweb-dev/react'
 const metamaskConfig = metamaskWallet()
 const { Option } = Select
+const { Paragraph } = Typography
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   return (
@@ -34,7 +35,9 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
             {!isGarden && (
               <p>
-                <span>Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a></span>
+                <span>
+                  Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                </span>
               </p>
             )}
             <p>
@@ -266,7 +269,25 @@ const PesticideTable = ({
       title: 'Triệu chứng',
       dataIndex: 'symptoms',
       key: 'symptoms',
-      render: (text, record) => record.pestAndDiseaseControlActivity.symptoms
+      render: (text, record) => (
+        <p>
+          <Paragraph
+            ellipsis={{
+              rows: 5,
+              expandable: true,
+              symbol: 'đọc thêm',
+              tooltip: true,
+              onExpand: function (event) {
+                console.log('onExpand', event)
+                event.stopPropagation()
+                event.preventDefault()
+              }
+            }}
+          >
+            {record.pestAndDiseaseControlActivity.symptoms}
+          </Paragraph>
+        </p>
+      )
     },
     {
       title: 'Giải pháp',
@@ -275,7 +296,23 @@ const PesticideTable = ({
       render: (text, record) =>
         record.pestAndDiseaseControlActivity.solution.map((sol, index) => (
           <ul>
-            <li key={index}>{sol}</li>
+            <li key={index}>
+              <Paragraph
+                ellipsis={{
+                  rows: 5,
+                  expandable: true,
+                  symbol: 'đọc thêm',
+                  tooltip: true,
+                  onExpand: function (event) {
+                    console.log('onExpand', event)
+                    event.stopPropagation()
+                    event.preventDefault()
+                  }
+                }}
+              >
+                {sol}
+              </Paragraph>
+            </li>
           </ul>
         ))
     },

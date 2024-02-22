@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router'
 import Loading from '../../../pages/Loading'
-import { Col, Row, notification, Button, Modal, Tooltip, Divider, Form } from 'antd'
+import { Col, Row, notification, Button, Modal, Tooltip, Divider, Form, Typography } from 'antd'
 import { formatDate, formatDateTime } from '../../../utils/helpers'
 import useProjectInput from './useProjectInput'
 import SeedModal from '../AddProject/AddProjectSeed'
@@ -12,6 +12,7 @@ import UpdateInputForm from './UpdateInputForm'
 import { useStateContext } from '../../../context'
 import { metamaskWallet } from '@thirdweb-dev/react'
 const metamaskConfig = metamaskWallet()
+const { Paragraph } = Typography
 
 const UpdateStatusModal = ({ visible, onCancel, onInProgressUpdate, onCancelUpdate, onDoneUpdate, selectedItem }) => {
   return (
@@ -311,7 +312,26 @@ const ProjectInput = () => {
               </div>
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Mô tả: </label>
-                <span>{projectInfo.description || 'Chưa cập nhật'}</span>
+                <span>
+                  {
+                    <Paragraph
+                      ellipsis={{
+                        rows: 3,
+                        expandable: true,
+                        symbol: 'đọc thêm',
+                        tooltip: true,
+                        onExpand: function (event) {
+                          console.log('onExpand', event)
+                          event.stopPropagation()
+                          event.preventDefault()
+                        }
+                      }}
+                      style={{ fontSize: '1.2rem' }}
+                    >
+                      {projectInfo.description || 'Chưa cập nhật'}
+                    </Paragraph>
+                  }
+                </span>
               </div>
               <Divider />
             </div>

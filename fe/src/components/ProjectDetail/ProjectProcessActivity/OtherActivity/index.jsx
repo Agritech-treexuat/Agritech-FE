@@ -26,7 +26,10 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
             {!isGarden && (
               <p>
-                <span>Transaction hash: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a></span>
+                <span>
+                  Transaction hash:{' '}
+                  <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                </span>
               </p>
             )}
             <p>

@@ -25,6 +25,21 @@ const PlantModal = ({ open, onClose, selectedPlant, setSelectedPlant, handleAddP
       (selectedType === null || plant.type === selectedType)
   )
 
+  const renderType = (type) => {
+    switch (type) {
+      case 'herb':
+        return 'Rau gia vị'
+      case 'leafy':
+        return 'Rau ăn lá'
+      case 'root':
+        return 'Củ'
+      case 'fruit':
+        return 'Quả'
+      default:
+        return 'Khác'
+    }
+  }
+
   return isSuccessAllPlantsInFarm ? (
     <Modal
       open={open}
@@ -48,11 +63,11 @@ const PlantModal = ({ open, onClose, selectedPlant, setSelectedPlant, handleAddP
       />
 
       <Space>
-        <Button onClick={() => handleFilter(null)}>All</Button>
-        <Button onClick={() => handleFilter('herb')}>Herb</Button>
-        <Button onClick={() => handleFilter('leafy')}>Leafy</Button>
-        <Button onClick={() => handleFilter('root')}>Root</Button>
-        <Button onClick={() => handleFilter('fruit')}>Fruit</Button>
+        <Button onClick={() => handleFilter(null)}>Tất cả</Button>
+        <Button onClick={() => handleFilter('herb')}>Rau gia vị</Button>
+        <Button onClick={() => handleFilter('leafy')}>Rau ăn lá</Button>
+        <Button onClick={() => handleFilter('root')}>Củ</Button>
+        <Button onClick={() => handleFilter('fruit')}>Quả</Button>
       </Space>
 
       <Row gutter={16} style={{ marginTop: 16 }}>
@@ -69,7 +84,7 @@ const PlantModal = ({ open, onClose, selectedPlant, setSelectedPlant, handleAddP
             >
               <img src={plant.image} alt={plant.name} style={{ width: '100%', height: 120, objectFit: 'cover' }} />
               <p style={{ marginTop: 8 }}>{plant.name}</p>
-              <p style={{ color: '#888' }}>{plant.type}</p>
+              <p style={{ color: '#888' }}>{renderType(plant.type)}</p>
             </Card>
           </Col>
         ))}

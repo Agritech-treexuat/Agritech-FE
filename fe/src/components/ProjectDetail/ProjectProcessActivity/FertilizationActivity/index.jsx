@@ -27,7 +27,9 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
             {!isGarden && (
               <p>
-                <span>Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a></span>
+                <span>
+                  Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                </span>
               </p>
             )}
             <p>
@@ -124,11 +126,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
             <Option value="topFertilizer">Bón thúc</Option>
           </Select>
         </Form.Item>
-        <Form.Item
-          name="description"
-          label="Mô tả"
-          rules={[{ required: true, message: 'Hãy nhập mô tả!' }]}
-        >
+        <Form.Item name="description" label="Mô tả" rules={[{ required: true, message: 'Hãy nhập mô tả!' }]}>
           <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
         </Form.Item>
       </Form>
