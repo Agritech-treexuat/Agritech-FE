@@ -16,7 +16,7 @@ import {
   Select,
   Tooltip
 } from 'antd'
-import { formatDate } from '../../../utils/helpers'
+import { formatDate, formatTransactionHashTable } from '../../../utils/helpers'
 import EditOutputHistory from './EditOutputHistory'
 import useProjectOutput from './useProjectOutput'
 import PROJECT from '../../../services/projectService'
@@ -32,6 +32,7 @@ import {
 } from '@ant-design/icons'
 import { useStateContext } from '../../../context'
 import { metamaskWallet } from '@thirdweb-dev/react'
+import HASH from '../../../services/hashService'
 const metamaskConfig = metamaskWallet()
 const { getAccessToken, getRefreshToken } = token
 
@@ -100,7 +101,6 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
       'x-rtoken-id': getRefreshToken()
     },
     onChange: (info) => {
-      console.log('info', info)
       if (info.file.status === 'done') {
         console.log(`${info.file.name} file uploaded successfully`)
       } else if (info.file.status === 'error') {
@@ -290,10 +290,84 @@ const ProjectOutput = () => {
     setOpenUpdateOutput(false)
   }
 
+  const transformDataWriteAddBlockChain = async (dataWithoutTx, alllDistributer) => {
+    try {
+      // Biến đổi distributerWithAmount
+      const transformedDistributerWithAmount = dataWithoutTx.distributerWithAmount.map(({ distributer, amount }) => {
+        const distributerName = alllDistributer.find((item) => item.id === distributer)?.name || ''
+        return { distributer: distributerName, amount }
+      })
+
+      const resHashImages = await HASH.hashImages({ data: { images: dataWithoutTx.images } })
+      let hashedImages = ''
+      if (resHashImages.status === 200) {
+        hashedImages = resHashImages.data?.metadata.join(' - ')
+      }
+
+      // Tạo object mới
+      const transformedData = {
+        ...dataWithoutTx,
+        distributerWithAmount: transformedDistributerWithAmount,
+        hashedImages: hashedImages
+      }
+
+      // return string
+      const outputString = `Add output: projectId: ${projectId}, time: ${transformedData.time}, amount: ${
+        transformedData.amount
+      }, amountPerOne: ${transformedData.amountPerOne}, exportQR: ${
+        transformedData.exportQR
+      }, distributerWithAmount: ${transformedData.distributerWithAmount
+        .map((item) => `${item.distributer} - ${item.amount}`)
+        .join('+ ')}, hashedImages: ${transformedData.hashedImages}`
+      return outputString
+    } catch (error) {
+      throw new Error('Đã xảy ra lỗi trong quá trình biến đổi dữ liệu: ' + error.message)
+    }
+  }
+
+  const transformDataWriteUpdateBlockChain = async (dataWithoutTx, alllDistributer, outputId) => {
+    try {
+      // Biến đổi distributerWithAmount
+      const transformedDistributerWithAmount = dataWithoutTx.distributerWithAmount.map(({ distributer, amount }) => {
+        const distributerName = alllDistributer.find((item) => item.id === distributer)?.name || ''
+        return { distributer: distributerName, amount }
+      })
+
+      const resHashImages = await HASH.hashImages({ data: { images: dataWithoutTx.images } })
+      let hashedImages = ''
+      if (resHashImages.status === 200) {
+        hashedImages = resHashImages.data?.metadata.join(' - ')
+      }
+
+      // Tạo object mới
+      const transformedData = {
+        ...dataWithoutTx,
+        distributerWithAmount: transformedDistributerWithAmount,
+        hashedImages: hashedImages
+      }
+
+      // return string
+      const outputString = `Update output: projectId: ${projectId}, outputId: ${outputId}, time: ${
+        transformedData.time
+      }, amount: ${transformedData.amount}, amountPerOne: ${transformedData.amountPerOne}, exportQR: ${
+        transformedData.exportQR
+      }, distributerWithAmount: ${transformedData.distributerWithAmount
+        .map((item) => `${item.distributer} - ${item.amount}`)
+        .join('+ ')}, hashedImages: ${transformedData.hashedImages}`
+      return outputString
+    } catch (error) {
+      throw new Error('Đã xảy ra lỗi trong quá trình biến đổi dữ liệu: ' + error.message)
+    }
+  }
+
   const handleModalAddOk = async (values) => {
-    console.log('values', values)
     const images = values.upload ? values.upload.map((upload) => upload.response.metadata.thumb_url) : []
-    const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
+    const updatedValue = {
+      ...values,
+      time: values.date.toDate(),
+      amountPerOne: values['amount per one'],
+      images: images
+    }
     delete updatedValue.date
     delete updatedValue['amount per one']
     delete updatedValue.upload
@@ -305,27 +379,21 @@ const ProjectOutput = () => {
         amount: item.amount
       }))
     }
+
+    const outputString = await transformDataWriteAddBlockChain(dataWithoutTx, alllDistributer)
+
     const totalNppAmount = values.npp ? values.npp.reduce((total, item) => total + item.amount, 0) : 0
 
     if (values.amount >= totalNppAmount) {
       try {
-        // const receip = await insertOutput({
-        //   pId: projectInfo.projectIndex,
-        //   output: 'inserted output test'
-        // })
-        // const txHash = receip?.transactionHash
-        // console.log('txhash: ', txHash)
-        // console.log('data send: ', {
-        //   ...dataWithoutTx,
-        //   tx: txHash
-        // })
-        // const data = {
-        //   ...dataWithoutTx,
-        //   tx: txHash
-        // }
+        const receip = await insertOutput({
+          pId: projectInfo.projectIndex,
+          output: outputString
+        })
+        const txHash = receip?.transactionHash
         const data = {
           ...dataWithoutTx,
-          tx: 'a'
+          tx: txHash
         }
         const res = await PROJECT.addOutput(data, projectId)
         if (res.status === 200) {
@@ -353,18 +421,27 @@ const ProjectOutput = () => {
     delete updatedValue.date
     delete updatedValue.upload
     delete updatedValue['amount per one']
-    const data = {
-      tx: 'b',
+    const dataWithoutTx = {
       ...updatedValue,
       distributerWithAmount: updatedValue.npp.map((item) => ({
         distributer: item.id || item.name,
         amount: item.amount
       }))
     }
+    const outputString = await transformDataWriteUpdateBlockChain(dataWithoutTx, alllDistributer, selectedOutput.id)
 
     const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0)
     if (values.amount >= totalNppAmount) {
       try {
+        const receip = await updateOutput({
+          pId: projectInfo.projectIndex,
+          output: outputString
+        })
+        const txHash = receip?.transactionHash
+        const data = {
+          ...dataWithoutTx,
+          tx: txHash
+        }
         const res = await PROJECT.editOutput(data, projectId, selectedOutput.id)
         if (res.status === 200) {
           refetch()
@@ -388,7 +465,6 @@ const ProjectOutput = () => {
 
   const handleExportQR = async (output) => {
     try {
-      console.log('output: ', output)
       const outputId = output.id
       const data = {
         amount: output.amount,
@@ -472,7 +548,18 @@ const ProjectOutput = () => {
             )}
           </Modal>
           <Table dataSource={outputData}>
-            <Column title="Tx" dataIndex="tx" key="tx" />
+            <Column
+              title="Tx"
+              dataIndex="tx"
+              key="tx"
+              render={(_, output) =>
+                formatTransactionHashTable({
+                  str: output.tx,
+                  a: 8,
+                  b: 6
+                })
+              }
+            />
             <Column title="Thời gian" key="time" render={(_, output) => <p>{formatDate(output.time)}</p>} />
             <Column title="Lượng" dataIndex="amount" key="amount" />
             <Column title="Lượng trên 1 sản phẩm" dataIndex="amountPerOne" key="amountPerOne" />

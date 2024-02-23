@@ -27,7 +27,9 @@ const EditOutputHistory = ({ output }) => {
             <Divider>Created lúc: {formatDateTime(output.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(output.modifiedAt)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
-              <p>Tx: {output.tx}</p>
+              <p>
+                Tx: <a href={`https://escan.live/tx/${output.tx}`} target="_blank" rel="noreferrer">{`${output.tx}`}</a>
+              </p>
               <p>Thời gian: {output.time}</p>
               <p>Lượng: {output.amount}</p>
               <p>Lượng trên 1 sản phẩm: {output.amountPerOne}</p>

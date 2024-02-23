@@ -246,7 +246,11 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                                     </Select>
                                   </Form.Item>
                                   <Form.Item {...field} name={[field.name, 'symptoms']} label="Triệu chứng">
-                                    <Input placeholder="Triệu chứng" style={{ width: '100%' }} />
+                                    <Input.TextArea
+                                      placeholder="Triệu chứng"
+                                      style={{ width: '100%' }}
+                                      autoSize={{ minRows: 5 }}
+                                    />
                                   </Form.Item>
                                   <Form.Item {...field} name={[field.name, 'description']} label="Mô tả">
                                     <Input.TextArea

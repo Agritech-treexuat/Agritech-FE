@@ -84,7 +84,7 @@ export function formatTransactionHashTable({ str, a, b }) {
   const suffix = str.slice(-b)
   const formatedFormatTransactionHash = prefix + '...' + suffix
   return (
-    <a href={`https://escan.live/tx/${formatedFormatTransactionHash}`} target="_blank" rel="noreferrer">
+    <a href={`https://escan.live/tx/${str}`} target="_blank" rel="noreferrer">
       <Tooltip title={str}>{formatedFormatTransactionHash}</Tooltip>
     </a>
   )

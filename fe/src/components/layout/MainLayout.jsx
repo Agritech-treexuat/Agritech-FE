@@ -14,13 +14,13 @@ function getItem(label, key, icon, link) {
   }
 }
 const items = [
-  getItem('Quản lý trang trại', '1', <DesktopOutlined />, '/home'),
+  getItem('Quản lý dự án', '1', <DesktopOutlined />, '/home'),
   getItem('Quản lý vườn TRH', '2', <DesktopOutlined />, '/manage-planting-garden'),
   getItem('Quản lý yêu cầu', '3', <DesktopOutlined />, '/manage-request'),
   getItem('Quản lý bản mẫu', '4', <DesktopOutlined />, '/manage-template'),
-  getItem('Manage Plant', '5', <TeamOutlined />, '/manage-plant'),
-  getItem('Profile', '6', <UserOutlined />, '/profile'),
-  getItem('Log out', '7', <FileOutlined />)
+  getItem('Quản lý cây trồng', '5', <TeamOutlined />, '/manage-plant'),
+  getItem('Trang cá nhân', '6', <UserOutlined />, '/profile'),
+  getItem('Đăng xuất', '7', <FileOutlined />)
 ]
 const App = () => {
   useEffect(() => {
