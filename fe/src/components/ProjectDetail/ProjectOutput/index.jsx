@@ -275,11 +275,12 @@ const ProjectOutput = () => {
       duration: 3.5
     })
   }
-
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const { address, connect, insertOutput, updateOutput } = useStateContext()
   const [openAddOutput, setOpenAddOutput] = useState(false)
   const [openUpdateOutput, setOpenUpdateOutput] = useState(false)
   const [selectedOutput, setSelectedOutput] = useState(null)
+  const [selectedOutputImages, setSelectedOutputImages] = useState(null)
 
   const handleModalAddCancel = () => {
     setOpenAddOutput(false)
@@ -412,13 +413,6 @@ const ProjectOutput = () => {
     }
   }
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const showModal = () => {
-    setIsModalOpen(true)
-  }
-  const handleOk = () => {
-    setIsModalOpen(false)
-  }
   const handleCancel = () => {
     setIsModalOpen(false)
   }
@@ -466,6 +460,17 @@ const ProjectOutput = () => {
             isUpdate={true}
             alllDistributer={alllDistributer}
           />
+          <Modal title="Ảnh" open={isModalOpen} footer={null} onCancel={handleCancel}>
+            {selectedOutputImages?.images ? (
+              selectedOutputImages?.images.map((image) => (
+                <span>
+                  <Image class={'process-img'} src={image} />
+                </span>
+              ))
+            ) : (
+              <span>Không có ảnh</span>
+            )}
+          </Modal>
           <Table dataSource={outputData}>
             <Column title="Tx" dataIndex="tx" key="tx" />
             <Column title="Thời gian" key="time" render={(_, output) => <p>{formatDate(output.time)}</p>} />
@@ -476,18 +481,14 @@ const ProjectOutput = () => {
               key="images"
               render={(_, output) => (
                 <>
-                  <Button onClick={showModal}>Xem Ảnh</Button>
-                  <Modal title="Ảnh" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                    {output.images ? (
-                      output.images.map((image) => (
-                        <span>
-                          <Image class={'process-img'} src={image} />
-                        </span>
-                      ))
-                    ) : (
-                      <span>Không có ảnh</span>
-                    )}
-                  </Modal>
+                  <Button
+                    onClick={() => {
+                      setSelectedOutputImages(output)
+                      setIsModalOpen(true)
+                    }}
+                  >
+                    Xem Ảnh
+                  </Button>
                 </>
               )}
             />
