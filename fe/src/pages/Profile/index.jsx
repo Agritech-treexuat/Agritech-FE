@@ -148,11 +148,11 @@ const Profile = () => {
           <OverViewProfile
             isEditingOverView={isEditingOverView}
             setIsEditingOverView={setIsEditingOverView}
-            description={description}
+            description={description || profile?.description}
             setDescription={setDescription}
-            district={district}
+            district={district || profile?.district}
             setDistrict={setDistrict}
-            address={address}
+            address={address || profile?.address}
             setAddress={setAddress}
             handleSave={handleSave}
             profile={profile}

@@ -1,6 +1,8 @@
 import React from 'react'
-import { Button, Space, Input, Tooltip } from 'antd'
+import { Button, Space, Input, Tooltip, Select } from 'antd'
 import { EditFilled } from '@ant-design/icons'
+import { districtOptions } from '../../../utils/constant'
+const { Option } = Select
 
 const OverViewProfile = ({
   isEditingOverView,
@@ -40,12 +42,24 @@ const OverViewProfile = ({
             style={{ marginBottom: '8px' }}
           />
           <h3>District: </h3>
-          <Input
+          <Select
+            showSearch
+            style={{ width: 200 }}
+            placeholder="Select District"
+            optionFilterProp="children"
+            filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+            }
+            onChange={setDistrict}
             value={district}
-            onChange={(e) => setDistrict(e.target.value)}
-            placeholder="District"
-            style={{ marginBottom: '8px' }}
-          />
+          >
+            {districtOptions.map((district) => (
+              <Option key={district.value} value={district.value}>
+                {district.label}
+              </Option>
+            ))}
+          </Select>
           <h3>Address: </h3>
           <Input
             value={address}
