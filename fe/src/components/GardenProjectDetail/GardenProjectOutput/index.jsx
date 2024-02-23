@@ -52,6 +52,23 @@ const UpdateStatusModal = ({ visible, onCancel, onComingUpdate, onCancelUpdate, 
 
 const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant, isUpdate, selectedDelivery }) => {
   const [form] = Form.useForm()
+  isUpdate && selectedDelivery
+    ? form.setFieldsValue({
+        plants: selectedDelivery.plants.map((p) => ({
+          key: p.id,
+          plantId: p.plantId,
+          name: p.name,
+          amount: p.amount
+        })),
+        note: selectedDelivery.note
+      })
+    : form.setFieldsValue({
+        plants: listPlant.map((p) => ({
+          key: p.id,
+          name: p.name,
+          plantId: p.plantId
+        }))
+      })
   return (
     <>
       {listPlant ? (
@@ -60,12 +77,15 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant, isUpdate, s
           title={isUpdate ? 'Cập nhật' : 'Thêm mới'}
           okText={isUpdate ? 'Cập nhật' : 'Thêm'}
           cancelText="Hủy"
-          onCancel={onCancel}
+          onCancel={() => {
+            form.resetFields()
+            onCancel()
+          }}
           onOk={() => {
             form
               .validateFields()
               .then((values) => {
-                form.resetFields()
+                form.setFieldsValue(values)
                 onCreate(values)
               })
               .catch((info) => {

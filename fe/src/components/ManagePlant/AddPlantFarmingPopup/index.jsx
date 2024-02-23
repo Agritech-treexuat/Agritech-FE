@@ -4,6 +4,7 @@ import { CloseOutlined } from '@ant-design/icons'
 
 const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming, isUpdate }) => {
   const [form] = Form.useForm()
+  form.setFieldsValue(recommendPlantFarming)
 
   return (
     <Modal
@@ -12,12 +13,15 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
       okText={isUpdate ? 'Cập nhật' : 'Thêm'}
       cancelText="Hủy"
       width={1500}
-      onCancel={onCancel}
+      onCancel={() => {
+        form.resetFields()
+        onCancel()
+      }}
       onOk={() => {
         form
           .validateFields()
           .then((values) => {
-            form.resetFields()
+            form.setFieldsValue(values)
             onCreate(values)
           })
           .catch((error) => {

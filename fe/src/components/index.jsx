@@ -1,6 +1,5 @@
 // expect
 export { default as ProjectExpect } from './ProjectDetail/ProjectExpect'
-export { default as AddExpectPopup } from './ProjectDetail/ProjectExpect/AddExpectPopup'
 // process
 export { default as AddProcessPopup } from './ProjectDetail/ProjectProcess/Process/AddProcessPopup'
 export { default as ProcessList } from './ProjectDetail/ProjectProcess/Process/ProcessList'

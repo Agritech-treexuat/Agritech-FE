@@ -5,7 +5,20 @@ const { getAccessToken, getRefreshToken } = token
 
 const UpdateSeedInfo = ({ visible, onCreate, onCancel, isUpdate, seed }) => {
   const [form] = Form.useForm()
-
+  isUpdate
+    ? form.setFieldsValue({
+        _id: seed?._id,
+        description: seed?.description,
+        thumb: [
+          {
+            uid: '-1',
+            name: 'image.png',
+            status: 'done',
+            url: seed?.image
+          }
+        ]
+      })
+    : form.setFieldsValue({})
   const onFinish = (values) => {
     // Gửi giá trị của form (values) đến hàm onCreate để thêm hạt giống
     onCreate(values)
@@ -53,7 +66,7 @@ const UpdateSeedInfo = ({ visible, onCreate, onCancel, isUpdate, seed }) => {
         form
           .validateFields()
           .then((values) => {
-            form.resetFields()
+            form.setFieldsValue(values)
             onFinish(values)
           })
           .catch((info) => {

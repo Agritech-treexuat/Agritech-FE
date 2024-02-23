@@ -179,14 +179,17 @@ const ProjectInput = () => {
                   form
                     .validateFields()
                     .then((values) => {
-                      form.resetFields()
+                      form.setFieldsValue(values)
                       handleUpdateOverview(values)
                     })
                     .catch((info) => {
                       console.log('Validate Failed:', info)
                     })
                 }}
-                onCancel={() => setIsModalOpen(false)}
+                onCancel={() => {
+                  form.resetFields()
+                  setIsModalOpen(false)
+                }}
                 okText="Cập nhật"
                 cancelText="Hủy"
               >
