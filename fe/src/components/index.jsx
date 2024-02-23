@@ -6,8 +6,7 @@ export { default as ProcessList } from './ProjectDetail/ProjectProcess/Process/P
 // project input
 export { default as ProjectInput } from './ProjectDetail/ProjectInput'
 // project output
-export { default as AddOutputPopup } from './ProjectDetail/ProjectOutput/AddOutputPopup'
-export { default as ProjectOutput } from './ProjectDetail/ProjectOutput/ProjectOutput'
+export { default as ProjectOutput } from './ProjectDetail/ProjectOutput'
 // project process
 export { default as ProjectProcess } from './ProjectDetail/ProjectProcess'
 // other

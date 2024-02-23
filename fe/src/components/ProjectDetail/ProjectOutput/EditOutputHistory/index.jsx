@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Button, Modal, Image, Divider } from 'antd'
+import { Modal, Image, Divider, Tooltip } from 'antd'
 import { formatDateTime } from '../../../../utils/helpers'
+import { HistoryOutlined } from '@ant-design/icons'
 
 const EditOutputHistory = ({ output }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -17,9 +18,9 @@ const EditOutputHistory = ({ output }) => {
   }
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Lịch sử chỉnh sửa
-      </Button>
+      <Tooltip title="Xem lịch sử chỉnh sửa">
+        <HistoryOutlined style={{ cursor: 'pointer' }} onClick={showModal} />
+      </Tooltip>
       <Modal title="Lịch sử chỉnh sửa" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
         {output.historyOutput.map((output) => (
           <>

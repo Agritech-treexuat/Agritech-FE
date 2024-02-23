@@ -16,14 +16,16 @@ const { Column } = Table
 
 const ExpectModal = ({ modalExpectVisible, handleModalOk, handleModalCancel, selectedExpect, isUpdate }) => {
   const [form] = Form.useForm()
-  if (isUpdate) {
+  if (isUpdate && selectedExpect) {
     form.setFieldsValue({
       date: selectedExpect?.time ? dayjs(selectedExpect.time) : dayjs(new Date()),
       amount: selectedExpect?.amount,
       note: selectedExpect?.note
     })
   } else {
-    form.setFieldsValue({})
+    form.setFieldsValue({
+      date: dayjs(new Date())
+    })
   }
 
   return (
@@ -42,6 +44,7 @@ const ExpectModal = ({ modalExpectVisible, handleModalOk, handleModalCancel, sel
           .then((values) => {
             form.setFieldsValue(values)
             handleModalOk(values)
+            form.resetFields()
           })
           .catch((info) => {
             console.log('Validate Failed:', info)
