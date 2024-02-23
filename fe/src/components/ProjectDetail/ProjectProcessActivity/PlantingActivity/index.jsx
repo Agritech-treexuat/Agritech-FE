@@ -55,6 +55,11 @@ const Modal2 = ({
   handleDeleteProcess
 }) => {
   const [form] = Form.useForm()
+  form.setFieldsValue({
+    time: selectedPlantFarming?.time ? dayjs(selectedPlantFarming?.time) : dayjs(new Date()),
+    density: selectedPlantFarming?.density,
+    description: selectedPlantFarming?.description
+  })
 
   return (
     <Modal
@@ -70,7 +75,7 @@ const Modal2 = ({
         form
           .validateFields()
           .then((values) => {
-            form.resetFields()
+            form.setFieldsValue(values)
             let data = {}
             if (isUpdate) {
               data = {

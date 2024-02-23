@@ -67,6 +67,13 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
 
 const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPlantFarming, isUpdate }) => {
   const [form] = Form.useForm()
+  form.setFieldsValue({
+    time: selectedPlantFarming?.time ? dayjs(selectedPlantFarming?.time) : dayjs(new Date()),
+    name: selectedPlantFarming?.name,
+    type: selectedPlantFarming?.type,
+    symptoms: selectedPlantFarming?.symptoms,
+    solution: selectedPlantFarming?.solution
+  })
   return (
     <Modal
       open={modal2Visible}
@@ -81,7 +88,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
         form
           .validateFields()
           .then((values) => {
-            form.resetFields()
+            form.setFieldsValue(values)
             let data = {}
             if (isUpdate) {
               data = {
@@ -124,7 +131,6 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
           name: selectedPlantFarming?.name,
           type: selectedPlantFarming?.type,
           symptoms: selectedPlantFarming?.symptoms,
-
           solution: selectedPlantFarming?.solution
         }}
       >
