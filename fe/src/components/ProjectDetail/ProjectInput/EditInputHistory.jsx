@@ -15,6 +15,7 @@ const EditInputHistory = ({ historyInfo }) => {
     setIsModalOpen(false)
   }
 
+  console.log('historyInfo', historyInfo)
   return (
     <>
       <Tooltip title="Xem lịch sử chỉnh sửa">
@@ -48,6 +49,7 @@ const EditInputHistory = ({ historyInfo }) => {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={null}
+        width={600}
       >
         {historyInfo.map((input) => (
           <div style={{ width: 'fit-content' }}>

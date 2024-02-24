@@ -21,7 +21,14 @@ const EditOutputHistory = ({ output }) => {
       <Tooltip title="Xem lịch sử chỉnh sửa">
         <HistoryOutlined style={{ cursor: 'pointer' }} onClick={showModal} />
       </Tooltip>
-      <Modal title="Lịch sử chỉnh sửa" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+      <Modal
+        title="Lịch sử chỉnh sửa"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={null}
+        width={600}
+      >
         {output.historyOutput.map((output) => (
           <>
             <Divider>Created lúc: {formatDateTime(output.createdAtTime)}</Divider>

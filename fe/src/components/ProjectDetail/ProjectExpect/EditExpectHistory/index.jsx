@@ -18,7 +18,14 @@ const EditExpectHistory = ({ expect }) => {
       <Tooltip title="Xem lịch sử chỉnh sửa">
         <HistoryOutlined style={{ cursor: 'pointer' }} onClick={showModal} />
       </Tooltip>
-      <Modal title="Lịch sử chỉnh sửa" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={null}>
+      <Modal
+        title="Lịch sử chỉnh sửa"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={null}
+        width={600}
+      >
         {expect.historyExpect.map((expect) => (
           <>
             <Divider>Created lúc: {formatDateTime(expect.createdAtTime)}</Divider>
