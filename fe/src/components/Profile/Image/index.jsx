@@ -15,7 +15,9 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewImage, setPreviewImage] = useState('')
   const [previewTitle, setPreviewTitle] = useState('')
-  const [fileList, setFileList] = useState(imageList?.map((image, index) => ({ uid: String(-index), name: `image-${index}.png`,url: image })))
+  const [fileList, setFileList] = useState(
+    imageList?.map((image, index) => ({ uid: String(-index), name: `image-${index}.png`, url: image }))
+  )
 
   const uploadButton = (
     <button
