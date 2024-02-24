@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Row, Col, Card, notification } from 'antd'
 import useProjectProcess from './useProjectProcess'
 import Loading from '../../../pages/Loading'
@@ -13,6 +13,7 @@ import { useStateContext } from '../../../context'
 
 const ProcessActivityPage = ({ projectId }) => {
   const { insertProcess, connect, address } = useStateContext()
+  const [loading, setLoading] = useState(false)
   const {
     cultivation,
     planting,
@@ -97,6 +98,7 @@ const ProcessActivityPage = ({ projectId }) => {
     console.log('Received values of form: ', values)
     let tx = 'none'
     console.log('projectInfo?.projectIndex:', projectInfo?.projectIndex)
+    setLoading(true)
 
     try {
       if (!projectInfo?.isGarden) {
@@ -107,6 +109,7 @@ const ProcessActivityPage = ({ projectId }) => {
         })
         tx = receip?.transactionHash
       }
+      setLoading(false)
       const res = await PROJECT.addProcess({
         data: {
           ...values,
@@ -138,6 +141,7 @@ const ProcessActivityPage = ({ projectId }) => {
     // }
     let tx = 'none'
     console.log('Received values of form: ', values)
+    setLoading(true)
     try {
       if (!projectInfo?.isGarden) {
         // write to blockchain
@@ -156,6 +160,7 @@ const ProcessActivityPage = ({ projectId }) => {
         projectId,
         processId
       })
+      setLoading(false)
       if (res.status === 200) {
         refetch()
         openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
@@ -197,6 +202,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>

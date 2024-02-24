@@ -148,7 +148,8 @@ const CultivationTable = ({
   handleDeleteProcess,
   address,
   connect,
-  isGarden
+  isGarden,
+  loading
 }) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
@@ -294,7 +295,7 @@ const CultivationTable = ({
           {address || isGarden ? 'Thêm' : 'Kết nối với ví để thêm'}
         </Button>
       </div>
-      <Table dataSource={cultivation} columns={columns} pagination={false} />
+      <Table dataSource={cultivation} columns={columns} pagination={false} loading={loading}/>
 
       {/* Modal 1 */}
       <Modal title="Chọn loại canh tác" open={modal1Visible} onOk={handleModal1Ok} onCancel={handleModal1Cancel}>

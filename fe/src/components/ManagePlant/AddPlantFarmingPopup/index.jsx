@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Modal, InputNumber, Input, Space, Form, Button, Row, Col, Select, Divider } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { v4 as uuidv4 } from 'uuid'
 
 const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming, isUpdate }) => {
   const [form] = Form.useForm()
-  form.setFieldsValue(recommendPlantFarming)
+  useEffect(() => {
+    form.setFieldsValue(recommendPlantFarming)
+  }, [recommendPlantFarming])
 
   return (
     <Modal
@@ -35,10 +37,9 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
           <Col span={12} style={{ padding: '16px', borderRadius: '8px', paddingRight: '6px' }}>
             <Space
               direction="vertical"
-              style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px' }}
+              style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}
             >
               <h1 style={{ textAlign: 'center', marginBottom: '0', padding: '0' }}>Thông tin cơ bản</h1>
-              <Form.Item name="timeCultivates" style={{ margin: '16px' }}>
                 <h2 style={{ marginTop: '0' }}>Thời gian cấy trồng</h2>
                 <Space direction="vertical" style={{ width: '100%' }}>
                   <Space
@@ -49,18 +50,17 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                       {(fields, { add, remove }) => (
                         <>
                           {fields.map((field, index) => (
-                            <div key={uuidv4()}>
-                              {console.log('timeCultivates', index)}
+                            <div key={`timeCultivates_${index}`}>
                               <div style={{ display: 'flex', alignItems: 'center', margin: '0 16px' }}>
                                 <Space
                                   direction="horizonal"
                                   style={{ width: '100%', marginTop: '8px', display: 'flex', alignItems: 'center' }}
                                 >
                                   <div style={{ display: 'flex' }}>
-                                    <Form.Item {...field} name={[field.name, 'start']} label="Bắt đầu">
+                                    <Form.Item fieldKey={[field.key, "start"]} name={[field.name, 'start']} label="Bắt đầu">
                                       <InputNumber min={0} placeholder="Bắt đầu" style={{ width: '80%' }} />
                                     </Form.Item>
-                                    <Form.Item {...field} name={[field.name, 'end']} label="Kết thúc">
+                                    <Form.Item fieldKey={[field.key, "end"]} name={[field.name, 'end']} label="Kết thúc">
                                       <InputNumber min={0} placeholder="Kết thúc" style={{ width: '80%' }} />
                                     </Form.Item>
                                   </div>
@@ -82,10 +82,9 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                     </Form.List>
                   </Space>
                 </Space>
-              </Form.Item>
 
-              <Form.Item style={{ margin: '16px' }}>
                 <h2 style={{ marginTop: '0' }}>Thời gian tốt nhất để trồng</h2>
+              <Form.Item style={{ margin: '16px' }}>
                 <Space
                   direction="horizonal"
                   style={{ width: '100%', marginTop: '8px', display: 'flex', alignItems: 'center' }}
@@ -117,10 +116,9 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
 
             <Space
               direction="vertical"
-              style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px' }}
+              style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}
             >
               <h1 style={{ textAlign: 'center', marginBottom: '0', padding: '0' }}>Hoạt động kiểm soát sâu bệnh</h1>
-              <Form.Item name="pestAndDiseaseControlActivities" style={{ margin: '16px' }}>
                 <h2 style={{ marginTop: '0' }}>Danh sách các hoạt động kiểm soát, phòng ngừa</h2>
                 <Space direction="vertical" style={{ width: '100%' }}>
                   <Space
@@ -131,40 +129,40 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                       {(fields, { add, remove }) => (
                         <>
                           {fields.map((field, index) => (
-                            <div key={uuidv4()}>
+                            <div key={`pestAndDiseaseControlActivities_${index}`}>
                               <div style={{ display: 'flex' }}>
                                 <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
                                   <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
-                                  <Form.Item {...field} name={[field.name, 'name']} label="Tên">
+                                  <Form.Item fieldKey={[field.key, "name"]} name={[field.name, 'name']} label="Tên">
                                     <Input placeholder="Tên" style={{ width: '28.5rem', float: 'right' }} />
                                   </Form.Item>
-                                  <Form.Item {...field} name={[field.name, 'type']} label="Loại">
+                                  <Form.Item fieldKey={[field.key, "type"]} name={[field.name, 'type']} label="Loại">
                                     <Select style={{ width: '28.5rem', float: 'right' }} placeholder="Chọn loại">
                                       <Select.Option value="pest">Sâu</Select.Option>
                                       <Select.Option value="disease">Bệnh</Select.Option>
                                     </Select>
                                   </Form.Item>
-                                  <Form.Item {...field} name={[field.name, 'symptoms']} label="Triệu chứng">
+                                  <Form.Item fieldKey={[field.key, "symptoms"]} name={[field.name, 'symptoms']} label="Triệu chứng">
                                     <Input.TextArea
                                       placeholder="Triệu chứng"
                                       style={{ width: '28.5rem', float: 'right' }}
                                       autoSize={{ minRows: 5 }}
                                     />
                                   </Form.Item>
-                                  <Form.Item {...field} name={[field.name, 'description']} label="Mô tả">
+                                  <Form.Item fieldKey={[field.key, "description"]} name={[field.name, 'description']} label="Mô tả">
                                     <Input.TextArea
                                       placeholder="Mô tả"
                                       style={{ width: '28.5rem', float: 'right' }}
                                       autoSize={{ minRows: 5 }}
                                     />
                                   </Form.Item>
-                                  <Form.Item label="Giải pháp">
+                                  <Form.Item fieldKey={[field.key, "solution"]} label="Giải pháp" name={[field.name, 'solution']}>
                                     <Form.List name={[field.name, 'solution']}>
                                       {(subFields, { add: addSolution, remove: removeSolution }) => (
                                         <>
                                           {subFields.map((subField, index) => (
                                             <div
-                                              key={uuidv4()}
+                                              key={`solution_${index}`}
                                               style={{
                                                 display: 'flex',
                                                 flexDirection: 'column',
@@ -176,7 +174,7 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                                                 style={{ float: 'right' }}
                                                 onClick={() => removeSolution(subField.name)}
                                               />
-                                              <Form.Item {...subField} name={[subField.name]} noStyle>
+                                              <Form.Item fieldKey={[subField.key, "solution"]} name={[subField.name]} noStyle>
                                                 <Input.TextArea
                                                   placeholder="Giải pháp"
                                                   style={{ width: '28.5rem', float: 'right' }}
@@ -221,16 +219,14 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                     </Form.List>
                   </Space>
                 </Space>
-              </Form.Item>
             </Space>
           </Col>
           <Col span={12} style={{ padding: '16px', borderRadius: '8px', paddingLeft: '6px' }}>
             <Space
               direction="vertical"
-              style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px' }}
+              style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}
             >
               <h1 style={{ textAlign: 'center', marginBottom: '0', padding: '0' }}>Hoạt động làm đất và gieo trồng</h1>
-              <Form.Item name="cultivationActivities" style={{ margin: '16px' }}>
                 <h2 style={{ marginTop: '0' }}>Hoạt động làm đất</h2>
                 <Space direction="vertical" style={{ width: '100%' }}>
                   <Space
@@ -241,14 +237,14 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                       {(fields, { add, remove }) => (
                         <>
                           {fields.map((field, index) => (
-                            <div key={uuidv4()}>
+                            <div key={`cultivationActivities_${index}`}>
                               <div style={{ margin: '16px' }}>
                                 <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
                                 <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
-                                  <Form.Item {...field} name={[field.name, 'name']} label="Tên">
+                                  <Form.Item fieldKey={[field.key, "name"]} name={[field.name, 'name']} label="Tên">
                                     <Input placeholder="Tên" style={{ width: '28.5rem', float: 'right' }} />
                                   </Form.Item>
-                                  <Form.Item {...field} name={[field.name, 'description']} label="Mô tả">
+                                  <Form.Item fieldKey={[field.key, "description"]} name={[field.name, 'description']} label="Mô tả">
                                     <Input.TextArea
                                       placeholder="Mô tả"
                                       style={{ width: '28.5rem', float: 'right' }}
@@ -273,10 +269,9 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                     </Form.List>
                   </Space>
                 </Space>
-              </Form.Item>
 
-              <Form.Item name="plantingActivity" style={{ margin: '16px' }}>
                 <h2 style={{ marginTop: '0' }}>Hoạt động gieo trồng</h2>
+              <Form.Item name="plantingActivity" style={{ margin: '16px' }}>
                 <Space direction="vertical" style={{ width: '100%', marginTop: '8px' }}>
                   <Form.Item name={['plantingActivity', 'density']} label="Mật độ">
                     <Input placeholder="Mật độ" style={{ width: '38.5rem', float: 'right' }} />
@@ -293,10 +288,9 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
             </Space>
             <Space
               direction="vertical"
-              style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px' }}
+              style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}
             >
               <h1 style={{ textAlign: 'center', marginBottom: '0', padding: '0' }}>Hoạt động bón phân</h1>
-              <Form.Item name="fertilizationActivities" style={{ margin: '16px' }}>
                 <h2 style={{ marginTop: '0' }}>Danh sách các hoạt động bón phân</h2>
                 <Space direction="vertical" style={{ width: '100%' }}>
                   <Space
@@ -307,12 +301,12 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                       {(fields, { add, remove }) => (
                         <>
                           {fields.map((field, index) => (
-                            <div key={uuidv4()}>
+                            <div key={`fertilizationActivities_${index}`}>
                               <div style={{ display: 'flex' }}>
                                 <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
                                   <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
                                   <Form.Item
-                                    {...field}
+                                    fieldKey={[field.key, "fertilizationTime"]}
                                     name={[field.name, 'fertilizationTime']}
                                     label="Thời gian phân bón"
                                   >
@@ -321,13 +315,13 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                                       style={{ width: '28.5rem', float: 'right' }}
                                     />
                                   </Form.Item>
-                                  <Form.Item {...field} name={[field.name, 'type']} label="Loại">
+                                  <Form.Item fieldKey={[field.key, "type"]} name={[field.name, 'type']} label="Loại">
                                     <Select style={{ width: '28.5rem', float: 'right' }} placeholder="Chọn loại">
                                       <Select.Option value="baseFertilizer">Bón lót</Select.Option>
                                       <Select.Option value="topFertilizer">Bón thúc</Select.Option>
                                     </Select>
                                   </Form.Item>
-                                  <Form.Item {...field} name={[field.name, 'description']} label="Mô tả">
+                                  <Form.Item fieldKey={[field.key, "description"]} name={[field.name, 'description']} label="Mô tả">
                                     <Input.TextArea
                                       placeholder="Mô tả"
                                       style={{ width: '28.5rem', float: 'right' }}
@@ -352,7 +346,6 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
                     </Form.List>
                   </Space>
                 </Space>
-              </Form.Item>
             </Space>
           </Col>
         </Row>
