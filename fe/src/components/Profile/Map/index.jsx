@@ -8,20 +8,20 @@ const PlaceComponent = ({ lat, lng, setLat, setLng, handleSave, isEditingLocatio
   const handlePlaceChanged = () => {
     const [place] = inputRef.current.getPlaces()
     if (place) {
-      console.log(place.formatted_address)
-      console.log(place.geometry.location.lat())
-      console.log(place.geometry.location.lng())
-      setLat(place.geometry.location.lat())
-      setLng(place.geometry.location.lng())
+      console.log(place?.formatted_address)
+      console.log(place?.geometry?.location?.lat())
+      console.log(place?.geometry?.location?.lng())
+      setLat(place?.geometry?.location?.lat())
+      setLng(place?.geometry?.location?.lng())
     }
   }
 
   const handleGetCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+    if (navigator?.geolocation) {
+      navigator?.geolocation?.getCurrentPosition(
         (position) => {
-          setLat(position.coords.latitude)
-          setLng(position.coords.longitude)
+          setLat(position?.coords?.latitude)
+          setLng(position?.coords?.longitude)
         },
         (error) => {
           console.error('Error getting current location:', error)

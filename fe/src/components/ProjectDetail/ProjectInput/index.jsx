@@ -230,20 +230,20 @@ const ProjectInput = () => {
               <Divider />
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Cây: </label>
-                <span>{projectInfo.plant.plant_name}</span>
+                <span>{projectInfo?.plant?.plant_name}</span>
               </div>
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Transaction hash: </label>
                 <span>
                   <a href={`https://escan.live/tx/${projectInfo.txHash}`} target="_blank" rel="noreferrer">
-                    {projectInfo.txHash}
+                    {projectInfo?.txHash}
                   </a>
                 </span>
               </div>
               <Divider />
               <div style={{ marginBottom: '1rem' }}>
                 <label style={{ fontWeight: 'bold' }}>Trạng thái: </label>
-                <span>{renderStatus(projectInfo.status)}</span>
+                <span>{renderStatus(projectInfo?.status)}</span>
                 <Tooltip title={address ? 'Chỉnh sửa trạng thái' : 'Kết nối với ví để chỉnh sửa trạng thái'}>
                   {address ? (
                     <EditFilled
