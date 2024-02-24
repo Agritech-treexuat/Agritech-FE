@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip, Spin } from 'antd'
 import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
@@ -148,7 +148,8 @@ const FertilizeTable = ({
   handleDeleteProcess,
   address,
   connect,
-  isGarden
+  isGarden,
+  loading
 }) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
@@ -184,7 +185,11 @@ const FertilizeTable = ({
       dataIndex: 'time',
       key: 'time',
       width: 150,
-      render: (text, record) => formatDateTime(record.time)
+      render: (text, record) => formatDateTime(record.time),
+      sorter: (a, b) => new Date(a.time) - new Date(b.time),
+      showSorterTooltip: {
+        title: 'Sắp xếp thời gian'
+      }
     },
     ...(isGarden
       ? []
@@ -300,8 +305,9 @@ const FertilizeTable = ({
           {address || isGarden ? 'Thêm' : 'Kết nối với ví để thêm'}
         </Button>
       </div>
-      <Table dataSource={fertilize} columns={columns} pagination={false} />
-
+      <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
+        <Table dataSource={fertilize} columns={columns} pagination={false} />
+      </Spin>
       {/* Modal 1 */}
       <Modal title="Chọn loại canh tác" open={modal1Visible} onOk={handleModal1Ok} onCancel={handleModal1Cancel}>
         {fertilizePlantFarming.map((plantFarming) => (

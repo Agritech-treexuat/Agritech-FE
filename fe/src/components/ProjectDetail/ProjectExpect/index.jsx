@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import Loading from '../../../pages/Loading'
 import { useParams } from 'react-router'
-import { Button, DatePicker, Form, Input, Modal, Popconfirm, Space, Table, Tooltip, notification } from 'antd'
+import { Button, DatePicker, Form, Input, Modal, Popconfirm, Space, Spin, Table, Tooltip, notification } from 'antd'
 import EditExpectHistory from './EditExpectHistory'
-import { formatDate, formatTransactionHashTable } from '../../../utils/helpers'
+import { formatDateTime, formatTransactionHashTable } from '../../../utils/helpers'
 import useProjectExpect from './useProjectExpect'
 import PROJECT from '../../../services/projectService'
 import { DeleteFilled, EditFilled, EditOutlined } from '@ant-design/icons'
@@ -45,6 +45,7 @@ const ExpectModal = ({ modalExpectVisible, handleModalOk, handleModalCancel, sel
             form.setFieldsValue(values)
             handleModalOk(values)
             form.resetFields()
+            handleModalCancel()
           })
           .catch((info) => {
             console.log('Validate Failed:', info)
@@ -92,6 +93,7 @@ const ProjectExpect = () => {
   const [openAddExpect, setOpenAddExpect] = useState(false)
   const [openUpdateExpect, setOpenUpdateExpect] = useState(false)
   const [selectedExpect, setSelectedExpect] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handleModalAddCancel = () => {
     setOpenAddExpect(false)
@@ -104,6 +106,7 @@ const ProjectExpect = () => {
   const handleModalAddOk = async (values) => {
     const updatedValue = { ...values, time: values.date }
     delete updatedValue.date
+    setLoading(true)
     try {
       const receip = await insertExpect({
         pId: projectInfo.projectIndex,
@@ -114,6 +117,7 @@ const ProjectExpect = () => {
         ...updatedValue,
         tx: txHash
       }
+      setLoading(false)
       const res = await PROJECT.addExpect(data, projectId)
       if (res.status === 200) {
         refetch()
@@ -121,8 +125,8 @@ const ProjectExpect = () => {
       } else {
         openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
       }
-      handleModalAddCancel()
     } catch (error) {
+      setLoading(false)
       console.error(error?.response?.data?.message)
       openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
     }
@@ -134,6 +138,7 @@ const ProjectExpect = () => {
       amount: values.amount,
       note: values.note
     }
+    setLoading(true)
 
     try {
       const receip = await updateExpect({
@@ -150,14 +155,15 @@ const ProjectExpect = () => {
         projectId,
         expectId: selectedExpect.id
       })
+      setLoading(false)
       if (res.status === 200) {
         refetch()
         openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
       } else {
         openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
       }
-      handleModalUpdateCancel()
     } catch (error) {
+      setLoading(false)
       console.error(error?.response?.data?.message)
       openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
     }
@@ -183,96 +189,107 @@ const ProjectExpect = () => {
   }
 
   return (
-    <div>
-      {contextHolder}
-      <Button
-        type="primary"
-        onClick={() => {
-          if (address) {
-            setOpenAddExpect(true)
-          } else {
-            connect(metamaskConfig)
-          }
-        }}
-        style={{ marginBottom: '15px' }}
-      >
-        {address ? 'Thêm dự kiến' : 'Kết nối với ví để thêm dự kiến'}
-      </Button>
-      <ExpectModal
-        modalExpectVisible={openAddExpect}
-        handleModalOk={handleModalAddOk}
-        handleModalCancel={handleModalAddCancel}
-        selectedExpect={null}
-        isUpdate={false}
-      />
-      <ExpectModal
-        modalExpectVisible={openUpdateExpect}
-        handleModalOk={handleModalUpdateOk}
-        handleModalCancel={handleModalUpdateCancel}
-        selectedExpect={selectedExpect}
-        isUpdate={true}
-      />
-      {isSuccess && isSuccessProjectInfo ? (
-        <Table dataSource={expectData}>
-          <Column
-            title="Transaction hash"
-            dataIndex="tx"
-            key="tx"
-            width="150px"
-            render={(_, expect) =>
-              formatTransactionHashTable({
-                str: expect.tx,
-                a: 8,
-                b: 5
-              })
+    <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
+      <div>
+        {contextHolder}
+        <Button
+          type="primary"
+          onClick={() => {
+            if (address) {
+              setOpenAddExpect(true)
+            } else {
+              connect(metamaskConfig)
             }
-          />
-          <Column title="Thời gian" key="time" render={(_, expect) => <p>{formatDate(expect.time)}</p>} />
-          <Column title="Lượng (kg)" dataIndex="amount" key="amount" />
-          <Column title="Ghi chú" dataIndex="note" key="note" />
+          }}
+          style={{ marginBottom: '15px' }}
+        >
+          {address ? 'Thêm dự kiến' : 'Kết nối với ví để thêm dự kiến'}
+        </Button>
+        <ExpectModal
+          modalExpectVisible={openAddExpect}
+          handleModalOk={handleModalAddOk}
+          handleModalCancel={handleModalAddCancel}
+          selectedExpect={null}
+          isUpdate={false}
+        />
+        <ExpectModal
+          modalExpectVisible={openUpdateExpect}
+          handleModalOk={handleModalUpdateOk}
+          handleModalCancel={handleModalUpdateCancel}
+          selectedExpect={selectedExpect}
+          isUpdate={true}
+        />
+        {isSuccess && isSuccessProjectInfo ? (
+          <Table dataSource={expectData}>
+            <Column
+              title="Thời gian"
+              key="time"
+              render={(_, expect) => <p>{formatDateTime(expect.time)}</p>}
+              sorter={(a, b) => new Date(a.time) - new Date(b.time)}
+              showSorterTooltip={{
+                title: 'Sắp xếp thời gian'
+              }}
+              width="150px"
+            />
+            <Column
+              title="Transaction hash"
+              dataIndex="tx"
+              key="tx"
+              width="150px"
+              render={(_, expect) =>
+                formatTransactionHashTable({
+                  str: expect.tx,
+                  a: 8,
+                  b: 5
+                })
+              }
+            />
+            <Column title="Lượng (kg)" dataIndex="amount" key="amount" />
+            <Column title="Ghi chú" dataIndex="note" key="note" />
 
-          <Column
-            title="Hành động"
-            key="action"
-            width="150px"
-            render={(_, expect) => (
-              <Space size="middle">
-                <Tooltip title={address ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
-                  {address ? (
-                    <EditFilled
-                      style={{ marginRight: '2rem', cursor: 'pointer' }}
-                      onClick={() => {
-                        setSelectedExpect(expect)
-                        setOpenUpdateExpect(true)
-                      }}
-                    />
-                  ) : (
-                    <EditOutlined
-                      style={{ marginRight: '2rem', cursor: 'pointer' }}
-                      onClick={async () => {
-                        await connect(metamaskConfig)
-                      }}
-                    />
-                  )}
-                </Tooltip>
-                <Popconfirm
-                  title="Xóa"
-                  description="Bạn có chắc chắn muốn xóa không"
-                  onConfirm={handleDeleteExpect.bind(this, expect.id)}
-                >
-                  <Tooltip title="Xóa">
-                    <DeleteFilled style={{ cursor: 'pointer', marginRight: '2rem' }} />
+            <Column
+              title="Hành động"
+              key="action"
+              width="150px"
+              render={(_, expect) => (
+                <Space size="middle">
+                  <Tooltip title={address ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
+                    {address ? (
+                      <EditFilled
+                        style={{ marginRight: '2rem', cursor: 'pointer' }}
+                        onClick={() => {
+                          setSelectedExpect(expect)
+                          setOpenUpdateExpect(true)
+                        }}
+                      />
+                    ) : (
+                      <EditOutlined
+                        style={{ marginRight: '2rem', cursor: 'pointer' }}
+                        onClick={async () => {
+                          await connect(metamaskConfig)
+                        }}
+                      />
+                    )}
                   </Tooltip>
-                </Popconfirm>
-                <> {expect.isEdited ? <EditExpectHistory expect={expect} /> : <></>}</>
-              </Space>
-            )}
-          />
-        </Table>
-      ) : (
-        <Loading />
-      )}
-    </div>
+                  <Popconfirm
+                    title="Xóa"
+                    description="Bạn có chắc chắn muốn xóa không"
+                    onConfirm={handleDeleteExpect.bind(this, expect.id)}
+                  >
+                    <Tooltip title="Xóa">
+                      <DeleteFilled style={{ cursor: 'pointer', marginRight: '2rem' }} />
+                    </Tooltip>
+                  </Popconfirm>
+                  <> {expect.isEdited ? <EditExpectHistory expect={expect} /> : <></>}</>
+                </Space>
+              )}
+            />
+          </Table>
+        ) : (
+          <Loading />
+        )}
+      </div>
+    </Spin>
   )
 }
 

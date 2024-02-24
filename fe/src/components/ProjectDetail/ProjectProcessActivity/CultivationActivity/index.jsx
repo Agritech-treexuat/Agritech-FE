@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip, Spin } from 'antd'
 import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
@@ -185,7 +185,11 @@ const CultivationTable = ({
       dataIndex: 'time',
       key: 'time',
       width: '150px',
-      render: (text, record) => formatDateTime(record.time)
+      render: (text, record) => formatDateTime(record.time),
+      sorter: (a, b) => new Date(a.time) - new Date(b.time),
+      showSorterTooltip: {
+        title: 'Sắp xếp thời gian'
+      }
     },
     ...(isGarden
       ? []
@@ -295,7 +299,9 @@ const CultivationTable = ({
           {address || isGarden ? 'Thêm' : 'Kết nối với ví để thêm'}
         </Button>
       </div>
-      <Table dataSource={cultivation} columns={columns} pagination={false} loading={loading}/>
+      <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
+        <Table dataSource={cultivation} columns={columns} pagination={false} />
+      </Spin>
 
       {/* Modal 1 */}
       <Modal title="Chọn loại canh tác" open={modal1Visible} onOk={handleModal1Ok} onCancel={handleModal1Cancel}>

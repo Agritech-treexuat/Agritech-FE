@@ -14,7 +14,8 @@ import {
   InputNumber,
   Upload,
   Select,
-  Tooltip
+  Tooltip,
+  Spin
 } from 'antd'
 import { formatDate, formatTransactionHashTable } from '../../../utils/helpers'
 import EditOutputHistory from './EditOutputHistory'
@@ -125,6 +126,7 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
           .then((values) => {
             form.setFieldsValue(values)
             handleModalOk(values)
+            handleModalCancel()
             form.resetFields()
           })
           .catch((info) => {
@@ -263,6 +265,7 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
 const ProjectOutput = () => {
   const params = useParams()
   const projectId = useParams().id
+  const [loading, setLoading] = useState(false)
   const { outputData, isSuccess, refetch, alllDistributer, isSucessDistributer, projectInfo, isSuccessProjectInfo } =
     useProjectOutput({
       projectId: params.id
@@ -361,6 +364,7 @@ const ProjectOutput = () => {
   }
 
   const handleModalAddOk = async (values) => {
+    setLoading(true)
     const images = values.upload ? values.upload.map((upload) => upload.response.metadata.thumb_url) : []
     const updatedValue = {
       ...values,
@@ -395,6 +399,7 @@ const ProjectOutput = () => {
           ...dataWithoutTx,
           tx: txHash
         }
+        setLoading(false)
         const res = await PROJECT.addOutput(data, projectId)
         if (res.status === 200) {
           refetch()
@@ -403,17 +408,17 @@ const ProjectOutput = () => {
           openNotificationWithIcon('error', 'Thất bại', 'Thêm đầu ra thất bại')
         }
       } catch (error) {
+        setLoading(false)
         console.error(error?.response?.data?.message)
         openNotificationWithIcon('error', 'Thất bại', 'Thêm đầu ra thất bại')
       }
     } else {
       alert('Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế')
     }
-
-    handleModalAddCancel()
   }
 
   const handleModalUpdateOk = async (values) => {
+    setLoading(true)
     const images = values.upload
       ? values.upload.map((upload) => (upload.response ? upload.response.metadata.thumb_url : upload.url))
       : []
@@ -442,6 +447,7 @@ const ProjectOutput = () => {
           ...dataWithoutTx,
           tx: txHash
         }
+        setLoading(false)
         const res = await PROJECT.editOutput(data, projectId, selectedOutput.id)
         if (res.status === 200) {
           refetch()
@@ -450,17 +456,17 @@ const ProjectOutput = () => {
           openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
         }
       } catch (error) {
+        setLoading(false)
         console.error(error?.response?.data?.message)
       }
     } else {
+      setLoading(false)
       openNotificationWithIcon(
         'error',
         'Thông báo',
         'Đầu ra không hợp lệ. Tổng xuất cho các nhà phân phối đang nhiều hơn tổng thực tế'
       )
     }
-
-    handleModalUpdateCancel()
   }
 
   const handleExportQR = async (output) => {
@@ -507,146 +513,160 @@ const ProjectOutput = () => {
     <div>
       {contextHolder}
       {isSuccess && isSucessDistributer && isSuccessProjectInfo ? (
-        <>
-          <Button
-            type="primary"
-            onClick={() => {
-              if (address) {
-                setOpenAddOutput(true)
-              } else {
-                connect(metamaskConfig)
-              }
-            }}
-          >
-            {address ? 'Thêm đầu ra' : 'Kết nối với ví để thêm'}
-          </Button>
-          <OutputModal
-            modalVisible={openAddOutput}
-            handleModalOk={handleModalAddOk}
-            handleModalCancel={handleModalAddCancel}
-            selectedOutput={null}
-            isUpdate={false}
-            alllDistributer={alllDistributer}
-          />
-          <OutputModal
-            modalVisible={openUpdateOutput}
-            handleModalOk={handleModalUpdateOk}
-            handleModalCancel={handleModalUpdateCancel}
-            selectedOutput={selectedOutput}
-            isUpdate={true}
-            alllDistributer={alllDistributer}
-          />
-          <Modal title="Ảnh" open={isModalOpen} footer={null} onCancel={handleCancel}>
-            {selectedOutputImages?.images ? (
-              selectedOutputImages?.images.map((image) => (
-                <span>
-                  <Image class={'process-img'} src={image} />
-                </span>
-              ))
-            ) : (
-              <span>Không có ảnh</span>
-            )}
-          </Modal>
-          <Table dataSource={outputData}>
-            <Column
-              title="Tx"
-              dataIndex="tx"
-              key="tx"
-              render={(_, output) =>
-                formatTransactionHashTable({
-                  str: output.tx,
-                  a: 8,
-                  b: 6
-                })
-              }
+        <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
+          <>
+            <Button
+              type="primary"
+              onClick={() => {
+                if (address) {
+                  setOpenAddOutput(true)
+                } else {
+                  connect(metamaskConfig)
+                }
+              }}
+              style={{ marginBottom: '15px' }}
+            >
+              {address ? 'Thêm đầu ra' : 'Kết nối với ví để thêm'}
+            </Button>
+            <OutputModal
+              modalVisible={openAddOutput}
+              handleModalOk={handleModalAddOk}
+              handleModalCancel={handleModalAddCancel}
+              selectedOutput={null}
+              isUpdate={false}
+              alllDistributer={alllDistributer}
             />
-            <Column title="Thời gian" key="time" render={(_, output) => <p>{formatDate(output.time)}</p>} />
-            <Column title="Lượng" dataIndex="amount" key="amount" />
-            <Column title="Lượng trên 1 sản phẩm" dataIndex="amountPerOne" key="amountPerOne" />
-            <Column
-              title="Ảnh"
-              key="images"
-              render={(_, output) => (
-                <>
-                  <Button
-                    onClick={() => {
-                      setSelectedOutputImages(output)
-                      setIsModalOpen(true)
-                    }}
-                  >
-                    Xem Ảnh
-                  </Button>
-                </>
+            <OutputModal
+              modalVisible={openUpdateOutput}
+              handleModalOk={handleModalUpdateOk}
+              handleModalCancel={handleModalUpdateCancel}
+              selectedOutput={selectedOutput}
+              isUpdate={true}
+              alllDistributer={alllDistributer}
+            />
+            <Modal title="Ảnh" open={isModalOpen} footer={null} onCancel={handleCancel}>
+              {selectedOutputImages?.images ? (
+                selectedOutputImages?.images.map((image) => (
+                  <span>
+                    <Image class={'process-img'} src={image} />
+                  </span>
+                ))
+              ) : (
+                <span>Không có ảnh</span>
               )}
-            />
-            <Column
-              title="Npp"
-              key="npp"
-              render={(_, output) => (
-                <>
-                  {output.distributerWithAmount ? (
-                    output.distributerWithAmount.map((npp_item) => (
-                      <div>
-                        <p>
-                          {npp_item.distributer.name} cùng lượng {npp_item.amount}
-                        </p>
-                      </div>
-                    ))
-                  ) : (
-                    <span>Không có npp</span>
-                  )}
-                </>
-              )}
-            />
-            <Column
-              title="Chỉnh sửa"
-              key="action"
-              render={(_, output) => (
-                <Space size="middle">
-                  <Tooltip title={address ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
-                    {address ? (
-                      <EditFilled
-                        style={{ marginRight: '2rem', cursor: 'pointer' }}
-                        onClick={() => {
-                          setSelectedOutput(output)
-                          setOpenUpdateOutput(true)
-                        }}
-                        disabled={output.exportQR}
-                      />
-                    ) : (
-                      <EditOutlined
-                        style={{ marginRight: '2rem', cursor: 'pointer' }}
-                        onClick={async () => {
-                          await connect(metamaskConfig)
-                        }}
-                        disabled={output.exportQR}
-                      />
-                    )}
-                  </Tooltip>
-                  <Popconfirm
-                    title="Xóa"
-                    description="Bạn có chắc chắn muốn xóa không"
-                    onConfirm={handleDeleteOutput.bind(this, output.id)}
-                  >
-                    <Tooltip title="Xóa">
-                      <DeleteFilled style={{ cursor: 'pointer', marginRight: '2rem' }} disabled={output.exportQR} />
-                    </Tooltip>
-                  </Popconfirm>
-                  <> {output.isEdited ? <EditOutputHistory output={output} /> : <></>}</>
-                  <Popconfirm
-                    title="Xóa"
-                    description="Bạn có chắc chắn muốn export không"
-                    onConfirm={handleExportQR.bind(this, output)}
-                  >
-                    <Button type="primary" disabled={output.exportQR}>
-                      Xuất QR
+            </Modal>
+
+            <Table dataSource={outputData}>
+              <Column
+                title="Thời gian"
+                key="time"
+                render={(_, output) => <p>{formatDate(output.time)}</p>}
+                sorter={(a, b) => new Date(a.time) - new Date(b.time)}
+                showSorterTooltip={{
+                  title: 'Sắp xếp thời gian'
+                }}
+                width="150px"
+              />
+              <Column
+                title="Tx"
+                dataIndex="tx"
+                key="tx"
+                width="150px"
+                render={(_, output) =>
+                  formatTransactionHashTable({
+                    str: output.tx,
+                    a: 8,
+                    b: 6
+                  })
+                }
+              />
+              <Column title="Lượng" dataIndex="amount" key="amount" />
+              <Column title="Lượng trên 1 sản phẩm" dataIndex="amountPerOne" key="amountPerOne" />
+              <Column
+                title="Ảnh"
+                key="images"
+                render={(_, output) => (
+                  <>
+                    <Button
+                      onClick={() => {
+                        setSelectedOutputImages(output)
+                        setIsModalOpen(true)
+                      }}
+                    >
+                      Xem Ảnh
                     </Button>
-                  </Popconfirm>
-                </Space>
-              )}
-            />
-          </Table>
-        </>
+                  </>
+                )}
+              />
+              <Column
+                title="Npp"
+                key="npp"
+                render={(_, output) => (
+                  <>
+                    {output.distributerWithAmount ? (
+                      output.distributerWithAmount.map((npp_item) => (
+                        <div>
+                          <p>
+                            {npp_item.distributer.name} cùng lượng {npp_item.amount}
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <span>Không có npp</span>
+                    )}
+                  </>
+                )}
+              />
+              <Column
+                title="Chỉnh sửa"
+                key="action"
+                render={(_, output) => (
+                  <Space size="middle">
+                    <Tooltip title={address ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
+                      {address ? (
+                        <EditFilled
+                          style={{ marginRight: '2rem', cursor: 'pointer' }}
+                          onClick={() => {
+                            setSelectedOutput(output)
+                            setOpenUpdateOutput(true)
+                          }}
+                          disabled={output.exportQR}
+                        />
+                      ) : (
+                        <EditOutlined
+                          style={{ marginRight: '2rem', cursor: 'pointer' }}
+                          onClick={async () => {
+                            await connect(metamaskConfig)
+                          }}
+                          disabled={output.exportQR}
+                        />
+                      )}
+                    </Tooltip>
+                    <Popconfirm
+                      title="Xóa"
+                      description="Bạn có chắc chắn muốn xóa không"
+                      onConfirm={handleDeleteOutput.bind(this, output.id)}
+                    >
+                      <Tooltip title="Xóa">
+                        <DeleteFilled style={{ cursor: 'pointer', marginRight: '2rem' }} disabled={output.exportQR} />
+                      </Tooltip>
+                    </Popconfirm>
+                    <> {output.isEdited ? <EditOutputHistory output={output} /> : <></>}</>
+                    <Popconfirm
+                      title="Xóa"
+                      description="Bạn có chắc chắn muốn export không"
+                      onConfirm={handleExportQR.bind(this, output)}
+                    >
+                      <Button type="primary" disabled={output.exportQR}>
+                        Xuất QR
+                      </Button>
+                    </Popconfirm>
+                  </Space>
+                )}
+              />
+            </Table>
+          </>
+        </Spin>
       ) : (
         <Loading />
       )}

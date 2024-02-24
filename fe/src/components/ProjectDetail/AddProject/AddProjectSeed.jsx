@@ -30,7 +30,15 @@ const SeedModal = ({ selectedPlant, open, onClose, selectedSeed, setSelectedSeed
         <Button key="cancel" onClick={onClose}>
           Hủy
         </Button>,
-        <Button key="add" type="primary" disabled={!selectedSeed} onClick={handleAddSeed}>
+        <Button
+          key="add"
+          type="primary"
+          disabled={!selectedSeed}
+          onClick={() => {
+            handleAddSeed()
+            onClose()
+          }}
+        >
           {isAddSeed ? 'Thêm' : 'Cập nhật'}
         </Button>
       ]}

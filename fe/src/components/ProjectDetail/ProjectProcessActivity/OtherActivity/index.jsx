@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip, Spin } from 'antd'
 import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
@@ -128,7 +128,8 @@ const OtherTable = ({
   handleDeleteProcess,
   address,
   connect,
-  isGarden
+  isGarden,
+  loading
 }) => {
   const [modal2Visible, setModal2Visible] = useState(false)
   const [modalUpdateVisible, setModalUpdateVisible] = useState(false)
@@ -149,7 +150,11 @@ const OtherTable = ({
       dataIndex: 'time',
       key: 'time',
       width: 150,
-      render: (text, record) => formatDateTime(record.time)
+      render: (text, record) => formatDateTime(record.time),
+      sorter: (a, b) => new Date(a.time) - new Date(b.time),
+      showSorterTooltip: {
+        title: 'Sắp xếp thời gian'
+      }
     },
     ...(isGarden
       ? []
@@ -250,8 +255,9 @@ const OtherTable = ({
           {address || isGarden ? 'Thêm' : 'Kết nối với ví để thêm'}
         </Button>
       </div>
-      <Table dataSource={other} columns={columns} pagination={false} />
-
+      <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
+        <Table dataSource={other} columns={columns} pagination={false} />
+      </Spin>
       {/* Modal 2 */}
       <Modal2
         modal2Visible={modal2Visible}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Row, Col, Card, notification } from 'antd'
+import { Row, Col, Card, notification, Spin } from 'antd'
 import useProjectProcess from './useProjectProcess'
 import Loading from '../../../pages/Loading'
 import CultivationTable from './CultivationActivity'
@@ -124,6 +124,7 @@ const ProcessActivityPage = ({ projectId }) => {
         openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
       }
     } catch (error) {
+      setLoading(false)
       console.log('error: ', error)
       openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
     }
@@ -168,6 +169,7 @@ const ProcessActivityPage = ({ projectId }) => {
         openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
       }
     } catch (error) {
+      setLoading(false)
       console.log('error: ', error)
       openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
     }
@@ -220,6 +222,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>
@@ -237,6 +240,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>
@@ -254,6 +258,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>
@@ -270,6 +275,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>

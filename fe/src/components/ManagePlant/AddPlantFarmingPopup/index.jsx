@@ -40,50 +40,51 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
               style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}
             >
               <h1 style={{ textAlign: 'center', marginBottom: '0', padding: '0' }}>Thông tin cơ bản</h1>
-                <h2 style={{ marginTop: '0' }}>Thời gian cấy trồng</h2>
-                <Space direction="vertical" style={{ width: '100%' }}>
-                  <Space
-                    direction="vertical"
-                    style={{ width: '100%', backgroundColor: '#c5e1a5', borderRadius: '8px' }}
-                  >
-                    <Form.List name="timeCultivates">
-                      {(fields, { add, remove }) => (
-                        <>
-                          {fields.map((field, index) => (
-                            <div key={`timeCultivates_${index}`}>
-                              <div style={{ display: 'flex', alignItems: 'center', margin: '0 16px' }}>
-                                <Space
-                                  direction="horizonal"
-                                  style={{ width: '100%', marginTop: '8px', display: 'flex', alignItems: 'center' }}
-                                >
-                                  <div style={{ display: 'flex' }}>
-                                    <Form.Item fieldKey={[field.key, "start"]} name={[field.name, 'start']} label="Bắt đầu">
-                                      <InputNumber min={0} placeholder="Bắt đầu" style={{ width: '80%' }} />
-                                    </Form.Item>
-                                    <Form.Item fieldKey={[field.key, "end"]} name={[field.name, 'end']} label="Kết thúc">
-                                      <InputNumber min={0} placeholder="Kết thúc" style={{ width: '80%' }} />
-                                    </Form.Item>
-                                  </div>
-                                </Space>
-                                <CloseOutlined onClick={() => remove(field.name)} />
-                              </div>
+              <h2 style={{ marginTop: '0' }}>Thời gian cấy trồng</h2>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Space direction="vertical" style={{ width: '100%', backgroundColor: '#c5e1a5', borderRadius: '8px' }}>
+                  <Form.List name="timeCultivates">
+                    {(fields, { add, remove }) => (
+                      <>
+                        {fields.map((field, index) => (
+                          <div key={`timeCultivates_${index}`}>
+                            <div style={{ display: 'flex', alignItems: 'center', margin: '0 16px' }}>
+                              <Space
+                                direction="horizonal"
+                                style={{ width: '100%', marginTop: '8px', display: 'flex', alignItems: 'center' }}
+                              >
+                                <div style={{ display: 'flex' }}>
+                                  <Form.Item
+                                    fieldKey={[field.key, 'start']}
+                                    name={[field.name, 'start']}
+                                    label="Bắt đầu"
+                                  >
+                                    <InputNumber min={0} placeholder="Bắt đầu" style={{ width: '80%' }} />
+                                  </Form.Item>
+                                  <Form.Item fieldKey={[field.key, 'end']} name={[field.name, 'end']} label="Kết thúc">
+                                    <InputNumber min={0} placeholder="Kết thúc" style={{ width: '80%' }} />
+                                  </Form.Item>
+                                </div>
+                              </Space>
+                              <CloseOutlined onClick={() => remove(field.name)} />
                             </div>
-                          ))}
-                          <Button
-                            style={{ backgroundColor: '#558b2f', color: '#ffffff' }}
-                            type="dashed"
-                            onClick={() => add()}
-                            block
-                          >
-                            + Thêm thông tin
-                          </Button>
-                        </>
-                      )}
-                    </Form.List>
-                  </Space>
+                          </div>
+                        ))}
+                        <Button
+                          style={{ backgroundColor: '#558b2f', color: '#ffffff' }}
+                          type="dashed"
+                          onClick={() => add()}
+                          block
+                        >
+                          + Thêm thông tin
+                        </Button>
+                      </>
+                    )}
+                  </Form.List>
                 </Space>
+              </Space>
 
-                <h2 style={{ marginTop: '0' }}>Thời gian tốt nhất để trồng</h2>
+              <h2 style={{ marginTop: '0' }}>Thời gian tốt nhất để trồng</h2>
               <Form.Item style={{ margin: '16px' }}>
                 <Space
                   direction="horizonal"
@@ -119,106 +120,119 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
               style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}
             >
               <h1 style={{ textAlign: 'center', marginBottom: '0', padding: '0' }}>Hoạt động kiểm soát sâu bệnh</h1>
-                <h2 style={{ marginTop: '0' }}>Danh sách các hoạt động kiểm soát, phòng ngừa</h2>
-                <Space direction="vertical" style={{ width: '100%' }}>
-                  <Space
-                    direction="vertical"
-                    style={{ width: '100%', backgroundColor: '#c5e1a5', borderRadius: '8px' }}
-                  >
-                    <Form.List name="pestAndDiseaseControlActivities">
-                      {(fields, { add, remove }) => (
-                        <>
-                          {fields.map((field, index) => (
-                            <div key={`pestAndDiseaseControlActivities_${index}`}>
-                              <div style={{ display: 'flex' }}>
-                                <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
-                                  <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
-                                  <Form.Item fieldKey={[field.key, "name"]} name={[field.name, 'name']} label="Tên">
-                                    <Input placeholder="Tên" style={{ width: '28.5rem', float: 'right' }} />
-                                  </Form.Item>
-                                  <Form.Item fieldKey={[field.key, "type"]} name={[field.name, 'type']} label="Loại">
-                                    <Select style={{ width: '28.5rem', float: 'right' }} placeholder="Chọn loại">
-                                      <Select.Option value="pest">Sâu</Select.Option>
-                                      <Select.Option value="disease">Bệnh</Select.Option>
-                                    </Select>
-                                  </Form.Item>
-                                  <Form.Item fieldKey={[field.key, "symptoms"]} name={[field.name, 'symptoms']} label="Triệu chứng">
-                                    <Input.TextArea
-                                      placeholder="Triệu chứng"
-                                      style={{ width: '28.5rem', float: 'right' }}
-                                      autoSize={{ minRows: 5 }}
-                                    />
-                                  </Form.Item>
-                                  <Form.Item fieldKey={[field.key, "description"]} name={[field.name, 'description']} label="Mô tả">
-                                    <Input.TextArea
-                                      placeholder="Mô tả"
-                                      style={{ width: '28.5rem', float: 'right' }}
-                                      autoSize={{ minRows: 5 }}
-                                    />
-                                  </Form.Item>
-                                  <Form.Item fieldKey={[field.key, "solution"]} label="Giải pháp" name={[field.name, 'solution']}>
-                                    <Form.List name={[field.name, 'solution']}>
-                                      {(subFields, { add: addSolution, remove: removeSolution }) => (
-                                        <>
-                                          {subFields.map((subField, index) => (
-                                            <div
-                                              key={`solution_${index}`}
-                                              style={{
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                float: 'right',
-                                                alignItems: 'flex-end'
-                                              }}
-                                            >
-                                              <CloseOutlined
-                                                style={{ float: 'right' }}
-                                                onClick={() => removeSolution(subField.name)}
-                                              />
-                                              <Form.Item fieldKey={[subField.key, "solution"]} name={[subField.name]} noStyle>
-                                                <Input.TextArea
-                                                  placeholder="Giải pháp"
-                                                  style={{ width: '28.5rem', float: 'right' }}
-                                                  autoSize={{ minRows: 5 }}
-                                                />
-                                              </Form.Item>
-                                            </div>
-                                          ))}
-                                          <Button
+              <h2 style={{ marginTop: '0' }}>Danh sách các hoạt động kiểm soát, phòng ngừa</h2>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Space direction="vertical" style={{ width: '100%', backgroundColor: '#c5e1a5', borderRadius: '8px' }}>
+                  <Form.List name="pestAndDiseaseControlActivities">
+                    {(fields, { add, remove }) => (
+                      <>
+                        {fields.map((field, index) => (
+                          <div key={`pestAndDiseaseControlActivities_${index}`}>
+                            <div style={{ display: 'flex' }}>
+                              <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
+                                <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
+                                <Form.Item fieldKey={[field.key, 'name']} name={[field.name, 'name']} label="Tên">
+                                  <Input placeholder="Tên" style={{ width: '28.5rem', float: 'right' }} />
+                                </Form.Item>
+                                <Form.Item fieldKey={[field.key, 'type']} name={[field.name, 'type']} label="Loại">
+                                  <Select style={{ width: '28.5rem', float: 'right' }} placeholder="Chọn loại">
+                                    <Select.Option value="pest">Sâu</Select.Option>
+                                    <Select.Option value="disease">Bệnh</Select.Option>
+                                  </Select>
+                                </Form.Item>
+                                <Form.Item
+                                  fieldKey={[field.key, 'symptoms']}
+                                  name={[field.name, 'symptoms']}
+                                  label="Triệu chứng"
+                                >
+                                  <Input.TextArea
+                                    placeholder="Triệu chứng"
+                                    style={{ width: '28.5rem', float: 'right' }}
+                                    autoSize={{ minRows: 5 }}
+                                  />
+                                </Form.Item>
+                                <Form.Item
+                                  fieldKey={[field.key, 'description']}
+                                  name={[field.name, 'description']}
+                                  label="Mô tả"
+                                >
+                                  <Input.TextArea
+                                    placeholder="Mô tả"
+                                    style={{ width: '28.5rem', float: 'right' }}
+                                    autoSize={{ minRows: 5 }}
+                                  />
+                                </Form.Item>
+                                <Form.Item
+                                  fieldKey={[field.key, 'solution']}
+                                  label="Giải pháp"
+                                  name={[field.name, 'solution']}
+                                >
+                                  <Form.List name={[field.name, 'solution']}>
+                                    {(subFields, { add: addSolution, remove: removeSolution }) => (
+                                      <>
+                                        {subFields.map((subField, index) => (
+                                          <div
+                                            key={`solution_${index}`}
                                             style={{
-                                              width: '28.5rem',
+                                              display: 'flex',
+                                              flexDirection: 'column',
                                               float: 'right',
-                                              backgroundColor: '#558b2f',
-                                              color: '#ffffff',
-                                              marginTop: '16px'
+                                              alignItems: 'flex-end'
                                             }}
-                                            type="dashed"
-                                            onClick={() => addSolution()}
-                                            block
                                           >
-                                            + Thêm giải pháp
-                                          </Button>
-                                        </>
-                                      )}
-                                    </Form.List>
-                                  </Form.Item>
-                                </Space>
-                              </div>
-                              <Divider />
+                                            <CloseOutlined
+                                              style={{ float: 'right' }}
+                                              onClick={() => removeSolution(subField.name)}
+                                            />
+                                            <Form.Item
+                                              fieldKey={[subField.key, 'solution']}
+                                              name={[subField.name]}
+                                              noStyle
+                                            >
+                                              <Input.TextArea
+                                                placeholder="Giải pháp"
+                                                style={{ width: '28.5rem', float: 'right' }}
+                                                autoSize={{ minRows: 5 }}
+                                              />
+                                            </Form.Item>
+                                          </div>
+                                        ))}
+                                        <Button
+                                          style={{
+                                            width: '28.5rem',
+                                            float: 'right',
+                                            backgroundColor: '#558b2f',
+                                            color: '#ffffff',
+                                            marginTop: '16px'
+                                          }}
+                                          type="dashed"
+                                          onClick={() => addSolution()}
+                                          block
+                                        >
+                                          + Thêm giải pháp
+                                        </Button>
+                                      </>
+                                    )}
+                                  </Form.List>
+                                </Form.Item>
+                              </Space>
                             </div>
-                          ))}
-                          <Button
-                            style={{ backgroundColor: '#558b2f', color: '#ffffff' }}
-                            type="dashed"
-                            onClick={() => add()}
-                            block
-                          >
-                            + Thêm thông tin
-                          </Button>
-                        </>
-                      )}
-                    </Form.List>
-                  </Space>
+                            <Divider />
+                          </div>
+                        ))}
+                        <Button
+                          style={{ backgroundColor: '#558b2f', color: '#ffffff' }}
+                          type="dashed"
+                          onClick={() => add()}
+                          block
+                        >
+                          + Thêm thông tin
+                        </Button>
+                      </>
+                    )}
+                  </Form.List>
                 </Space>
+              </Space>
             </Space>
           </Col>
           <Col span={12} style={{ padding: '16px', borderRadius: '8px', paddingLeft: '6px' }}>
@@ -227,50 +241,51 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
               style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}
             >
               <h1 style={{ textAlign: 'center', marginBottom: '0', padding: '0' }}>Hoạt động làm đất và gieo trồng</h1>
-                <h2 style={{ marginTop: '0' }}>Hoạt động làm đất</h2>
-                <Space direction="vertical" style={{ width: '100%' }}>
-                  <Space
-                    direction="vertical"
-                    style={{ width: '100%', backgroundColor: '#c5e1a5', borderRadius: '8px' }}
-                  >
-                    <Form.List name="cultivationActivities">
-                      {(fields, { add, remove }) => (
-                        <>
-                          {fields.map((field, index) => (
-                            <div key={`cultivationActivities_${index}`}>
-                              <div style={{ margin: '16px' }}>
-                                <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
-                                <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
-                                  <Form.Item fieldKey={[field.key, "name"]} name={[field.name, 'name']} label="Tên">
-                                    <Input placeholder="Tên" style={{ width: '28.5rem', float: 'right' }} />
-                                  </Form.Item>
-                                  <Form.Item fieldKey={[field.key, "description"]} name={[field.name, 'description']} label="Mô tả">
-                                    <Input.TextArea
-                                      placeholder="Mô tả"
-                                      style={{ width: '28.5rem', float: 'right' }}
-                                      autoSize={{ minRows: 5 }}
-                                    />
-                                  </Form.Item>
-                                </Space>
-                                <Divider />
-                              </div>
+              <h2 style={{ marginTop: '0' }}>Hoạt động làm đất</h2>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Space direction="vertical" style={{ width: '100%', backgroundColor: '#c5e1a5', borderRadius: '8px' }}>
+                  <Form.List name="cultivationActivities">
+                    {(fields, { add, remove }) => (
+                      <>
+                        {fields.map((field, index) => (
+                          <div key={`cultivationActivities_${index}`}>
+                            <div style={{ margin: '16px' }}>
+                              <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
+                              <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
+                                <Form.Item fieldKey={[field.key, 'name']} name={[field.name, 'name']} label="Tên">
+                                  <Input placeholder="Tên" style={{ width: '28.5rem', float: 'right' }} />
+                                </Form.Item>
+                                <Form.Item
+                                  fieldKey={[field.key, 'description']}
+                                  name={[field.name, 'description']}
+                                  label="Mô tả"
+                                >
+                                  <Input.TextArea
+                                    placeholder="Mô tả"
+                                    style={{ width: '28.5rem', float: 'right' }}
+                                    autoSize={{ minRows: 5 }}
+                                  />
+                                </Form.Item>
+                              </Space>
+                              <Divider />
                             </div>
-                          ))}
-                          <Button
-                            style={{ backgroundColor: '#558b2f', color: '#ffffff' }}
-                            type="dashed"
-                            onClick={() => add()}
-                            block
-                          >
-                            + Thêm thông tin
-                          </Button>
-                        </>
-                      )}
-                    </Form.List>
-                  </Space>
+                          </div>
+                        ))}
+                        <Button
+                          style={{ backgroundColor: '#558b2f', color: '#ffffff' }}
+                          type="dashed"
+                          onClick={() => add()}
+                          block
+                        >
+                          + Thêm thông tin
+                        </Button>
+                      </>
+                    )}
+                  </Form.List>
                 </Space>
+              </Space>
 
-                <h2 style={{ marginTop: '0' }}>Hoạt động gieo trồng</h2>
+              <h2 style={{ marginTop: '0' }}>Hoạt động gieo trồng</h2>
               <Form.Item name="plantingActivity" style={{ margin: '16px' }}>
                 <Space direction="vertical" style={{ width: '100%', marginTop: '8px' }}>
                   <Form.Item name={['plantingActivity', 'density']} label="Mật độ">
@@ -291,61 +306,62 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
               style={{ backgroundColor: '#dcedc8', width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}
             >
               <h1 style={{ textAlign: 'center', marginBottom: '0', padding: '0' }}>Hoạt động bón phân</h1>
-                <h2 style={{ marginTop: '0' }}>Danh sách các hoạt động bón phân</h2>
-                <Space direction="vertical" style={{ width: '100%' }}>
-                  <Space
-                    direction="vertical"
-                    style={{ width: '100%', backgroundColor: '#c5e1a5', borderRadius: '8px' }}
-                  >
-                    <Form.List name="fertilizationActivities">
-                      {(fields, { add, remove }) => (
-                        <>
-                          {fields.map((field, index) => (
-                            <div key={`fertilizationActivities_${index}`}>
-                              <div style={{ display: 'flex' }}>
-                                <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
-                                  <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
-                                  <Form.Item
-                                    fieldKey={[field.key, "fertilizationTime"]}
-                                    name={[field.name, 'fertilizationTime']}
-                                    label="Thời gian phân bón"
-                                  >
-                                    <Input
-                                      placeholder="Thời gian phân bón"
-                                      style={{ width: '28.5rem', float: 'right' }}
-                                    />
-                                  </Form.Item>
-                                  <Form.Item fieldKey={[field.key, "type"]} name={[field.name, 'type']} label="Loại">
-                                    <Select style={{ width: '28.5rem', float: 'right' }} placeholder="Chọn loại">
-                                      <Select.Option value="baseFertilizer">Bón lót</Select.Option>
-                                      <Select.Option value="topFertilizer">Bón thúc</Select.Option>
-                                    </Select>
-                                  </Form.Item>
-                                  <Form.Item fieldKey={[field.key, "description"]} name={[field.name, 'description']} label="Mô tả">
-                                    <Input.TextArea
-                                      placeholder="Mô tả"
-                                      style={{ width: '28.5rem', float: 'right' }}
-                                      autoSize={{ minRows: 5 }}
-                                    />
-                                  </Form.Item>
-                                </Space>
-                              </div>
-                              <Divider />
+              <h2 style={{ marginTop: '0' }}>Danh sách các hoạt động bón phân</h2>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Space direction="vertical" style={{ width: '100%', backgroundColor: '#c5e1a5', borderRadius: '8px' }}>
+                  <Form.List name="fertilizationActivities">
+                    {(fields, { add, remove }) => (
+                      <>
+                        {fields.map((field, index) => (
+                          <div key={`fertilizationActivities_${index}`}>
+                            <div style={{ display: 'flex' }}>
+                              <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
+                                <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
+                                <Form.Item
+                                  fieldKey={[field.key, 'fertilizationTime']}
+                                  name={[field.name, 'fertilizationTime']}
+                                  label="Thời gian phân bón"
+                                >
+                                  <Input
+                                    placeholder="Thời gian phân bón"
+                                    style={{ width: '28.5rem', float: 'right' }}
+                                  />
+                                </Form.Item>
+                                <Form.Item fieldKey={[field.key, 'type']} name={[field.name, 'type']} label="Loại">
+                                  <Select style={{ width: '28.5rem', float: 'right' }} placeholder="Chọn loại">
+                                    <Select.Option value="baseFertilizer">Bón lót</Select.Option>
+                                    <Select.Option value="topFertilizer">Bón thúc</Select.Option>
+                                  </Select>
+                                </Form.Item>
+                                <Form.Item
+                                  fieldKey={[field.key, 'description']}
+                                  name={[field.name, 'description']}
+                                  label="Mô tả"
+                                >
+                                  <Input.TextArea
+                                    placeholder="Mô tả"
+                                    style={{ width: '28.5rem', float: 'right' }}
+                                    autoSize={{ minRows: 5 }}
+                                  />
+                                </Form.Item>
+                              </Space>
                             </div>
-                          ))}
-                          <Button
-                            style={{ backgroundColor: '#558b2f', color: '#ffffff' }}
-                            type="dashed"
-                            onClick={() => add()}
-                            block
-                          >
-                            + Thêm thông tin
-                          </Button>
-                        </>
-                      )}
-                    </Form.List>
-                  </Space>
+                            <Divider />
+                          </div>
+                        ))}
+                        <Button
+                          style={{ backgroundColor: '#558b2f', color: '#ffffff' }}
+                          type="dashed"
+                          onClick={() => add()}
+                          block
+                        >
+                          + Thêm thông tin
+                        </Button>
+                      </>
+                    )}
+                  </Form.List>
                 </Space>
+              </Space>
             </Space>
           </Col>
         </Row>
