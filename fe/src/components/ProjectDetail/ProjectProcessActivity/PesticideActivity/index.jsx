@@ -383,7 +383,7 @@ const PesticideTable = ({
           {address || isGarden ? 'Thêm' : 'Kết nối với ví để thêm'}
         </Button>
       </div>
-      <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
+      <Spin spinning={loading} tip={`${isGarden ? 'Đang xử lý' : 'Đang ghi lên Blockchain'}, làm ơn chờ chút ...`}>
         <Table dataSource={pesticide} columns={columns} pagination={false} />
       </Spin>
 

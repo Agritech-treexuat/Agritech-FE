@@ -255,7 +255,7 @@ const OtherTable = ({
           {address || isGarden ? 'Thêm' : 'Kết nối với ví để thêm'}
         </Button>
       </div>
-      <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
+      <Spin spinning={loading} tip={`${isGarden ? 'Đang xử lý' : 'Đang ghi lên Blockchain'}, làm ơn chờ chút ...`}>
         <Table dataSource={other} columns={columns} pagination={false} />
       </Spin>
       {/* Modal 2 */}

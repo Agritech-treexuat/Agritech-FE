@@ -49,7 +49,7 @@ const normFile = (e) => {
 const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedOutput, isUpdate, alllDistributer }) => {
   const [form] = Form.useForm()
   const [fileList, setFileList] = useState(
-    selectedOutput?.images.map((image, index) => ({
+    selectedOutput?.images?.map((image, index) => ({
       uid: String(-index),
       name: `image-${index}.png`,
       status: 'done',
@@ -68,7 +68,7 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
           name: item.distributer.name,
           amount: item.amount
         })),
-        upload: selectedOutput.images.map((image, index) => ({
+        upload: selectedOutput.images?.map((image, index) => ({
           uid: String(-index),
           name: `image-${index}.png`,
           status: 'done',
@@ -76,7 +76,7 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
         }))
       })
       setFileList(
-        selectedOutput?.images.map((image, index) => ({
+        selectedOutput?.images?.map((image, index) => ({
           uid: String(-index),
           name: `image-${index}.png`,
           status: 'done',
@@ -149,7 +149,7 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
                   name: item.distributer.name,
                   amount: item.amount
                 })),
-                upload: selectedOutput.images.map((image, index) => ({
+                upload: selectedOutput.images?.map((image, index) => ({
                   uid: String(-index),
                   name: `image-${index}.png`,
                   status: 'done',
@@ -546,7 +546,7 @@ const ProjectOutput = () => {
             />
             <Modal title="Ảnh" open={isModalOpen} footer={null} onCancel={handleCancel}>
               {selectedOutputImages?.images ? (
-                selectedOutputImages?.images.map((image) => (
+                selectedOutputImages?.images?.map((image) => (
                   <span>
                     <Image class={'process-img'} src={image} />
                   </span>
