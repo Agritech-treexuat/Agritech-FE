@@ -6,10 +6,11 @@ import { Evmos } from '@thirdweb-dev/chains'
 import { StateContextProvider } from './context'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
-import { ErrorBoundary } from 'react-error-boundary'
+import { ErrorBoundary } from "react-error-boundary";
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 const queryClient = new QueryClient()
+
 
 function fallbackRender({ error, resetErrorBoundary }) {
   // Call resetErrorBoundary() to reset the error boundary and retry the render.
@@ -17,9 +18,9 @@ function fallbackRender({ error, resetErrorBoundary }) {
   return (
     <div role="alert">
       <p>Something went wrong:</p>
-      <pre style={{ color: 'red' }}>{error.message}</pre>
+      <pre style={{ color: "red" }}>{error.message}</pre>
     </div>
-  )
+  );
 }
 
 root.render(
@@ -27,15 +28,14 @@ root.render(
     <QueryClientProvider client={queryClient}>
       <Router>
         <StateContextProvider>
-          <ErrorBoundary
-            fallbackRender={fallbackRender}
-            onReset={(details) => {
-              // Reset the state of your app so the error doesn't happen again
-            }}
-          >
-            <App />
-          </ErrorBoundary>
-          ;
+        <ErrorBoundary
+          fallbackRender={fallbackRender}
+          onReset={(details) => {
+            // Reset the state of your app so the error doesn't happen again
+          }}
+        >
+        <App />
+        </ErrorBoundary>;
         </StateContextProvider>
       </Router>
     </QueryClientProvider>
