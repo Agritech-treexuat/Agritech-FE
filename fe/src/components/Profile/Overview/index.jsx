@@ -39,7 +39,7 @@ const OverViewProfile = ({
       {isEditingOverView ? (
         <Card
           title={tittleCard()}
-          bordered={true}
+          bordered={false}
           style={{
             width: '100%',
             padding: '20px'

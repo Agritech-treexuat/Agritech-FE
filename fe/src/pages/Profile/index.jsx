@@ -9,6 +9,7 @@ import ContactProfile from '../../components/Profile/Contact'
 import OverViewProfile from '../../components/Profile/Overview'
 import NameProfile from '../../components/Profile/Name'
 import { useNavigate } from 'react-router-dom'
+import UpdatePasswordModal from '../../components/UpdatePasswordModal'
 
 const Profile = () => {
   const { profile, isSuccess, refetch } = useProfile()
@@ -33,6 +34,8 @@ const Profile = () => {
 
   const [isEditingName, setIsEditingName] = useState(false)
   const [newName, setNewName] = useState(profile?.name)
+
+  const [isModalVisible, setIsModalVisible] = useState(false)
 
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
@@ -134,6 +137,31 @@ const Profile = () => {
     }
   }
 
+  const handleUpdatePassword = async (values) => {
+    try {
+      // Xử lý logic cập nhật mật khẩu ở đây
+      console.log('Form values:', values)
+      setIsModalVisible(false)
+      const res = await FARM.updatePassword({
+        oldPassword: values.oldPassword,
+        newPassword: values.newPassword
+      })
+
+      if (res.status === 200) {
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật mật khẩu thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật mật khẩu thất bại')
+      }
+    } catch (error) {
+      if (error.response?.data?.message === 'Old password is not correct') {
+        openNotificationWithIcon('error', 'Thông báo', 'Mật khẩu cũ không đúng')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật mật khẩu thất bại')
+      }
+      console.error('Cập nhật mật khẩu thất bại:', error)
+    }
+  }
+
   return (
     <>
       {contextHolder}
@@ -147,6 +175,29 @@ const Profile = () => {
             handleSave={handleSave}
             profile={profile}
           />
+
+          <div>
+            <span
+              style={{
+                fontStyle: 'italic',
+                color: '#888',
+                cursor: 'pointer',
+                textDecoration: 'none',
+                transition: 'text-shadow 0.3s',
+                fontSize: '20px',
+                marginLeft: '25px'
+              }}
+              onClick={() => setIsModalVisible(true)}
+            >
+              Cập nhật mật khẩu
+            </span>
+
+            <UpdatePasswordModal
+              visible={isModalVisible}
+              onCancel={() => setIsModalVisible(false)}
+              onUpdatePassword={handleUpdatePassword}
+            />
+          </div>
 
           <Row style={{ rowGap: '0px' }}>
             <Col span={16}>
@@ -182,7 +233,7 @@ const Profile = () => {
                 handleSave={handleSave}
                 profile={profile}
               />
-              <PlaceComponent
+              {/* <PlaceComponent
                 lat={lat || profile.lat}
                 lng={lng || profile.lng}
                 setLat={setLat}
@@ -190,7 +241,7 @@ const Profile = () => {
                 handleSave={handleSave}
                 isEditingLocation={isEditingLocation}
                 setIsEditingLocation={setIsEditingLocation}
-              />
+              /> */}
             </Col>
           </Row>
         </div>

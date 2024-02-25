@@ -95,7 +95,7 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
   }
 
   return (
-    <div>
+    <div style={{ marginLeft: '15px' }}>
       <div style={{ display: 'flex', marginLeft: '10px', marginTop: '10px' }}>
         <h2>Hình ảnh </h2>
         <Tooltip title="Chỉnh sửa hình ảnh">

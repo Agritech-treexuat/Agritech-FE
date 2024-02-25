@@ -73,6 +73,19 @@ const FARM = {
     })
 
     return result
+  },
+
+  updatePassword: async ({ oldPassword, newPassword }) => {
+    let result = await privateHttp({
+      method: 'PATCH',
+      url: '/updatePassword',
+      data: {
+        oldPassword,
+        newPassword
+      }
+    })
+
+    return result
   }
 }
 

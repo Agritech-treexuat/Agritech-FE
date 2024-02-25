@@ -68,7 +68,7 @@ const ContactProfile = ({
       {isEditingContact ? (
         <Card
           title={tittleCard()}
-          bordered={true}
+          bordered={false}
           style={{
             width: '100%',
             padding: '20px'
