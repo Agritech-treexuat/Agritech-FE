@@ -13,6 +13,7 @@ import ManageTemplate from './pages/ManageTemplate'
 import ManageRequest from './pages/ManageRequest'
 import ManageGarden from './pages/ManageGarden'
 import GardenProjectDetail from './pages/GardenProjectDetail'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Navigate to="/home" />} />
           <Route element={<LoginPage />} path="/login" />
+          <Route element={<ForgotPasswordPage />} path="/forgot-password" />
         </Route>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Auth path={'/login'}>{<ProjectList />}</Auth>} path="home" />

@@ -41,6 +41,19 @@ const PROJECT = {
       })
   },
 
+  getWeatherByTime: async ({ time }) => {
+    return await privateHttp({
+      method: 'GET',
+      url: `/weather?time=${time}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
   editProjectInfo: async (data, projectId) => {
     return await privateHttp({
       method: 'PATCH',

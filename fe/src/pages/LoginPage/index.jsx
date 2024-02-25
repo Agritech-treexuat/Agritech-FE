@@ -42,73 +42,56 @@ const LoginPage = () => {
     }
   }
 
+  const formWrapperStyle = {
+    width: '100%',
+    maxWidth: '400px',
+    margin: '0 auto',
+    padding: '20px',
+    border: '1px solid #ccc',
+    borderRadius: '5px',
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)'
+  }
+
   return (
-    <Form
-      name="basic"
-      labelCol={{
-        span: 8
-      }}
-      wrapperCol={{
-        span: 16
-      }}
-      style={{
-        maxWidth: 600
-      }}
-      initialValues={{
-        remember: true
-      }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
-      <Form.Item
-        label="Email"
-        name="email"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your email!'
-          }
-        ]}
+    <div style={formWrapperStyle}>
+      <Form
+        name="basic"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
       >
-        <Input />
-      </Form.Item>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Login</h2>
+        <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
+          <Input />
+        </Form.Item>
 
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your password!'
-          }
-        ]}
-      >
-        <Input.Password />
-      </Form.Item>
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: 'Please input your password!' }]}
+        >
+          <Input.Password />
+        </Form.Item>
 
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{
-          offset: 8,
-          span: 16
-        }}
-      >
-        <Checkbox>Remember me</Checkbox>
-      </Form.Item>
+        <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
+          <Checkbox>Remember me</Checkbox>
+        </Form.Item>
 
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16
-        }}
-      >
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+            Log In
+          </Button>
+          <div style={{ textAlign: 'center', marginTop: '10px' }}>
+            <a href="/forgot-password" style={{ color: '#1890ff' }}>
+              Forgot Password
+            </a>
+          </div>
+        </Form.Item>
+      </Form>
+    </div>
   )
 }
 export default LoginPage
