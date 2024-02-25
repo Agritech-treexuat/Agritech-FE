@@ -16,6 +16,7 @@ import GardenProjectDetail from './pages/GardenProjectDetail'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import OtherInfo from './pages/OtherInfo'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import Notfound from './pages/Notfound'
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
           <Route element={<Auth path={'/login'}>{<PlantDetail />}</Auth>} path="plant/:id" />
           <Route element={<Auth path={'/login'}>{<OtherInfo />}</Auth>} path="other-information" />
         </Route>
+        <Route path="*" element={<Notfound />} />
       </Routes>
     </div>
   )

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { DesktopOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
 import { Layout, Menu, theme } from 'antd'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
 const { Content, Sider } = Layout
@@ -26,9 +26,6 @@ const items = [
 ]
 
 const App = () => {
-  const location = useLocation()
-  console.log(location.pathname)
-
   useEffect(() => {
     // Lấy path từ URL và chọn key tương ứng
     const path = window.location.pathname
@@ -40,7 +37,11 @@ const App = () => {
   }, []) // Chạy một lần khi component mount
 
   const [collapsed, setCollapsed] = useState(false)
-  const [selectedKey, setSelectedKey] = useState('1')
+  const [selectedKey, setSelectedKey] = useState(
+    items.find((item) => item.link === window.location.pathname)
+      ? items.find((item) => item.link === window.location.pathname).key
+      : '1'
+  )
 
   const {
     token: { colorBgContainer }
