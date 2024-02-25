@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Upload, message, Space, Image, Tooltip, Modal } from 'antd'
+import { Button, Upload, message, Space, Image, Tooltip, Modal, List } from 'antd'
 import { EditFilled, PlusOutlined } from '@ant-design/icons'
 import token from '../../../utils/token'
 const { getAccessToken, getRefreshToken } = token
@@ -58,10 +58,11 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
 
   const handleImageChange = (info) => {
     // Code để xử lý khi có thay đổi trong danh sách ảnh
+    console.log('info', info)
     if (info.file.status === 'done') {
       message.success(`${info.file.name} file uploaded successfully`)
       // Cập nhật danh sách ảnh mới
-      setImageList(info.fileList.map((file) => file.response.metadata.thumb_url))
+      setImageList(info.fileList.map((file) => (file.response ? file.response?.metadata?.thumb_url : file.url)))
     } else if (info.file.status === 'error') {
       message.error(`${info.file.name} file upload failed.`)
     }
@@ -95,10 +96,10 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
 
   return (
     <div>
-      <div style={{ display: 'flex' }}>
-        <h2 style={{ marginRight: '1rem' }}>Hình ảnh</h2>
+      <div style={{ display: 'flex', marginLeft: '10px', marginTop: '10px' }}>
+        <h2>Hình ảnh </h2>
         <Tooltip title="Chỉnh sửa hình ảnh">
-          <EditFilled style={{ color: '#476930' }} onClick={() => setIsEditingImages(true)} />
+          <EditFilled style={{ color: '#476930', marginLeft: '5px' }} onClick={() => setIsEditingImages(true)} />
         </Tooltip>
       </div>
       {isEditingImages ? (
@@ -124,14 +125,29 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
         </div>
       ) : (
         <div>
+          {console.log('imageList', imageList)}
           {imageList && imageList.length > 0 ? (
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-              {imageList?.map((image, index) => (
-                <div key={index} style={{ margin: '8px', position: 'relative' }}>
-                  <Image src={image} alt={`image-${index}`} />
-                </div>
-              ))}
-            </div>
+            <List
+              grid={{
+                gutter: 4,
+                xs: 1,
+                sm: 2,
+                md: 2,
+                lg: 2,
+                xl: 4,
+                xxl: 4
+              }}
+              dataSource={imageList}
+              renderItem={(item, index) =>
+                item && (
+                  <List.Item key={index}>
+                    <div style={{ position: 'relative' }}>
+                      <Image src={item} alt={`image-${item}`} width={220} style={{ borderRadius: '10px' }} />
+                    </div>
+                  </List.Item>
+                )
+              }
+            />
           ) : (
             <div>
               <p>Chưa có ảnh nào</p>

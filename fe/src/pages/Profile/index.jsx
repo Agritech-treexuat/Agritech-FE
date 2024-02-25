@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import useProfile from './useProfile'
 import Loading from '../Loading'
-import { Button, Popconfirm, notification } from 'antd'
+import { Button, Col, Popconfirm, Row, notification } from 'antd'
 import FARM from '../../services/farmService'
 import PlaceComponent from '../../components/Profile/Map'
 import ImagesProfile from '../../components/Profile/Image'
@@ -134,23 +134,6 @@ const Profile = () => {
     }
   }
 
-  const handleLogout = async () => {
-    try {
-      const res = await FARM.logout()
-      if (res.status === 200) {
-        openNotificationWithIcon('success', 'Thông báo', 'Đăng xuất thành công')
-        localStorage.removeItem('token')
-        localStorage.removeItem('id')
-        navigate('/login')
-      } else {
-        openNotificationWithIcon('error', 'Thông báo', 'Đăng xuất thất bại')
-      }
-    } catch (error) {
-      openNotificationWithIcon('error', 'Thông báo', 'Đăng xuất thất bại')
-      console.log('error: ', error)
-    }
-  }
-
   return (
     <>
       {contextHolder}
@@ -164,48 +147,52 @@ const Profile = () => {
             handleSave={handleSave}
             profile={profile}
           />
-          <Popconfirm title="Bạn có chắc chắn muốn đăng xuất?" onConfirm={handleLogout} okText="Yes" cancelText="No">
-            <Button>Logout</Button>
-          </Popconfirm>
-          <OverViewProfile
-            isEditingOverView={isEditingOverView}
-            setIsEditingOverView={setIsEditingOverView}
-            description={description || profile?.description}
-            setDescription={setDescription}
-            district={district || profile?.district}
-            setDistrict={setDistrict}
-            address={address || profile?.address}
-            setAddress={setAddress}
-            handleSave={handleSave}
-            profile={profile}
-          />
-          <ContactProfile
-            isEditingContact={isEditingContact}
-            setIsEditingContact={setIsEditingContact}
-            phoneList={phoneList || profile?.phone}
-            setPhoneList={setPhoneList}
-            emailList={emailList || profile?.email}
-            setEmailList={setEmailList}
-            handleSave={handleSave}
-            profile={profile}
-          />
-          {/* <PlaceComponent
-            lat={lat || profile.lat}
-            lng={lng || profile.lng}
-            setLat={setLat}
-            setLng={setLng}
-            handleSave={handleSave}
-            isEditingLocation={isEditingLocation}
-            setIsEditingLocation={setIsEditingLocation}
-          /> */}
-          <ImagesProfile
-            isEditingImages={isEditingImages}
-            setIsEditingImages={setIsEditingImages}
-            imageList={imageList || profile?.images}
-            setImageList={setImageList}
-            handleSave={handleSave}
-            profile={profile}
-          />
+
+          <Row style={{ rowGap: '0px' }}>
+            <Col span={16}>
+              <OverViewProfile
+                isEditingOverView={isEditingOverView}
+                setIsEditingOverView={setIsEditingOverView}
+                description={description || profile?.description}
+                setDescription={setDescription}
+                district={district || profile?.district}
+                setDistrict={setDistrict}
+                address={address || profile?.address}
+                setAddress={setAddress}
+                handleSave={handleSave}
+                profile={profile}
+              />
+              <ImagesProfile
+                isEditingImages={isEditingImages}
+                setIsEditingImages={setIsEditingImages}
+                imageList={imageList || profile?.images}
+                setImageList={setImageList}
+                handleSave={handleSave}
+                profile={profile}
+              />
+            </Col>
+            <Col span={8}>
+              <ContactProfile
+                isEditingContact={isEditingContact}
+                setIsEditingContact={setIsEditingContact}
+                phoneList={phoneList || profile?.phone}
+                setPhoneList={setPhoneList}
+                emailList={emailList || profile?.email}
+                setEmailList={setEmailList}
+                handleSave={handleSave}
+                profile={profile}
+              />
+              <PlaceComponent
+                lat={lat || profile.lat}
+                lng={lng || profile.lng}
+                setLat={setLat}
+                setLng={setLng}
+                handleSave={handleSave}
+                isEditingLocation={isEditingLocation}
+                setIsEditingLocation={setIsEditingLocation}
+              />
+            </Col>
+          </Row>
         </div>
       ) : (
         <Loading />

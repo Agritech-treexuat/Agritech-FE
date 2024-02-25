@@ -1,6 +1,7 @@
 /* global google */
 import React, { useRef } from 'react'
 import { GoogleMap, LoadScript, Marker, StandaloneSearchBox } from '@react-google-maps/api'
+import { Button } from 'antd'
 
 const PlaceComponent = ({ lat, lng, setLat, setLng, handleSave, isEditingLocation, setIsEditingLocation }) => {
   const inputRef = useRef()
@@ -40,62 +41,72 @@ const PlaceComponent = ({ lat, lng, setLat, setLng, handleSave, isEditingLocatio
   }
 
   return (
-    <LoadScript googleMapsApiKey="AIzaSyDNQg8DF-2ufJKgzOQSZO0DB7OP5iptLlA" libraries={['places']}>
-      {isEditingLocation && (
-        <div style={{ display: 'flex', marginBottom: '2rem' }}>
-          <StandaloneSearchBox onLoad={(input) => (inputRef.current = input)} onPlacesChanged={handlePlaceChanged}>
-            <input
-              type="text"
-              placeholder="Nhập địa chỉ"
-              style={{
-                boxSizing: `border-box`,
-                border: `1px solid transparent`,
-                width: `100%`,
-                height: `50px`,
-                padding: `0 12px`,
-                borderRadius: `3px`,
-                boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
-                fontSize: `14px`,
-                outline: `none`,
-                textOverflow: `ellipses`,
-                position: 'absolute',
-                left: '50%',
-                marginRight: '5rem'
-              }}
-            />
-          </StandaloneSearchBox>
-          <button onClick={handleGetCurrentLocation}>Lấy vị trí hiện tại</button>
-        </div>
-      )}
-      {isEditingLocation && (
-        <div>
-          <button onClick={handleSave}>Save</button>
-          <button onClick={() => setIsEditingLocation(false)}>Cancel</button>
-        </div>
-      )}
-      {!isEditingLocation && <button onClick={() => setIsEditingLocation(true)}>Edit location</button>}
-      {console.log('lat: ', lat)}
-      {console.log('lng: ', lng)}
-      <GoogleMap
-        mapContainerStyle={{
-          height: `400px`,
-          width: `100%`
-        }}
-        zoom={10}
-        center={{
-          lat: lat,
-          lng: lng
-        }}
-        onClick={handleMapClick}
-      >
-        <Marker
-          position={{
+    <div style={{ marginTop: '50px', marginLeft: '10px' }}>
+      <LoadScript googleMapsApiKey="AIzaSyDNQg8DF-2ufJKgzOQSZO0DB7OP5iptLlA" libraries={['places']}>
+        {isEditingLocation && (
+          <div style={{ display: 'flex', marginBottom: '2rem' }}>
+            <StandaloneSearchBox onLoad={(input) => (inputRef.current = input)} onPlacesChanged={handlePlaceChanged}>
+              <input
+                type="text"
+                placeholder="Nhập địa chỉ"
+                style={{
+                  boxSizing: `border-box`,
+                  border: `1px solid transparent`,
+                  width: `100%`,
+                  height: `50px`,
+                  padding: `0 12px`,
+                  borderRadius: `3px`,
+                  boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+                  fontSize: `14px`,
+                  outline: `none`,
+                  textOverflow: `ellipses`,
+                  position: 'absolute',
+                  left: '50%',
+                  marginRight: '5rem'
+                }}
+              />
+            </StandaloneSearchBox>
+            <Button type="primary" onClick={handleGetCurrentLocation}>
+              Lấy vị trí hiện tại
+            </Button>
+          </div>
+        )}
+        {isEditingLocation && (
+          <div style={{ margin: '10px' }}>
+            <Button type="primary" onClick={handleSave} style={{ marginRight: '10px' }}>
+              Lưu
+            </Button>
+            <Button onClick={() => setIsEditingLocation(false)}>Hủy</Button>
+          </div>
+        )}
+        {!isEditingLocation && (
+          <Button type="primary" style={{ marginBottom: '10px' }} onClick={() => setIsEditingLocation(true)}>
+            Chỉnh sửa vị trí
+          </Button>
+        )}
+        {console.log('lat: ', lat)}
+        {console.log('lng: ', lng)}
+        <GoogleMap
+          mapContainerStyle={{
+            height: `400px`,
+            width: `100%`
+          }}
+          zoom={10}
+          center={{
             lat: lat,
             lng: lng
           }}
-        />
-      </GoogleMap>
-    </LoadScript>
+          onClick={handleMapClick}
+        >
+          <Marker
+            position={{
+              lat: lat,
+              lng: lng
+            }}
+          />
+        </GoogleMap>
+      </LoadScript>
+    </div>
   )
 }
 

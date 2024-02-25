@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { DesktopOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
-import { Layout, Menu, theme } from 'antd'
-import { Outlet } from 'react-router-dom'
+import { DesktopOutlined, LogoutOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
+import { Layout, Menu, Popconfirm, message, theme } from 'antd'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import FARM from '../../services/farmService'
 
 const { Content, Sider } = Layout
 
@@ -37,6 +38,8 @@ const App = () => {
   }, []) // Chạy một lần khi component mount
 
   const [collapsed, setCollapsed] = useState(false)
+  const navigate = useNavigate()
+
   const [selectedKey, setSelectedKey] = useState(
     items.find((item) => item.link === window.location.pathname)
       ? items.find((item) => item.link === window.location.pathname).key
@@ -46,6 +49,23 @@ const App = () => {
   const {
     token: { colorBgContainer }
   } = theme.useToken()
+
+  const handleLogout = async () => {
+    try {
+      const res = await FARM.logout()
+      if (res.status === 200) {
+        message.success('Đăng xuất thành công')
+        localStorage.removeItem('token')
+        localStorage.removeItem('id')
+        navigate('/login')
+      } else {
+        message.error('Đăng xuất thất bại')
+      }
+    } catch (error) {
+      message.error('Đăng xuất thất bại')
+      console.log('error: ', error)
+    }
+  }
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -64,6 +84,20 @@ const App = () => {
               <Link to={item.link} />
             </Menu.Item>
           ))}
+          <Menu.Item
+            style={{
+              position: 'absolute',
+              bottom: 50,
+              zIndex: 1,
+              transition: 'all 0.2s'
+            }}
+            key="8"
+          >
+            <Popconfirm title="Bạn có chắc chắn muốn đăng xuất?" onConfirm={handleLogout} okText="Yes" cancelText="No">
+              <LogoutOutlined />
+              <span>Đăng xuất</span>
+            </Popconfirm>
+          </Menu.Item>
         </Menu>
       </Sider>
 
