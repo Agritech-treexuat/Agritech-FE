@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
-import { Breadcrumb, Layout, Menu, theme } from 'antd'
-import { Outlet } from 'react-router-dom'
+import { DesktopOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons'
+import { Layout, Menu, theme } from 'antd'
+import { Outlet, useLocation } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
-const { Header, Content, Footer, Sider } = Layout
+const { Content, Sider } = Layout
+
 function getItem(label, key, icon, link) {
   return {
     key,
@@ -13,6 +14,7 @@ function getItem(label, key, icon, link) {
     label
   }
 }
+
 const items = [
   getItem('Quản lý dự án', '1', <DesktopOutlined />, '/home'),
   getItem('Quản lý vườn TRH', '2', <DesktopOutlined />, '/manage-planting-garden'),
@@ -22,13 +24,18 @@ const items = [
   getItem('Thông tin khác', '6', <PieChartOutlined />, '/other-information'),
   getItem('Trang cá nhân', '7', <UserOutlined />, '/profile')
 ]
+
 const App = () => {
+  const location = useLocation()
+  console.log(location.pathname)
+
   useEffect(() => {
     // Lấy path từ URL và chọn key tương ứng
     const path = window.location.pathname
     const selectedItem = items.find((item) => item.link === path)
     if (selectedItem) {
       setSelectedKey(selectedItem.key)
+      console.log(selectedItem.key)
     }
   }, []) // Chạy một lần khi component mount
 
@@ -38,15 +45,17 @@ const App = () => {
   const {
     token: { colorBgContainer }
   } = theme.useToken()
+
   return (
-    <Layout
-      style={{
-        minHeight: '100vh'
-      }}
-    >
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider
+        style={{ position: 'fixed', height: '100%', left: 0, zIndex: 1 }}
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+      >
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" selectedKeys={[selectedKey]} mode="inline">
+        <Menu theme="dark" selectedKeys={[selectedKey]} mode="inline" defaultSelectedKeys={[selectedKey]}>
           {items.map((item) => (
             <Menu.Item key={item.key} onClick={() => setSelectedKey(item.key)}>
               {item.icon}
@@ -56,10 +65,12 @@ const App = () => {
           ))}
         </Menu>
       </Sider>
-      <Layout>
+
+      <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
         <Content
           style={{
-            margin: '0 16px'
+            margin: '0 16px',
+            overflow: 'auto' // Thêm thuộc tính overflow: auto để hiển thị thanh cuộn khi nội dung dài hơn kích thước của content
           }}
         >
           <div
@@ -76,4 +87,5 @@ const App = () => {
     </Layout>
   )
 }
+
 export default App
