@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Checkbox, Form, Input } from 'antd'
 import FARM from '../../services/farmService'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import token from '../../utils/token'
 const { setAccessToken, setRefreshToken } = token
 
@@ -85,9 +85,7 @@ const LoginPage = () => {
             Log In
           </Button>
           <div style={{ textAlign: 'center', marginTop: '10px' }}>
-            <a href="/forgot-password" style={{ color: '#1890ff' }}>
-              Forgot Password
-            </a>
+            <Link to="/forgot-password">Forgot Password</Link>
           </div>
         </Form.Item>
       </Form>

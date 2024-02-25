@@ -15,6 +15,7 @@ import ManageGarden from './pages/ManageGarden'
 import GardenProjectDetail from './pages/GardenProjectDetail'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import OtherInfo from './pages/OtherInfo'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
           <Route index element={<Navigate to="/home" />} />
           <Route element={<LoginPage />} path="/login" />
           <Route element={<ForgotPasswordPage />} path="/forgot-password" />
+          <Route element={<ResetPasswordPage />} path="/reset-password/:resetToken/:email" />
         </Route>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Auth path={'/login'}>{<ProjectList />}</Auth>} path="home" />

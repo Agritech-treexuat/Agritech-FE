@@ -1,10 +1,28 @@
-import React from 'react'
-import { Form, Input, Button } from 'antd'
+import React, { useState } from 'react'
+import { Form, Input, Button, message } from 'antd'
+import { Link } from 'react-router-dom'
+import FARM from '../../services/farmService'
 
 const ForgotPasswordPage = () => {
-  const handleSubmit = (values) => {
-    // Xử lý logic khi người dùng nhập email và ấn submit
-    console.log(values)
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (values) => {
+    try {
+      setLoading(true)
+      const response = await FARM.forgotPassword({ email: values.email })
+      console.log('response:', response)
+      if (response.status === 200) {
+        message.success('Vui lòng kiểm tra email của bạn để đặt lại mật khẩu.')
+      } else {
+        console.error('Error submitting forgot password form:', response.message)
+        message.error(response.message || 'Có lỗi xảy ra. Vui lòng thử lại sau.')
+      }
+    } catch (error) {
+      console.error('Error submitting forgot password form:', error.message)
+      message.error('Có lỗi xảy ra. Vui lòng thử lại sau.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -29,9 +47,12 @@ const ForgotPasswordPage = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+          <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={loading}>
             Submit
           </Button>
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Link to="/login">Quay về đăng nhập</Link>
         </Form.Item>
       </Form>
     </div>

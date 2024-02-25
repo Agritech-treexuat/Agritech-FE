@@ -38,6 +38,32 @@ const FARM = {
     })
 
     return result
+  },
+
+  forgotPassword: async ({ email }) => {
+    let result = await publicHttp({
+      method: 'POST',
+      url: '/forgotPassword',
+      data: {
+        email
+      }
+    })
+
+    return result
+  },
+
+  resetPassword: async ({ resetToken, email, newPassword }) => {
+    let result = await publicHttp({
+      method: 'POST',
+      url: '/resetPassword',
+      data: {
+        resetToken,
+        email,
+        newPassword
+      }
+    })
+
+    return result
   }
 }
 
