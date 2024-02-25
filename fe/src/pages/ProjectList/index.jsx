@@ -112,6 +112,19 @@ const ProjectList = () => {
     setValue(e.target.value)
   }
 
+  const renderStatus = (status) => {
+    switch (status) {
+      case 'inProgress':
+        return 'Đang thực hiện'
+      case 'finished':
+        return 'Đã kết thúc'
+      case 'cancel':
+        return 'Đã hủy'
+      default:
+        return 'Chưa có thông tin'
+    }
+  }
+
   return (
     <div>
       {contextHolder}
@@ -238,7 +251,9 @@ const ProjectList = () => {
                               </Paragraph>
                             </span>
                           </p>
-                          <p style={{ marginBottom: 0, fontWeight: 'bold', color: '#1890ff' }}>{item.status}</p>
+                          <p style={{ marginBottom: 0, fontWeight: 'bold', color: '#1890ff' }}>
+                            {renderStatus(item.status)}
+                          </p>
                         </List.Item>
                       </Link>
                     </div>

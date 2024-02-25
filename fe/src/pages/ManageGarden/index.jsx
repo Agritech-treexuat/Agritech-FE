@@ -122,8 +122,7 @@ const ManageGarden = () => {
                               .map((plant) => plant.plant_name)
                               .join(', ')}). Email: ${item.client.email ? item.client.email : 'Không có thông tin'}`}
                         </p>
-                        <p>
-                          Trạng thái:{' '}
+                        <p style={{ marginBottom: 0, fontWeight: 'bold', color: '#1890ff' }}>
                           {item.status === 'started'
                             ? 'Đang thực hiện'
                             : item.status === 'end'

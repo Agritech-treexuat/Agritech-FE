@@ -14,6 +14,7 @@ import ManageRequest from './pages/ManageRequest'
 import ManageGarden from './pages/ManageGarden'
 import GardenProjectDetail from './pages/GardenProjectDetail'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import OtherInfo from './pages/OtherInfo'
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
           <Route element={<Auth path={'/login'}>{<GardenProjectDetail />}</Auth>} path="manage-planting-garden/:id" />
           <Route element={<Auth path={'/login'}>{<ProjectDetail />}</Auth>} path="project/:id" />
           <Route element={<Auth path={'/login'}>{<PlantDetail />}</Auth>} path="plant/:id" />
+          <Route element={<Auth path={'/login'}>{<OtherInfo />}</Auth>} path="other-information" />
         </Route>
       </Routes>
     </div>

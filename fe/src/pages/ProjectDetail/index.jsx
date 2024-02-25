@@ -5,7 +5,6 @@ import ProjectFarming from '../../components/ProjectDetail/ProjectPlantFarming'
 import ProcessActivityPage from '../../components/ProjectDetail/ProjectProcessActivity'
 import { useParams } from 'react-router-dom'
 import useProjectPlantFarming from '../../components/ProjectDetail/ProjectPlantFarming/useProjectPlantFarming'
-import ProjectOtherInfo from '../../components/ProjectDetail/ProjectOtherInfo'
 
 const ProjectDetail = () => {
   const projectId = useParams().id
@@ -29,17 +28,12 @@ const ProjectDetail = () => {
     },
     {
       key: '4',
-      label: 'Thông tin khác',
-      children: <ProjectOtherInfo />
-    },
-    {
-      key: '5',
       label: 'Dự kiến',
       children: <ProjectExpect />,
       disabled: plantFarming ? false : true
     },
     {
-      key: '6',
+      key: '5',
       label: 'Đầu ra',
       children: <ProjectOutput />,
       disabled: plantFarming ? false : true

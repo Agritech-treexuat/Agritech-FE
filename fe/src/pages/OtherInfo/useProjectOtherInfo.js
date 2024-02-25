@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import PROJECT from '../../../services/projectService'
+import PROJECT from '../../services/projectService'
 
 export default function useProjectOtherInfo({ selectedTime }) {
   const parseData = useCallback((data) => {
