@@ -21,6 +21,15 @@ const FARM = {
     return result
   },
 
+  logout: async () => {
+    let result = await privateHttp({
+      method: 'POST',
+      url: '/logout'
+    })
+
+    return result
+  },
+
   getProfile: async ({ farmId }) => {
     let result = await publicHttp({
       method: 'GET',

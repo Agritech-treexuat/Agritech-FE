@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 import useProfile from './useProfile'
 import Loading from '../Loading'
-import { notification } from 'antd'
+import { Button, Popconfirm, notification } from 'antd'
 import FARM from '../../services/farmService'
 import PlaceComponent from '../../components/Profile/Map'
 import ImagesProfile from '../../components/Profile/Image'
 import ContactProfile from '../../components/Profile/Contact'
 import OverViewProfile from '../../components/Profile/Overview'
 import NameProfile from '../../components/Profile/Name'
+import { useNavigate } from 'react-router-dom'
 
 const Profile = () => {
   const { profile, isSuccess, refetch } = useProfile()
+  const navigate = useNavigate()
 
   const [isEditingOverView, setIsEditingOverView] = useState(false)
   const [description, setDescription] = useState(profile?.description)
@@ -132,6 +134,23 @@ const Profile = () => {
     }
   }
 
+  const handleLogout = async () => {
+    try {
+      const res = await FARM.logout()
+      if (res.status === 200) {
+        openNotificationWithIcon('success', 'Thông báo', 'Đăng xuất thành công')
+        localStorage.removeItem('token')
+        localStorage.removeItem('id')
+        navigate('/login')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Đăng xuất thất bại')
+      }
+    } catch (error) {
+      openNotificationWithIcon('error', 'Thông báo', 'Đăng xuất thất bại')
+      console.log('error: ', error)
+    }
+  }
+
   return (
     <>
       {contextHolder}
@@ -145,6 +164,9 @@ const Profile = () => {
             handleSave={handleSave}
             profile={profile}
           />
+          <Popconfirm title="Bạn có chắc chắn muốn đăng xuất?" onConfirm={handleLogout} okText="Yes" cancelText="No">
+            <Button>Logout</Button>
+          </Popconfirm>
           <OverViewProfile
             isEditingOverView={isEditingOverView}
             setIsEditingOverView={setIsEditingOverView}
