@@ -29,7 +29,7 @@ const EditPlantFarmingHistory = ({ historyPlantFarmingEdit }) => {
       >
         {historyPlantFarmingEdit.map((plantFarming) => (
           <div style={{ width: '1000' }}>
-            <Divider>Created lúc: {formatDateTime(plantFarming.createdAtTime)}</Divider>
+            <Divider>Nhập lúc: {formatDateTime(plantFarming.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(plantFarming.modifiedAt)}</Divider>
             <div>
               {/* time cultivates: [{ start, end }] */}

@@ -22,7 +22,7 @@ const EditHistory = ({ process }) => {
           <>
             <Divider>Chỉnh sửa lúc: {formatDateTime(process.modifiedAt)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
-              <p>Tx: {process.tx}</p>
+              <p>Transaction hash: {process.tx}</p>
               <p>Thời gian: {formatDate(process.time)}</p>
               <p>Loại canh tác: {process.type}</p>
               {process.type === 'phân bón' || process.type === 'BVTV' ? (

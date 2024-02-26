@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip, Spin } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip, Spin, Divider } from 'antd'
 import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
@@ -9,36 +9,44 @@ const metamaskConfig = metamaskWallet()
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   // write a modal history (do not use table), updateTime is modifiedAt and make it highlight. The other information is time, tx, cultivationActivity.name, cultivationActivity.description
   return (
-    <Modal title="Lịch sử chỉnh sửa" open={historyModalVisible} onCancel={handleHistoryModalCancel} footer={null}>
+    <Modal
+      title="Lịch sử chỉnh sửa"
+      open={historyModalVisible}
+      onCancel={handleHistoryModalCancel}
+      footer={null}
+      width={600}
+    >
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
-            <p>
-              <span style={{ fontWeight: 'bold' }}>Created time: </span>
-              {formatDateTime(item.createdAtTime)}
-            </p>
-            <p>
-              <span style={{ fontWeight: 'bold' }}>Updated time: </span>
-              {formatDateTime(item.modifiedAt)}
-            </p>
-            <p>
-              <span>Time: </span>
-              {formatDateTime(item.time)}
-            </p>
+            <Divider>Nhập lúc: {formatDateTime(item.createdAtTime)}</Divider>
+            <Divider>Chỉnh sửa lúc: {formatDateTime(item.modifiedAt)}</Divider>
             {!isGarden && (
               <p>
                 <span>
-                  Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                  <strong>Transaction hash:</strong>{' '}
+                  <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
                 </span>
               </p>
             )}
             <p>
-              <span>Name: </span>
+              <span>
+                <strong>Thời gian: </strong>
+              </span>
+              {formatDateTime(item.time)}
+            </p>
+            <p>
+              <span>
+                <strong>Tên hoạt động: </strong>
+              </span>
               {item.cultivationActivity.name}
             </p>
             <p>
-              <span>Description: </span>
-              {item.cultivationActivity.description}
+              <span>
+                <strong>Mô tả: </strong>
+              </span>
+              {/* {item.cultivationActivity.description} */}
+              <ParagraphWithEllipsis text={item.cultivationActivity.description} rows={3} />
             </p>
           </div>
         ))}

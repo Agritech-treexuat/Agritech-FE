@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, Divider, Tooltip, Typography } from 'antd'
-import { formatDate, formatDateTime } from '../../../utils/helpers'
+import { formatDate, formatDateTime, formatTransactionHashTable } from '../../../utils/helpers'
 const { Paragraph } = Typography
 
 const EditInputHistory = ({ historyInfo }) => {
@@ -53,10 +53,12 @@ const EditInputHistory = ({ historyInfo }) => {
       >
         {historyInfo.map((input) => (
           <div style={{ width: 'fit-content' }}>
-            <Divider>Created lúc: {formatDateTime(input.createdAtTime)}</Divider>
+            <Divider>Nhập lúc: {formatDateTime(input.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(input.modifiedAt)}</Divider>
             <div>
-              <label>Transaction hash: </label>
+              <label>
+                <strong>Transaction hash: </strong>
+              </label>
               <span>
                 <a href={`https://escan.live/tx/${input.txHash}`} target="_blank" rel="noreferrer">
                   {input.txHash}
@@ -64,19 +66,27 @@ const EditInputHistory = ({ historyInfo }) => {
               </span>
             </div>
             <div>
-              <label>Ngày bắt đầu: </label>
+              <label>
+                <strong>Ngày bắt đầu: </strong>{' '}
+              </label>
               <span>{formatDate(input.startDate)}</span>
             </div>
             <div>
-              <label>Hạt giống: </label>
+              <label>
+                <strong>Hạt giống: </strong>
+              </label>
               <span>{input.seed.seed_name}</span>
             </div>
             <div>
-              <label>Square: </label>
-              <span>{input.square}</span>
+              <label>
+                <strong>Diện tích: </strong>
+              </label>
+              <span>{input.square || 'Chưa cập nhật'}</span>
             </div>
-            <div>
-              <label>Description: </label>
+            <div style={{ display: 'flex' }}>
+              <label style={{ marginRight: '5px' }}>
+                <strong>Mô tả: </strong>
+              </label>
               <span>
                 {
                   <Paragraph

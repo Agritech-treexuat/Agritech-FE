@@ -15,7 +15,8 @@ import {
   Upload,
   Select,
   Tooltip,
-  Spin
+  Spin,
+  List
 } from 'antd'
 import { formatDate, formatTransactionHashTable } from '../../../utils/helpers'
 import EditOutputHistory from './EditOutputHistory'
@@ -544,13 +545,34 @@ const ProjectOutput = () => {
               isUpdate={true}
               alllDistributer={alllDistributer}
             />
-            <Modal title="Ảnh" open={isModalOpen} footer={null} onCancel={handleCancel}>
-              {selectedOutputImages?.images ? (
+            <Modal title="Ảnh" open={isModalOpen} footer={null} onCancel={handleCancel} width={600}>
+              {/* {selectedOutputImages?.images ? (
                 selectedOutputImages?.images?.map((image) => (
                   <span>
                     <Image class={'process-img'} src={image} />
                   </span>
                 ))
+              ) : (
+                <span>Không có ảnh</span>
+              )} */}
+              {selectedOutputImages?.images ? (
+                <List
+                  grid={{
+                    gutter: 4,
+                    xs: 1,
+                    sm: 2,
+                    md: 2,
+                    lg: 2,
+                    xl: 2,
+                    xxl: 2
+                  }}
+                  dataSource={selectedOutputImages.images}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <Image className={'process-img'} src={item} width={250} style={{ borderRadius: '5px' }} />
+                    </List.Item>
+                  )}
+                />
               ) : (
                 <span>Không có ảnh</span>
               )}
@@ -568,7 +590,7 @@ const ProjectOutput = () => {
                 width="150px"
               />
               <Column
-                title="Tx"
+                title="Transaction hash"
                 dataIndex="tx"
                 key="tx"
                 width="150px"
@@ -599,7 +621,7 @@ const ProjectOutput = () => {
                 )}
               />
               <Column
-                title="Npp"
+                title="Nhà phân phối"
                 key="npp"
                 render={(_, output) => (
                   <>

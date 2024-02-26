@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip, Spin } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip, Spin, Divider } from 'antd'
 import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import {
   DeleteFilled,
@@ -16,46 +16,61 @@ const { Option } = Select
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   return (
-    <Modal title="Lịch sử chỉnh sửa" open={historyModalVisible} onCancel={handleHistoryModalCancel} footer={null}>
+    <Modal
+      title="Lịch sử chỉnh sửa"
+      open={historyModalVisible}
+      onCancel={handleHistoryModalCancel}
+      footer={null}
+      width={600}
+    >
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
-            <p>
-              <span style={{ fontWeight: 'bold' }}>Created time: </span>
-              {formatDateTime(item.createdAtTime)}
-            </p>
-            <p>
-              <span style={{ fontWeight: 'bold' }}>Updated time: </span>
-              {formatDateTime(item.modifiedAt)}
-            </p>
-            <p>
-              <span>Time: </span>
-              {formatDateTime(item.time)}
-            </p>
+            <Divider>Nhập lúc: {formatDateTime(item.createdAtTime)}</Divider>
+            <Divider>Chỉnh sửa lúc: {formatDateTime(item.modifiedAt)}</Divider>
             {!isGarden && (
               <p>
                 <span>
-                  Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                  <strong>Transaction hash: </strong>
+                  <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
                 </span>
               </p>
             )}
             <p>
-              <span>name: </span>
+              <span>
+                <strong>Thời gian: </strong>
+              </span>
+              {formatDateTime(item.time)}
+            </p>
+
+            <p>
+              <span>
+                <strong>Tên: </strong>
+              </span>
               {item.pestAndDiseaseControlActivity.name}
             </p>
             <p>
-              <span>Type: </span>
+              <span>
+                <strong>Tác nhân: </strong>
+              </span>
               {item.pestAndDiseaseControlActivity.type === 'pest' ? 'Sâu bệnh' : 'Dịch hại'}
             </p>
             <p>
-              <span>Symtoms: </span>
-              {item.pestAndDiseaseControlActivity.symptoms}
+              <span>
+                <strong>Triệu chứng: </strong>
+              </span>
+              {/* {item.pestAndDiseaseControlActivity.symptoms} */}
+              <ParagraphWithEllipsis text={item.pestAndDiseaseControlActivity.symptoms} rows={5} />
             </p>
             <p>
-              <span>Solution: </span>
+              <span>
+                <strong>Giải pháp: </strong>
+              </span>
               {item.pestAndDiseaseControlActivity.solution.map((sol, index) => (
                 <ul>
-                  <li key={index}>{sol}</li>
+                  <li key={index}>
+                    <ParagraphWithEllipsis text={sol} rows={5} />
+                  </li>
                 </ul>
               ))}
             </p>

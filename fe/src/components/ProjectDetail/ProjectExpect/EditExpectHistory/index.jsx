@@ -28,18 +28,24 @@ const EditExpectHistory = ({ expect }) => {
       >
         {expect.historyExpect.map((expect) => (
           <>
-            <Divider>Created lúc: {formatDateTime(expect.createdAtTime)}</Divider>
+            <Divider>Nhập lúc: {formatDateTime(expect.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(expect.modifiedAt)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>
-                Tx:{' '}
+                <strong>Transaction hash:</strong>{' '}
                 <a href={`https://escan.live/tx/${expect.tx}`} target="_blank" rel="noreferrer">
                   {expect.tx}
                 </a>
               </p>
-              <p>Thời gian: {formatDate(expect.time)}</p>
-              <p>Lượng: {expect.amount}</p>
-              <p>Ghi chú: {expect.note}</p>
+              <p>
+                <strong>Thời gian: </strong> {formatDate(expect.time)}
+              </p>
+              <p>
+                <strong>Lượng:</strong> {expect.amount}
+              </p>
+              <p>
+                <strong>Ghi chú:</strong> {expect.note}
+              </p>
             </div>
           </>
         ))}

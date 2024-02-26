@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip, Spin } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Popconfirm, Tooltip, Spin, Divider } from 'antd'
 import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
@@ -8,36 +8,43 @@ const metamaskConfig = metamaskWallet()
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   return (
-    <Modal title="Lịch sử chỉnh sửa" open={historyModalVisible} onCancel={handleHistoryModalCancel} footer={null}>
+    <Modal
+      title="Lịch sử chỉnh sửa"
+      open={historyModalVisible}
+      onCancel={handleHistoryModalCancel}
+      footer={null}
+      width={600}
+    >
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
-            <p>
-              <span style={{ fontWeight: 'bold' }}>Created time: </span>
-              {formatDateTime(item.createdAtTime)}
-            </p>
-            <p>
-              <span style={{ fontWeight: 'bold' }}>Updated time: </span>
-              {formatDateTime(item.modifiedAt)}
-            </p>
-            <p>
-              <span>Time: </span>
-              {formatDateTime(item.time)}
-            </p>
+            <Divider>Nhập lúc: {formatDateTime(item.createdAtTime)}</Divider>
+            <Divider>Chỉnh sửa lúc: {formatDateTime(item.modifiedAt)}</Divider>
             {!isGarden && (
               <p>
                 <span>
-                  Transaction hash:{' '}
+                  <strong>Transaction hash: </strong>{' '}
                   <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
                 </span>
               </p>
             )}
             <p>
-              <span>Name: </span>
+              <span>
+                <strong>Thời gian: </strong>
+              </span>
+              {formatDateTime(item.time)}
+            </p>
+
+            <p>
+              <span>
+                <strong>Tên: </strong>
+              </span>
               {item.plantingActivity.density}
             </p>
             <p>
-              <span>Description: </span>
+              <span>
+                <strong>Mô tả: </strong>
+              </span>
               <ParagraphWithEllipsis text={item.plantingActivity.description} rows={3} />
             </p>
           </div>

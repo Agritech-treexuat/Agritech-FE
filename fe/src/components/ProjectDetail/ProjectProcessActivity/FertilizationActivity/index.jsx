@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip, Spin } from 'antd'
+import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip, Spin, Divider } from 'antd'
 import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
@@ -9,40 +9,51 @@ const { Option } = Select
 
 const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   return (
-    <Modal title="Lịch sử chỉnh sửa" open={historyModalVisible} onCancel={handleHistoryModalCancel} footer={null}>
+    <Modal
+      title="Lịch sử chỉnh sửa"
+      open={historyModalVisible}
+      onCancel={handleHistoryModalCancel}
+      footer={null}
+      width={600}
+    >
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
-            <p>
-              <span style={{ fontWeight: 'bold' }}>Created time: </span>
-              {formatDateTime(item.createdAtTime)}
-            </p>
-            <p>
-              <span style={{ fontWeight: 'bold' }}>Updated time: </span>
-              {formatDateTime(item.modifiedAt)}
-            </p>
-            <p>
-              <span>Time: </span>
-              {formatDateTime(item.time)}
-            </p>
+            <Divider>Nhập lúc: {formatDateTime(item.createdAtTime)}</Divider>
+            <Divider>Chỉnh sửa lúc: {formatDateTime(item.modifiedAt)}</Divider>
             {!isGarden && (
               <p>
                 <span>
-                  Tx: <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                  <strong>Transaction hash:</strong>{' '}
+                  <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
                 </span>
               </p>
             )}
             <p>
-              <span>fertilizationTime: </span>
+              <span>
+                <strong>Thời gian: </strong>
+              </span>
+              {formatDateTime(item.time)}
+            </p>
+
+            <p>
+              <span>
+                <strong>Thời điểm bón phân: </strong>
+              </span>
               {item.fertilizationActivity.fertilizationTime}
             </p>
             <p>
-              <span>Type: </span>
+              <span>
+                <strong>Kiểu bón: </strong>
+              </span>
               {item.fertilizationActivity.type}
             </p>
             <p>
-              <span>Description: </span>
-              {item.fertilizationActivity.description}
+              <span>
+                <strong>Mô tả: </strong>
+              </span>
+              {/* {item.fertilizationActivity.description} */}
+              <ParagraphWithEllipsis text={item.fertilizationActivity.description} rows={3} />
             </p>
           </div>
         ))}
