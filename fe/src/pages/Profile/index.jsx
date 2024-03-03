@@ -233,7 +233,7 @@ const Profile = () => {
                 handleSave={handleSave}
                 profile={profile}
               />
-               <PlaceComponent
+              {/* <PlaceComponent
                 lat={lat || profile.lat}
                 lng={lng || profile.lng}
                 setLat={setLat}
@@ -241,9 +241,8 @@ const Profile = () => {
                 handleSave={handleSave}
                 isEditingLocation={isEditingLocation}
                 setIsEditingLocation={setIsEditingLocation}
-              /> 
+              />  */}
             </Col>
-          
           </Row>
         </div>
       ) : (
