@@ -6,19 +6,25 @@ const StateContext = createContext()
 
 export const StateContextProvider = ({ children }) => {
   // Replace with my own smart contract address
-  const { contract } = useContract('0xCF81F1DD2A727C571868B48Ab739dd7EA3003f18')
+  const { contract } = useContract('0xdE64B32dD3E9f678c945177fc957D8c7ec3fA57B')
   const { mutateAsync: addProject } = useContractWrite(contract, 'createProject')
   const { mutateAsync: insertProcess } = useContractWrite(contract, 'insertProcess') // Thêm hàm insertProcess
   const { mutateAsync: insertExpect } = useContractWrite(contract, 'insertExpect')
   const { mutateAsync: insertOutput } = useContractWrite(contract, 'insertOutput')
+  const { mutateAsync: insertImage } = useContractWrite(contract, 'insertImage')
+  const { mutateAsync: insertWeather } = useContractWrite(contract, 'insertWeather')
+  const { mutateAsync: updateInput } = useContractWrite(contract, 'updateInput')
+  const { mutateAsync: updateProcess } = useContractWrite(contract, 'updateProcess')
+  const { mutateAsync: updateExpect } = useContractWrite(contract, 'updateExpect')
+  const { mutateAsync: updateOutput } = useContractWrite(contract, 'updateOutput')
 
   const address = useAddress()
   const connect = useConnect()
 
-  const publishProject = async ({ title, input }) => {
+  const publishProject = async ({ farm, input }) => {
     try {
       const data = await addProject({
-        args: [address, title, input]
+        args: [address, farm, input]
       })
 
       console.log('contract call success', data)
@@ -67,6 +73,84 @@ export const StateContextProvider = ({ children }) => {
     }
   }
 
+  const _insertImage = async ({ pId, image }) => {
+    try {
+      const data = await insertImage({
+        args: [pId, image]
+      })
+
+      console.log('contract call success', data)
+      return data.receipt
+    } catch (error) {
+      console.log('contract call failure', error)
+    }
+  }
+
+  const _insertWeather = async ({ pId, weather }) => {
+    try {
+      const data = await insertWeather({
+        args: [pId, weather]
+      })
+
+      console.log('contract call success', data)
+      return data.receipt
+    } catch (error) {
+      console.log('contract call failure', error)
+    }
+  }
+
+  const _updateInput = async ({ pId, input }) => {
+    try {
+      const data = await updateInput({
+        args: [pId, input]
+      })
+
+      console.log('contract call success', data)
+      return data.receipt
+    } catch (error) {
+      console.log('contract call failure', error)
+    }
+  }
+
+  const _updateProcess = async ({ pId, process }) => {
+    try {
+      const data = await updateProcess({
+        args: [pId, process]
+      })
+
+      console.log('contract call success', data)
+      return data.receipt
+    } catch (error) {
+      console.log('contract call failure', error)
+    }
+  }
+
+  const _updateExpect = async ({ pId, expect }) => {
+    try {
+      const data = await updateExpect({
+        args: [pId, expect]
+      })
+
+      console.log('contract call success', data)
+      return data.receipt
+    } catch (error) {
+      console.log('contract call failure', error)
+    }
+  }
+
+  const _updateOutput = async ({ pId, output }) => {
+    try {
+      const data = await updateOutput({
+        args: [pId, output]
+      })
+
+      console.log('contract call success', data)
+      return data.receipt
+    } catch (error) {
+      console.log('contract call failure', error)
+    }
+  }
+
   return (
     <StateContext.Provider
       value={{
@@ -76,7 +160,13 @@ export const StateContextProvider = ({ children }) => {
         createProject: publishProject,
         insertProcess: _insertProcess,
         insertExpect: _insertExpect,
-        insertOutput: _insertOutput
+        insertOutput: _insertOutput,
+        insertImage: _insertImage,
+        insertWeather: _insertWeather,
+        updateInput: _updateInput,
+        updateProcess: _updateProcess,
+        updateExpect: _updateExpect,
+        updateOutput: _updateOutput
       }}
     >
       {children}

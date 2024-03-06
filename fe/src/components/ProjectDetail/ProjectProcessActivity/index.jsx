@@ -1,5 +1,5 @@
-import React from 'react'
-import { Row, Col, Card, notification } from 'antd'
+import React, { useState } from 'react'
+import { Row, Col, Card, notification, Spin } from 'antd'
 import useProjectProcess from './useProjectProcess'
 import Loading from '../../../pages/Loading'
 import CultivationTable from './CultivationActivity'
@@ -13,6 +13,7 @@ import { useStateContext } from '../../../context'
 
 const ProcessActivityPage = ({ projectId }) => {
   const { insertProcess, connect, address } = useStateContext()
+  const [loading, setLoading] = useState(false)
   const {
     cultivation,
     planting,
@@ -41,29 +42,78 @@ const ProcessActivityPage = ({ projectId }) => {
     })
   }
 
+  const renderProcessDataToWriteAdd = ({ values }) => {
+    switch (values?.type) {
+      case 'cultivation':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, name: ${values?.cultivationActivity?.name}, description: ${values?.cultivationActivity?.description}`
+      case 'planting':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, density: ${values?.plantingActivity?.density}, description: ${values?.plantingActivity?.description}`
+      case 'fertilize':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, fertilizationTime: ${values?.fertilizationActivity?.fertilizationTime}, type: ${values?.fertilizationActivity?.type}, description: ${values?.fertilizationActivity?.description}`
+      case 'pesticide':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, name: ${
+          values?.pestAndDiseaseControlActivity?.name
+        }, type: ${values?.pestAndDiseaseControlActivity?.type}, symptoms: ${
+          values?.pestAndDiseaseControlActivity?.symptoms
+        }, solutions: ${values?.solution && values?.solution?.length > 0 ? values?.solution.join(', ') : 'not have'}`
+      case 'other':
+        return `Add process: projectId: ${projectId}, time: ${values?.time}, type: ${values?.type}, description: ${values?.other?.description}`
+      default:
+        return 'none'
+    }
+  }
+
+  const renderProcessDataToWriteUpdate = ({ values, processId }) => {
+    switch (values?.type) {
+      case 'cultivation':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${values?.type}, name: ${values?.cultivationActivity?.name}, description: ${values?.cultivationActivity?.description}`
+      case 'planting':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${values?.type}, density: ${values?.plantingActivity?.density}, description: ${values?.plantingActivity?.description}`
+      case 'fertilize':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${values?.type}, fertilizationTime: ${values?.fertilizationActivity?.fertilizationTime}, type: ${values?.fertilizationActivity?.type}, description: ${values?.fertilizationActivity?.description}`
+      case 'pesticide':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${
+          values?.type
+        }, name: ${values?.pestAndDiseaseControlActivity?.name}, type: ${
+          values?.pestAndDiseaseControlActivity?.type
+        }, symptoms: ${values?.pestAndDiseaseControlActivity?.symptoms}, solutions: ${
+          values?.solution && values?.solution?.length > 0 ? values?.solution.join(', ') : 'not have'
+        }`
+      case 'other':
+        return `Update process: projectId: ${projectId}, processId: ${processId}, time: ${values?.time}, type: ${values?.type}, description: ${values?.other?.description}`
+      default:
+        return 'none'
+    }
+  }
+
   const handleAddProcess = async (values) => {
+    //     {
+    //   "time": "2024-02-22T02:46:53.882Z",
+    //   "type": "cultivation",
+    //   "cultivationActivity": {
+    //     "name": "Vệ sinh vườn",
+    //     "description": "Vệ sinh vườn, dọn sạch các tàn dư thực vật của vụ trước, rải vôi cày xới kỹ sâu khoảng 20-25cm. "
+    //   }
+    // }
     console.log('Received values of form: ', values)
-    let txHash = 'none'
+    let tx = 'none'
     console.log('projectInfo?.projectIndex:', projectInfo?.projectIndex)
+    setLoading(true)
 
     try {
       if (!projectInfo?.isGarden) {
         // write to blockchain
         const receip = await insertProcess({
           pId: projectInfo?.projectIndex,
-          process: 'inserted process test'
+          process: renderProcessDataToWriteAdd({ values })
         })
-        txHash = receip.transactionHash
-        console.log('txhash: ', txHash)
-        console.log('data send: ', {
-          ...values,
-          tx: txHash
-        })
+        tx = receip?.transactionHash
       }
+      setLoading(false)
       const res = await PROJECT.addProcess({
         data: {
           ...values,
-          tx: txHash
+          tx: tx
         },
         projectId
       })
@@ -74,19 +124,53 @@ const ProcessActivityPage = ({ projectId }) => {
         openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
       }
     } catch (error) {
+      setLoading(false)
       console.log('error: ', error)
       openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
     }
   }
 
   const handleUpdateProcess = async (values) => {
+    // {
+    //   "processId": "65d6b5a0f0e5b78ef7694aa2",
+    //   "time": "2024-02-22T02:46:53.882Z",
+    //   "type": "cultivation",
+    //   "cultivationActivity": {
+    //     "name": "Vệ sinh vườn",
+    //     "description": "Vệ sinh vườn, dọn sạch các tàn dư thực vật của vụ trước, rải vôi cày xới kỹ sâu khoảng 20-25cm. Update ở đây."
+    //   }
+    // }
+    let tx = 'none'
     console.log('Received values of form: ', values)
-    const { processId, ...updateProcess } = values
-    const res = await PROJECT.updateProcess({ data: updateProcess, projectId, processId })
-    if (res.status === 200) {
-      refetch()
-      openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
-    } else {
+    setLoading(true)
+    try {
+      if (!projectInfo?.isGarden) {
+        // write to blockchain
+        const receip = await insertProcess({
+          pId: projectInfo?.projectIndex,
+          process: renderProcessDataToWriteUpdate({ values, processId: values?.processId })
+        })
+        tx = receip?.transactionHash
+      }
+      const { processId, ...updateProcess } = values
+      const res = await PROJECT.updateProcess({
+        data: {
+          ...updateProcess,
+          tx: tx
+        },
+        projectId,
+        processId
+      })
+      setLoading(false)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+      }
+    } catch (error) {
+      setLoading(false)
+      console.log('error: ', error)
       openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
     }
   }
@@ -120,6 +204,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>
@@ -137,6 +222,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>
@@ -154,6 +240,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>
@@ -171,6 +258,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>
@@ -187,6 +275,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 address={address}
                 connect={connect}
                 isGarden={projectInfo.isGarden}
+                loading={loading}
               />
             </Card>
           </Col>

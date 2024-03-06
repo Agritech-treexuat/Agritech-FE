@@ -54,19 +54,32 @@ const PLANT = {
       })
   },
 
-  // addPlant: async (data) => {
-  //   return await privateHttp({
-  //     method: 'POST',
-  //     url: `/plant`,
-  //     data
-  //   })
-  //     .then((res) => {
-  //       return res
-  //     })
-  //     .catch((err) => {
-  //       return err
-  //     })
-  // },
+  deletePlant: async (plantId) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/plant/${plantId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  addPlant: async (data) => {
+    return await privateHttp({
+      method: 'POST',
+      url: `/plant`,
+      data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
 
   addPlantByRecommendPlantId: async (recommentPlantId) => {
     return await privateHttp({
@@ -85,6 +98,20 @@ const PLANT = {
     return await publicHttp({
       method: 'GET',
       url: `/plants-and-seeds`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  updatePlant: async ({ plantId, data }) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `/plant/${plantId}`,
+      data
     })
       .then((res) => {
         return res

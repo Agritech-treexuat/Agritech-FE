@@ -11,7 +11,14 @@ const LargeDescriptionModal = ({ visible, onCancel, onSubmit, description, setDe
         <Button key="cancel" onClick={onCancel}>
           Hủy
         </Button>,
-        <Button key="submit" type="primary" onClick={onSubmit}>
+        <Button
+          key="submit"
+          type="primary"
+          onClick={() => {
+            onSubmit()
+            onCancel()
+          }}
+        >
           Xác nhận
         </Button>
       ]}

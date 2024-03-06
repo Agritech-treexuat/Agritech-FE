@@ -35,7 +35,7 @@ privateHttp.interceptors.response.use(
   },
   (error) => {
     console.log('error: ', error)
-    if (error.response.status === 401 && error.response.statusText === 'Unauthorized') {
+    if (error.response?.status === 401 && error.response?.statusText === 'Unauthorized') {
       token.removeAccessToken()
       alert('Need to login')
       window.location.href = '/login'

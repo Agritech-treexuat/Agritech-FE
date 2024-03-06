@@ -3,7 +3,7 @@ import useProjectPlantFarming from './useProjectPlantFarming'
 import Loading from '../../../pages/Loading'
 import AddPlantFarmingPopup from '../../ManagePlant/AddPlantFarmingPopup'
 import PLANT_FARMING from '../../../services/plantFarmingService'
-import { Button, Divider } from 'antd'
+import { Button, Divider, Table } from 'antd'
 import SelectOptionConfirmationModal from './SelectOptionConfirmationModal'
 import useProjectInput from '../ProjectInput/useProjectInput'
 import PROJECT from '../../../services/projectService'
@@ -57,6 +57,113 @@ const ProjectFarming = ({ projectId }) => {
       console.error(error)
     }
   }
+
+  const timeCultivatesColumns = [
+    {
+      title: 'Tháng bắt đầu',
+      dataIndex: 'start',
+      key: 'start'
+    },
+    {
+      title: 'Tháng kết thúc',
+      dataIndex: 'end',
+      key: 'end'
+    }
+  ]
+
+  const timeCultivatesDataSource = (item) =>
+    item.timeCultivates.map((timeCultivate, index) => ({
+      ...timeCultivate,
+      key: index
+    }))
+
+  const cultivationActivitiesColumns = [
+    {
+      title: 'Tên hoạt động',
+      dataIndex: 'name',
+      key: 'name'
+    },
+    {
+      title: 'Mô tả',
+      dataIndex: 'description',
+      key: 'description'
+    }
+  ]
+
+  const cultivationActivitiesDataSource = (cultivationActivities) =>
+    cultivationActivities.map((cultivationActivity, index) => ({
+      ...cultivationActivity,
+      key: index
+    }))
+
+  const fertilizationActivitiesColumns = [
+    {
+      title: 'Thời gian',
+      dataIndex: 'fertilizationTime',
+      key: 'fertilizationTime',
+      width: '35%'
+    },
+    {
+      title: 'Loại',
+      dataIndex: 'type',
+      key: 'type',
+      width: '8%',
+      render: (type) => (type === 'baseFertilizer' ? 'Bón lót' : type === 'topFertilizer' ? 'Bón thúc' : type)
+    },
+    {
+      title: 'Mô tả',
+      dataIndex: 'description',
+      key: 'description'
+    }
+  ]
+
+  const fertilizationActivitiesDataSource = (fertilizationActivities) =>
+    fertilizationActivities.map((fertilizationActivity, index) => ({
+      ...fertilizationActivity,
+      key: index
+    }))
+
+  const pestAndDiseaseControlActivitiesColumns = [
+    {
+      title: 'Tên',
+      dataIndex: 'name',
+      key: 'name'
+    },
+    {
+      title: 'Loại',
+      dataIndex: 'type',
+      key: 'type',
+      render: (type) => (type === 'pest' ? 'Sâu' : type === 'disease' ? 'Bệnh' : type)
+    },
+    {
+      title: 'Triệu chứng',
+      dataIndex: 'symptoms',
+      key: 'symptoms'
+    },
+    {
+      title: 'Mô tả',
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
+      title: 'Giải pháp',
+      dataIndex: 'solution',
+      key: 'solution',
+      render: (solution) => (
+        <ul>
+          {solution.map((sol, index) => (
+            <li key={index}>{sol}</li>
+          ))}
+        </ul>
+      )
+    }
+  ]
+
+  const pestAndDiseaseControlActivitiesDataSource = (pestAndDiseaseControlActivities) =>
+    pestAndDiseaseControlActivities.map((activity, index) => ({
+      ...activity,
+      key: index
+    }))
 
   if (!isSuccessPlantFarming || !isSuccess) {
     return <Loading />
@@ -149,80 +256,66 @@ const ProjectFarming = ({ projectId }) => {
         />
         <div>
           {/* time cultivates: [{ start, end }] */}
-          <h2> Thoi gian canh tac </h2>
-          {plantFarming.timeCultivates.map((timeCultivate) => (
-            <div key={timeCultivate._id}>
-              <p>Thoi gian bat dau: {timeCultivate.start}</p>
-              <p>Thoi gian ket thuc: {timeCultivate.end}</p>
-            </div>
-          ))}
-        </div>
-        <Divider />
-        <div>
-          {/*  cultivationActivities: [{name, description}] */}
-          <h2> Hoat dong voi dat </h2>
-          {plantFarming.cultivationActivities.map((cultivationActivity) => (
-            <div key={cultivationActivity._id}>
-              <p>Ten hoat dong: {cultivationActivity.name}</p>
-              <p>Mo ta: {cultivationActivity.description}</p>
-            </div>
-          ))}
-        </div>
-        <Divider />
-        <div>
-          {/*  plantingActivity: {density, description} */}
-          <h2> Hoat dong trong gieo trong </h2>
-          <p>Mat do gieo trong: {plantFarming.plantingActivity.density}</p>
-          <p>Mo ta: {plantFarming.plantingActivity.description}</p>
-        </div>
-        <Divider />
-        <div>
-          {/* fertilizationActivities: [fertilizationTime, type, description] */}
-          <h2> Hoat dong phan bon </h2>
-          {plantFarming.fertilizationActivities.map((fertilizationActivity) => (
-            <div key={fertilizationActivity._id}>
-              <p>Thoi gian: {fertilizationActivity.fertilizationTime}</p>
-              <p>Loai: {fertilizationActivity.type}</p>
-              <p>Mo ta: {fertilizationActivity.description}</p>
-            </div>
-          ))}
-        </div>
-        <Divider />
-        <div>
-          {/* pestAndDiseaseControlActivities: [{name, type
-                    symptoms
-                    description
-                    solution: [string]
-                    note}] */}
-          <h2> Hoat dong phong ngua sau, benh </h2>
-          {plantFarming.pestAndDiseaseControlActivities.map((pestAndDiseaseControlActivity) => (
-            <div key={pestAndDiseaseControlActivity._id}>
-              <p>Ten: {pestAndDiseaseControlActivity.name}</p>
-              <p>Loai: {pestAndDiseaseControlActivity.type}</p>
-              <p>Trieu chung: {pestAndDiseaseControlActivity.symptoms}</p>
-              <p>Mo ta: {pestAndDiseaseControlActivity.description}</p>
-              <p>Giai phap:</p>
-              {pestAndDiseaseControlActivity.solution.map((solution) => (
-                <p key={solution}>{solution}</p>
-              ))}
-              <p>Ghi chu: {pestAndDiseaseControlActivity.note}</p>
-            </div>
-          ))}
+          <h2> Thời gian canh tác </h2>
+          <Table
+            columns={timeCultivatesColumns}
+            dataSource={timeCultivatesDataSource(plantFarming)}
+            pagination={false}
+          />
         </div>
         <Divider />
         <div>
           {/* bestTimeCultivate: {start, end} */}
-          <h2> Thoi gian canh tac tot nhat </h2>
-          <p>Thoi gian bat dau: {plantFarming.bestTimeCultivate.start}</p>
-          <p>Thoi gian ket thuc: {plantFarming.bestTimeCultivate.end}</p>
+          <h2> Thời gian canh tác tốt nhất </h2>
+          <p>Tháng bắt đầu: {plantFarming.bestTimeCultivate.start}</p>
+          <p>Tháng kết thúc: {plantFarming.bestTimeCultivate.end}</p>
         </div>
 
         <Divider />
         {/* farmingTime: number */}
-        <p>Thoi gian trong cay: {plantFarming.farmingTime}</p>
+        <p>Thời gian trồng cây: {plantFarming.farmingTime} ngày</p>
         <Divider />
         {/* harvestTime: number */}
-        <p>Thoi gian thu hoach: {plantFarming.harvestTime}</p>
+        <p>Thời gian thu hoạch: {plantFarming.harvestTime} ngày</p>
+        <Divider />
+        <div>
+          {/* cultivationActivities: [{name, description}] */}
+          <h2> Hoạt động với đất </h2>
+          <Table
+            columns={cultivationActivitiesColumns}
+            dataSource={cultivationActivitiesDataSource(plantFarming.cultivationActivities)}
+            pagination={false}
+          />
+        </div>
+        <Divider />
+        <div>
+          {/*  plantingActivity: {density, description} */}
+          <h2> Hoạt động trong gieo trồng </h2>
+          <p>
+            <strong>Mật độ:</strong> {plantFarming.plantingActivity.density}
+          </p>
+          <p>
+            <strong>Mô tả:</strong> {plantFarming.plantingActivity.description}
+          </p>
+        </div>
+        <Divider />
+        <div>
+          {/* fertilizationActivities: [{ fertilizationTime, type, description }] */}
+          <h2> Hoạt động phân bón </h2>
+          <Table
+            columns={fertilizationActivitiesColumns}
+            dataSource={fertilizationActivitiesDataSource(plantFarming.fertilizationActivities)}
+          />
+        </div>
+        <Divider />
+        <div>
+          {/* pestAndDiseaseControlActivities: [{name, type, symptoms, description, solution: [string], note}] */}
+          <h2> Hoạt động phòng ngừa sâu, bệnh </h2>
+          <Table
+            columns={pestAndDiseaseControlActivitiesColumns}
+            dataSource={pestAndDiseaseControlActivitiesDataSource(plantFarming.pestAndDiseaseControlActivities)}
+          />
+        </div>
         <Divider />
       </div>
     )

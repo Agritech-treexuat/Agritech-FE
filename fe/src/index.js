@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { ChainId, ThirdwebProvider } from '@thirdweb-dev/react'
+import { ThirdwebProvider } from '@thirdweb-dev/react'
 import { Evmos } from '@thirdweb-dev/chains'
 import { StateContextProvider } from './context'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

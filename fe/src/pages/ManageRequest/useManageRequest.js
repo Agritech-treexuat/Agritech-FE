@@ -10,8 +10,8 @@ export default function useManageRequest() {
       status: item?.status,
       date: item?.time,
       name: item?.client.name,
-      phone: item?.client.phone || 'N/A',
-      address: item?.client.address || 'N/A',
+      phone: item?.client.phone || 'Không có thông tin',
+      address: item?.client.address || 'Không có thông tin',
       square: item?.gardenServiceTemplate.square,
       price: item?.gardenServiceTemplate.price,
       herbMax: item?.gardenServiceTemplate.herbMax,
@@ -19,8 +19,9 @@ export default function useManageRequest() {
       rootMax: item?.gardenServiceTemplate.rootMax,
       fruitMax: item?.gardenServiceTemplate.fruitMax,
       expectedOutput: item?.gardenServiceTemplate.expectedOutput,
-      expectedDeliveryPerWeek: item?.gardenServiceTemplate.expectedDeliveryPerWeek,
-      expectedDeliveryAmount: item?.gardenServiceTemplate.expectedDeliveryAmount,
+      expectDeliveryPerWeek: item?.gardenServiceTemplate.expectDeliveryPerWeek,
+      expectDeliveryAmount: item?.gardenServiceTemplate.expectDeliveryAmount,
+      note: item?.note,
       herbList: item?.herbList
         ? item?.herbList.map((herb) => ({
             id: herb._id,

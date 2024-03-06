@@ -81,6 +81,19 @@ const PLANT_FARMING = {
       .catch((err) => {
         return err
       })
+  },
+
+  deletePlantFarming: async (plantFarmingId) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/plantFarming/${plantFarmingId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 }
 

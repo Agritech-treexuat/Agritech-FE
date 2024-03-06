@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button, Space, Input, Tooltip } from 'antd'
-import { EditFilled, PlusOutlined } from '@ant-design/icons'
+import { Button, Space, Input, Tooltip, Card, Row, Col } from 'antd'
+import { EditFilled, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 
 const ContactProfile = ({
   isEditingContact,
@@ -24,6 +24,12 @@ const ContactProfile = ({
     setPhoneList([...phoneList, ''])
   }
 
+  const handleRemovePhone = (index) => {
+    const updatedPhoneList = [...phoneList]
+    updatedPhoneList.splice(index, 1)
+    setPhoneList(updatedPhoneList)
+  }
+
   const handleAddEmail = () => {
     setEmailList([...emailList, ''])
   }
@@ -34,72 +40,121 @@ const ContactProfile = ({
     setPhoneList(newList)
   }
 
+  const handleRemoveEmail = (index) => {
+    const updatedEmailList = [...emailList]
+    updatedEmailList.splice(index, 1)
+    setEmailList(updatedEmailList)
+  }
+
   const handleEmailChange = (index, value) => {
     const newList = [...emailList]
     newList[index] = value
     setEmailList(newList)
   }
 
-  return (
-    <div>
+  const tittleCard = () => {
+    return (
       <div style={{ display: 'flex' }}>
-        <h2 style={{ marginRight: '1rem' }}>Contact</h2>
-        <Tooltip title="Edit contact">
+        <h2 style={{ marginRight: '1rem' }}>Thông tin liên lạc</h2>
+        <Tooltip title="Chỉnh sửa thông tin liên lạc">
           <EditFilled style={{ color: '#476930' }} onClick={() => setIsEditingContact(true)} />
         </Tooltip>
       </div>
+    )
+  }
+
+  return (
+    <div>
       {isEditingContact ? (
-        <div>
-          <h3>Phone: </h3>
-          {phoneList.map((phone, index) => (
-            <Input
-              key={index}
-              placeholder="Phone number"
-              value={phone}
-              onChange={(e) => handlePhoneChange(index, e.target.value)}
-              style={{ marginBottom: '8px' }}
-            />
-          ))}
-          <Button type="dashed" onClick={handleAddPhone} icon={<PlusOutlined />}>
-            Add Phone
-          </Button>
-          <br />
-          <h3>Phone: </h3>
-          {emailList.map((email, index) => (
-            <Input
-              key={index}
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => handleEmailChange(index, e.target.value)}
-              style={{ marginBottom: '8px' }}
-            />
-          ))}
-          <Button type="dashed" onClick={handleAddEmail} icon={<PlusOutlined />}>
-            Add Email
-          </Button>
-          <br />
-          <Space>
-            <Button type="primary" onClick={handleSave}>
-              Save
-            </Button>
-            <Button onClick={handleCancel}>Cancel</Button>
-          </Space>
-        </div>
+        <Card
+          title={tittleCard()}
+          bordered={false}
+          style={{
+            width: '100%',
+            padding: '20px'
+          }}
+        >
+          <Row>
+            <Col span={10}>
+              <div>
+                <h3>Phone: </h3>
+                {phoneList.map((phone, index) => (
+                  <Input.Group key={index} style={{ marginBottom: '8px', display: 'flex' }}>
+                    <Input
+                      placeholder="Phone number"
+                      value={phone}
+                      onChange={(e) => handlePhoneChange(index, e.target.value)}
+                    />
+                    <Button onClick={() => handleRemovePhone(index)} icon={<MinusCircleOutlined />} />
+                  </Input.Group>
+                ))}
+                <Button type="dashed" onClick={handleAddPhone} icon={<PlusOutlined />}>
+                  Thêm sđt
+                </Button>
+              </div>
+            </Col>
+            <Col span={2}></Col>
+            <Col span={12}>
+              <div>
+                <h3>Email: </h3>
+                {emailList.map((email, index) => (
+                  <Input.Group key={index} style={{ marginBottom: '8px', display: 'flex' }}>
+                    <Input
+                      placeholder="Phone number"
+                      value={email}
+                      onChange={(e) => handleEmailChange(index, e.target.value)}
+                    />
+                    <Button onClick={() => handleRemoveEmail(index)} icon={<MinusCircleOutlined />} />
+                  </Input.Group>
+                ))}
+                <Button type="dashed" onClick={handleAddEmail} icon={<PlusOutlined />}>
+                  Thêm Email
+                </Button>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={16}></Col>
+            <Col span={8}>
+              <div style={{ marginTop: '10px' }}>
+                <Space>
+                  <Button type="primary" onClick={handleSave}>
+                    Lưu
+                  </Button>
+                  <Button onClick={handleCancel}>Hủy</Button>
+                </Space>
+              </div>
+            </Col>
+          </Row>
+        </Card>
       ) : (
-        <div>
-          <h3>Phone: </h3>
-          {phoneList && phoneList.length > 0 ? (
-            phoneList.map((phone, index) => <p key={index}>{phone}</p>)
-          ) : (
-            <p>Not has phone yet</p>
-          )}
-          <h3>Email: </h3>
-          {emailList && emailList.length > 0 ? (
-            emailList.map((email, index) => <p key={index}>{email}</p>)
-          ) : (
-            <p>Not has email yet</p>
-          )}
-        </div>
+        <Card
+          title={tittleCard()}
+          bordered={true}
+          style={{
+            width: '100%',
+            padding: '20px'
+          }}
+        >
+          <Row>
+            <Col span={12}>
+              <h3>Phone: </h3>
+              {phoneList && phoneList.length > 0 ? (
+                phoneList.map((phone, index) => <p key={index}>{phone}</p>)
+              ) : (
+                <p>Not has phone yet</p>
+              )}
+            </Col>
+            <Col span={12}>
+              <h3>Email: </h3>
+              {emailList && emailList.length > 0 ? (
+                emailList.map((email, index) => <p key={index}>{email}</p>)
+              ) : (
+                <p>Not has email yet</p>
+              )}
+            </Col>
+          </Row>
+        </Card>
       )}
     </div>
   )

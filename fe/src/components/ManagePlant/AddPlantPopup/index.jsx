@@ -7,7 +7,22 @@ import Loading from '../../../pages/Loading'
 const AddPlantPopup = ({ open, onClose, selectedPlant, setSelectedPlant, handleAddPlant }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedType, setSelectedType] = useState(null)
-  const { allPlants, isSuccessAllPlants } = useAddPlantPopup()
+  const { allPlants, isSuccessAllPlants, plantInFarm, isSuccess } = useAddPlantPopup()
+
+  const renderPlantType = (type) => {
+    switch (type) {
+      case 'herb':
+        return 'Rau gia vị'
+      case 'leafy':
+        return 'Rau ăn lá'
+      case 'root':
+        return 'Củ'
+      case 'fruit':
+        return 'Quả'
+      default:
+        return type
+    }
+  }
 
   const handleSearch = (value) => {
     setSearchTerm(value)
@@ -20,10 +35,11 @@ const AddPlantPopup = ({ open, onClose, selectedPlant, setSelectedPlant, handleA
   const filteredPlants = allPlants.filter(
     (plant) =>
       (searchTerm === '' || plant.name.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (selectedType === null || plant.type === selectedType)
+      (selectedType === null || plant.type === selectedType) &&
+      !plantInFarm.some((p) => p.name === plant.name)
   )
 
-  return isSuccessAllPlants ? (
+  return isSuccessAllPlants && isSuccess ? (
     <Modal
       open={open}
       title="Chọn cây"
@@ -46,11 +62,11 @@ const AddPlantPopup = ({ open, onClose, selectedPlant, setSelectedPlant, handleA
       />
 
       <Space>
-        <Button onClick={() => handleFilter(null)}>All</Button>
-        <Button onClick={() => handleFilter('herb')}>Herb</Button>
-        <Button onClick={() => handleFilter('leafy')}>Leafy</Button>
-        <Button onClick={() => handleFilter('root')}>Root</Button>
-        <Button onClick={() => handleFilter('fruit')}>Fruit</Button>
+        <Button onClick={() => handleFilter(null)}>Tất cả</Button>
+        <Button onClick={() => handleFilter('herb')}>Rau gia vị</Button>
+        <Button onClick={() => handleFilter('leafy')}>Rau ăn lá</Button>
+        <Button onClick={() => handleFilter('root')}>Củ</Button>
+        <Button onClick={() => handleFilter('fruit')}>Quả</Button>
       </Space>
 
       <Row gutter={16} style={{ marginTop: 16 }}>
@@ -67,7 +83,7 @@ const AddPlantPopup = ({ open, onClose, selectedPlant, setSelectedPlant, handleA
             >
               <img src={plant.image} alt={plant.name} style={{ width: '100%', height: 120, objectFit: 'cover' }} />
               <p style={{ marginTop: 8 }}>{plant.name}</p>
-              <p style={{ color: '#888' }}>{plant.type}</p>
+              <p style={{ color: '#888' }}>{renderPlantType(plant.type)}</p>
             </Card>
           </Col>
         ))}

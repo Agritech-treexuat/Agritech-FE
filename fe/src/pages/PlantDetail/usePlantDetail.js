@@ -7,7 +7,11 @@ export default function usePlantDetail({ plantId, seedId, isDefaultPlantFarming 
   const parseDataPlans = useCallback((data) => {
     const plans = data.map((plan) => ({
       _id: plan._id,
-      seed: plan.seed.seed_name,
+      name: plan.seed.seed_name,
+      description: plan.seed.seed_description,
+      image: plan.seed.seed_thumb,
+      seedId: plan.seed._id,
+      isSeedDefault: plan.seed.isSeedDefault,
       timeCultivates: plan.timeCultivates,
       cultivationActivities: plan.cultivationActivities,
       plantingActivity: plan.plantingActivity,

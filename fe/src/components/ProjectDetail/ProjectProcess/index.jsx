@@ -26,7 +26,7 @@ const ProjectProcess = () => {
   const [processData, setProcessData] = useState([])
   const [imageData, setImageData] = useState([])
   const [weatherData, setWeatherData] = useState(null)
-  const location = 'hà nội'
+  const district = 'hà nội'
   const apid = 'fd3455621595a002c80c20ef925cfe5f'
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const ProjectProcess = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apid}&units=metric&lang=vi`
+          `https://api.openweathermap.org/data/2.5/weather?q=${district}&appid=${apid}&units=metric&lang=vi`
         )
         const data = await response.json()
 

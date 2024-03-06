@@ -52,6 +52,23 @@ const UpdateStatusModal = ({ visible, onCancel, onComingUpdate, onCancelUpdate, 
 
 const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant, isUpdate, selectedDelivery }) => {
   const [form] = Form.useForm()
+  isUpdate && selectedDelivery
+    ? form.setFieldsValue({
+        plants: selectedDelivery.plants.map((p) => ({
+          key: p.id,
+          plantId: p.plantId,
+          name: p.name,
+          amount: p.amount
+        })),
+        note: selectedDelivery.note
+      })
+    : form.setFieldsValue({
+        plants: listPlant.map((p) => ({
+          key: p.id,
+          name: p.name,
+          plantId: p.plantId
+        }))
+      })
   return (
     <>
       {listPlant ? (
@@ -60,12 +77,15 @@ const CollectionCreateForm = ({ open, onCreate, onCancel, listPlant, isUpdate, s
           title={isUpdate ? 'Cập nhật' : 'Thêm mới'}
           okText={isUpdate ? 'Cập nhật' : 'Thêm'}
           cancelText="Hủy"
-          onCancel={onCancel}
+          onCancel={() => {
+            form.resetFields()
+            onCancel()
+          }}
           onOk={() => {
             form
               .validateFields()
               .then((values) => {
-                form.resetFields()
+                form.setFieldsValue(values)
                 onCreate(values)
               })
               .catch((info) => {
@@ -148,35 +168,54 @@ const GardenProjectOutput = () => {
   const gardenId = useParams().id
 
   const handleAddDelivery = async (values) => {
-    const data = {
-      deliveryDetails: values.plants.map((plant) => ({
-        plant: plant.plantId,
-        amount: plant.amount
-      })),
-      note: values.note
-    }
-    const res = await GARDEN.addDelivery({ data, gardenId })
-    if (res.status === 200) {
-      refetch()
-      openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
+    console.log('values: ', values)
+    try {
+      const data = {
+        deliveryDetails: values.plants.map((plant) => ({
+          plant: plant.plantId,
+          amount: plant.amount ? Number(plant.amount) : 0
+        })),
+        note: values.note
+      }
+      console.log('data: ', data)
+      const res = await GARDEN.addDelivery({ data, gardenId })
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
+      }
+    } catch (error) {
+      console.log('error: ', error)
+      openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
     }
     setOpen(false)
   }
 
   const handleUpdateDelivery = async (values) => {
-    const data = {
-      deliveryDetails: values.plants.map((plant) => ({
-        plant: plant.plantId,
-        amount: plant.amount
-      })),
-      note: values.note
+    try {
+      const data = {
+        deliveryDetails: values.plants.map((plant) => ({
+          plant: plant.plantId,
+          amount: plant.amount ? Number(plant.amount) : 0
+        })),
+        note: values.note
+      }
+
+      console.log('data: ', data)
+
+      const res = await GARDEN.updateDelivery({ data, gardenId, deliveryId: selectedDelivery.id })
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+      }
+      setOpenUpdate(false)
+    } catch (error) {
+      console.log('error: ', error)
+      openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
     }
-    const res = await GARDEN.updateDelivery({ data, gardenId, deliveryId: selectedDelivery.id })
-    if (res.status === 200) {
-      refetch()
-      openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
-    }
-    setOpenUpdate(false)
   }
 
   const handleUpdateStatus = async (status) => {
@@ -205,7 +244,7 @@ const GardenProjectOutput = () => {
       dataIndex: 'date',
       width: 300,
       key: 'date',
-      render: (_, record) => <div>{formatDate(record?.time)}</div>
+      render: (_, record) => <div>{record?.time}</div>
     },
     {
       title: 'Thông tin',
@@ -234,7 +273,7 @@ const GardenProjectOutput = () => {
       render: (_, record) => <div>{record.note}</div>
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       dataIndex: 'actions',
       key: 'actions',
       width: '400px',
@@ -291,7 +330,7 @@ const GardenProjectOutput = () => {
       dataIndex: 'date',
       width: 300,
       key: 'date',
-      render: (_, record) => <div>record?.time</div>
+      render: (_, record) => <div>{record?.time}</div>
     },
     {
       title: 'Thông tin',
@@ -332,7 +371,7 @@ const GardenProjectOutput = () => {
       render: (_, record) => <div>{record.clientNote}</div>
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       dataIndex: 'actions',
       key: 'actions',
       width: '400px',
@@ -364,7 +403,7 @@ const GardenProjectOutput = () => {
       dataIndex: 'date',
       width: 300,
       key: 'date',
-      render: (_, record) => <div>{formatDate(record?.time)}</div>
+      render: (_, record) => <div>{record?.time}</div>
     },
     {
       title: 'Thông tin',
@@ -393,7 +432,7 @@ const GardenProjectOutput = () => {
       render: (_, record) => <div>{record.note}</div>
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       dataIndex: 'actions',
       key: 'actions',
       width: '400px',

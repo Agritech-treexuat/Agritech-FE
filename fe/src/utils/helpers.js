@@ -1,3 +1,5 @@
+import { Tooltip, Typography } from 'antd'
+const { Paragraph } = Typography
 export const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -44,4 +46,46 @@ export function formatDateToInput(dateTime) {
   const formattedDate = `${yearData}-${monthData}-${dateData}`
 
   return formattedDate
+}
+
+export const formatTransactionHash = ({ str }) => {
+  return (
+    <a href={`https://escan.live/tx/${str}`} target="_blank" rel="noreferrer">
+      <Tooltip title={str}>{str}</Tooltip>
+    </a>
+  )
+}
+
+export const ParagraphWithEllipsis = ({ text, rows }) => {
+  return (
+    <Paragraph
+      ellipsis={{
+        rows: rows,
+        expandable: true,
+        symbol: 'đọc thêm',
+        tooltip: true,
+        onExpand: function (event) {
+          console.log('onExpand', event)
+          event.stopPropagation()
+          event.preventDefault()
+        }
+      }}
+    >
+      {text}
+    </Paragraph>
+  )
+}
+
+export function formatTransactionHashTable({ str, a, b }) {
+  if (a < 0 || b < 0 || a >= str.length || b >= str.length || a + b > str.length) {
+    return 'Invalid input'
+  }
+  const prefix = str.slice(0, a)
+  const suffix = str.slice(-b)
+  const formatedFormatTransactionHash = prefix + '...' + suffix
+  return (
+    <a href={`https://escan.live/tx/${str}`} target="_blank" rel="noreferrer">
+      <Tooltip title={str}>{formatedFormatTransactionHash}</Tooltip>
+    </a>
+  )
 }

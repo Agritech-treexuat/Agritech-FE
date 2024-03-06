@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Modal, Input, Button, Card, Row, Col, Checkbox } from 'antd'
+import { Modal, Input, Button, Card, Row, Col } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import useAddSeedPopup from './useAddSeedPopup'
+import { ParagraphWithEllipsis } from '../../../utils/helpers'
 
 const AddSeedPopup = ({
   selectedPlant,
@@ -10,23 +11,27 @@ const AddSeedPopup = ({
   selectedSeed,
   setSelectedSeed,
   handleAddSeed,
-  setIsDefaultSeed
+  currentPlantId
 }) => {
   const [searchTerm, setSearchTerm] = useState('')
 
-  const { allSeedFromPlant, isSuccessAllSeedFromPlant } = useAddSeedPopup({
-    plantId: selectedPlant?.id
+  const { allSeedFromPlant, isSuccessAllSeedFromPlant, allSeedFromPlantInFarm } = useAddSeedPopup({
+    plantId: selectedPlant?.id,
+    currentPlantId: currentPlantId
   })
   const handleSearch = (value) => {
     setSearchTerm(value)
   }
 
-  const filteredSeeds = allSeedFromPlant.filter(
-    (seed) =>
-      searchTerm === '' ||
-      seed.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      seed.description.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // filter seeds by search term and seed not has in farm
+  const filteredSeeds = allSeedFromPlant
+    .filter(
+      (seed) =>
+        searchTerm === '' ||
+        seed.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        seed.description.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((seed) => !allSeedFromPlantInFarm.find((seedInFarm) => seedInFarm.name === seed.name))
 
   return isSuccessAllSeedFromPlant ? (
     <Modal
@@ -50,10 +55,6 @@ const AddSeedPopup = ({
         style={{ marginBottom: 16 }}
       />
 
-      <Checkbox onChange={(e) => setIsDefaultSeed(e.target.checked)} style={{ marginBottom: 16 }}>
-        Chọn làm hạt giống mặc định
-      </Checkbox>
-
       <Row gutter={16}>
         {filteredSeeds.map((seed) => (
           <Col key={seed.id} span={8}>
@@ -64,7 +65,7 @@ const AddSeedPopup = ({
             >
               <img src={seed.image} alt={seed.name} style={{ width: '100%', height: 120, objectFit: 'cover' }} />
               <p style={{ marginTop: 8, fontWeight: 'bold' }}>{seed.name}</p>
-              <p style={{ color: '#888' }}>{seed.description}</p>
+              <p style={{ color: '#888' }}>{<ParagraphWithEllipsis text={seed.description} rows={3} />}</p>
             </Card>
           </Col>
         ))}

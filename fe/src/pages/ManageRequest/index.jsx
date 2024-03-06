@@ -13,7 +13,8 @@ import {
   notification,
   Collapse,
   theme,
-  Radio
+  Radio,
+  List
 } from 'antd'
 import { EyeOutlined, CaretRightOutlined } from '@ant-design/icons'
 import Loading from '../Loading'
@@ -52,6 +53,7 @@ const ManageRequest = () => {
     phone: '',
     square: 0,
     price: 0,
+    note: '',
     status: 'waiting'
   })
 
@@ -93,22 +95,27 @@ const ManageRequest = () => {
   const getItems = (panelStyle) => [
     {
       key: '1',
-      label: 'Xem chi tiết',
+      label: 'Xem chi tiết dịch vụ',
       children: (
         <div style={{ textAlign: 'right' }}>
-          <div className="styleText">
-            <p style={{ fontWeight: '600' }}>CHỦNG LOẠI GIEO TRỒNG</p>
-          </div>
           {reqDetail.leafyMax ? (
             <>
-              <p>{reqDetail.leafyMax} Rau ăn lá</p>
-              {reqDetail.leafyList ? reqDetail.leafyList.map((leafy) => <p>{leafy.name}</p>) : <p>Không có</p>}
-              <p>{reqDetail.herbMax} Rau gia vị</p>
-              {reqDetail.herbList ? reqDetail.herbList.map((herb) => <p>{herb.name}</p>) : <p>Không có</p>}
-              <p>{reqDetail.rootMax} Củ</p>
-              {reqDetail.rootList ? reqDetail.rootList.map((root) => <p>{root.name}</p>) : <p>Không có</p>}
-              <p>{reqDetail.rootMax} Quả</p>
-              {reqDetail.fruitList ? reqDetail.fruitList.map((fruit) => <p>{fruit.name}</p>) : <p>Không có</p>}
+              <div className="styleText">
+                <p style={{ fontWeight: '600' }}>Rau ăn lá tối đa</p>
+                <p>{reqDetail.leafyMax} cây</p>
+              </div>
+              <div className="styleText">
+                <p style={{ fontWeight: '600' }}>Rau gia vị tối đa</p>
+                <p>{reqDetail.herbMax} cây</p>
+              </div>
+              <div className="styleText">
+                <p style={{ fontWeight: '600' }}>Củ tối đa</p>
+                <p>{reqDetail.rootMax} cây</p>
+              </div>
+              <div className="styleText">
+                <p style={{ fontWeight: '600' }}>Quả tối đa</p>
+                <p>{reqDetail.rootMax} cây</p>
+              </div>
               <div className="styleText">
                 <p style={{ fontWeight: '600' }}>SẢN LƯỢNG DỰ KIẾN</p>
                 <p>{reqDetail.expectedOutput} kg/tháng</p>
@@ -177,62 +184,81 @@ const ManageRequest = () => {
             <Radio value="accepted"> Đã chấp nhận </Radio>
             <Radio value="rejected"> Đã từ chối </Radio>
           </Radio.Group>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap'
+
+          <List
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 1,
+              md: 1,
+              lg: 2,
+              xl: 3,
+              xxl: 3
             }}
-          >
-            {filteredProjects.map((req) => (
-              <Card
-                title={`Ngày đặt hàng: ${formatDateTime(req.date)}`}
-                hoverable
-                style={{ width: '30%', marginBottom: '1.5rem', marginRight: '1.5rem' }}
-                extra={
-                  <Tooltip title="Chi tiết">
-                    <EyeOutlined
-                      style={{
-                        color: '#fff',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        cursor: 'pointer'
-                      }}
-                      onClick={() => showModal(req._id)}
-                    />
-                  </Tooltip>
-                }
+            style={{ width: '100%' }}
+            dataSource={filteredProjects}
+            pagination={{
+              onChange: (page) => {
+                console.log(page)
+              },
+              pageSize: 9
+            }}
+            renderItem={(req) => (
+              <List.Item
+                style={{
+                  marginTop: '1.5rem'
+                }}
               >
-                <Row>
-                  <Col span={13} style={{ textAlign: 'left' }}>
-                    <h3>Thông tin khách hàng</h3>
-                    <p>Tên: {req.name ? req.name : 'Không có tên'}</p>
-                    <p>SĐT: {req.phone ? req.phone : 'Không có sdt'}</p>
-                    <p>Địa chỉ: {req.address ? req.address : 'Không có địa chỉ'}</p>
-                  </Col>
-                  <Col span={2} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Divider
-                      style={{
-                        color: '#8fb955',
-                        height: '-webkit-fill-available'
-                      }}
-                      type="vertical"
-                    />
-                  </Col>
-                  <Col span={9} style={{ textAlign: 'left' }}>
-                    <h3>Dịch vụ</h3>
-                    <p>Diện tích: {req.square} M2</p>
-                    <p>
-                      Giá:{' '}
-                      {req.price.toLocaleString('it-IT', {
-                        style: 'currency',
-                        currency: 'VND'
-                      })}
-                    </p>
-                  </Col>
-                </Row>
-              </Card>
-            ))}
-          </div>
+                <Card
+                  title={`Ngày đặt hàng: ${formatDateTime(req.date)}`}
+                  hoverable
+                  style={{ marginBottom: '1.5rem', marginRight: '1.5rem' }}
+                  extra={
+                    <Tooltip title="Chi tiết">
+                      <EyeOutlined
+                        style={{
+                          color: '#fff',
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => showModal(req._id)}
+                      />
+                    </Tooltip>
+                  }
+                >
+                  <Row>
+                    <Col span={13} style={{ textAlign: 'left' }}>
+                      <h3>Thông tin khách hàng</h3>
+                      <p>Tên: {req.name ? req.name : 'Không có tên'}</p>
+                      <p>SĐT: {req.phone ? req.phone : 'Không có sdt'}</p>
+                      <p>Địa chỉ: {req.address ? req.address : 'Không có địa chỉ'}</p>
+                    </Col>
+                    <Col span={2} style={{ display: 'flex', justifyContent: 'center' }}>
+                      <Divider
+                        style={{
+                          color: '#8fb955',
+                          height: '-webkit-fill-available'
+                        }}
+                        type="vertical"
+                      />
+                    </Col>
+                    <Col span={9} style={{ textAlign: 'left' }}>
+                      <h3>Dịch vụ</h3>
+                      <p>Diện tích: {req.square} M2</p>
+                      <p>
+                        Giá:{' '}
+                        {req.price.toLocaleString('it-IT', {
+                          style: 'currency',
+                          currency: 'VND'
+                        })}
+                      </p>
+                    </Col>
+                  </Row>
+                </Card>
+              </List.Item>
+            )}
+          />
 
           {/* Modal detail info */}
           <Modal
@@ -254,36 +280,73 @@ const ManageRequest = () => {
               )
             }
           >
-            <Divider orientation="left" style={{ fontSize: '14px' }}>
-              Thông tin khách hàng
-            </Divider>
-            <div style={{ marginLeft: '5%' }}>
-              <p>Tên: {reqDetail.name ? reqDetail.name : 'Không có tên'}</p>
-              <p>SĐT: {reqDetail.phone ? reqDetail.phone : 'Không có sdt'}</p>
-              <p>Địa chỉ: {reqDetail.address ? reqDetail.address : 'Không có địa chỉ'}</p>
-            </div>
-
-            <Divider orientation="left" style={{ fontSize: '14px' }}>
-              Nội dung đặt hàng
-            </Divider>
-            <div style={{ marginLeft: '5%' }}>
-              <p>Ngày đặt hàng: {formatDateTime(reqDetail.date)}</p>
-              <p>
-                <i>
-                  <strong>Dịch vụ</strong>: <span>Diện tích: {reqDetail.square} M2</span>
-                </i>
-              </p>
+            <div>
+              <Divider orientation="left" style={{ fontSize: '14px' }}>
+                <strong>Thông tin khách hàng</strong>
+              </Divider>
+              <ul>
+                <li>Tên: {reqDetail.name ? reqDetail.name : 'Không có tên'}</li>
+                <li>SĐT: {reqDetail.phone ? reqDetail.phone : 'Không có sdt'}</li>
+                <li>Địa chỉ: {reqDetail.address ? reqDetail.address : 'Không có địa chỉ'}</li>
+              </ul>
+              <Divider orientation="left" style={{ fontSize: '14px' }}>
+                <strong>Thông tin dịch vụ</strong>
+              </Divider>
+              <ul>
+                <li>Diện tích: {reqDetail.square} M2</li>
+                <li>
+                  Giá:{' '}
+                  {reqDetail.price.toLocaleString('it-IT', {
+                    style: 'currency',
+                    currency: 'VND'
+                  })}
+                </li>
+              </ul>
               <Collapse
                 expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
                 items={getItems(panelStyle)}
               />
-              <p>
-                Giá:{' '}
-                {reqDetail.price.toLocaleString('it-IT', {
-                  style: 'currency',
-                  currency: 'VND'
-                })}
-              </p>
+              <Divider orientation="left" style={{ fontSize: '14px' }}>
+                <strong>Nội dung đặt hàng</strong>
+              </Divider>
+              <div>
+                <ul>
+                  <li>Ngày đặt hàng: {formatDateTime(reqDetail.date)}</li>
+                  <li>Ghi chú: {reqDetail.note}</li>
+                  <li>
+                    Rau ăn lá
+                    <ul>
+                      {reqDetail.leafyList?.map((leafy) => (
+                        <li key={leafy.id}>{leafy.name}</li>
+                      ))}
+                    </ul>
+                  </li>
+                  <li>
+                    Rau gia vị
+                    <ul>
+                      {reqDetail.herbList?.map((herb) => (
+                        <li key={herb.id}>{herb.name}</li>
+                      ))}
+                    </ul>
+                  </li>
+                  <li>
+                    Củ
+                    <ul>
+                      {reqDetail.rootList?.map((root) => (
+                        <li key={root.id}>{root.name}</li>
+                      ))}
+                    </ul>
+                  </li>
+                  <li>
+                    Quả
+                    <ul>
+                      {reqDetail.fruitList?.map((fruit) => (
+                        <li key={fruit.id}>{fruit.name}</li>
+                      ))}
+                    </ul>
+                  </li>
+                </ul>
+              </div>
             </div>
           </Modal>
         </div>

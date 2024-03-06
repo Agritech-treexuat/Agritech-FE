@@ -87,7 +87,7 @@ const UpdateInputForm = ({ input, form }) => {
           }
         ]}
       >
-        <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 3 }} />
+        <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
       </Form.Item>
     </Form>
   )

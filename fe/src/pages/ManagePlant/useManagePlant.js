@@ -9,7 +9,10 @@ export default function useManagePlant({ seedId, isDefaultPlantFarming }) {
     const plant = data.map((plant) => ({
       _id: plant._id,
       name: plant.plant_name,
-      image: plant.plant_thumb
+      image: plant.plant_thumb,
+      description: plant.plant_description,
+      type: plant.plant_type,
+      isActive: plant.isActive
     }))
     return { plant }
   }, [])

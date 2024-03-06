@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Button, Modal, Divider } from 'antd'
-import { formatDate, formatDateTime } from '../../../utils/helpers'
+import { Modal, Divider, Tooltip, Typography } from 'antd'
+import { formatDate, formatDateTime, formatTransactionHashTable } from '../../../utils/helpers'
+const { Paragraph } = Typography
 
 const EditInputHistory = ({ historyInfo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -14,11 +15,33 @@ const EditInputHistory = ({ historyInfo }) => {
     setIsModalOpen(false)
   }
 
+  console.log('historyInfo', historyInfo)
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Lịch sử chỉnh sửa
-      </Button>
+      <Tooltip title="Xem lịch sử chỉnh sửa">
+        <p
+          style={{
+            fontStyle: 'italic',
+            fontSize: '1.2rem',
+            cursor: 'pointer',
+            transition: 'box-shadow 0.3s',
+            borderBottom: '1px solid transparent',
+            marginRight: '0.5rem',
+            display: 'inline-block',
+            color: 'grey'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.2)'
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.boxShadow = 'none'
+          }}
+          onClick={showModal}
+        >
+          Đã chỉnh sửa
+        </p>
+      </Tooltip>
+
       <Modal
         title="Lịch sử chỉnh sửa"
         style={{ width: 'fit-content' }}
@@ -26,30 +49,63 @@ const EditInputHistory = ({ historyInfo }) => {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={null}
+        width={600}
       >
         {historyInfo.map((input) => (
           <div style={{ width: 'fit-content' }}>
-            <Divider>Created lúc: {formatDateTime(input.createdAtTime)}</Divider>
+            <Divider>Nhập lúc: {formatDateTime(input.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(input.modifiedAt)}</Divider>
             <div>
-              <label>Transaction hash: </label>
-              <span>{input.txHash}</span>
+              <label>
+                <strong>Transaction hash: </strong>
+              </label>
+              <span>
+                <a href={`https://escan.live/tx/${input.txHash}`} target="_blank" rel="noreferrer">
+                  {input.txHash}
+                </a>
+              </span>
             </div>
             <div>
-              <label>Ngày bắt đầu: </label>
+              <label>
+                <strong>Ngày bắt đầu: </strong>{' '}
+              </label>
               <span>{formatDate(input.startDate)}</span>
             </div>
             <div>
-              <label>Hạt giống: </label>
+              <label>
+                <strong>Hạt giống: </strong>
+              </label>
               <span>{input.seed.seed_name}</span>
             </div>
             <div>
-              <label>Square: </label>
-              <span>{input.square}</span>
+              <label>
+                <strong>Diện tích: </strong>
+              </label>
+              <span>{input.square || 'Chưa cập nhật'}</span>
             </div>
-            <div>
-              <label>Description: </label>
-              <span>{input.description}</span>
+            <div style={{ display: 'flex' }}>
+              <label style={{ marginRight: '5px' }}>
+                <strong>Mô tả: </strong>
+              </label>
+              <span>
+                {
+                  <Paragraph
+                    ellipsis={{
+                      rows: 3,
+                      expandable: true,
+                      symbol: 'đọc thêm',
+                      tooltip: true,
+                      onExpand: function (event) {
+                        console.log('onExpand', event)
+                        event.stopPropagation()
+                        event.preventDefault()
+                      }
+                    }}
+                  >
+                    {input.description}
+                  </Paragraph>
+                }
+              </span>
             </div>
           </div>
         ))}

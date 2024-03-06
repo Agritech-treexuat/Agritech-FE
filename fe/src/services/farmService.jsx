@@ -21,6 +21,15 @@ const FARM = {
     return result
   },
 
+  logout: async () => {
+    let result = await privateHttp({
+      method: 'POST',
+      url: '/logout'
+    })
+
+    return result
+  },
+
   getProfile: async ({ farmId }) => {
     let result = await publicHttp({
       method: 'GET',
@@ -35,6 +44,45 @@ const FARM = {
       method: 'PATCH',
       url: `/farm`,
       data
+    })
+
+    return result
+  },
+
+  forgotPassword: async ({ email }) => {
+    let result = await publicHttp({
+      method: 'POST',
+      url: '/forgotPassword',
+      data: {
+        email
+      }
+    })
+
+    return result
+  },
+
+  resetPassword: async ({ resetToken, email, newPassword }) => {
+    let result = await publicHttp({
+      method: 'POST',
+      url: '/resetPassword',
+      data: {
+        resetToken,
+        email,
+        newPassword
+      }
+    })
+
+    return result
+  },
+
+  updatePassword: async ({ oldPassword, newPassword }) => {
+    let result = await privateHttp({
+      method: 'PATCH',
+      url: '/updatePassword',
+      data: {
+        oldPassword,
+        newPassword
+      }
     })
 
     return result

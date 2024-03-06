@@ -28,13 +28,64 @@ const SEED = {
       })
   },
 
-  addSeedByRecommendSeedId: async ({ recommendSeedId, isSeedDefault }) => {
+  addSeedByRecommendSeedId: async ({ recommendSeedId }) => {
     return await privateHttp({
       method: 'POST',
-      url: `/seed/add/${recommendSeedId}`,
-      data: {
-        isSeedDefault
-      }
+      url: `/seed/add/${recommendSeedId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  deleteSeed: async (seedId) => {
+    return await privateHttp({
+      method: 'DELETE',
+      url: `/seed/${seedId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  updateSeedDefault: async (seedId) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `/seed/default/${seedId}`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  updateSeed: async ({ seedId, data }) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `/seed/${seedId}`,
+      data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  addSeed: async (data) => {
+    return await privateHttp({
+      method: 'POST',
+      url: '/seed',
+      data
     })
       .then((res) => {
         return res

@@ -1,51 +1,76 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
-import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm } from 'antd'
-import { formatDateTime } from '../../../../utils/helpers'
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Table, Modal, Form, Input, DatePicker, Select, Popconfirm, Tooltip, Spin, Divider } from 'antd'
+import { ParagraphWithEllipsis, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
+import {
+  DeleteFilled,
+  EditFilled,
+  EditOutlined,
+  HistoryOutlined,
+  MinusCircleOutlined,
+  PlusOutlined
+} from '@ant-design/icons'
 import { metamaskWallet } from '@thirdweb-dev/react'
 const metamaskConfig = metamaskWallet()
 const { Option } = Select
 
-const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }) => {
+const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   return (
-    <Modal title="Lịch sử chỉnh sửa" visible={historyModalVisible} onCancel={handleHistoryModalCancel} footer={null}>
+    <Modal
+      title="Lịch sử chỉnh sửa"
+      open={historyModalVisible}
+      onCancel={handleHistoryModalCancel}
+      footer={null}
+      width={600}
+    >
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
+            <Divider>Nhập lúc: {formatDateTime(item.createdAtTime)}</Divider>
+            <Divider>Chỉnh sửa lúc: {formatDateTime(item.modifiedAt)}</Divider>
+            {!isGarden && (
+              <p>
+                <span>
+                  <strong>Transaction hash: </strong>
+                  <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                </span>
+              </p>
+            )}
             <p>
-              <span style={{ fontWeight: 'bold' }}>Created time: </span>
-              {formatDateTime(item.createdAtTime)}
-            </p>
-            <p>
-              <span style={{ fontWeight: 'bold' }}>Updated time: </span>
-              {formatDateTime(item.modifiedAt)}
-            </p>
-            <p>
-              <span>Time: </span>
+              <span>
+                <strong>Thời gian: </strong>
+              </span>
               {formatDateTime(item.time)}
             </p>
+
             <p>
-              <span>Tx: </span>
-              {item.tx}
-            </p>
-            <p>
-              <span>name: </span>
+              <span>
+                <strong>Tên: </strong>
+              </span>
               {item.pestAndDiseaseControlActivity.name}
             </p>
             <p>
-              <span>Type: </span>
-              {item.pestAndDiseaseControlActivity.type}
+              <span>
+                <strong>Tác nhân: </strong>
+              </span>
+              {item.pestAndDiseaseControlActivity.type === 'pest' ? 'Sâu bệnh' : 'Dịch hại'}
             </p>
             <p>
-              <span>Symtoms: </span>
-              {item.pestAndDiseaseControlActivity.symptoms}
+              <span>
+                <strong>Triệu chứng: </strong>
+              </span>
+              {/* {item.pestAndDiseaseControlActivity.symptoms} */}
+              <ParagraphWithEllipsis text={item.pestAndDiseaseControlActivity.symptoms} rows={5} />
             </p>
             <p>
-              <span>Solution: </span>
+              <span>
+                <strong>Giải pháp: </strong>
+              </span>
               {item.pestAndDiseaseControlActivity.solution.map((sol, index) => (
                 <ul>
-                  <li key={index}>{sol}</li>
+                  <li key={index}>
+                    <ParagraphWithEllipsis text={sol} rows={5} />
+                  </li>
                 </ul>
               ))}
             </p>
@@ -57,12 +82,19 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel }
 
 const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPlantFarming, isUpdate }) => {
   const [form] = Form.useForm()
+  form.setFieldsValue({
+    time: selectedPlantFarming?.time ? dayjs(selectedPlantFarming?.time) : dayjs(new Date()),
+    name: selectedPlantFarming?.name,
+    type: selectedPlantFarming?.type,
+    symptoms: selectedPlantFarming?.symptoms,
+    solution: selectedPlantFarming?.solution
+  })
   return (
     <Modal
       open={modal2Visible}
-      title={isUpdate ? 'Update' : 'Create'}
-      okText={isUpdate ? 'Update' : 'Create'}
-      cancelText="Cancel"
+      title={isUpdate ? 'Cập nhật hành động' : 'Thêm hành động'}
+      okText={isUpdate ? 'Cập nhật' : 'Thêm'}
+      cancelText="Hủy"
       onCancel={() => {
         form.resetFields()
         handleModal2Cancel()
@@ -71,12 +103,11 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
         form
           .validateFields()
           .then((values) => {
-            form.resetFields()
+            form.setFieldsValue(values)
             let data = {}
             if (isUpdate) {
               data = {
                 processId: selectedPlantFarming.processId,
-                tx: 'tx',
                 time: values.time.toDate(),
                 type: 'pesticide',
                 pestAndDiseaseControlActivity: {
@@ -88,7 +119,6 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
               }
             } else {
               data = {
-                tx: 'tx',
                 time: values.time.toDate(),
                 type: 'pesticide',
                 pestAndDiseaseControlActivity: {
@@ -116,27 +146,26 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
           name: selectedPlantFarming?.name,
           type: selectedPlantFarming?.type,
           symptoms: selectedPlantFarming?.symptoms,
-
           solution: selectedPlantFarming?.solution
         }}
       >
         {/* pick time */}
-        <Form.Item name="time" label="Time" rules={[{ required: true, message: 'Please pick time!' }]}>
+        <Form.Item name="time" label="Thời gian" rules={[{ required: true, message: 'Hãy chọn thời gian!' }]}>
           <DatePicker showTime />
         </Form.Item>
-        <Form.Item name="name" label="name" rules={[{ required: true, message: 'Please input name!' }]}>
+        <Form.Item name="name" label="Tên" rules={[{ required: true, message: 'Hãy nhập tên hoạt động!' }]}>
           <Input />
         </Form.Item>
-        <Form.Item name="type" label="Type" rules={[{ required: true, message: 'Please input type!' }]}>
+        <Form.Item name="type" label="Tác nhân" rules={[{ required: true, message: 'Hãy nhập tác nhân!' }]}>
           <Select>
             <Option value="pest">Sâu bệnh</Option>
             <Option value="disease">Dịch hại</Option>
           </Select>
         </Form.Item>
-        <Form.Item name="symptoms" label="Symptoms" rules={[{ required: true, message: 'Please input symptoms!' }]}>
-          <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 3 }} />
+        <Form.Item name="symptoms" label="Triệu chứng" rules={[{ required: true, message: 'Hãy nhập triệu chứng!' }]}>
+          <Input.TextArea placeholder="Mô tả" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
         </Form.Item>
-        <Form.Item name="solution" label="Solution" rules={[{ required: true, message: 'Please input solution!' }]}>
+        <Form.Item name="solution" label="Giải pháp" rules={[{ required: true, message: 'Hãy nhập giải pháp!' }]}>
           <Form.List name="solution">
             {(fields, { add, remove }, { errors }) => (
               <>
@@ -149,12 +178,12 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                         {
                           required: true,
                           whitespace: true,
-                          message: 'Please input Solution or delete this field.'
+                          message: 'Hãy nhập giải pháp hoặc xóa trường này!'
                         }
                       ]}
                       noStyle
                     >
-                      <Input.TextArea placeholder="Giải pháp" style={{ width: '100%' }} autoSize={{ minRows: 3 }} />
+                      <Input.TextArea placeholder="Giải pháp" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
                     </Form.Item>
                     {fields.length > 1 ? (
                       <MinusCircleOutlined className="dynamic-delete-button" onClick={() => remove(field.name)} />
@@ -170,7 +199,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                     }}
                     icon={<PlusOutlined />}
                   >
-                    Add Solution
+                    Thêm giải pháp
                   </Button>
                   <Form.ErrorList errors={errors} />
                 </Form.Item>
@@ -191,7 +220,8 @@ const PesticideTable = ({
   handleDeleteProcess,
   address,
   connect,
-  isGarden
+  isGarden,
+  loading
 }) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
@@ -223,93 +253,127 @@ const PesticideTable = ({
 
   const columns = [
     {
-      title: 'Time',
+      title: 'Thời gian',
       dataIndex: 'time',
       key: 'time',
-      width: 150,
-      render: (text, record) => formatDateTime(record.time)
+      width: '150px',
+      render: (text, record) => formatDateTime(record.time),
+      sorter: (a, b) => new Date(a.time) - new Date(b.time),
+      showSorterTooltip: {
+        title: 'Sắp xếp thời gian'
+      }
     },
+    ...(isGarden
+      ? []
+      : [
+          {
+            title: 'Transaction hash',
+            dataIndex: 'tx',
+            key: 'tx',
+            width: '150px',
+            render: (text, record) =>
+              formatTransactionHashTable({
+                str: record.tx,
+                a: 8,
+                b: 6
+              })
+          }
+        ]),
     {
-      title: 'Tx',
-      dataIndex: 'tx',
-      key: 'tx',
-      width: 150
-    },
-    {
-      title: 'name',
+      title: 'Tên',
       dataIndex: 'name',
       key: 'name',
+      width: '150px',
       render: (text, record) => record.pestAndDiseaseControlActivity.name
     },
     {
-      title: 'Type',
+      title: 'Tác nhân',
       dataIndex: 'type',
       key: 'type',
-      render: (text, record) => record.pestAndDiseaseControlActivity.type
+      render: (text, record) => (record.pestAndDiseaseControlActivity.type === 'pest' ? 'Sâu bệnh' : 'Dịch hại'),
+      width: '100px'
     },
     {
-      title: 'Symptoms',
+      title: 'Triệu chứng',
       dataIndex: 'symptoms',
       key: 'symptoms',
-      render: (text, record) => record.pestAndDiseaseControlActivity.symptoms
+      width: 400,
+      render: (text, record) => (
+        <p>
+          <ParagraphWithEllipsis text={record.pestAndDiseaseControlActivity.symptoms} rows={5} />
+        </p>
+      )
     },
     {
-      title: 'Solution',
+      title: 'Giải pháp',
       dataIndex: 'solution',
       key: 'solution',
+      width: 500,
       render: (text, record) =>
         record.pestAndDiseaseControlActivity.solution.map((sol, index) => (
           <ul>
-            <li key={index}>{sol}</li>
+            <li key={index}>
+              <ParagraphWithEllipsis text={sol} rows={5} />
+            </li>
           </ul>
         ))
     },
     {
-      title: 'Actions',
+      title: 'Hành động',
       dataIndex: 'actions',
       key: 'actions',
+      width: '150px',
       render: (text, record) => (
         <>
-          <Button
-            type="default"
-            style={{ marginRight: '8px' }}
-            onClick={() => {
-              setSelectedPlantFarming({
-                processId: record._id,
-                time: record.time,
-                name: record.pestAndDiseaseControlActivity.name,
-                type: record.pestAndDiseaseControlActivity.type,
-                symptoms: record.pestAndDiseaseControlActivity.symptoms,
-                solution: record.pestAndDiseaseControlActivity.solution
-              })
-              setModalUpdateVisible(true)
-            }}
-          >
-            Chỉnh sửa
-          </Button>
+          <Tooltip title={address || isGarden ? 'Chỉnh sửa' : 'Kết nối với ví để chỉnh sửa'}>
+            {address || isGarden ? (
+              <EditFilled
+                style={{ marginRight: '2rem', cursor: 'pointer' }}
+                onClick={() => {
+                  setSelectedPlantFarming({
+                    processId: record._id,
+                    time: record.time,
+                    name: record.pestAndDiseaseControlActivity.name,
+                    type: record.pestAndDiseaseControlActivity.type,
+                    symptoms: record.pestAndDiseaseControlActivity.symptoms,
+                    solution: record.pestAndDiseaseControlActivity.solution
+                  })
+                  setModalUpdateVisible(true)
+                }}
+              />
+            ) : (
+              <EditOutlined
+                style={{ marginRight: '2rem', cursor: 'pointer' }}
+                onClick={async () => {
+                  await connect(metamaskConfig)
+                }}
+              />
+            )}
+          </Tooltip>
           <Popconfirm
             title="Xóa"
             description="Bạn có chắc chắn muốn xóa không"
             onConfirm={handleDeleteProcess.bind(this, record._id)}
+            okText="Có"
+            cancelText="Không"
           >
-            <Button type="primary" style={{ marginRight: '8px' }}>
-              Xóa
-            </Button>
+            <Tooltip title="Xóa">
+              <DeleteFilled style={{ cursor: 'pointer', marginRight: '2rem' }} />
+            </Tooltip>
           </Popconfirm>
           {record.isEdited ? (
-            <Button
-              type="default"
-              onClick={() => {
-                setSelectedPlantFarming(record)
-                setModalHistoryVisible(true)
-              }}
-            >
-              Lịch sử chỉnh sửa
-            </Button>
+            <Tooltip title="Xem lịch sử chỉnh sửa">
+              <HistoryOutlined
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setSelectedPlantFarming(record)
+                  setModalHistoryVisible(true)
+                }}
+              />
+            </Tooltip>
           ) : null}
         </>
-      ),
-      width: 350
+      )
     }
   ]
 
@@ -320,17 +384,23 @@ const PesticideTable = ({
           type="primary"
           style={{ marginRight: '8px' }}
           onClick={async () => {
-            if (!address) await connect(metamaskConfig)
-            else {
-              console.log('address: ', address)
+            if (isGarden) {
               setModal1Visible(true)
+            } else {
+              if (!address) await connect(metamaskConfig)
+              else {
+                console.log('address: ', address)
+                setModal1Visible(true)
+              }
             }
           }}
         >
-          {address || isGarden ? 'Thêm' : 'Connect'}
+          {address || isGarden ? 'Thêm' : 'Kết nối với ví để thêm'}
         </Button>
       </div>
-      <Table dataSource={pesticide} columns={columns} pagination={false} />
+      <Spin spinning={loading} tip={`${isGarden ? 'Đang xử lý' : 'Đang ghi lên Blockchain'}, làm ơn chờ chút ...`}>
+        <Table dataSource={pesticide} columns={columns} pagination={false} />
+      </Spin>
 
       {/* Modal 1 */}
       <Modal title="Chọn loại canh tác" open={modal1Visible} onOk={handleModal1Ok} onCancel={handleModal1Cancel}>
@@ -384,6 +454,7 @@ const PesticideTable = ({
         history={selectedPlantFarming?.historyProcess}
         historyModalVisible={modalHistoryVisible}
         handleHistoryModalCancel={() => setModalHistoryVisible(false)}
+        isGarden={isGarden}
       />
     </div>
   )
