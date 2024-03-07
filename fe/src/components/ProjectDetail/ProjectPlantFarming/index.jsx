@@ -241,6 +241,7 @@ const ProjectFarming = ({ projectId }) => {
           onClick={() => {
             setOpenUpdatePlantFarming(true)
           }}
+          style={{ marginRight: '20px' }}
         >
           Chỉnh sửa
         </Button>
