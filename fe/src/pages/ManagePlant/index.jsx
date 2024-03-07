@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { Row, Col, Input, Button, Popconfirm, notification, List, Tooltip, Typography } from 'antd'
+import { Row, Col, Input, Button, Popconfirm, notification, List, Tooltip, Typography, Radio } from 'antd'
 import { Link } from 'react-router-dom'
 import Loading from '../Loading'
 import { Card } from 'antd'
@@ -27,6 +27,7 @@ const ManagePlant = () => {
   const [isDefaultPlantFarming, setIsDefaultPlantFarming] = useState(false)
   const [selectedUpdatePlant, setSelectedUpdatePlant] = useState(null)
   const [openUpdatePlant, setOpenUpdatePlant] = useState(false)
+  const [selectedPlantType, setSelectedPlantType] = useState('all')
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
@@ -161,6 +162,14 @@ const ManagePlant = () => {
     }
   }
 
+  const filterPlantsByType = (type) => {
+    if (type === 'all') {
+      return plantData
+    } else {
+      return plantData.filter((plant) => plant.type === type)
+    }
+  }
+
   return (
     <>
       {contextHolder}
@@ -243,9 +252,22 @@ const ManagePlant = () => {
             </Col>
           </Row>
           <Row>
+            <Col span={8}>
+              <div style={{ marginBottom: '20px' }}>
+                <Radio.Group onChange={(e) => setSelectedPlantType(e.target.value)} value={selectedPlantType}>
+                  <Radio value="all">Tất cả</Radio>
+                  <Radio value="leafy">Rau ăn lá</Radio>
+                  <Radio value="herb">Rau gia vị</Radio>
+                  <Radio value="root">Củ</Radio>
+                  <Radio value="fruit">Quả</Radio>
+                </Radio.Group>
+              </div>
+            </Col>
+          </Row>
+          <Row>
             <List
               grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 4, xl: 4, xxl: 4 }}
-              dataSource={plantData.filter((plant) =>
+              dataSource={filterPlantsByType(selectedPlantType).filter((plant) =>
                 plant.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
               )}
               pagination={{
