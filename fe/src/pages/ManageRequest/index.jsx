@@ -155,6 +155,19 @@ const ManageRequest = () => {
           })
       : []
 
+  const renderStatus = (status) => {
+    switch (status) {
+      case 'waiting':
+        return <span style={{ color: 'red' }}>Đang đợi</span>
+      case 'accepted':
+        return <span style={{ color: 'green' }}>Đã chấp nhận</span>
+      case 'rejected':
+        return <span style={{ color: 'red' }}>Đã từ chối</span>
+      default:
+        return <span style={{ color: 'red' }}>Đang đợi</span>
+    }
+  }
+
   return (
     <div>
       {contextHolder}
@@ -276,7 +289,7 @@ const ManageRequest = () => {
                   <OkBtn />
                 </>
               ) : (
-                <p>Status: {reqDetail.status}</p>
+                <p>Trạng thái: {renderStatus(reqDetail.status)}</p>
               )
             }
           >

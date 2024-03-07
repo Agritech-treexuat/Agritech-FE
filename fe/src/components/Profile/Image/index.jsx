@@ -4,7 +4,16 @@ import { EditFilled, PlusOutlined } from '@ant-design/icons'
 import token from '../../../utils/token'
 const { getAccessToken, getRefreshToken } = token
 
-const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImageList, handleSave, profile }) => {
+const ImagesProfile = ({
+  isEditingImages,
+  setIsEditingImages,
+  imageList,
+  setImageList,
+  handleSave,
+  profile,
+  text = 'Hình ảnh',
+  width = 220
+}) => {
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -97,7 +106,7 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
   return (
     <div style={{ marginLeft: '15px' }}>
       <div style={{ display: 'flex', marginLeft: '10px', marginTop: '10px' }}>
-        <h2>Hình ảnh </h2>
+        <h2>{text} </h2>
         <Tooltip title="Chỉnh sửa hình ảnh">
           <EditFilled style={{ color: '#476930', marginLeft: '5px' }} onClick={() => setIsEditingImages(true)} />
         </Tooltip>
@@ -142,7 +151,7 @@ const ImagesProfile = ({ isEditingImages, setIsEditingImages, imageList, setImag
                 item && (
                   <List.Item key={index}>
                     <div style={{ position: 'relative' }}>
-                      <Image src={item} alt={`image-${item}`} width={220} style={{ borderRadius: '10px' }} />
+                      <Image src={item} alt={`image-${item}`} width={width} style={{ borderRadius: '10px' }} />
                     </div>
                   </List.Item>
                 )

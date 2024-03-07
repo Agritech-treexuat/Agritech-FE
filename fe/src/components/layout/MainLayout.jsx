@@ -31,6 +31,9 @@ const App = () => {
     // Lấy path từ URL và chọn key tương ứng
     const path = window.location.pathname
     const selectedItem = items.find((item) => item.link === path)
+    console.log(selectedItem)
+    console.log('items: ', items)
+    console.log('path: ', path)
     if (selectedItem) {
       setSelectedKey(selectedItem.key)
       console.log(selectedItem.key)
