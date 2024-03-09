@@ -387,9 +387,7 @@ const FertilizeItem = () => {
 
 const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming, isUpdate }) => {
   const [form] = Form.useForm()
-  useEffect(() => {
-    form.setFieldsValue(recommendPlantFarming)
-  }, [recommendPlantFarming])
+  isUpdate ? form.setFieldsValue(recommendPlantFarming) : form.setFieldsValue({})
 
   const items = [
     {
@@ -399,13 +397,13 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
     },
     {
       key: '2',
-      label: 'Bón phân',
-      children: <FertilizeItem />
+      label: 'Làm đất và gieo trồng',
+      children: <CultivationItem />
     },
     {
       key: '3',
-      label: 'Làm đất và gieo trồng',
-      children: <CultivationItem />
+      label: 'Bón phân',
+      children: <FertilizeItem />
     },
     {
       key: '4',

@@ -253,7 +253,7 @@ const GardenProjectOutput = () => {
       render: (_, record) => (
         <div>
           {record.plants.map((plant) => (
-            <div>
+            <div key={plant?.name}>
               {plant.amount > 0 ? (
                 <div>
                   {plant?.name} - {plant?.amount} kg
@@ -339,7 +339,7 @@ const GardenProjectOutput = () => {
       render: (_, record) => (
         <div>
           {record.plants.map((plant) => (
-            <div>
+            <div key={plant?.name}>
               {plant.amount > 0 ? (
                 <div>
                   {plant?.name} - {plant?.amount} kg
@@ -412,7 +412,7 @@ const GardenProjectOutput = () => {
       render: (_, record) => (
         <div>
           {record.plants.map((plant) => (
-            <div>
+            <div key={plant?.name}>
               {plant.amount > 0 ? (
                 <div>
                   {plant?.name} - {plant?.amount} kg

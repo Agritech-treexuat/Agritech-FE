@@ -280,7 +280,7 @@ const ProjectOutput = () => {
     })
   }
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { address, connect, insertOutput, updateOutput } = useStateContext()
+  const { address, connect, insertOutput, updateOutput, generateQR } = useStateContext()
   const [openAddOutput, setOpenAddOutput] = useState(false)
   const [openUpdateOutput, setOpenUpdateOutput] = useState(false)
   const [selectedOutput, setSelectedOutput] = useState(null)
@@ -471,19 +471,59 @@ const ProjectOutput = () => {
   }
 
   const handleExportQR = async (output) => {
+    setLoading(true)
     try {
+      // const numberOfQR = output.distributerWithAmount.reduce((total, item) => total + item.amount / output.amountPerOne + 1, 0)
+      // const privateIds = []
+      // // generate numberOfQR unique privateIds
+      // for (let i = 0; i < numberOfQR; i++) {
+      //   privateIds.push(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
+      // }
+      let numberOfQR = 0
+      let privateIds = []
+      for (let i = 0; i < output.distributerWithAmount.length; i++) {
+        let numberofQREachDistributer = output.distributerWithAmount[i].amount / output.amountPerOne + 1
+        let privateIdsEachDistributer = []
+        numberOfQR += numberofQREachDistributer
+        for (let j = 0; j < numberofQREachDistributer; j++) {
+          privateIdsEachDistributer.push(
+            Math.random().toString(36).substring(2, 15) +
+              Math.random().toString(36).substring(2, 15) +
+              Math.random().toString(36).substring(2, 15)
+          )
+        }
+        output.distributerWithAmount[i].privateIdsEachDistributer = privateIdsEachDistributer
+        privateIds.push(...privateIdsEachDistributer)
+      }
       const outputId = output.id
+      const generateQRInfo = `Time: ${new Date()}, ProjectId: ${projectId}, OutputId: ${outputId}, DistributerWithAmount: ${output.distributerWithAmount
+        .map((item) => `${item.distributer} - ${item.amount / output.amountPerOne + 1}`)
+        .join('+ ')}`
+
+      const receip = await generateQR({
+        projectId,
+        numberOfQR,
+        privateIds,
+        generateQRInfo
+      })
+
+      const txExport = receip?.transactionHash
       const data = {
         amount: output.amount,
         amountPerOne: output.amountPerOne,
         distributerWithAmount: output.distributerWithAmount.map((item) => {
           return {
             distributer: item.distributer._id,
-            amount: item.amount
+            amount: item.amount,
+            numberOfQR: item.amount / output.amountPerOne + 1,
+            privateIdsEachDistributer: item.privateIdsEachDistributer
           }
-        })
+        }),
+        txExport
       }
+
       const res = await PROJECT.exportQR({ projectId, outputId, data })
+      setLoading(false)
       if (res.status === 200) {
         refetch()
         openNotificationWithIcon('success', 'Thông báo', 'Export QR thành công')
@@ -627,9 +667,9 @@ const ProjectOutput = () => {
                   <>
                     {output.distributerWithAmount ? (
                       output.distributerWithAmount.map((npp_item) => (
-                        <div>
+                        <div key={npp_item?.distributer?.name}>
                           <p>
-                            {npp_item.distributer.name} cùng lượng {npp_item.amount}
+                            {npp_item?.distributer?.name} cùng lượng {npp_item?.amount}
                           </p>
                         </div>
                       ))
@@ -675,9 +715,11 @@ const ProjectOutput = () => {
                     </Popconfirm>
                     <> {output.isEdited ? <EditOutputHistory output={output} /> : <></>}</>
                     <Popconfirm
-                      title="Xóa"
-                      description="Bạn có chắc chắn muốn export không"
-                      onConfirm={handleExportQR.bind(this, output)}
+                      title="Xuất QR"
+                      description={address ? 'Bạn có chắc chắn muốn xuất QR không' : 'Kết nối với ví để xuất QR'}
+                      onConfirm={
+                        address ? handleExportQR.bind(this, output) : async () => await connect(metamaskConfig)
+                      }
                     >
                       <Button type="primary" disabled={output.exportQR}>
                         Xuất QR

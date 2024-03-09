@@ -30,7 +30,7 @@ const EditOutputHistory = ({ output }) => {
         width={600}
       >
         {output.historyOutput.map((output) => (
-          <>
+          <div key={output.tx}>
             <Divider>Nhập lúc: {formatDateTime(output.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(output.modifiedAt)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
@@ -55,9 +55,9 @@ const EditOutputHistory = ({ output }) => {
                 <ul>
                   {output.distributerWithAmount ? (
                     output.distributerWithAmount.map((npp_item) => (
-                      <li>
+                      <li key={npp_item?.distributer?.name}>
                         <p>
-                          {npp_item.distributer.name} cùng lượng {npp_item.amount}
+                          {npp_item?.distributer?.name} cùng lượng {npp_item?.amount}
                         </p>
                       </li>
                     ))
@@ -99,7 +99,7 @@ const EditOutputHistory = ({ output }) => {
                 )}
               </div>
             </div>
-          </>
+          </div>
         ))}
       </Modal>
     </>
