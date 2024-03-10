@@ -158,7 +158,7 @@ const ImagesProfile = ({
               }
             />
           ) : (
-            <div>
+            <div style={{ marginLeft: '10px' }}>
               <p>Chưa có ảnh nào</p>
             </div>
           )}

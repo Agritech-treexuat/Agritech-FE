@@ -1,19 +1,17 @@
 import React, { useState } from 'react'
 import useProfile from './useProfile'
 import Loading from '../Loading'
-import { Button, Col, Popconfirm, Row, notification } from 'antd'
+import { Col, Row, notification } from 'antd'
 import FARM from '../../services/farmService'
 import PlaceComponent from '../../components/Profile/Map'
 import ImagesProfile from '../../components/Profile/Image'
 import ContactProfile from '../../components/Profile/Contact'
 import OverViewProfile from '../../components/Profile/Overview'
 import NameProfile from '../../components/Profile/Name'
-import { useNavigate } from 'react-router-dom'
 import UpdatePasswordModal from '../../components/UpdatePasswordModal'
 
 const Profile = () => {
   const { profile, isSuccess, refetch } = useProfile()
-  const navigate = useNavigate()
 
   const [isEditingOverView, setIsEditingOverView] = useState(false)
   const [description, setDescription] = useState(profile?.description)
@@ -116,6 +114,7 @@ const Profile = () => {
       }
 
       if (isEditingName) {
+        console.log('new name: ', newName)
         const res = await FARM.updateProfile({
           data: {
             name: newName
