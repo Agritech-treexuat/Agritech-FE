@@ -35,6 +35,7 @@ import {
 import { useStateContext } from '../../../context'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import HASH from '../../../services/hashService'
+import QR from '../../../services/qrService'
 const metamaskConfig = metamaskWallet()
 const { getAccessToken, getRefreshToken } = token
 
@@ -537,7 +538,7 @@ const ProjectOutput = () => {
         txExport
       }
 
-      const res = await PROJECT.exportQR({ projectId, outputId, data })
+      const res = await QR.exportQR({ projectId, outputId, data })
       setLoading(false)
       if (res.status === 200) {
         refetch()
@@ -727,6 +728,7 @@ const ProjectOutput = () => {
                       title="Xóa"
                       description="Bạn có chắc chắn muốn xóa không"
                       onConfirm={handleDeleteOutput.bind(this, output.id)}
+                      disabled={output.exportQR}
                     >
                       <Tooltip title="Xóa">
                         <DeleteFilled style={{ cursor: 'pointer', marginRight: '2rem' }} disabled={output.exportQR} />

@@ -6,6 +6,7 @@ import ProjectCertificate from '../../components/ProjectDetail/ProjectCertificat
 import ProcessActivityPage from '../../components/ProjectDetail/ProjectProcessActivity'
 import { useParams } from 'react-router-dom'
 import useProjectPlantFarming from '../../components/ProjectDetail/ProjectPlantFarming/useProjectPlantFarming'
+import ProjectQR from '../../components/ProjectDetail/ProjectQR'
 
 const ProjectDetail = () => {
   const projectId = useParams().id
@@ -41,6 +42,12 @@ const ProjectDetail = () => {
     },
     {
       key: '6',
+      label: 'Quản lý QR',
+      children: <ProjectQR />,
+      disabled: plantFarming ? false : true
+    },
+    {
+      key: '7',
       label: 'Giấy chứng nhận',
       children: <ProjectCertificate />,
       disabled: plantFarming ? false : true
