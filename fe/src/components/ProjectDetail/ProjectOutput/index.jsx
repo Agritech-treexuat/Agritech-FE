@@ -396,6 +396,11 @@ const ProjectOutput = () => {
           output: outputString
         })
         const txHash = receip?.transactionHash
+        if (!txHash) {
+          openNotificationWithIcon('error', 'Thất bại', 'Thêm đầu ra thất bại')
+          setLoading(false)
+          return
+        }
         const data = {
           ...dataWithoutTx,
           tx: txHash
@@ -444,6 +449,11 @@ const ProjectOutput = () => {
           output: outputString
         })
         const txHash = receip?.transactionHash
+        if (!txHash) {
+          openNotificationWithIcon('error', 'Thất bại', 'Cập nhật đầu ra thất bại')
+          setLoading(false)
+          return
+        }
         const data = {
           ...dataWithoutTx,
           tx: txHash
@@ -482,7 +492,7 @@ const ProjectOutput = () => {
       let numberOfQR = 0
       let privateIds = []
       for (let i = 0; i < output.distributerWithAmount.length; i++) {
-        let numberofQREachDistributer = output.distributerWithAmount[i].amount / output.amountPerOne + 1
+        let numberofQREachDistributer = Math.ceil(output.distributerWithAmount[i].amount / output.amountPerOne) + 1
         let privateIdsEachDistributer = []
         numberOfQR += numberofQREachDistributer
         for (let j = 0; j < numberofQREachDistributer; j++) {
@@ -497,7 +507,7 @@ const ProjectOutput = () => {
       }
       const outputId = output.id
       const generateQRInfo = `Time: ${new Date()}, ProjectId: ${projectId}, OutputId: ${outputId}, DistributerWithAmount: ${output.distributerWithAmount
-        .map((item) => `${item.distributer} - ${item.amount / output.amountPerOne + 1}`)
+        .map((item) => `${item.distributer} - ${Math.ceil(item.amount / output.amountPerOne) + 1}`)
         .join('+ ')}`
 
       const receip = await generateQR({
@@ -508,6 +518,11 @@ const ProjectOutput = () => {
       })
 
       const txExport = receip?.transactionHash
+      if (!txExport) {
+        openNotificationWithIcon('error', 'Thông báo', 'Export QR thất bại')
+        setLoading(false)
+        return
+      }
       const data = {
         amount: output.amount,
         amountPerOne: output.amountPerOne,
@@ -515,7 +530,7 @@ const ProjectOutput = () => {
           return {
             distributer: item.distributer._id,
             amount: item.amount,
-            numberOfQR: item.amount / output.amountPerOne + 1,
+            numberOfQR: Math.ceil(item.amount / output.amountPerOne) + 1,
             privateIdsEachDistributer: item.privateIdsEachDistributer
           }
         }),
@@ -562,7 +577,9 @@ const ProjectOutput = () => {
                 if (address) {
                   setOpenAddOutput(true)
                 } else {
+                  setLoading(true)
                   connect(metamaskConfig)
+                  setLoading(false)
                 }
               }}
               style={{ marginBottom: '15px' }}
@@ -698,7 +715,9 @@ const ProjectOutput = () => {
                         <EditOutlined
                           style={{ marginRight: '2rem', cursor: 'pointer' }}
                           onClick={async () => {
+                            setLoading(true)
                             await connect(metamaskConfig)
+                            setLoading(false)
                           }}
                           disabled={output.exportQR}
                         />
@@ -718,7 +737,13 @@ const ProjectOutput = () => {
                       title="Xuất QR"
                       description={address ? 'Bạn có chắc chắn muốn xuất QR không' : 'Kết nối với ví để xuất QR'}
                       onConfirm={
-                        address ? handleExportQR.bind(this, output) : async () => await connect(metamaskConfig)
+                        address
+                          ? handleExportQR.bind(this, output)
+                          : async () => {
+                              setLoading(true)
+                              await connect(metamaskConfig)
+                              setLoading(false)
+                            }
                       }
                     >
                       <Button type="primary" disabled={output.exportQR}>
