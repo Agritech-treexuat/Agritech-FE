@@ -1,10 +1,10 @@
 import React from 'react'
-import { Modal, Button, Input } from 'antd'
+import { Modal, Button, Input, InputNumber } from 'antd'
 
-const LargeDescriptionModal = ({ visible, onCancel, onSubmit, description, setDescription }) => {
+const LargeDescriptionModal = ({ visible, onCancel, onSubmit, description, setDescription, square, setSquare }) => {
   return (
     <Modal
-      title="Nhập Mô tả"
+      title="Nhập diện tích và mô tả"
       open={visible}
       onCancel={onCancel}
       footer={[
@@ -24,6 +24,13 @@ const LargeDescriptionModal = ({ visible, onCancel, onSubmit, description, setDe
       ]}
       width={800} // Kích thước modal
     >
+      <InputNumber
+        value={square}
+        onChange={(value) => setSquare(value)}
+        addonAfter="m2"
+        placeholder="Nhập diện tích..."
+        style={{ width: '100%', marginBottom: 10 }}
+      />
       <Input.TextArea
         value={description}
         onChange={(e) => setDescription(e.target.value)}

@@ -76,6 +76,11 @@ const ProjectInput = () => {
         input: `Update seed: projectId: ${projectId}, seed: ${selectedSeed.name}`
       })
       const tx = receip?.transactionHash
+      if (!tx) {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
+        setLoading(false)
+        return
+      }
       const data = {
         seed: selectedSeed.id,
         txHash: tx
@@ -104,6 +109,11 @@ const ProjectInput = () => {
         input: `Update status: projectId: ${projectId}, status: ${status}`
       })
       const tx = receip?.transactionHash
+      if (!tx) {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
+        setLoading(false)
+        return
+      }
       const data = {
         status: status,
         txHash: tx
@@ -132,6 +142,11 @@ const ProjectInput = () => {
         input: `Update overview: projectId: ${projectId}, square: ${values.square}, date: ${values.date}, description: ${values.description}`
       })
       const tx = receip?.transactionHash
+      if (!tx) {
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại ')
+        setLoading(false)
+        return
+      }
       const data = {
         startDate: values.date,
         square: values.square,

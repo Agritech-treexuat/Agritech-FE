@@ -1,6 +1,7 @@
 import { Modal, Form, Input, Upload, Button } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import token from '../../../utils/token'
+import { baseUrl } from '../../../services/http/baseUrl'
 const { getAccessToken, getRefreshToken } = token
 
 const UpdateSeedInfo = ({ visible, onCreate, onCancel, isUpdate, seed }) => {
@@ -41,7 +42,7 @@ const UpdateSeedInfo = ({ visible, onCreate, onCancel, isUpdate, seed }) => {
   }
 
   const uploadProps = {
-    action: 'http://127.0.0.1:3052/v1/api/upload/single',
+    action: `${baseUrl}/upload/single`,
     method: 'post',
     accept: 'image/*',
     name: 'file',

@@ -22,6 +22,7 @@ const ProjectList = () => {
   const [selectedPlant, setSelectedPlant] = useState(null)
   const [selectedSeed, setSelectedSeed] = useState(null)
   const [description, setDescription] = useState('')
+  const [square, setSquare] = useState(null)
   const [value, setValue] = useState('all')
 
   const { projects, isSuccess, refetch } = useProjectList({
@@ -81,15 +82,22 @@ const ProjectList = () => {
         farm: farmId,
         input: `Add project: plant: ${selectedPlant.name}, seed: ${
           selectedSeed.name
-        }, startDate: ${new Date()}, description: ${description}`
+        }, startDate: ${new Date()}, description: ${description}, square: ${square}`
       })
       const txHash = receip?.transactionHash
+      if (!txHash) {
+        openNotificationWithIcon('error', 'Thông báo', 'Khởi tạo thất bại ')
+        setLoading(false)
+        reset()
+        return
+      }
       const projectIndex = receip.events[0].args[0].toNumber()
       const data = {
         plantId: selectedPlant.id,
         seedId: selectedSeed.id,
         startDate: new Date(),
         description: description,
+        square: square,
         txHash: txHash,
         projectIndex: projectIndex
       }
@@ -98,14 +106,24 @@ const ProjectList = () => {
       console.log('res: ', res)
       if (res.status === 200) {
         refetch()
-        openNotificationWithIcon('success', 'Thông báo', 'Khởi tạo thành công in db')
+        openNotificationWithIcon('success', 'Thông báo', 'Khởi tạo thành công')
+        reset()
       }
+      reset()
     } catch (error) {
       setLoading(false)
       console.log(error)
       openNotificationWithIcon('error', 'Thông báo', 'Khởi tạo thất bại ')
+      reset()
     }
     setOpenSeed(false)
+  }
+
+  const reset = () => {
+    setSelectedPlant(null)
+    setSelectedSeed(null)
+    setDescription('')
+    setSquare(null)
   }
 
   const onChange = (e) => {
@@ -184,6 +202,8 @@ const ProjectList = () => {
                   onSubmit={handleSubmit}
                   description={description}
                   setDescription={setDescription}
+                  square={square}
+                  setSquare={setSquare}
                 />
               </Col>
             </Row>
@@ -230,7 +250,7 @@ const ProjectList = () => {
                             description={item.seed + ' - ' + formatDateToInput(item.startDate)}
                           />
                           <p style={{ marginBottom: '0.5rem' }}>
-                            <strong>Diện tích trồng: </strong> {item.square || 'Chưa có thông tin'}
+                            <strong>Diện tích trồng (m2): </strong> {item.square || 'Chưa có thông tin'}
                           </p>
                           <p style={{ marginBottom: '0.5rem' }}>
                             <span style={{ fontStyle: 'italic', color: '#666' }}>

@@ -36,6 +36,7 @@ import { useStateContext } from '../../../context'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import HASH from '../../../services/hashService'
 import QR from '../../../services/qrService'
+import { baseUrl } from '../../../services/http/baseUrl'
 const metamaskConfig = metamaskWallet()
 const { getAccessToken, getRefreshToken } = token
 
@@ -94,7 +95,7 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
 
   const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
   const uploadProps = {
-    action: 'http://127.0.0.1:3052/v1/api/upload/single',
+    action: `${baseUrl}/upload/single`,
     multiple: true,
     method: 'post',
     accept: 'image/*',

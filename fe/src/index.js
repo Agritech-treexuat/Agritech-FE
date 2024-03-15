@@ -9,9 +9,10 @@ import App from './App'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 const queryClient = new QueryClient()
+const clientId = process.env.CLIENT_ID || '456f8fe77c23b4a8321268e19a65d200'
 
 root.render(
-  <ThirdwebProvider activeChain={Evmos} clientId="456f8fe77c23b4a8321268e19a65d200">
+  <ThirdwebProvider activeChain={Evmos} clientId={clientId}>
     <QueryClientProvider client={queryClient}>
       <Router>
         <StateContextProvider>
