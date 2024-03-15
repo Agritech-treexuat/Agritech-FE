@@ -403,7 +403,14 @@ const PesticideTable = ({
       </Spin>
 
       {/* Modal 1 */}
-      <Modal title="Chọn loại canh tác" open={modal1Visible} onOk={handleModal1Ok} onCancel={handleModal1Cancel}>
+      <Modal
+        title="Chọn loại canh tác"
+        open={modal1Visible}
+        onOk={handleModal1Ok}
+        onCancel={handleModal1Cancel}
+        okText="Tiếp theo"
+        cancelText="Hủy"
+      >
         {pesticidePlantFarming.map((plantFarming) => (
           <Button
             key={plantFarming.name}
@@ -411,7 +418,9 @@ const PesticideTable = ({
               marginBottom: '8px',
               display: 'block',
               backgroundColor: selectedPlantFarming === plantFarming ? '#1890ff' : '',
-              color: selectedPlantFarming === plantFarming ? '#fff' : ''
+              color: selectedPlantFarming === plantFarming ? '#fff' : '',
+              whiteSpace: 'normal',
+              height: 'auto'
             }}
             onClick={() => handlePlantFarmingSelect(plantFarming)}
           >

@@ -138,11 +138,11 @@ const ContactProfile = ({
         >
           <Row>
             <Col span={12}>
-              <h3>Phone: </h3>
+              <h3>Số điện thoại: </h3>
               {phoneList && phoneList.length > 0 ? (
                 phoneList.map((phone, index) => <p key={index}>{phone}</p>)
               ) : (
-                <p>Not has phone yet</p>
+                <p>Chưa có số điện thoại</p>
               )}
             </Col>
             <Col span={12}>
@@ -150,7 +150,7 @@ const ContactProfile = ({
               {emailList && emailList.length > 0 ? (
                 emailList.map((email, index) => <p key={index}>{email}</p>)
               ) : (
-                <p>Not has email yet</p>
+                <p>Chưa có email</p>
               )}
             </Col>
           </Row>

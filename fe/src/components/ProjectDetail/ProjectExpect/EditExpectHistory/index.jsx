@@ -27,7 +27,7 @@ const EditExpectHistory = ({ expect }) => {
         width={600}
       >
         {expect.historyExpect.map((expect) => (
-          <>
+          <div key={expect.tx}>
             <Divider>Nhập lúc: {formatDateTime(expect.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(expect.modifiedAt)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
@@ -47,7 +47,7 @@ const EditExpectHistory = ({ expect }) => {
                 <strong>Ghi chú:</strong> {expect.note}
               </p>
             </div>
-          </>
+          </div>
         ))}
       </Modal>
     </>

@@ -54,6 +54,33 @@ const PROJECT = {
       })
   },
 
+  getCertificateImages: async ({ projectId }) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/project/${projectId}/certificateImages`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  updateCertificateImages: async ({ projectId, data }) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `/project/${projectId}/certificateImages`,
+      data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
   editProjectInfo: async (data, projectId) => {
     return await privateHttp({
       method: 'PATCH',
@@ -273,19 +300,6 @@ const PROJECT = {
       })
   },
 
-  exportQR: async ({ projectId, outputId, data }) => {
-    return await privateHttp({
-      method: 'POST',
-      url: `/qr/export/${projectId}/${outputId}`,
-      data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
   getPlanFromProject: async (projectId) => {
     return await publicHttp({
       method: 'GET',

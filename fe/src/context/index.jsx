@@ -6,7 +6,9 @@ const StateContext = createContext()
 
 export const StateContextProvider = ({ children }) => {
   // Replace with my own smart contract address
+  const { contract: qr_contract } = useContract('0x1d0E1A780cE36444E0461C33D159A83d84B989B4')
   const { contract } = useContract('0xdE64B32dD3E9f678c945177fc957D8c7ec3fA57B')
+
   const { mutateAsync: addProject } = useContractWrite(contract, 'createProject')
   const { mutateAsync: insertProcess } = useContractWrite(contract, 'insertProcess') // Thêm hàm insertProcess
   const { mutateAsync: insertExpect } = useContractWrite(contract, 'insertExpect')
@@ -17,6 +19,8 @@ export const StateContextProvider = ({ children }) => {
   const { mutateAsync: updateProcess } = useContractWrite(contract, 'updateProcess')
   const { mutateAsync: updateExpect } = useContractWrite(contract, 'updateExpect')
   const { mutateAsync: updateOutput } = useContractWrite(contract, 'updateOutput')
+
+  const { mutateAsync: generateQR } = useContractWrite(qr_contract, 'generateQR')
 
   const address = useAddress()
   const connect = useConnect()
@@ -151,6 +155,19 @@ export const StateContextProvider = ({ children }) => {
     }
   }
 
+  const _generateQR = async ({ projectId, numberOfQR, privateIds, generateQRInfo }) => {
+    try {
+      const data = await generateQR({
+        args: [projectId, numberOfQR, privateIds, generateQRInfo]
+      })
+
+      console.log('contract call success', data)
+      return data.receipt
+    } catch (error) {
+      console.log('contract call failure', error)
+    }
+  }
+
   return (
     <StateContext.Provider
       value={{
@@ -166,7 +183,8 @@ export const StateContextProvider = ({ children }) => {
         updateInput: _updateInput,
         updateProcess: _updateProcess,
         updateExpect: _updateExpect,
-        updateOutput: _updateOutput
+        updateOutput: _updateOutput,
+        generateQR: _generateQR
       }}
     >
       {children}

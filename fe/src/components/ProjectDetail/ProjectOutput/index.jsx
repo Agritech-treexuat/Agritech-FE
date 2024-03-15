@@ -35,6 +35,7 @@ import {
 import { useStateContext } from '../../../context'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import HASH from '../../../services/hashService'
+import QR from '../../../services/qrService'
 const metamaskConfig = metamaskWallet()
 const { getAccessToken, getRefreshToken } = token
 
@@ -280,7 +281,7 @@ const ProjectOutput = () => {
     })
   }
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { address, connect, insertOutput, updateOutput } = useStateContext()
+  const { address, connect, insertOutput, updateOutput, generateQR } = useStateContext()
   const [openAddOutput, setOpenAddOutput] = useState(false)
   const [openUpdateOutput, setOpenUpdateOutput] = useState(false)
   const [selectedOutput, setSelectedOutput] = useState(null)
@@ -396,6 +397,11 @@ const ProjectOutput = () => {
           output: outputString
         })
         const txHash = receip?.transactionHash
+        if (!txHash) {
+          openNotificationWithIcon('error', 'Thất bại', 'Thêm đầu ra thất bại')
+          setLoading(false)
+          return
+        }
         const data = {
           ...dataWithoutTx,
           tx: txHash
@@ -444,6 +450,11 @@ const ProjectOutput = () => {
           output: outputString
         })
         const txHash = receip?.transactionHash
+        if (!txHash) {
+          openNotificationWithIcon('error', 'Thất bại', 'Cập nhật đầu ra thất bại')
+          setLoading(false)
+          return
+        }
         const data = {
           ...dataWithoutTx,
           tx: txHash
@@ -471,19 +482,64 @@ const ProjectOutput = () => {
   }
 
   const handleExportQR = async (output) => {
+    setLoading(true)
     try {
+      // const numberOfQR = output.distributerWithAmount.reduce((total, item) => total + item.amount / output.amountPerOne + 1, 0)
+      // const privateIds = []
+      // // generate numberOfQR unique privateIds
+      // for (let i = 0; i < numberOfQR; i++) {
+      //   privateIds.push(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
+      // }
+      let numberOfQR = 0
+      let privateIds = []
+      for (let i = 0; i < output.distributerWithAmount.length; i++) {
+        let numberofQREachDistributer = Math.ceil(output.distributerWithAmount[i].amount / output.amountPerOne) + 1
+        let privateIdsEachDistributer = []
+        numberOfQR += numberofQREachDistributer
+        for (let j = 0; j < numberofQREachDistributer; j++) {
+          privateIdsEachDistributer.push(
+            Math.random().toString(36).substring(2, 15) +
+              Math.random().toString(36).substring(2, 15) +
+              Math.random().toString(36).substring(2, 15)
+          )
+        }
+        output.distributerWithAmount[i].privateIdsEachDistributer = privateIdsEachDistributer
+        privateIds.push(...privateIdsEachDistributer)
+      }
       const outputId = output.id
+      const generateQRInfo = `Time: ${new Date()}, ProjectId: ${projectId}, OutputId: ${outputId}, DistributerWithAmount: ${output.distributerWithAmount
+        .map((item) => `${item.distributer} - ${Math.ceil(item.amount / output.amountPerOne) + 1}`)
+        .join('+ ')}`
+
+      const receip = await generateQR({
+        projectId,
+        numberOfQR,
+        privateIds,
+        generateQRInfo
+      })
+
+      const txExport = receip?.transactionHash
+      if (!txExport) {
+        openNotificationWithIcon('error', 'Thông báo', 'Export QR thất bại')
+        setLoading(false)
+        return
+      }
       const data = {
         amount: output.amount,
         amountPerOne: output.amountPerOne,
         distributerWithAmount: output.distributerWithAmount.map((item) => {
           return {
             distributer: item.distributer._id,
-            amount: item.amount
+            amount: item.amount,
+            numberOfQR: Math.ceil(item.amount / output.amountPerOne) + 1,
+            privateIdsEachDistributer: item.privateIdsEachDistributer
           }
-        })
+        }),
+        txExport
       }
-      const res = await PROJECT.exportQR({ projectId, outputId, data })
+
+      const res = await QR.exportQR({ projectId, outputId, data })
+      setLoading(false)
       if (res.status === 200) {
         refetch()
         openNotificationWithIcon('success', 'Thông báo', 'Export QR thành công')
@@ -522,7 +578,9 @@ const ProjectOutput = () => {
                 if (address) {
                   setOpenAddOutput(true)
                 } else {
+                  setLoading(true)
                   connect(metamaskConfig)
+                  setLoading(false)
                 }
               }}
               style={{ marginBottom: '15px' }}
@@ -627,9 +685,9 @@ const ProjectOutput = () => {
                   <>
                     {output.distributerWithAmount ? (
                       output.distributerWithAmount.map((npp_item) => (
-                        <div>
+                        <div key={npp_item?.distributer?.name}>
                           <p>
-                            {npp_item.distributer.name} cùng lượng {npp_item.amount}
+                            {npp_item?.distributer?.name} cùng lượng {npp_item?.amount}
                           </p>
                         </div>
                       ))
@@ -658,7 +716,9 @@ const ProjectOutput = () => {
                         <EditOutlined
                           style={{ marginRight: '2rem', cursor: 'pointer' }}
                           onClick={async () => {
+                            setLoading(true)
                             await connect(metamaskConfig)
+                            setLoading(false)
                           }}
                           disabled={output.exportQR}
                         />
@@ -668,6 +728,7 @@ const ProjectOutput = () => {
                       title="Xóa"
                       description="Bạn có chắc chắn muốn xóa không"
                       onConfirm={handleDeleteOutput.bind(this, output.id)}
+                      disabled={output.exportQR}
                     >
                       <Tooltip title="Xóa">
                         <DeleteFilled style={{ cursor: 'pointer', marginRight: '2rem' }} disabled={output.exportQR} />
@@ -675,9 +736,17 @@ const ProjectOutput = () => {
                     </Popconfirm>
                     <> {output.isEdited ? <EditOutputHistory output={output} /> : <></>}</>
                     <Popconfirm
-                      title="Xóa"
-                      description="Bạn có chắc chắn muốn export không"
-                      onConfirm={handleExportQR.bind(this, output)}
+                      title="Xuất QR"
+                      description={address ? 'Bạn có chắc chắn muốn xuất QR không' : 'Kết nối với ví để xuất QR'}
+                      onConfirm={
+                        address
+                          ? handleExportQR.bind(this, output)
+                          : async () => {
+                              setLoading(true)
+                              await connect(metamaskConfig)
+                              setLoading(false)
+                            }
+                      }
                     >
                       <Button type="primary" disabled={output.exportQR}>
                         Xuất QR

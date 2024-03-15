@@ -59,7 +59,7 @@ const OverViewProfile = ({
               <Select
                 showSearch
                 style={{ width: 200 }}
-                placeholder="Select District"
+                placeholder="Chọn tỉnh"
                 optionFilterProp="children"
                 filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 filterSort={(optionA, optionB) =>
@@ -79,7 +79,7 @@ const OverViewProfile = ({
               <Input
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Address"
+                placeholder="Địa chỉ"
                 style={{ marginBottom: '8px' }}
                 label="Địa chỉ"
               />

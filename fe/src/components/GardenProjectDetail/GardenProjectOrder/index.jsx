@@ -168,7 +168,7 @@ const GardenProjectOrder = () => {
                 <p style={{ fontWeight: '600' }}>{initData.leafyList.length} Rau ăn lá</p>
                 <ul>
                   {initData.leafyList.map((leafy) => (
-                    <li>{leafy.name}</li>
+                    <li key={leafy.name}>{leafy.name}</li>
                   ))}
                 </ul>
               </div>
@@ -176,7 +176,7 @@ const GardenProjectOrder = () => {
                 <p style={{ fontWeight: '600' }}>{initData.herbList.length} Rau gia vị</p>
                 <ul>
                   {initData.herbList.map((herb) => (
-                    <li>{herb.name}</li>
+                    <li key={herb.name}>{herb.name}</li>
                   ))}
                 </ul>
               </div>
@@ -184,7 +184,7 @@ const GardenProjectOrder = () => {
                 <p style={{ fontWeight: '600' }}>{initData.rootList.length} Củ</p>
                 <ul>
                   {initData.rootList.map((root) => (
-                    <li>{root.name}</li>
+                    <li key={root.name}>{root.name}</li>
                   ))}
                 </ul>
               </div>
@@ -192,7 +192,7 @@ const GardenProjectOrder = () => {
                 <p style={{ fontWeight: '600' }}>{initData.fruitList.length} Quả</p>
                 <ul>
                   {initData.fruitList.map((fruit) => (
-                    <li>{fruit.name}</li>
+                    <li key={fruit.name}>{fruit.name}</li>
                   ))}
                 </ul>
               </div>

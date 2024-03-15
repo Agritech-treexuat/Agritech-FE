@@ -52,7 +52,7 @@ const EditInputHistory = ({ historyInfo }) => {
         width={600}
       >
         {historyInfo.map((input) => (
-          <div style={{ width: 'fit-content' }}>
+          <div key={input.txHash} style={{ width: 'fit-content' }}>
             <Divider>Nhập lúc: {formatDateTime(input.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(input.modifiedAt)}</Divider>
             <div>
