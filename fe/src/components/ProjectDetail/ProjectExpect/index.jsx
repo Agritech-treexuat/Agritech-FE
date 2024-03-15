@@ -113,6 +113,11 @@ const ProjectExpect = () => {
         expect: `Add expect: projectId: ${projectId}, time: ${updatedValue.time}, amount: ${updatedValue.amount}, note: ${updatedValue.note}`
       })
       const txHash = receip?.transactionHash
+      if (!txHash) {
+        setLoading(false)
+        openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
+        return
+      }
       const data = {
         ...updatedValue,
         tx: txHash
@@ -146,6 +151,11 @@ const ProjectExpect = () => {
         expect: `Update expect: projectId: ${projectId}, expectId: ${selectedExpect.id}, time: ${data.time}, amount: ${data.amount}, note: ${data.note}`
       })
       const txHash = receip?.transactionHash
+      if (!txHash) {
+        setLoading(false)
+        openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+        return
+      }
       console.log('txhash: ', txHash)
       const res = await PROJECT.editExpect({
         data: {

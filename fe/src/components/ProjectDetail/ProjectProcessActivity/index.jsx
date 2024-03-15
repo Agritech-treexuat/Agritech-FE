@@ -108,6 +108,11 @@ const ProcessActivityPage = ({ projectId }) => {
           process: renderProcessDataToWriteAdd({ values })
         })
         tx = receip?.transactionHash
+        if (!tx) {
+          openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
+          setLoading(false)
+          return
+        }
       }
       setLoading(false)
       const res = await PROJECT.addProcess({
@@ -151,6 +156,11 @@ const ProcessActivityPage = ({ projectId }) => {
           process: renderProcessDataToWriteUpdate({ values, processId: values?.processId })
         })
         tx = receip?.transactionHash
+        if (!tx) {
+          openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
+          setLoading(false)
+          return
+        }
       }
       const { processId, ...updateProcess } = values
       const res = await PROJECT.updateProcess({
