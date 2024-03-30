@@ -378,6 +378,33 @@ const PROJECT = {
       .catch((err) => {
         return err
       })
+  },
+
+  updateCameraToProject: async ({ projectId, data }) => {
+    return await privateHttp({
+      method: 'PATCH',
+      url: `/project/${projectId}/camera`,
+      data
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
+  },
+
+  getCameraInProject: async (projectId) => {
+    return await publicHttp({
+      method: 'GET',
+      url: `/project/${projectId}/camera`
+    })
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        return err
+      })
   }
 }
 
