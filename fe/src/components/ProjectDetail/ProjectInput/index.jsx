@@ -121,7 +121,7 @@ const ProjectInput = () => {
     try {
       const receip = await updateInput({
         pId: projectInfo?.projectIndex,
-        input: `Update seed: projectId: ${projectId}, seed: ${selectedSeed.name}`
+        input: `Update seed: projectId: ${projectId}, seed: ${selectedSeed.name}, status: ${projectInfo.status}, square: ${projectInfo.square}, date: ${projectInfo.startDate}, description: ${projectInfo.description}`
       })
       const tx = receip?.transactionHash
       if (!tx) {
@@ -154,7 +154,7 @@ const ProjectInput = () => {
     try {
       const receip = await updateInput({
         pId: projectInfo?.projectIndex,
-        input: `Update status: projectId: ${projectId}, status: ${status}`
+        input: `Update status: projectId: ${projectId}, status: ${status}, seed: ${projectInfo.seed.seed_name}, square: ${projectInfo.square}, date: ${projectInfo.startDate}, description: ${projectInfo.description}`
       })
       const tx = receip?.transactionHash
       if (!tx) {
@@ -187,7 +187,7 @@ const ProjectInput = () => {
     try {
       const receip = await updateInput({
         pId: projectInfo?.projectIndex,
-        input: `Update overview: projectId: ${projectId}, square: ${values.square}, date: ${values.date}, description: ${values.description}`
+        input: `Update overview: projectId: ${projectId}, square: ${values.square}, date: ${values.date}, description: ${values.description}, status: ${projectInfo.status}, seed: ${projectInfo.seed.seed_name}`
       })
       const tx = receip?.transactionHash
       if (!tx) {

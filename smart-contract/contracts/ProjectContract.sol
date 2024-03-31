@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-contract NewContract {
+contract ProjectContract {
     struct Project {
         address owner;
         string farm;
@@ -124,5 +124,35 @@ contract NewContract {
 
         emit WeatherInserted(_id, _weather);
     }
+
+    function getProject(uint256 _id) public view returns (address, string memory, string memory) {
+        Project storage project = projects[_id];
+        return (project.owner, project.farm, project.input);
+    }
+
+    function getProjectInput(uint256 _id) public view returns (string memory) {
+        return projects[_id].input;
+    }
+
+    function getProjectProcesses(uint256 _id) public view returns (string[] memory) {
+        return projects[_id].processes;
+    }
+
+    function getProjectOutputs(uint256 _id) public view returns (string[] memory) {
+        return projects[_id].outputs;
+    }
+
+    function getProjectExpects(uint256 _id) public view returns (string[] memory) {
+        return projects[_id].expects;
+    }
+
+    function getProjectImages(uint256 _id) public view returns (string[] memory) {
+        return projects[_id].images;
+    }
+
+    function getProjectWeathers(uint256 _id) public view returns (string[] memory) {
+        return projects[_id].weathers;
+    }
+
 
 }
