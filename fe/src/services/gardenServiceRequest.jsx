@@ -5,7 +5,7 @@ const GARDEN_SERVICE_REQUEST = {
   getGardenServiceRequest: async (farmId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/gardenServiceRequest/farm/${farmId}`
+      url: `/gardenServiceRequest/farm/${farmId}?sort=ctime`
     })
       .then((res) => {
         return res

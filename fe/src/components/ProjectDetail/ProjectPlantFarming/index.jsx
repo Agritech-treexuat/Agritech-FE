@@ -206,6 +206,7 @@ const ProjectFarming = ({ projectId }) => {
             }}
             onCreate={handleAddPlantFarming}
             recommendPlantFarming={dataRecommendPlantFarming}
+            isUpdate={true}
           />
         )}
         {isSuccessFarmPlantFarming && isFarmPlantFarming && (
@@ -217,6 +218,7 @@ const ProjectFarming = ({ projectId }) => {
             }}
             onCreate={handleAddPlantFarming}
             recommendPlantFarming={dataFarmPlantFarming}
+            isUpdate={true}
           />
         )}
         {!isFarmPlantFarming && !isDefaultPlantFarming && (
@@ -293,10 +295,10 @@ const ProjectFarming = ({ projectId }) => {
           {/*  plantingActivity: {density, description} */}
           <h2> Hoạt động trong gieo trồng </h2>
           <p>
-            <strong>Mật độ:</strong> {plantFarming.plantingActivity.density}
+            <strong>Mật độ:</strong> {plantFarming?.plantingActivity?.density}
           </p>
           <p>
-            <strong>Mô tả:</strong> {plantFarming.plantingActivity.description}
+            <strong>Mô tả:</strong> {plantFarming?.plantingActivity?.description}
           </p>
         </div>
         <Divider />

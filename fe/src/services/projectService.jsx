@@ -5,7 +5,7 @@ const PROJECT = {
   getProjects: async (farmId) => {
     return await publicHttp({
       method: 'GET',
-      url: `/project/farm/${farmId}`
+      url: `/project/farm/${farmId}?sort=ctime`
     })
       .then((res) => {
         return res

@@ -323,7 +323,7 @@ const PlantingTable = ({
             }}
             onClick={() => handlePlantFarmingSelect(plantFarming)}
           >
-            {plantFarming.density}
+            {plantFarming?.density}
           </Button>
         ))}
         <Button

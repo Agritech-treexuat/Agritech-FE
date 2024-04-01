@@ -10,7 +10,6 @@ const { Panel } = Collapse
 const ProjectQR = () => {
   const projectId = useParams().id
   const { projectQR, isSuccess, isLoading } = useProjectQR({ projectId })
-  console.log('projectQR: ', projectQR)
   const columns = [
     {
       title: 'Thời gian quét',
@@ -73,6 +72,7 @@ const ProjectQR = () => {
               </Panel>
             </Collapse>
           ))}
+          {projectQR.length === 0 && <h3>Bạn chưa xuất QR lần nào</h3>}
         </div>
       )}
 
