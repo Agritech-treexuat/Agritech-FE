@@ -228,13 +228,14 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
                   >
                     <Select
                       showSearch
-                      placeholder="Select a person"
+                      placeholder="Lựa chọn nhà phân phối"
                       optionFilterProp="children"
                       filterOption={filterOption}
                       options={alllDistributer.map((distributer) => ({
                         value: distributer.id,
                         label: distributer.name
                       }))}
+                      style={{ width: 200 }}
                     />
                   </Form.Item>
                   <Form.Item

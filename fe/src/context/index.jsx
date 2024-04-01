@@ -7,7 +7,8 @@ const StateContext = createContext()
 export const StateContextProvider = ({ children }) => {
   // Replace with my own smart contract address
   const { contract: qr_contract } = useContract('0x1d0E1A780cE36444E0461C33D159A83d84B989B4')
-  const { contract } = useContract('0xdE64B32dD3E9f678c945177fc957D8c7ec3fA57B')
+  const { contract: camera_contract } = useContract('0x2e6229De05347E25c111393fd7472Fc4b837408F')
+  const { contract } = useContract('0xB16B2D1686fCfA777E1B4ee21412736068B671dA')
 
   const { mutateAsync: addProject } = useContractWrite(contract, 'createProject')
   const { mutateAsync: insertProcess } = useContractWrite(contract, 'insertProcess') // Thêm hàm insertProcess
@@ -21,6 +22,8 @@ export const StateContextProvider = ({ children }) => {
   const { mutateAsync: updateOutput } = useContractWrite(contract, 'updateOutput')
 
   const { mutateAsync: generateQR } = useContractWrite(qr_contract, 'generateQR')
+
+  const { mutateAsync: addCamera } = useContractWrite(camera_contract, 'addCamera')
 
   const address = useAddress()
   const connect = useConnect()
@@ -168,6 +171,19 @@ export const StateContextProvider = ({ children }) => {
     }
   }
 
+  const _addCamera = async () => {
+    try {
+      const data = await addCamera({
+        args: []
+      })
+
+      console.log('contract call success', data)
+      return data.receipt
+    } catch (error) {
+      console.log('contract call failure', error)
+    }
+  }
+
   return (
     <StateContext.Provider
       value={{
@@ -184,7 +200,8 @@ export const StateContextProvider = ({ children }) => {
         updateProcess: _updateProcess,
         updateExpect: _updateExpect,
         updateOutput: _updateOutput,
-        generateQR: _generateQR
+        generateQR: _generateQR,
+        addCamera: _addCamera
       }}
     >
       {children}
