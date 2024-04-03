@@ -1,13 +1,15 @@
 import React from 'react'
 import { Modal, Form, Input } from 'antd'
 
-const AddCameraModal = ({ visible, onCancel, onSubmit }) => {
+const AddCameraModal = ({ visible, onCancel, onSubmit, cameraItem, isUpdate }) => {
   const [form] = Form.useForm()
+  if (isUpdate) form.setFieldsValue(cameraItem)
+  else form.setFieldsValue({ name: '', rtsp_link: '' })
   return (
     <Modal
       open={visible}
-      title="Thêm camera mới"
-      okText="Thêm"
+      title={isUpdate ? 'Chỉnh sửa camera' : 'Thêm camera'}
+      okText={isUpdate ? 'Lưu' : 'Thêm'}
       cancelText="Hủy"
       onCancel={() => {
         form.resetFields()

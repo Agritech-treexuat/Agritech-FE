@@ -9,7 +9,7 @@ import App from './App'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 const queryClient = new QueryClient()
-const clientId = process.env.CLIENT_ID || '456f8fe77c23b4a8321268e19a65d200'
+const clientId = process.env.REACT_APP_CLIENT_ID
 
 root.render(
   <ThirdwebProvider activeChain={Evmos} clientId={clientId}>
