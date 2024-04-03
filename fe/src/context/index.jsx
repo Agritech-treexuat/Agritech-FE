@@ -6,9 +6,12 @@ const StateContext = createContext()
 
 export const StateContextProvider = ({ children }) => {
   // Replace with my own smart contract address
-  const { contract: qr_contract } = useContract('0x1d0E1A780cE36444E0461C33D159A83d84B989B4')
-  const { contract: camera_contract } = useContract('0x2e6229De05347E25c111393fd7472Fc4b837408F')
-  const { contract } = useContract('0xB16B2D1686fCfA777E1B4ee21412736068B671dA')
+  const qr_contract_address = process.env.REACT_APP_QR_CONTRACT_ADDRESS
+  const camera_contract_address = process.env.REACT_APP_CAMERA_CONTRACT_ADDRESS
+  const contract_address = process.env.REACT_APP_PROJECT_CONTRACT_ADDRESS
+  const { contract: qr_contract } = useContract(qr_contract_address)
+  const { contract: camera_contract } = useContract(camera_contract_address)
+  const { contract } = useContract(contract_address)
 
   const { mutateAsync: addProject } = useContractWrite(contract, 'createProject')
   const { mutateAsync: insertProcess } = useContractWrite(contract, 'insertProcess') // Thêm hàm insertProcess

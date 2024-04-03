@@ -662,8 +662,8 @@ const ProjectOutput = () => {
                   })
                 }
               />
-              <Column title="Lượng" dataIndex="amount" key="amount" />
-              <Column title="Lượng trên 1 sản phẩm" dataIndex="amountPerOne" key="amountPerOne" />
+              <Column title="Lượng (kg)" dataIndex="amount" key="amount" />
+              <Column title="Lượng trên 1 sản phẩm (kg)" dataIndex="amountPerOne" key="amountPerOne" />
               <Column
                 title="Ảnh"
                 key="images"
@@ -689,7 +689,7 @@ const ProjectOutput = () => {
                       output.distributerWithAmount.map((npp_item) => (
                         <div key={npp_item?.distributer?.name}>
                           <p>
-                            {npp_item?.distributer?.name} cùng lượng {npp_item?.amount}
+                            {npp_item?.distributer?.name} cùng lượng {npp_item?.amount} (kg)
                           </p>
                         </div>
                       ))
@@ -749,6 +749,8 @@ const ProjectOutput = () => {
                               setLoading(false)
                             }
                       }
+                      okText="Xác nhận"
+                      cancelText="Hủy"
                     >
                       <Button type="primary" disabled={output.exportQR}>
                         Xuất QR
