@@ -5,7 +5,7 @@ contract ProjectContract {
     struct Project {
         address owner;
         string farm;
-        string input;
+        string[] input;
         string[] outputs;
         string[] processes;
         string[] expects;
@@ -34,7 +34,7 @@ contract ProjectContract {
 
         project.owner = _owner;
         project.farm = _farm;
-        project.input = _input;
+        project.input.push(_input);
 
         emit ProjectCreated(numberOfProjects, _owner, _farm, _input);
 
@@ -49,7 +49,7 @@ contract ProjectContract {
         Project storage project = projects[_id];
 
         require(project.owner == msg.sender, "Only owner of this project can update input");
-        project.input = _input;
+        project.input.push(_input);
 
         emit InputUpdated(_id, _input);
     }
@@ -125,12 +125,12 @@ contract ProjectContract {
         emit WeatherInserted(_id, _weather);
     }
 
-    function getProject(uint256 _id) public view returns (address, string memory, string memory) {
+    function getProject(uint256 _id) public view returns (address, string memory, string[] memory) {
         Project storage project = projects[_id];
         return (project.owner, project.farm, project.input);
     }
 
-    function getProjectInput(uint256 _id) public view returns (string memory) {
+    function getProjectInput(uint256 _id) public view returns (string[] memory) {
         return projects[_id].input;
     }
 
