@@ -5,7 +5,8 @@ contract VideoHashContract {
     // Struct to represent video metadata
     struct Video {
         string hash;
-        uint256 date; // Date represented as timestamp
+        uint256 date; // Date represented as timestamp,
+        string timeDesciption;
     }
 
     // Struct to represent connection loss metadata
@@ -46,9 +47,9 @@ contract VideoHashContract {
     }
 
     // Function to add a video hash for a specific camera
-    function addVideo(uint256 cameraId, string memory videoHash, uint256 date) external {
+    function addVideo(uint256 cameraId, string memory videoHash, uint256 date, string memory timeDesciption) external {
         // Create a new video metadata
-        Video memory newVideo = Video(videoHash, date);
+        Video memory newVideo = Video(videoHash, date, timeDesciption);
         // Add the video to the camera's videos array
         cameras[cameraId].videos.push(newVideo);
     }
