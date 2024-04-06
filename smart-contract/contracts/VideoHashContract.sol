@@ -31,6 +31,8 @@ contract VideoHashContract {
 
     // Event emitted when a new camera is added
     event CameraAdded(uint256 indexed cameraId, address indexed owner);
+    event VideoAdded(uint256 indexed cameraId, string videoHash, uint256 date, string timeDesciption);
+    event ConnectionLossAdded(uint256 indexed cameraId, uint256 date, string connectionLoss, uint256 totalLossPerDay);
 
     // Function to add a new camera
     function addCamera() external returns (uint256) {
@@ -52,6 +54,8 @@ contract VideoHashContract {
         Video memory newVideo = Video(videoHash, date, timeDesciption);
         // Add the video to the camera's videos array
         cameras[cameraId].videos.push(newVideo);
+
+        emit VideoAdded(cameraId, videoHash, date, timeDesciption);
     }
 
     // Function to add a connection loss for a specific camera
@@ -60,6 +64,8 @@ contract VideoHashContract {
         ConnectionLoss memory newConnectionLoss = ConnectionLoss(date, connectionLoss, totalLossPerDay);
         // Add the connection loss to the camera's connectionLosses array
         cameras[cameraId].connectionLosses.push(newConnectionLoss);
+
+        emit ConnectionLossAdded(cameraId, date, connectionLoss, totalLossPerDay);
     }
 
     // Function to get all video hashes for a specific camera
