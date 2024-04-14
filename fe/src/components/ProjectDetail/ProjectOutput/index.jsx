@@ -37,6 +37,7 @@ import { metamaskWallet } from '@thirdweb-dev/react'
 import HASH from '../../../services/hashService'
 import QR from '../../../services/qrService'
 import { baseUrl } from '../../../services/http/baseUrl'
+import md5 from 'md5'
 const metamaskConfig = metamaskWallet()
 const { getAccessToken, getRefreshToken } = token
 
@@ -513,11 +514,15 @@ const ProjectOutput = () => {
         .map((item) => `${item.distributer} - ${Math.ceil(item.amount / output.amountPerOne) + 1}`)
         .join('+ ')}`
 
+      // timeGenerate = unix time stamp of current time
+      const timeGenerate = Math.floor(new Date().getTime() / 1000)
+
       const receip = await generateQR({
         projectId,
         numberOfQR,
         privateIds,
-        generateQRInfo
+        generateQRInfo,
+        timeGenerate
       })
 
       const txExport = receip?.transactionHash
@@ -534,7 +539,7 @@ const ProjectOutput = () => {
             distributer: item.distributer._id,
             amount: item.amount,
             numberOfQR: Math.ceil(item.amount / output.amountPerOne) + 1,
-            privateIdsEachDistributer: item.privateIdsEachDistributer
+            privateIdsEachDistributer: item.privateIdsEachDistributer.map((privateId) => md5(privateId))
           }
         }),
         txExport

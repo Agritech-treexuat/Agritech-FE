@@ -1,4 +1,5 @@
 import { Tooltip, Typography } from 'antd'
+import * as XLSX from 'xlsx/xlsx.mjs'
 const { Paragraph } = Typography
 export const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -88,4 +89,14 @@ export function formatTransactionHashTable({ str, a, b }) {
       <Tooltip title={str}>{formatedFormatTransactionHash}</Tooltip>
     </a>
   )
+}
+
+export function exportExcel(data, nameSheet, nameFile) {
+  return new Promise((resolve, reject) => {
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, nameSheet)
+    XLSX.writeFile(wb, nameFile)
+    resolve()
+  })
 }
