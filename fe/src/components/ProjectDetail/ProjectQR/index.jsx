@@ -15,7 +15,6 @@ const { Panel } = Collapse
 
 const ProjectQR = () => {
   const projectId = useParams().id
-  const [selectedQR, setSelectedQR] = React.useState(null)
   const [loading, setLoading] = React.useState(false)
   const { projectQR, isSuccess, isLoading } = useProjectQR({ projectId })
   const { address, qr_contract, connect } = useStateContext()
@@ -55,7 +54,7 @@ const ProjectQR = () => {
     }
   ]
 
-  const handleExportExcel = async () => {
+  const handleExportExcel = async (exportItem) => {
     console.log('Export excel')
     // read data from useContractRead with qr_contract and  Get Product By Project Id (getProductByProjectId)
     //  wait until qrData is success then log qrData
@@ -63,7 +62,7 @@ const ProjectQR = () => {
     // then export to excel
 
     const filterData = qrData.filter((qr) => {
-      return new Date(qr.timeGenerate * 1000).toDateString() === new Date(selectedQR?.Thoi_gian).toDateString()
+      return new Date(qr.timeGenerate * 1000).toDateString() === new Date(exportItem?.Thoi_gian).toDateString()
     })
 
     console.log('filterData: ', filterData)
@@ -103,8 +102,7 @@ const ProjectQR = () => {
                       {qrIsSuccess && (
                         <span
                           onClick={() => {
-                            setSelectedQR(exportItem)
-                            handleExportExcel()
+                            handleExportExcel(exportItem)
                           }}
                         >
                           Xuất danh sách private QR dưới dạng excel
