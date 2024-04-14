@@ -161,10 +161,10 @@ export const StateContextProvider = ({ children }) => {
     }
   }
 
-  const _generateQR = async ({ projectId, numberOfQR, privateIds, generateQRInfo }) => {
+  const _generateQR = async ({ projectId, numberOfQR, privateIds, generateQRInfo, timeGenerate }) => {
     try {
       const data = await generateQR({
-        args: [projectId, numberOfQR, privateIds, generateQRInfo]
+        args: [projectId, numberOfQR, privateIds, generateQRInfo, timeGenerate]
       })
 
       console.log('contract call success', data)
@@ -193,6 +193,7 @@ export const StateContextProvider = ({ children }) => {
         address,
         contract,
         connect,
+        qr_contract,
         createProject: publishProject,
         insertProcess: _insertProcess,
         insertExpect: _insertExpect,

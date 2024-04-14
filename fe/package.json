@@ -29,6 +29,7 @@
     "http-browserify": "latest",
     "https": "npm:https-browserify",
     "https-browserify": "latest",
+    "md5": "^2.3.0",
     "react": "^18.2",
     "react-dom": "^18.2",
     "react-error-boundary": "^4.0.12",
@@ -38,6 +39,7 @@
     "url": "latest",
     "uuid": "^9.0.1",
     "web-vitals": "^3.1.0",
+    "xlsx": "^0.18.5",
     "zlib": "npm:browserify-zlib"
   },
   "scripts": {
