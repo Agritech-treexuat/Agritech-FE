@@ -16,8 +16,6 @@ const FARM = {
         password
       }
     })
-
-    console.log('result: ', result)
     return result
   },
 

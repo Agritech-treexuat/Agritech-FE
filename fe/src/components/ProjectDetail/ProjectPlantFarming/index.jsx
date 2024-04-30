@@ -265,9 +265,9 @@ const ProjectFarming = ({ projectId }) => {
           >
             Chỉnh sửa
           </Button>
-          {plantFarming.isEdited ? (
+          {/* {plantFarming.isEdited ? (
             <EditPlantFarmingHistory historyPlantFarmingEdit={plantFarming.historyPlantFarmingEdit} />
-          ) : null}
+          ) : null} */}
           <AddPlantFarmingPopup
             open={openUpdatePlantFarming}
             onCancel={() => setOpenUpdatePlantFarming(false)}

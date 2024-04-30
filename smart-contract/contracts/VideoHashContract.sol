@@ -16,11 +16,19 @@ contract VideoHashContract {
         uint256 totalLossPerDay; // Total loss per day
     }
 
+    // Struct to represent images
+    struct Image {
+        string hash;
+        uint256 date;
+        string timeDesciption;
+    }
+
     // Struct to represent camera metadata
     struct Camera {
         address owner; // Owner of the camera
         Video[] videos; // Array of videos
         ConnectionLoss[] connectionLosses; // Array of connection losses
+        Image[] images; // Array of images
     }
 
     // Mapping to store cameras by ID
@@ -33,6 +41,7 @@ contract VideoHashContract {
     event CameraAdded(uint256 indexed cameraId, address indexed owner);
     event VideoAdded(uint256 indexed cameraId, string videoHash, uint256 date, string timeDesciption);
     event ConnectionLossAdded(uint256 indexed cameraId, uint256 date, string connectionLoss, uint256 totalLossPerDay);
+    event ImageAdded(uint256 indexed cameraId, string imageHash, uint256 date, string timeDesciption);
 
     // Function to add a new camera
     function addCamera() external returns (uint256) {
@@ -68,6 +77,16 @@ contract VideoHashContract {
         emit ConnectionLossAdded(cameraId, date, connectionLoss, totalLossPerDay);
     }
 
+    // Function to add a image hash for a specific camera
+    function addImage(uint256 cameraId, string memory imageHash, uint256 date, string memory timeDesciption) external {
+        // Create a new image metadata
+        Image memory newImage = Image(imageHash, date, timeDesciption);
+        // Add the image to the camera's images array
+        cameras[cameraId].images.push(newImage);
+
+        emit ImageAdded(cameraId, imageHash, date, timeDesciption);
+    }
+
     // Function to get all video hashes for a specific camera
     function getVideosByCamera(uint256 cameraId) external view returns (Video[] memory) {
         return cameras[cameraId].videos;
@@ -100,6 +119,25 @@ contract VideoHashContract {
         for (uint256 i = 0; i < lossCount; i++) {
             if (cameras[cameraId].connectionLosses[i].date >= startTime && cameras[cameraId].connectionLosses[i].date <= endTime) {
                 result[resultIndex] = cameras[cameraId].connectionLosses[i];
+                resultIndex++;
+            }
+        }
+        return result;
+    }
+
+    // Function to get all image hashes for a specific camera
+    function getImagesByCamera(uint256 cameraId) external view returns (Image[] memory) {
+        return cameras[cameraId].images;
+    }
+
+    // Function to get images by date range for a specific camera
+    function getImagesByDateRange(uint256 cameraId, uint256 startTime, uint256 endTime) external view returns (Image[] memory) {
+        Image[] memory result;
+        uint256 resultIndex = 0;
+        uint256 imageCount = cameras[cameraId].images.length;
+        for (uint256 i = 0; i < imageCount; i++) {
+            if (cameras[cameraId].images[i].date >= startTime && cameras[cameraId].images[i].date <= endTime) {
+                result[resultIndex] = cameras[cameraId].images[i];
                 resultIndex++;
             }
         }
