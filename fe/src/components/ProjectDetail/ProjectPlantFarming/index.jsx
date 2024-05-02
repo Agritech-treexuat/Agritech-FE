@@ -3,7 +3,7 @@ import useProjectPlantFarming from './useProjectPlantFarming'
 import Loading from '../../../pages/Loading'
 import AddPlantFarmingPopup from '../../ManagePlant/AddPlantFarmingPopup'
 import PLANT_FARMING from '../../../services/plantFarmingService'
-import { Button, Divider, Table } from 'antd'
+import { Button, Divider, Table, notification } from 'antd'
 import SelectOptionConfirmationModal from './SelectOptionConfirmationModal'
 import useProjectInput from '../ProjectInput/useProjectInput'
 import PROJECT from '../../../services/projectService'
@@ -32,6 +32,15 @@ const ProjectFarming = ({ projectId }) => {
     isFarmPlantFarming
   })
 
+  const [api, contextHolder] = notification.useNotification()
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5
+    })
+  }
+
   const handleUpdatePlantFarming = async (values) => {
     try {
       await PLANT_FARMING.updatePlantFarming({
@@ -39,8 +48,10 @@ const ProjectFarming = ({ projectId }) => {
         data: values
       })
       refetch()
+      openNotificationWithIcon('success', 'Cập nhật quy trình canh tác thành công', '')
       setOpenUpdatePlantFarming(false)
     } catch (error) {
+      openNotificationWithIcon('error', 'Cập nhật quy trình canh tác thất bại', '')
       console.error(error)
     }
   }
@@ -52,8 +63,10 @@ const ProjectFarming = ({ projectId }) => {
         data: values
       })
       refetch()
+      openNotificationWithIcon('success', 'Thêm quy trình canh tác thành công', '')
       setOpenAddPlantFarming(false)
     } catch (error) {
+      openNotificationWithIcon('error', 'Thêm quy trình canh tác thất bại', '')
       console.error(error)
     }
   }
@@ -170,157 +183,163 @@ const ProjectFarming = ({ projectId }) => {
   }
   if (plantFarming === null && isSuccessPlantFarming) {
     return (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h1 style={{ fontSize: '36px', fontWeight: 'bold' }}>Dự án này chưa có Quy trình canh tác</h1>
-        <button onClick={() => setOpenConfirmPlantFarming(true)} style={{ fontSize: '24px', marginTop: '20px' }}>
-          Khởi tạo quy trình canh tác
-        </button>
-        <SelectOptionConfirmationModal
-          visible={opneConfirmPlantFarming}
-          onCancel={() => setOpenConfirmPlantFarming(false)}
-          onContinueWithEmpty={() => {
-            setIsDefaultPlantFarming(false)
-            setIsFarmPlantFarming(false)
-            setOpenConfirmPlantFarming(false)
-            setOpenAddPlantFarming(true)
-          }}
-          onContinueWithRecommendPlantFarming={() => {
-            setIsFarmPlantFarming(false)
-            setIsDefaultPlantFarming(true)
-            setOpenConfirmPlantFarming(false)
-            setOpenAddPlantFarming(true)
-          }}
-          onContinueWithFarmPlantfarming={() => {
-            setIsDefaultPlantFarming(false)
-            setIsFarmPlantFarming(true)
-            setOpenConfirmPlantFarming(false)
-            setOpenAddPlantFarming(true)
-          }}
-        />
-        {isSuccessRecommendPlantFarming && isDefaultPlantFarming && (
-          <AddPlantFarmingPopup
-            open={openAddPlantFarming}
-            onCancel={() => {
+      <>
+        {contextHolder}
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <h1 style={{ fontSize: '36px', fontWeight: 'bold' }}>Dự án này chưa có Quy trình canh tác</h1>
+          <button onClick={() => setOpenConfirmPlantFarming(true)} style={{ fontSize: '24px', marginTop: '20px' }}>
+            Khởi tạo quy trình canh tác
+          </button>
+          <SelectOptionConfirmationModal
+            visible={opneConfirmPlantFarming}
+            onCancel={() => setOpenConfirmPlantFarming(false)}
+            onContinueWithEmpty={() => {
               setIsDefaultPlantFarming(false)
-              setOpenAddPlantFarming(false)
-            }}
-            onCreate={handleAddPlantFarming}
-            recommendPlantFarming={dataRecommendPlantFarming}
-            isUpdate={true}
-          />
-        )}
-        {isSuccessFarmPlantFarming && isFarmPlantFarming && (
-          <AddPlantFarmingPopup
-            open={openAddPlantFarming}
-            onCancel={() => {
               setIsFarmPlantFarming(false)
-              setOpenAddPlantFarming(false)
+              setOpenConfirmPlantFarming(false)
+              setOpenAddPlantFarming(true)
             }}
-            onCreate={handleAddPlantFarming}
-            recommendPlantFarming={dataFarmPlantFarming}
-            isUpdate={true}
-          />
-        )}
-        {!isFarmPlantFarming && !isDefaultPlantFarming && (
-          <AddPlantFarmingPopup
-            open={openAddPlantFarming}
-            onCancel={() => {
-              setOpenAddPlantFarming(false)
+            onContinueWithRecommendPlantFarming={() => {
+              setIsFarmPlantFarming(false)
+              setIsDefaultPlantFarming(true)
+              setOpenConfirmPlantFarming(false)
+              setOpenAddPlantFarming(true)
             }}
-            onCreate={handleAddPlantFarming}
-            recommendPlantFarming={null}
+            onContinueWithFarmPlantfarming={() => {
+              setIsDefaultPlantFarming(false)
+              setIsFarmPlantFarming(true)
+              setOpenConfirmPlantFarming(false)
+              setOpenAddPlantFarming(true)
+            }}
           />
-        )}
-      </div>
+          {isSuccessRecommendPlantFarming && isDefaultPlantFarming && (
+            <AddPlantFarmingPopup
+              open={openAddPlantFarming}
+              onCancel={() => {
+                setIsDefaultPlantFarming(false)
+                setOpenAddPlantFarming(false)
+              }}
+              onCreate={handleAddPlantFarming}
+              recommendPlantFarming={dataRecommendPlantFarming}
+              isUpdate={true}
+            />
+          )}
+          {isSuccessFarmPlantFarming && isFarmPlantFarming && (
+            <AddPlantFarmingPopup
+              open={openAddPlantFarming}
+              onCancel={() => {
+                setIsFarmPlantFarming(false)
+                setOpenAddPlantFarming(false)
+              }}
+              onCreate={handleAddPlantFarming}
+              recommendPlantFarming={dataFarmPlantFarming}
+              isUpdate={true}
+            />
+          )}
+          {!isFarmPlantFarming && !isDefaultPlantFarming && (
+            <AddPlantFarmingPopup
+              open={openAddPlantFarming}
+              onCancel={() => {
+                setOpenAddPlantFarming(false)
+              }}
+              onCreate={handleAddPlantFarming}
+              recommendPlantFarming={null}
+            />
+          )}
+        </div>
+      </>
     )
   } else {
     // Nếu có plantFarming, hiển thị nó
     return (
-      <div>
-        <h2>{`Quy trình canh tác cho cây ${projectInfo.plant?.plant_name} với hạt giống ${projectInfo.seed?.seed_name}`}</h2>
-        <Button
-          type="primary"
-          onClick={() => {
-            setOpenUpdatePlantFarming(true)
-          }}
-          style={{ marginRight: '20px' }}
-        >
-          Chỉnh sửa
-        </Button>
-        {plantFarming.isEdited ? (
-          <EditPlantFarmingHistory historyPlantFarmingEdit={plantFarming.historyPlantFarmingEdit} />
-        ) : null}
-        <AddPlantFarmingPopup
-          open={openUpdatePlantFarming}
-          onCancel={() => setOpenUpdatePlantFarming(false)}
-          onCreate={handleUpdatePlantFarming}
-          recommendPlantFarming={plantFarming}
-          isUpdate={true}
-        />
+      <>
+        {contextHolder}
         <div>
-          {/* time cultivates: [{ start, end }] */}
-          <h2> Thời gian canh tác </h2>
-          <Table
-            columns={timeCultivatesColumns}
-            dataSource={timeCultivatesDataSource(plantFarming)}
-            pagination={false}
+          <h2>{`Quy trình canh tác cho cây ${projectInfo.plant?.plant_name} với hạt giống ${projectInfo.seed?.seed_name}`}</h2>
+          <Button
+            type="primary"
+            onClick={() => {
+              setOpenUpdatePlantFarming(true)
+            }}
+            style={{ marginRight: '20px' }}
+          >
+            Chỉnh sửa
+          </Button>
+          {/* {plantFarming.isEdited ? (
+            <EditPlantFarmingHistory historyPlantFarmingEdit={plantFarming.historyPlantFarmingEdit} />
+          ) : null} */}
+          <AddPlantFarmingPopup
+            open={openUpdatePlantFarming}
+            onCancel={() => setOpenUpdatePlantFarming(false)}
+            onCreate={handleUpdatePlantFarming}
+            recommendPlantFarming={plantFarming}
+            isUpdate={true}
           />
-        </div>
-        <Divider />
-        <div>
-          {/* bestTimeCultivate: {start, end} */}
-          <h2> Thời gian canh tác tốt nhất </h2>
-          <p>Tháng bắt đầu: {plantFarming.bestTimeCultivate.start}</p>
-          <p>Tháng kết thúc: {plantFarming.bestTimeCultivate.end}</p>
-        </div>
+          <div>
+            {/* time cultivates: [{ start, end }] */}
+            <h2> Thời gian canh tác </h2>
+            <Table
+              columns={timeCultivatesColumns}
+              dataSource={timeCultivatesDataSource(plantFarming)}
+              pagination={false}
+            />
+          </div>
+          <Divider />
+          <div>
+            {/* bestTimeCultivate: {start, end} */}
+            <h2> Thời gian canh tác tốt nhất </h2>
+            <p>Tháng bắt đầu: {plantFarming.bestTimeCultivate.start}</p>
+            <p>Tháng kết thúc: {plantFarming.bestTimeCultivate.end}</p>
+          </div>
 
-        <Divider />
-        {/* farmingTime: number */}
-        <p>Thời gian trồng cây: {plantFarming.farmingTime} ngày</p>
-        <Divider />
-        {/* harvestTime: number */}
-        <p>Thời gian thu hoạch: {plantFarming.harvestTime} ngày</p>
-        <Divider />
-        <div>
-          {/* cultivationActivities: [{name, description}] */}
-          <h2> Hoạt động với đất </h2>
-          <Table
-            columns={cultivationActivitiesColumns}
-            dataSource={cultivationActivitiesDataSource(plantFarming.cultivationActivities)}
-            pagination={false}
-          />
+          <Divider />
+          {/* farmingTime: number */}
+          <p>Thời gian trồng cây: {plantFarming.farmingTime} ngày</p>
+          <Divider />
+          {/* harvestTime: number */}
+          <p>Thời gian thu hoạch: {plantFarming.harvestTime} ngày</p>
+          <Divider />
+          <div>
+            {/* cultivationActivities: [{name, description}] */}
+            <h2> Hoạt động với đất </h2>
+            <Table
+              columns={cultivationActivitiesColumns}
+              dataSource={cultivationActivitiesDataSource(plantFarming.cultivationActivities)}
+              pagination={false}
+            />
+          </div>
+          <Divider />
+          <div>
+            {/*  plantingActivity: {density, description} */}
+            <h2> Hoạt động trong gieo trồng </h2>
+            <p>
+              <strong>Mật độ:</strong> {plantFarming?.plantingActivity?.density}
+            </p>
+            <p>
+              <strong>Mô tả:</strong> {plantFarming?.plantingActivity?.description}
+            </p>
+          </div>
+          <Divider />
+          <div>
+            {/* fertilizationActivities: [{ fertilizationTime, type, description }] */}
+            <h2> Hoạt động phân bón </h2>
+            <Table
+              columns={fertilizationActivitiesColumns}
+              dataSource={fertilizationActivitiesDataSource(plantFarming.fertilizationActivities)}
+            />
+          </div>
+          <Divider />
+          <div>
+            {/* pestAndDiseaseControlActivities: [{name, type, symptoms, description, solution: [string], note}] */}
+            <h2> Hoạt động phòng ngừa sâu, bệnh </h2>
+            <Table
+              columns={pestAndDiseaseControlActivitiesColumns}
+              dataSource={pestAndDiseaseControlActivitiesDataSource(plantFarming.pestAndDiseaseControlActivities)}
+            />
+          </div>
+          <Divider />
         </div>
-        <Divider />
-        <div>
-          {/*  plantingActivity: {density, description} */}
-          <h2> Hoạt động trong gieo trồng </h2>
-          <p>
-            <strong>Mật độ:</strong> {plantFarming?.plantingActivity?.density}
-          </p>
-          <p>
-            <strong>Mô tả:</strong> {plantFarming?.plantingActivity?.description}
-          </p>
-        </div>
-        <Divider />
-        <div>
-          {/* fertilizationActivities: [{ fertilizationTime, type, description }] */}
-          <h2> Hoạt động phân bón </h2>
-          <Table
-            columns={fertilizationActivitiesColumns}
-            dataSource={fertilizationActivitiesDataSource(plantFarming.fertilizationActivities)}
-          />
-        </div>
-        <Divider />
-        <div>
-          {/* pestAndDiseaseControlActivities: [{name, type, symptoms, description, solution: [string], note}] */}
-          <h2> Hoạt động phòng ngừa sâu, bệnh </h2>
-          <Table
-            columns={pestAndDiseaseControlActivitiesColumns}
-            dataSource={pestAndDiseaseControlActivitiesDataSource(plantFarming.pestAndDiseaseControlActivities)}
-          />
-        </div>
-        <Divider />
-      </div>
+      </>
     )
   }
 }

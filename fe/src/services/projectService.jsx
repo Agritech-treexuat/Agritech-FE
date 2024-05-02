@@ -123,20 +123,6 @@ const PROJECT = {
       })
   },
 
-  createProjectGarden: async (data, gardenId) => {
-    return await privateHttp({
-      method: 'POST',
-      url: `/farm/createProjectGarden/${gardenId}`,
-      data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
   addExpect: async (data, projectId) => {
     return await privateHttp({
       method: 'POST',
@@ -170,19 +156,6 @@ const PROJECT = {
       method: 'POST',
       url: `project/${projectId}/output`,
       data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getInit: async (projectId) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/farm/project/${projectId}/input`
     })
       .then((res) => {
         return res
@@ -231,19 +204,6 @@ const PROJECT = {
       })
   },
 
-  getImage: async (projectId, selectedDate) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/farm/project/${projectId}/image/?date=${selectedDate}`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
   updateProcess: async ({ data, projectId, processId }) => {
     return await privateHttp({
       method: 'PATCH',
@@ -276,61 +236,6 @@ const PROJECT = {
     return await privateHttp({
       method: 'PATCH',
       url: `project/${projectId}/output/${outputId}`,
-      data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  editInput: async (data, projectId) => {
-    return await privateHttp({
-      method: 'POST',
-      url: `/farm/project/editInput/${projectId}`,
-      data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  getPlanFromProject: async (projectId) => {
-    return await publicHttp({
-      method: 'GET',
-      url: `/farm/plan/${projectId}`
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  addPlantCultivatesToProject: async (data, projectId) => {
-    return await privateHttp({
-      method: 'POST',
-      url: `/farm/addPlantCultivate/${projectId}`,
-      data
-    })
-      .then((res) => {
-        return res
-      })
-      .catch((err) => {
-        return err
-      })
-  },
-
-  updatePlantCultivatesToProject: async (data, projectId) => {
-    return await privateHttp({
-      method: 'POST',
-      url: `/farm/addPlantCultivate/${projectId}`,
       data
     })
       .then((res) => {

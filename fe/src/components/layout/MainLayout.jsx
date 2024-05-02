@@ -18,9 +18,6 @@ function getItem(label, key, icon, link) {
 
 const items = [
   getItem('Quản lý dự án', '1', <DesktopOutlined />, '/home'),
-  getItem('Quản lý vườn TRH', '2', <DesktopOutlined />, '/manage-planting-garden'),
-  getItem('Quản lý yêu cầu', '3', <DesktopOutlined />, '/manage-request'),
-  getItem('Quản lý bản mẫu', '4', <DesktopOutlined />, '/manage-template'),
   getItem('Quản lý cây trồng', '5', <TeamOutlined />, '/manage-plant'),
   getItem('Thông tin khác', '6', <PieChartOutlined />, '/other-information'),
   getItem('Trang cá nhân', '7', <UserOutlined />, '/profile')
