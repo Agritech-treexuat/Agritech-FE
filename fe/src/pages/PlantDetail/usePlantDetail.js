@@ -12,14 +12,10 @@ export default function usePlantDetail({ plantId, seedId, isDefaultPlantFarming 
       image: plan.seed.seed_thumb,
       seedId: plan.seed._id,
       isSeedDefault: plan.seed.isSeedDefault,
-      timeCultivates: plan.timeCultivates,
       cultivationActivities: plan.cultivationActivities,
       plantingActivity: plan.plantingActivity,
       fertilizationActivities: plan.fertilizationActivities,
-      pestAndDiseaseControlActivities: plan.pestAndDiseaseControlActivities,
-      bestTimeCultivate: plan.bestTimeCultivate,
-      farmingTime: plan.farmingTime,
-      harvestTime: plan.harvestTime
+      pestAndDiseaseControlActivities: plan.pestAndDiseaseControlActivities
     }))
     return { plans }
   }, [])
@@ -69,14 +65,10 @@ export default function usePlantDetail({ plantId, seedId, isDefaultPlantFarming 
     }
     return {
       recommendPlantFarming: {
-        timeCultivates: recommendPlantFarmingTmp?.timeCultivates,
         cultivationActivities: recommendPlantFarmingTmp?.cultivationActivities,
         plantingActivity: recommendPlantFarmingTmp?.plantingActivity,
         fertilizationActivities: recommendPlantFarmingTmp?.fertilizationActivities,
-        pestAndDiseaseControlActivities: recommendPlantFarmingTmp?.pestAndDiseaseControlActivities,
-        bestTimeCultivate: recommendPlantFarmingTmp?.bestTimeCultivate,
-        farmingTime: recommendPlantFarmingTmp?.farmingTime,
-        harvestTime: recommendPlantFarmingTmp?.harvestTime
+        pestAndDiseaseControlActivities: recommendPlantFarmingTmp?.pestAndDiseaseControlActivities
       }
     }
   }, [])

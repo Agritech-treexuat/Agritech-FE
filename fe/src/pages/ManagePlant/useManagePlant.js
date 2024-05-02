@@ -36,14 +36,10 @@ export default function useManagePlant({ seedId, isDefaultPlantFarming }) {
     if (recommendPlantFarmingDefault)
       return {
         recommendPlantFarming: {
-          timeCultivates: recommendPlantFarmingTmp?.timeCultivates,
           cultivationActivities: recommendPlantFarmingTmp?.cultivationActivities,
           plantingActivity: recommendPlantFarmingTmp?.plantingActivity,
           fertilizationActivities: recommendPlantFarmingTmp?.fertilizationActivities,
-          pestAndDiseaseControlActivities: recommendPlantFarmingTmp?.pestAndDiseaseControlActivities,
-          bestTimeCultivate: recommendPlantFarmingTmp?.bestTimeCultivate,
-          farmingTime: recommendPlantFarmingTmp?.farmingTime,
-          harvestTime: recommendPlantFarmingTmp?.harvestTime
+          pestAndDiseaseControlActivities: recommendPlantFarmingTmp?.pestAndDiseaseControlActivities
         }
       }
   }, [])
