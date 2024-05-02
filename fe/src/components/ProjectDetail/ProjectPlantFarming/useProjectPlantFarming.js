@@ -19,14 +19,10 @@ export default function useProjectPlantFarming({
       id: data?._id,
       plant: data?.plant,
       seed: data?.seed,
-      timeCultivates: data?.timeCultivates,
       cultivationActivities: data?.cultivationActivities,
       plantingActivity: data?.plantingActivity,
       fertilizationActivities: data?.fertilizationActivities,
       pestAndDiseaseControlActivities: data?.pestAndDiseaseControlActivities,
-      bestTimeCultivate: data?.bestTimeCultivate,
-      farmingTime: data?.farmingTime,
-      harvestTime: data?.harvestTime,
       isEdited: data?.isEdited,
       historyPlantFarmingEdit: data?.historyPlantFarmingEdit,
       createdAtTime: data?.createdAtTime
@@ -50,14 +46,10 @@ export default function useProjectPlantFarming({
   const parseDataRecommendPlantFarming = useCallback((data) => {
     return {
       recommendPlantFarming: {
-        timeCultivates: data?.timeCultivates,
         cultivationActivities: data?.cultivationActivities,
         plantingActivity: data?.plantingActivity,
         fertilizationActivities: data?.fertilizationActivities,
-        pestAndDiseaseControlActivities: data?.pestAndDiseaseControlActivities,
-        bestTimeCultivate: data?.bestTimeCultivate,
-        farmingTime: data?.farmingTime,
-        harvestTime: data?.harvestTime
+        pestAndDiseaseControlActivities: data?.pestAndDiseaseControlActivities
       }
     }
   }, [])
@@ -88,14 +80,10 @@ export default function useProjectPlantFarming({
     }
     return {
       recommendPlantFarming: {
-        timeCultivates: recommendPlantFarmingTmp?.timeCultivates,
         cultivationActivities: recommendPlantFarmingTmp?.cultivationActivities,
         plantingActivity: recommendPlantFarmingTmp?.plantingActivity,
         fertilizationActivities: recommendPlantFarmingTmp?.fertilizationActivities,
-        pestAndDiseaseControlActivities: recommendPlantFarmingTmp?.pestAndDiseaseControlActivities,
-        bestTimeCultivate: recommendPlantFarmingTmp?.bestTimeCultivate,
-        farmingTime: recommendPlantFarmingTmp?.farmingTime,
-        harvestTime: recommendPlantFarmingTmp?.harvestTime
+        pestAndDiseaseControlActivities: recommendPlantFarmingTmp?.pestAndDiseaseControlActivities
       }
     }
   }, [])

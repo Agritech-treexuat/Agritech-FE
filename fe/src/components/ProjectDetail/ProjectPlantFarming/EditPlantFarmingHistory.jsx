@@ -31,16 +31,6 @@ const EditPlantFarmingHistory = ({ historyPlantFarmingEdit }) => {
           <div style={{ width: '1000' }}>
             <Divider>Nhập lúc: {formatDateTime(plantFarming.createdAtTime)}</Divider>
             <Divider>Chỉnh sửa lúc: {formatDateTime(plantFarming.modifiedAt)}</Divider>
-            <div>
-              {/* time cultivates: [{ start, end }] */}
-              <h2> Thoi gian canh tac </h2>
-              {plantFarming.timeCultivates.map((timeCultivate) => (
-                <div key={timeCultivate._id}>
-                  <p>Thoi gian bat dau: {timeCultivate.start}</p>
-                  <p>Thoi gian ket thuc: {timeCultivate.end}</p>
-                </div>
-              ))}
-            </div>
             <Divider />
             <div>
               {/*  cultivationActivities: [{name, description}] */}
@@ -93,20 +83,6 @@ const EditPlantFarmingHistory = ({ historyPlantFarmingEdit }) => {
                 </div>
               ))}
             </div>
-            <Divider />
-            <div>
-              {/* bestTimeCultivate: {start, end} */}
-              <h2> Thoi gian canh tac tot nhat </h2>
-              <p>Thoi gian bat dau: {plantFarming.bestTimeCultivate.start}</p>
-              <p>Thoi gian ket thuc: {plantFarming.bestTimeCultivate.end}</p>
-            </div>
-
-            <Divider />
-            {/* farmingTime: number */}
-            <p>Thoi gian trong cay: {plantFarming.farmingTime}</p>
-            <Divider />
-            {/* harvestTime: number */}
-            <p>Thoi gian thu hoach: {plantFarming.harvestTime}</p>
             <Divider />
           </div>
         ))}

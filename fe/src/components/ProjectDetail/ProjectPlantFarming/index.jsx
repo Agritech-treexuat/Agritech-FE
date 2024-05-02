@@ -71,25 +71,6 @@ const ProjectFarming = ({ projectId }) => {
     }
   }
 
-  const timeCultivatesColumns = [
-    {
-      title: 'Tháng bắt đầu',
-      dataIndex: 'start',
-      key: 'start'
-    },
-    {
-      title: 'Tháng kết thúc',
-      dataIndex: 'end',
-      key: 'end'
-    }
-  ]
-
-  const timeCultivatesDataSource = (item) =>
-    item.timeCultivates.map((timeCultivate, index) => ({
-      ...timeCultivate,
-      key: index
-    }))
-
   const cultivationActivitiesColumns = [
     {
       title: 'Tên hoạt động',
@@ -275,29 +256,6 @@ const ProjectFarming = ({ projectId }) => {
             recommendPlantFarming={plantFarming}
             isUpdate={true}
           />
-          <div>
-            {/* time cultivates: [{ start, end }] */}
-            <h2> Thời gian canh tác </h2>
-            <Table
-              columns={timeCultivatesColumns}
-              dataSource={timeCultivatesDataSource(plantFarming)}
-              pagination={false}
-            />
-          </div>
-          <Divider />
-          <div>
-            {/* bestTimeCultivate: {start, end} */}
-            <h2> Thời gian canh tác tốt nhất </h2>
-            <p>Tháng bắt đầu: {plantFarming.bestTimeCultivate.start}</p>
-            <p>Tháng kết thúc: {plantFarming.bestTimeCultivate.end}</p>
-          </div>
-
-          <Divider />
-          {/* farmingTime: number */}
-          <p>Thời gian trồng cây: {plantFarming.farmingTime} ngày</p>
-          <Divider />
-          {/* harvestTime: number */}
-          <p>Thời gian thu hoạch: {plantFarming.harvestTime} ngày</p>
           <Divider />
           <div>
             {/* cultivationActivities: [{name, description}] */}
