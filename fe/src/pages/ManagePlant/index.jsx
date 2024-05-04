@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { Row, Col, Input, Button, Popconfirm, notification, List, Tooltip, Typography, Radio } from 'antd'
+import { Row, Col, Input, Button, Popconfirm, notification, List, Tooltip, Typography, Radio, Spin } from 'antd'
 import { Link } from 'react-router-dom'
 import Loading from '../Loading'
 import { Card } from 'antd'
@@ -28,6 +28,7 @@ const ManagePlant = () => {
   const [selectedUpdatePlant, setSelectedUpdatePlant] = useState(null)
   const [openUpdatePlant, setOpenUpdatePlant] = useState(false)
   const [selectedPlantType, setSelectedPlantType] = useState('all')
+  const [loading, setLoading] = useState(false)
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
     api[type]({
@@ -45,14 +46,17 @@ const ManagePlant = () => {
 
   const onCreate = async (values) => {
     try {
+      setLoading(true)
       const res = await PLANT.addPlantByRecommendPlantId(selectedPlant.id)
       if (res.response && res.response?.data?.message === 'Plant already exists') {
+        setLoading(false)
         openNotificationWithIcon('error', 'Thông báo', 'Cây đã tồn tại')
       } else {
         const resSeed = await SEED.addSeedByRecommendSeedId({
           recommendSeedId: selectedSeed.id
         })
         if (resSeed.response && resSeed.response?.data?.message === 'Seed already exists') {
+          setLoading(false)
           refetch()
           openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công (Hạt giống đã tồn tại trong hệ thống)')
         } else {
@@ -64,6 +68,7 @@ const ManagePlant = () => {
               ...values
             }
           })
+          setLoading(false)
           if (res.status === 200) {
             refetch()
             openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
@@ -75,8 +80,10 @@ const ManagePlant = () => {
       setOpen(false)
       setOpenSeed(false)
       setOpenPlantFarming(false)
+      setLoading(false)
     } catch (error) {
       console.error(error)
+      setLoading(false)
       openNotificationWithIcon('error', 'Thông báo', 'Thêm thất bại')
       setOpen(false)
       setOpenSeed(false)
@@ -111,14 +118,18 @@ const ManagePlant = () => {
 
   const handleDelete = async (plantId) => {
     try {
+      setLoading(true)
       const res = await PLANT.deletePlant(plantId)
       if (res.status === 200) {
+        setLoading(false)
         refetch()
         openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
       } else {
+        setLoading(false)
         openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
       }
     } catch (error) {
+      setLoading(false)
       console.log(error)
       openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
     }
@@ -126,6 +137,7 @@ const ManagePlant = () => {
 
   const handleUpdatePlant = async (values) => {
     try {
+      setLoading(true)
       const data = {
         plant_description: values.description,
         plant_thumb: values.thumb[0].url || values.thumb[0].response.metadata.thumb_url
@@ -135,12 +147,15 @@ const ManagePlant = () => {
         data
       })
       if (res.status === 200) {
+        setLoading(false)
         refetch()
         openNotificationWithIcon('success', 'Thông báo', 'Cập nhật thành công')
       } else {
+        setLoading(false)
         openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
       }
     } catch (error) {
+      setLoading(false)
       console.log(error)
       openNotificationWithIcon('error', 'Thông báo', 'Cập nhật thất bại')
     }
@@ -172,168 +187,170 @@ const ManagePlant = () => {
 
   return (
     <>
-      {contextHolder}
-      {isLoading && <Loading />}
-      {isSuccess && (
-        <div>
-          <h1>Danh sách các cây</h1>
-          <Row>
-            <Col span={8}>
-              <Input
-                placeholder="Tìm kiếm cây"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ marginBottom: '30px' }}
-              />
-            </Col>
-            <Col span={1}></Col>
-            <Col span={6}>
-              <div>
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    setOpen(true)
-                  }}
-                >
-                  Thêm cây mới
-                </Button>
-                <AddPlantPopup
-                  open={open}
-                  onClose={() => setOpen(false)}
-                  selectedPlant={selectedPlant}
-                  setSelectedPlant={setSelectedPlant}
-                  handleAddPlant={handleAddPlant}
+      <Spin spinning={loading}>
+        {contextHolder}
+        {isLoading && <Loading />}
+        {isSuccess && (
+          <div>
+            <h1>Danh sách các cây</h1>
+            <Row>
+              <Col span={8}>
+                <Input
+                  placeholder="Tìm kiếm cây"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ marginBottom: '30px' }}
                 />
-                <AddSeedPopup
-                  selectedPlant={selectedPlant}
-                  open={openSeed}
-                  onClose={() => {
-                    setOpenSeed(false)
-                  }}
-                  selectedSeed={selectedSeed}
-                  setSelectedSeed={setSelectedSeed}
-                  handleAddSeed={handleAddSeed}
-                />
-                <AddSeedConfirmationModal
-                  visible={confirmationModalVisible}
-                  onCancel={() => setConfirmationModalVisible(false)}
-                  onContinueWithEmpty={handleContinueWithEmpty}
-                  onContinueWithTemplate={handleContinueWithTemplate}
-                />
-                <UpdatePlantInfo
-                  visible={openUpdatePlant}
-                  onCancel={() => setOpenUpdatePlant(false)}
-                  onCreate={handleUpdatePlant}
-                  isUpdate={true}
-                  plant={selectedUpdatePlant}
-                />
-                {isDefaultPlantFarming ? (
-                  <>
-                    {isSuccessRecommendPlantFarming && (
+              </Col>
+              <Col span={1}></Col>
+              <Col span={6}>
+                <div>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      setOpen(true)
+                    }}
+                  >
+                    Thêm cây mới
+                  </Button>
+                  <AddPlantPopup
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    selectedPlant={selectedPlant}
+                    setSelectedPlant={setSelectedPlant}
+                    handleAddPlant={handleAddPlant}
+                  />
+                  <AddSeedPopup
+                    selectedPlant={selectedPlant}
+                    open={openSeed}
+                    onClose={() => {
+                      setOpenSeed(false)
+                    }}
+                    selectedSeed={selectedSeed}
+                    setSelectedSeed={setSelectedSeed}
+                    handleAddSeed={handleAddSeed}
+                  />
+                  <AddSeedConfirmationModal
+                    visible={confirmationModalVisible}
+                    onCancel={() => setConfirmationModalVisible(false)}
+                    onContinueWithEmpty={handleContinueWithEmpty}
+                    onContinueWithTemplate={handleContinueWithTemplate}
+                  />
+                  <UpdatePlantInfo
+                    visible={openUpdatePlant}
+                    onCancel={() => setOpenUpdatePlant(false)}
+                    onCreate={handleUpdatePlant}
+                    isUpdate={true}
+                    plant={selectedUpdatePlant}
+                  />
+                  {isDefaultPlantFarming ? (
+                    <>
+                      {isSuccessRecommendPlantFarming && (
+                        <AddPlantFarmingPopup
+                          open={openPlantFarming}
+                          onCancel={() => setOpenPlantFarming(false)}
+                          onCreate={onCreate}
+                          recommendPlantFarming={recommendPlantFarming}
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <>
                       <AddPlantFarmingPopup
                         open={openPlantFarming}
                         onCancel={() => setOpenPlantFarming(false)}
                         onCreate={onCreate}
-                        recommendPlantFarming={recommendPlantFarming}
+                        recommendPlantFarming={null}
                       />
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <AddPlantFarmingPopup
-                      open={openPlantFarming}
-                      onCancel={() => setOpenPlantFarming(false)}
-                      onCreate={onCreate}
-                      recommendPlantFarming={null}
-                    />
-                  </>
+                    </>
+                  )}
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={8}>
+                <div style={{ marginBottom: '20px' }}>
+                  <Radio.Group onChange={(e) => setSelectedPlantType(e.target.value)} value={selectedPlantType}>
+                    <Radio value="all">Tất cả</Radio>
+                    <Radio value="leafy">Rau ăn lá</Radio>
+                    <Radio value="herb">Rau gia vị</Radio>
+                    <Radio value="root">Củ</Radio>
+                    <Radio value="fruit">Quả</Radio>
+                  </Radio.Group>
+                </div>
+              </Col>
+            </Row>
+            <Row>
+              <List
+                grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 4, xl: 4, xxl: 4 }}
+                dataSource={filterPlantsByType(selectedPlantType).filter((plant) =>
+                  plant.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
                 )}
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={8}>
-              <div style={{ marginBottom: '20px' }}>
-                <Radio.Group onChange={(e) => setSelectedPlantType(e.target.value)} value={selectedPlantType}>
-                  <Radio value="all">Tất cả</Radio>
-                  <Radio value="leafy">Rau ăn lá</Radio>
-                  <Radio value="herb">Rau gia vị</Radio>
-                  <Radio value="root">Củ</Radio>
-                  <Radio value="fruit">Quả</Radio>
-                </Radio.Group>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <List
-              grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 4, xl: 4, xxl: 4 }}
-              dataSource={filterPlantsByType(selectedPlantType).filter((plant) =>
-                plant.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
-              )}
-              pagination={{
-                onChange: (page) => {
-                  console.log(page)
-                },
-                pageSize: 8
-              }}
-              style={{ width: '100%' }}
-              renderItem={(plant) => (
-                <List.Item key={plant._id}>
-                  <Card
-                    hoverable
-                    cover={<img alt={plant.name} src={plant.image} />}
-                    actions={[
-                      <Tooltip title="Chỉnh sửa" key="edit">
-                        <EditOutlined
-                          onClick={() => {
-                            setSelectedUpdatePlant(plant)
-                            setOpenUpdatePlant(true)
-                          }}
-                        />
-                      </Tooltip>,
-                      <Popconfirm
-                        title={`Bạn muốn xóa cây ${plant.name}?`}
-                        onConfirm={() => handleDelete(plant._id)}
-                        okText="Có"
-                        cancelText="Không"
-                        key="delete"
-                      >
-                        <span onClick={(e) => e.stopPropagation()}>
-                          <DeleteOutlined />
-                        </span>
-                      </Popconfirm>
-                    ]}
-                  >
-                    <Link to={`/plant/${plant._id}`}>
-                      <Card.Meta
-                        title={plant.name}
-                        description={
-                          <Paragraph
-                            ellipsis={{
-                              rows: 3,
-                              expandable: true,
-                              symbol: 'đọc thêm',
-                              tooltip: true,
-                              onExpand: function (event) {
-                                console.log('onExpand', event)
-                                event.stopPropagation()
-                                event.preventDefault()
-                              }
+                pagination={{
+                  onChange: (page) => {
+                    console.log(page)
+                  },
+                  pageSize: 8
+                }}
+                style={{ width: '100%' }}
+                renderItem={(plant) => (
+                  <List.Item key={plant._id}>
+                    <Card
+                      hoverable
+                      cover={<img alt={plant.name} src={plant.image} />}
+                      actions={[
+                        <Tooltip title="Chỉnh sửa" key="edit">
+                          <EditOutlined
+                            onClick={() => {
+                              setSelectedUpdatePlant(plant)
+                              setOpenUpdatePlant(true)
                             }}
-                          >
-                            {plant.description}
-                          </Paragraph>
-                        }
-                      />
-                      <p>{renderPlantType(plant.type)}</p>
-                    </Link>
-                  </Card>
-                </List.Item>
-              )}
-            />
-          </Row>
-        </div>
-      )}
+                          />
+                        </Tooltip>,
+                        <Popconfirm
+                          title={`Bạn muốn xóa cây ${plant.name}?`}
+                          onConfirm={() => handleDelete(plant._id)}
+                          okText="Có"
+                          cancelText="Không"
+                          key="delete"
+                        >
+                          <span onClick={(e) => e.stopPropagation()}>
+                            <DeleteOutlined />
+                          </span>
+                        </Popconfirm>
+                      ]}
+                    >
+                      <Link to={`/plant/${plant._id}`}>
+                        <Card.Meta
+                          title={plant.name}
+                          description={
+                            <Paragraph
+                              ellipsis={{
+                                rows: 3,
+                                expandable: true,
+                                symbol: 'đọc thêm',
+                                tooltip: true,
+                                onExpand: function (event) {
+                                  console.log('onExpand', event)
+                                  event.stopPropagation()
+                                  event.preventDefault()
+                                }
+                              }}
+                            >
+                              {plant.description}
+                            </Paragraph>
+                          }
+                        />
+                        <p>{renderPlantType(plant.type)}</p>
+                      </Link>
+                    </Card>
+                  </List.Item>
+                )}
+              />
+            </Row>
+          </div>
+        )}
+      </Spin>
     </>
   )
 }
