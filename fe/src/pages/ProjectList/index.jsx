@@ -23,6 +23,8 @@ const ProjectList = () => {
   const [selectedSeed, setSelectedSeed] = useState(null)
   const [description, setDescription] = useState('')
   const [square, setSquare] = useState(null)
+  const [expectedEndDate, setExpectedEndDate] = useState(null)
+  const [expectedOutput, setExpectedOutput] = useState(null)
   const [value, setValue] = useState('all')
 
   const { projects, isSuccess, refetch } = useProjectList({
@@ -82,7 +84,7 @@ const ProjectList = () => {
         farm: farmId,
         input: `Add project: plant: ${selectedPlant.name}, seed: ${
           selectedSeed.name
-        }, startDate: ${new Date()}, description: ${description}, square: ${square}`
+        }, startDate: ${new Date()}, description: ${description}, square: ${square}, expectedEndDate: ${expectedEndDate}, expectedOutput: ${expectedOutput}`
       })
       const txHash = receip?.transactionHash
       if (!txHash) {
@@ -98,6 +100,8 @@ const ProjectList = () => {
         startDate: new Date(),
         description: description,
         square: square,
+        expectedEndDate: expectedEndDate,
+        expectedOutput: expectedOutput,
         txHash: txHash,
         projectIndex: projectIndex
       }
@@ -124,6 +128,8 @@ const ProjectList = () => {
     setSelectedSeed(null)
     setDescription('')
     setSquare(null)
+    setExpectedEndDate(null)
+    setExpectedOutput(null)
   }
 
   const onChange = (e) => {
@@ -204,6 +210,10 @@ const ProjectList = () => {
                   setDescription={setDescription}
                   square={square}
                   setSquare={setSquare}
+                  expectedEndDate={expectedEndDate}
+                  setExpectedEndDate={setExpectedEndDate}
+                  expectedOutput={expectedOutput}
+                  setExpectedOutput={setExpectedOutput}
                 />
               </Col>
             </Row>
