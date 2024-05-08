@@ -42,6 +42,19 @@ const LargeDescriptionModal = ({
       ]}
       width={800} // Kích thước modal
     >
+      <DatePicker
+        value={expectedEndDate ? dayjs(expectedEndDate) : null}
+        onChange={handleExpectedEndDateChange}
+        placeholder="Chọn ngày dự kiến kết thúc..."
+        style={{ width: '100%', marginBottom: 10 }}
+      />
+      <InputNumber
+        value={expectedOutput}
+        onChange={(value) => setExpectedOutput(value)}
+        placeholder="Nhập sản lượng dự kiến..."
+        style={{ width: '100%', marginBottom: 10 }}
+        addonAfter="kg"
+      />
       <InputNumber
         value={square}
         onChange={(value) => setSquare(value)}
@@ -54,19 +67,7 @@ const LargeDescriptionModal = ({
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Nhập mô tả..."
         autoSize={{ minRows: 10 }} // Số hàng tối thiểu
-        style={{ width: '100%', marginBottom: 10 }} // Chiều rộng
-      />
-      <DatePicker
-        value={expectedEndDate ? dayjs(expectedEndDate) : null}
-        onChange={handleExpectedEndDateChange}
-        placeholder="Chọn ngày dự kiến kết thúc..."
-        style={{ width: '100%', marginBottom: 10 }}
-      />
-      <InputNumber
-        value={expectedOutput}
-        onChange={(value) => setExpectedOutput(value)}
-        placeholder="Nhập số liệu dự kiến..."
-        style={{ width: '100%' }}
+        style={{ width: '100%' }} // Chiều rộng
       />
     </Modal>
   )

@@ -12,6 +12,8 @@ export default function useProjectInput({ projectId }) {
       seed: data?.seed,
       startDate: data?.startDate,
       square: data?.square,
+      expectedEndDate: data?.expectedEndDate,
+      expectedOutput: data?.expectedOutput,
       status: data?.status,
       description: data?.description,
       txHash: data?.txHash,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, InputNumber, Input, Space, Form, Button, Select, Divider, Tabs, Spin } from 'antd'
+import { Modal, Input, Space, Form, Button, Select, Divider, Tabs, Spin } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 
 const PesticideItem = () => {

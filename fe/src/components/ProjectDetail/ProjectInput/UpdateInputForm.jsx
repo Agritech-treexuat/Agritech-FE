@@ -1,6 +1,7 @@
 import React from 'react'
-import { Form, Input, InputNumber } from 'antd'
+import { Form, Input, InputNumber, DatePicker } from 'antd'
 import './style.css'
+import dayjs from 'dayjs'
 
 const layout = {
   labelCol: {
@@ -12,36 +13,14 @@ const layout = {
 }
 
 const UpdateInputForm = ({ input, form }) => {
-  const dateObj = new Date(input.startDate)
-
-  const yearData = dateObj.getFullYear()
-  const monthData = (dateObj.getMonth() + 1).toString().padStart(2, '0')
-  const dateData = dateObj.getDate().toString().padStart(2, '0')
-
-  const formattedDate = `${yearData}-${monthData}-${dateData}`
   const initValue = {
-    date: formattedDate,
+    date: input.startDate ? dayjs(input.startDate) : null,
     square: input.square,
-    description: input.description
+    description: input.description,
+    expectedEndDate: input.expectedEndDate ? dayjs(input.expectedEndDate) : null,
+    expectedOutput: input.expectedOutput
   }
-
-  //   const update = useMutation({
-  //     mutationFn: () => updateUserInfo({ ...data, userId: userData.id }),
-  //     })
-
-  // const onSubmit = () => {
-  //     console.log(data);
-  //     update.mutate(
-  //         { ...data, userId: userData.id },
-  //         {
-  //             onSuccess: () => {
-  //                 queryClient.invalidateQueries({
-  //                     queryKey: ['getUser'],
-  //                 });
-  //             }
-  //         }
-  //     );
-  // };
+  console.log('initValue', initValue)
 
   return (
     <Form
@@ -53,37 +32,66 @@ const UpdateInputForm = ({ input, form }) => {
         maxWidth: 600
       }}
     >
-      {/* date */}
+      {/* Ngày bắt đầu */}
       <Form.Item
         name="date"
         label="Ngày bắt đầu"
         rules={[
           {
-            required: true
+            required: true,
+            message: 'Vui lòng chọn ngày bắt đầu!'
           }
         ]}
       >
-        <Input type="date" />
+        <DatePicker style={{ width: '100%' }} />
       </Form.Item>
-      {/* seed */}
-      {/* amount */}
+      {/* Ngày dự kiến kết thúc */}
+      <Form.Item
+        name="expectedEndDate"
+        label="Ngày dự kiến kết thúc"
+        rules={[
+          {
+            required: true,
+            message: 'Vui lòng chọn ngày dự kiến kết thúc!'
+          }
+        ]}
+      >
+        <DatePicker style={{ width: '100%' }} />
+      </Form.Item>
+      {/* Sản lượng dự kiến */}
+      <Form.Item
+        name="expectedOutput"
+        label="Sản lượng dự kiến"
+        rules={[
+          {
+            required: true,
+            message: 'Vui lòng nhập sản lượng dự kiến!'
+          }
+        ]}
+      >
+        <InputNumber addonAfter="kg" style={{ width: '100%' }} />
+      </Form.Item>
+      {/* Diện tích trồng */}
       <Form.Item
         name="square"
         label="Diện tích trồng"
         rules={[
           {
-            required: true
+            required: true,
+            message: 'Vui lòng nhập diện tích trồng!'
           }
         ]}
       >
-        <InputNumber addonAfter="m2" />
+        <InputNumber addonAfter="m2" style={{ width: '100%' }} />
       </Form.Item>
+      {/* Mô tả */}
       <Form.Item
         name="description"
         label="Mô tả"
         rules={[
           {
-            required: true
+            required: true,
+            message: 'Vui lòng nhập mô tả!'
           }
         ]}
       >
