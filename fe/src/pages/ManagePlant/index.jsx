@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import { Row, Col, Input, Button, Popconfirm, notification, List, Tooltip, Typography, Radio, Spin } from 'antd'
+import { Row, Col, Button, Popconfirm, notification, List, Tooltip, Typography, Spin, Select } from 'antd'
 import { Link } from 'react-router-dom'
 import Loading from '../Loading'
 import { Card } from 'antd'
@@ -14,6 +14,7 @@ import SEED from '../../services/seedService'
 import PLANT_FARMING from '../../services/plantFarmingService'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import UpdatePlantInfo from '../../components/ManagePlant/UpdatePlantInfo'
+import Search from 'antd/es/input/Search'
 const { Paragraph } = Typography
 
 const ManagePlant = () => {
@@ -194,16 +195,52 @@ const ManagePlant = () => {
           <div>
             <h1>Danh sách các cây</h1>
             <Row>
-              <Col span={8}>
-                <Input
+              <Col span={8} style={{ marginRight: '2rem' }}>
+                <Search
                   placeholder="Tìm kiếm cây"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={{ marginBottom: '30px' }}
                 />
               </Col>
-              <Col span={1}></Col>
-              <Col span={6}>
+              <Col span={2} style={{ marginRight: '2rem' }}>
+                <Select
+                  labelInValue
+                  defaultValue={{
+                    value: 'all',
+                    label: 'Tất cả'
+                  }}
+                  style={{
+                    width: 120
+                  }}
+                  onChange={(e) => {
+                    setSelectedPlantType(e.value)
+                  }}
+                  options={[
+                    {
+                      value: 'all',
+                      label: 'Tất cả'
+                    },
+                    {
+                      value: 'leafy',
+                      label: 'Rau ăn lá'
+                    },
+                    {
+                      value: 'herb',
+                      label: 'Rau gia vị'
+                    },
+                    {
+                      value: 'root',
+                      label: 'Củ'
+                    },
+                    {
+                      value: 'fruit',
+                      label: 'Quả'
+                    }
+                  ]}
+                />
+              </Col>
+              <Col span={2}>
                 <div>
                   <Button
                     type="primary"
@@ -268,21 +305,8 @@ const ManagePlant = () => {
               </Col>
             </Row>
             <Row>
-              <Col span={8}>
-                <div style={{ marginBottom: '20px' }}>
-                  <Radio.Group onChange={(e) => setSelectedPlantType(e.target.value)} value={selectedPlantType}>
-                    <Radio value="all">Tất cả</Radio>
-                    <Radio value="leafy">Rau ăn lá</Radio>
-                    <Radio value="herb">Rau gia vị</Radio>
-                    <Radio value="root">Củ</Radio>
-                    <Radio value="fruit">Quả</Radio>
-                  </Radio.Group>
-                </div>
-              </Col>
-            </Row>
-            <Row>
               <List
-                grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 4, xl: 4, xxl: 4 }}
+                grid={{ gutter: 16, xs: 1, sm: 2, md: 2, lg: 2, xl: 4, xxl: 4 }}
                 dataSource={filterPlantsByType(selectedPlantType).filter((plant) =>
                   plant.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
                 )}
@@ -325,6 +349,7 @@ const ManagePlant = () => {
                           title={plant.name}
                           description={
                             <Paragraph
+                              style={{ height: '60px', overflow: 'hidden' }}
                               ellipsis={{
                                 rows: 3,
                                 expandable: true,
