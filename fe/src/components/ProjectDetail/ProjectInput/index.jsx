@@ -121,7 +121,7 @@ const ProjectInput = () => {
     try {
       const receip = await updateInput({
         pId: projectInfo?.projectIndex,
-        input: `Update seed: projectId: ${projectId}, seed: ${selectedSeed.name}, status: ${projectInfo.status}, square: ${projectInfo.square}, date: ${projectInfo.startDate}, description: ${projectInfo.description}`
+        input: `Update seed: projectId: ${projectId}, seed: ${selectedSeed.name}, status: ${projectInfo.status}, square: ${projectInfo.square}, date: ${projectInfo.startDate}, description: ${projectInfo.description}, expectedOutput: ${projectInfo.expectedOutput}, expectedEndDate: ${projectInfo.expectedEndDate}`
       })
       const tx = receip?.transactionHash
       if (!tx) {
@@ -154,7 +154,7 @@ const ProjectInput = () => {
     try {
       const receip = await updateInput({
         pId: projectInfo?.projectIndex,
-        input: `Update status: projectId: ${projectId}, status: ${status}, seed: ${projectInfo.seed.seed_name}, square: ${projectInfo.square}, date: ${projectInfo.startDate}, description: ${projectInfo.description}`
+        input: `Update status: projectId: ${projectId}, status: ${status}, seed: ${projectInfo.seed.seed_name}, square: ${projectInfo.square}, date: ${projectInfo.startDate}, description: ${projectInfo.description}, expectedOutput: ${projectInfo.expectedOutput}, expectedEndDate: ${projectInfo.expectedEndDate}`
       })
       const tx = receip?.transactionHash
       if (!tx) {
@@ -183,11 +183,19 @@ const ProjectInput = () => {
   }
 
   const handleUpdateOverview = async (values) => {
+    console.log('values', values)
+    console.log('expectedEndDate', values.expectedEndDate.toDate())
     setLoading(true)
     try {
       const receip = await updateInput({
         pId: projectInfo?.projectIndex,
-        input: `Update overview: projectId: ${projectId}, square: ${values.square}, date: ${values.date}, description: ${values.description}, status: ${projectInfo.status}, seed: ${projectInfo.seed.seed_name}`
+        input: `Update overview: projectId: ${projectId}, square: ${
+          values.square
+        }, date: ${values.date.toDate()}, description: ${values.description}, expectedOutput: ${
+          values.expectedOutput
+        }, expectedEndDate: ${values.expectedEndDate.toDate()}, status: ${projectInfo.status}, seed: ${
+          projectInfo.seed.seed_name
+        }`
       })
       const tx = receip?.transactionHash
       if (!tx) {
@@ -199,6 +207,8 @@ const ProjectInput = () => {
         startDate: values.date,
         square: values.square,
         description: values.description,
+        expectedOutput: values.expectedOutput,
+        expectedEndDate: values.expectedEndDate,
         txHash: tx
       }
 
@@ -430,13 +440,22 @@ const ProjectInput = () => {
                       )}
                     </Tooltip>
                   </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ fontWeight: 'bold' }}>Diện tích trồng: </label>
-                    <span>{projectInfo.square || 'Chưa cập nhật'} m2</span>
-                  </div>
+
                   <div style={{ marginBottom: '1rem' }}>
                     <label style={{ fontWeight: 'bold' }}>Ngày bắt đầu: </label>
                     <span>{formatDate(projectInfo.startDate)}</span>
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ fontWeight: 'bold' }}>Ngày kết thúc dự kiến: </label>
+                    <span>{formatDate(projectInfo?.expectedEndDate)}</span>
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ fontWeight: 'bold' }}>Sản lượng dự kiến: </label>
+                    <span>{projectInfo?.expectedOutput || 'Chưa cập nhật'} kg</span>
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ fontWeight: 'bold' }}>Diện tích trồng: </label>
+                    <span>{projectInfo.square || 'Chưa cập nhật'} m2</span>
                   </div>
                   <div style={{ marginBottom: '1rem' }}>
                     <label style={{ fontWeight: 'bold' }}>Mô tả: </label>

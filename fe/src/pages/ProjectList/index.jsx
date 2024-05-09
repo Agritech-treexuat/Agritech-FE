@@ -2,14 +2,15 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Loading from '../Loading'
 import useProjectList from './useProjectList'
-import { Input, Button, Flex, Row, Col, List, Radio, Space, notification, Typography, Spin } from 'antd'
+import { Button, Flex, Row, Col, List, notification, Typography, Spin, Select, Card } from 'antd'
 import PlantModal from '../../components/ProjectDetail/AddProject/AddProjectPlant'
 import SeedModal from '../../components/ProjectDetail/AddProject/AddProjectSeed'
 import LargeDescriptionModal from '../../components/ProjectDetail/AddProject/AddLargeDescription'
 import PROJECT from '../../services/projectService'
-import { formatDateToInput } from '../../utils/helpers'
+import { formatDate } from '../../utils/helpers'
 import { useStateContext } from '../../context'
 import { metamaskWallet } from '@thirdweb-dev/react'
+import Search from 'antd/es/input/Search'
 const metamaskConfig = metamaskWallet()
 const { Paragraph } = Typography
 
@@ -23,6 +24,8 @@ const ProjectList = () => {
   const [selectedSeed, setSelectedSeed] = useState(null)
   const [description, setDescription] = useState('')
   const [square, setSquare] = useState(null)
+  const [expectedEndDate, setExpectedEndDate] = useState(null)
+  const [expectedOutput, setExpectedOutput] = useState(null)
   const [value, setValue] = useState('all')
 
   const { projects, isSuccess, refetch } = useProjectList({
@@ -82,7 +85,7 @@ const ProjectList = () => {
         farm: farmId,
         input: `Add project: plant: ${selectedPlant.name}, seed: ${
           selectedSeed.name
-        }, startDate: ${new Date()}, description: ${description}, square: ${square}`
+        }, startDate: ${new Date()}, description: ${description}, square: ${square}, expectedEndDate: ${expectedEndDate}, expectedOutput: ${expectedOutput}`
       })
       const txHash = receip?.transactionHash
       if (!txHash) {
@@ -98,6 +101,8 @@ const ProjectList = () => {
         startDate: new Date(),
         description: description,
         square: square,
+        expectedEndDate: expectedEndDate,
+        expectedOutput: expectedOutput,
         txHash: txHash,
         projectIndex: projectIndex
       }
@@ -124,10 +129,8 @@ const ProjectList = () => {
     setSelectedSeed(null)
     setDescription('')
     setSquare(null)
-  }
-
-  const onChange = (e) => {
-    setValue(e.target.value)
+    setExpectedEndDate(null)
+    setExpectedOutput(null)
   }
 
   const renderStatus = (status) => {
@@ -151,17 +154,47 @@ const ProjectList = () => {
           <div>
             <h1>Danh sách các dự án</h1>
             <Row>
-              <Col span={4}></Col>
-              <Col span={1}></Col>
-              <Col span={8}>
-                <Input
+              <Col span={8} style={{ marginRight: '2rem' }}>
+                <Search
                   placeholder="Tìm kiếm các dự án"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </Col>
-              <Col span={1}></Col>
-              <Col span={6}>
+              <Col span={2} style={{ marginRight: '2rem' }}>
+                <Select
+                  labelInValue
+                  defaultValue={{
+                    value: 'all',
+                    label: 'Tất cả'
+                  }}
+                  style={{
+                    width: 120
+                  }}
+                  onChange={(e) => {
+                    setValue(e.value)
+                  }}
+                  options={[
+                    {
+                      value: 'all',
+                      label: 'Tất cả'
+                    },
+                    {
+                      value: 'inProgress',
+                      label: 'Đang thực hiện'
+                    },
+                    {
+                      value: 'finished',
+                      label: 'Đã kết thúc'
+                    },
+                    {
+                      value: 'cancel',
+                      label: 'Đã hủy'
+                    }
+                  ]}
+                />
+              </Col>
+              <Col span={2}>
                 <Flex gap="small" wrap="wrap">
                   <Button
                     type="primary"
@@ -204,26 +237,17 @@ const ProjectList = () => {
                   setDescription={setDescription}
                   square={square}
                   setSquare={setSquare}
+                  expectedEndDate={expectedEndDate}
+                  setExpectedEndDate={setExpectedEndDate}
+                  expectedOutput={expectedOutput}
+                  setExpectedOutput={setExpectedOutput}
                 />
               </Col>
             </Row>
             <Row>
-              <Col span={4}>
-                <div style={{ marginTop: '4rem', marginLeft: '2rem', padding: '2rem', backgroundColor: '#f1f4ed' }}>
-                  <h3>Lọc theo trạng thái</h3>
-                  <Radio.Group onChange={onChange} value={value}>
-                    <Space direction="vertical">
-                      <Radio value="all">Tất cả</Radio>
-                      <Radio value="inProgress">Đang thực hiện</Radio>
-                      <Radio value="finished">Đã kết thúc</Radio>
-                      <Radio value="cancel">Đã hủy</Radio>
-                    </Space>
-                  </Radio.Group>
-                </div>
-              </Col>
-              <Col span={20}>
+              <Col span={24}>
                 <List
-                  itemLayout="vertical"
+                  grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 4, xxl: 4 }}
                   size="large"
                   pagination={{
                     onChange: (page) => {
@@ -232,48 +256,37 @@ const ProjectList = () => {
                     pageSize: 5
                   }}
                   dataSource={filteredProjects}
-                  style={{ marginTop: '3rem', width: '90%', marginLeft: '2rem' }}
+                  style={{ marginTop: '2rem', width: '100%' }}
                   renderItem={(item, index) => (
-                    <div>
+                    <div key={index}>
                       <Link to={`/project/${item.id}`} key={item.id}>
-                        <List.Item
-                          key={item.id}
-                          extra={<img width={200} alt={item.title} src={item.image} />}
-                          style={{
-                            backgroundColor: index % 2 === 0 ? '#ECFFDC' : '#C1E1C1',
-                            marginBottom: '2rem',
-                            borderRadius: '10px'
-                          }}
-                        >
-                          <List.Item.Meta
-                            title={item.title}
-                            description={item.seed + ' - ' + formatDateToInput(item.startDate)}
-                          />
-                          <p style={{ marginBottom: '0.5rem' }}>
-                            <strong>Diện tích trồng (m2): </strong> {item.square || 'Chưa có thông tin'}
-                          </p>
-                          <p style={{ marginBottom: '0.5rem' }}>
-                            <span style={{ fontStyle: 'italic', color: '#666' }}>
-                              <Paragraph
-                                ellipsis={{
-                                  rows: 3,
-                                  expandable: true,
-                                  symbol: 'đọc thêm',
-                                  tooltip: true,
-                                  onExpand: function (event) {
-                                    console.log('onExpand', event)
-                                    event.stopPropagation()
-                                    event.preventDefault()
-                                  }
-                                }}
-                              >
-                                {item.description}
-                              </Paragraph>
-                            </span>
-                          </p>
-                          <p style={{ marginBottom: 0, fontWeight: 'bold', color: '#1890ff' }}>
-                            {renderStatus(item.status)}
-                          </p>
+                        <List.Item key={item.id} style={{ padding: 0 }}>
+                          <Card hoverable cover={<img alt={item.title} src={item.image} />}>
+                            <Card.Meta
+                              title={`${item.title} - ${item.seed}`}
+                              description={
+                                <Paragraph
+                                  style={{ height: '60px', overflow: 'hidden' }}
+                                  ellipsis={{
+                                    rows: 3,
+                                    expandable: true,
+                                    symbol: 'đọc thêm',
+                                    tooltip: true,
+                                    onExpand: function (event) {
+                                      console.log('onExpand', event)
+                                      event.stopPropagation()
+                                      event.preventDefault()
+                                    }
+                                  }}
+                                >
+                                  {item.description}
+                                </Paragraph>
+                              }
+                            />
+                            <p>Ngày bắt đầu: {formatDate(item.startDate)}</p>
+
+                            <p style={{ color: '#19B5FE', fontWeight: 'bold' }}>{renderStatus(item.status)}</p>
+                          </Card>
                         </List.Item>
                       </Link>
                     </div>
