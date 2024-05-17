@@ -45,7 +45,7 @@ const EditOutputHistory = ({ output }) => {
                 <strong>Lượng:</strong> {output.amount}
               </p>
               <p>
-                <strong>Lượng trên 1 sản phẩm:</strong> {output.amountPerOne}
+                <strong>Số lượng sản phẩm:</strong> {output.quantity}
               </p>
 
               <div>
@@ -57,7 +57,7 @@ const EditOutputHistory = ({ output }) => {
                     output.distributerWithAmount.map((npp_item) => (
                       <li key={npp_item?.distributer?.name}>
                         <p>
-                          {npp_item?.distributer?.name} cùng lượng {npp_item?.amount}
+                          {npp_item?.distributer?.name} cùng số lượng {npp_item?.quantity} sản phẩm
                         </p>
                       </li>
                     ))
@@ -72,11 +72,6 @@ const EditOutputHistory = ({ output }) => {
                   <strong>Ảnh: </strong>
                 </p>
                 {output.images ? (
-                  // output.images.map((image) => (
-                  //   <span>
-                  //     <Image className={'process-img'} src={image} width={200}/>
-                  //   </span>
-                  // ))
                   <List
                     grid={{
                       gutter: 4,
