@@ -10,7 +10,7 @@ export default function useProjectOutput({ projectId }) {
       tx: item?.tx,
       time: item?.time,
       amount: item?.amount,
-      amountPerOne: item?.amountPerOne,
+      quantity: item?.quantity,
       images: item?.images,
       distributerWithAmount: item?.distributerWithAmount,
       isEdited: item?.isEdited,

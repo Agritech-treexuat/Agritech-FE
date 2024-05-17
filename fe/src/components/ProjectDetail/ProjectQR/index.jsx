@@ -56,11 +56,6 @@ const ProjectQR = () => {
 
   const handleExportExcel = async (exportItem) => {
     console.log('Export excel')
-    // read data from useContractRead with qr_contract and  Get Product By Project Id (getProductByProjectId)
-    //  wait until qrData is success then log qrData
-    // find all data in qrData that timeGenerate (need to convert from hex in unix time stamp to date) in the same date with selectedQR.Thoi_gian (date)
-    // then export to excel
-
     const filterData = qrData.filter((qr) => {
       return new Date(qr.timeGenerate * 1000).toDateString() === new Date(exportItem?.Thoi_gian).toDateString()
     })
@@ -133,7 +128,7 @@ const ProjectQR = () => {
                         <strong>Nhà phân phối:</strong> {distributer.distributer.name}
                       </h2>
                       <p>
-                        <strong>Tổng số lượng QR:</strong> {distributer.totalQR.length}
+                        <strong>Tổng số lượng QR:</strong> {distributer.totalQR.length + distributer.scannedQR.length}
                       </p>
                       <p>
                         <strong>Số QR đã quét:</strong> {distributer.scannedQR.length}

@@ -43,7 +43,6 @@ const { getAccessToken, getRefreshToken } = token
 
 const { Column } = Table
 const normFile = (e) => {
-  console.log('Upload event:', e)
   if (Array.isArray(e)) {
     return e
   }
@@ -66,11 +65,11 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
       form.setFieldsValue({
         date: selectedOutput ? dayjs(selectedOutput?.time) : dayjs(new Date()),
         amount: selectedOutput.amount,
-        'amount per one': selectedOutput.amountPerOne,
+        quantity: selectedOutput.quantity,
         npp: selectedOutput.distributerWithAmount.map((item) => ({
           id: item.distributer._id,
           name: item.distributer.name,
-          amount: item.amount
+          quantity: item.quantity
         })),
         upload: selectedOutput.images?.map((image, index) => ({
           uid: String(-index),
@@ -147,11 +146,11 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
             ? {
                 date: selectedOutput ? dayjs(selectedOutput?.time) : dayjs(new Date()),
                 amount: selectedOutput.amount,
-                'amount per one': selectedOutput.amountPerOne,
+                quantity: selectedOutput.quantity,
                 npp: selectedOutput.distributerWithAmount.map((item) => ({
                   id: item.distributer._id,
                   name: item.distributer.name,
-                  amount: item.amount
+                  quantity: item.quantity
                 })),
                 upload: selectedOutput.images?.map((image, index) => ({
                   uid: String(-index),
@@ -191,17 +190,17 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
         >
           <InputNumber addonAfter="kg" />
         </Form.Item>
-        {/* amount per one */}
+        {/* quantity */}
         <Form.Item
-          name="amount per one"
-          label="Lượng/sản phẩm"
+          name="quantity"
+          label="Số lượng sản phẩm"
           rules={[
             {
               required: true
             }
           ]}
         >
-          <InputNumber addonAfter="kg" />
+          <InputNumber />
         </Form.Item>
         {/* list npp */}
         <Form.List name="npp">
@@ -241,22 +240,22 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
                   </Form.Item>
                   <Form.Item
                     {...restField}
-                    name={[name, 'amount']}
+                    name={[name, 'quantity']}
                     rules={[
                       {
                         required: true,
-                        message: 'Thiếu lượng'
+                        message: 'Thiếu số lượng'
                       }
                     ]}
                   >
-                    <InputNumber addonAfter="kg" />
+                    <InputNumber />
                   </Form.Item>
                   <MinusCircleOutlined onClick={() => remove(name)} />
                 </Space>
               ))}
               <Form.Item>
                 <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                  Thêm nhà phân phối
+                  Thêm nhà phân phối cùng số lượng sản phẩm
                 </Button>
               </Form.Item>
             </>
@@ -301,9 +300,9 @@ const ProjectOutput = () => {
   const transformDataWriteAddBlockChain = async (dataWithoutTx, alllDistributer) => {
     try {
       // Biến đổi distributerWithAmount
-      const transformedDistributerWithAmount = dataWithoutTx.distributerWithAmount.map(({ distributer, amount }) => {
+      const transformedDistributerWithAmount = dataWithoutTx.distributerWithAmount.map(({ distributer, quantity }) => {
         const distributerName = alllDistributer.find((item) => item.id === distributer)?.name || ''
-        return { distributer: distributerName, amount }
+        return { distributer: distributerName, quantity }
       })
 
       const resHashImages = await HASH.hashImages({ data: { images: dataWithoutTx.images } })
@@ -322,10 +321,10 @@ const ProjectOutput = () => {
       // return string
       const outputString = `Add output: projectId: ${projectId}, time: ${transformedData.time}, amount: ${
         transformedData.amount
-      }, amountPerOne: ${transformedData.amountPerOne}, exportQR: ${
+      }, quantity: ${transformedData.quantity}, exportQR: ${
         transformedData.exportQR
       }, distributerWithAmount: ${transformedData.distributerWithAmount
-        .map((item) => `${item.distributer} - ${item.amount}`)
+        .map((item) => `${item.distributer} - ${item.quantity}`)
         .join('+ ')}, hashedImages: ${transformedData.hashedImages}`
       return outputString
     } catch (error) {
@@ -336,9 +335,9 @@ const ProjectOutput = () => {
   const transformDataWriteUpdateBlockChain = async (dataWithoutTx, alllDistributer, outputId) => {
     try {
       // Biến đổi distributerWithAmount
-      const transformedDistributerWithAmount = dataWithoutTx.distributerWithAmount.map(({ distributer, amount }) => {
+      const transformedDistributerWithAmount = dataWithoutTx.distributerWithAmount.map(({ distributer, quantity }) => {
         const distributerName = alllDistributer.find((item) => item.id === distributer)?.name || ''
-        return { distributer: distributerName, amount }
+        return { distributer: distributerName, quantity }
       })
 
       const resHashImages = await HASH.hashImages({ data: { images: dataWithoutTx.images } })
@@ -357,10 +356,10 @@ const ProjectOutput = () => {
       // return string
       const outputString = `Update output: projectId: ${projectId}, outputId: ${outputId}, time: ${
         transformedData.time
-      }, amount: ${transformedData.amount}, amountPerOne: ${transformedData.amountPerOne}, exportQR: ${
+      }, amount: ${transformedData.amount}, quantity: ${transformedData.quantity}, exportQR: ${
         transformedData.exportQR
       }, distributerWithAmount: ${transformedData.distributerWithAmount
-        .map((item) => `${item.distributer} - ${item.amount}`)
+        .map((item) => `${item.distributer} - ${item.quantity}`)
         .join('+ ')}, hashedImages: ${transformedData.hashedImages}`
       return outputString
     } catch (error) {
@@ -374,26 +373,25 @@ const ProjectOutput = () => {
     const updatedValue = {
       ...values,
       time: values.date.toDate(),
-      amountPerOne: values['amount per one'],
+      quantity: values.quantity,
       images: images
     }
     delete updatedValue.date
-    delete updatedValue['amount per one']
     delete updatedValue.upload
     const dataWithoutTx = {
       ...updatedValue,
       exportQR: false,
       distributerWithAmount: updatedValue.npp.map((item) => ({
         distributer: item.name,
-        amount: item.amount
+        quantity: item.quantity
       }))
     }
 
     const outputString = await transformDataWriteAddBlockChain(dataWithoutTx, alllDistributer)
 
-    const totalNppAmount = values.npp ? values.npp.reduce((total, item) => total + item.amount, 0) : 0
+    const totalNppQuantity = values.npp ? values.npp.reduce((total, item) => total + item.quantity, 0) : 0
 
-    if (values.amount >= totalNppAmount) {
+    if (values.quantity >= totalNppQuantity) {
       try {
         const receip = await insertOutput({
           pId: projectInfo.projectIndex,
@@ -432,21 +430,20 @@ const ProjectOutput = () => {
     const images = values.upload
       ? values.upload.map((upload) => (upload.response ? upload.response.metadata.thumb_url : upload.url))
       : []
-    const updatedValue = { ...values, time: values.date, amountPerOne: values['amount per one'], images: images }
+    const updatedValue = { ...values, time: values.date, quantity: values.quantity, images: images }
     delete updatedValue.date
     delete updatedValue.upload
-    delete updatedValue['amount per one']
     const dataWithoutTx = {
       ...updatedValue,
       distributerWithAmount: updatedValue.npp.map((item) => ({
         distributer: item.id || item.name,
-        amount: item.amount
+        quantity: item.quantity
       }))
     }
     const outputString = await transformDataWriteUpdateBlockChain(dataWithoutTx, alllDistributer, selectedOutput.id)
 
-    const totalNppAmount = values.npp.reduce((total, item) => total + item.amount, 0)
-    if (values.amount >= totalNppAmount) {
+    const totalNppQuantity = values.npp.reduce((total, item) => total + item.quantity, 0)
+    if (values.quantity >= totalNppQuantity) {
       try {
         const receip = await updateOutput({
           pId: projectInfo.projectIndex,
@@ -487,16 +484,10 @@ const ProjectOutput = () => {
   const handleExportQR = async (output) => {
     setLoading(true)
     try {
-      // const numberOfQR = output.distributerWithAmount.reduce((total, item) => total + item.amount / output.amountPerOne + 1, 0)
-      // const privateIds = []
-      // // generate numberOfQR unique privateIds
-      // for (let i = 0; i < numberOfQR; i++) {
-      //   privateIds.push(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15))
-      // }
       let numberOfQR = 0
       let privateIds = []
       for (let i = 0; i < output.distributerWithAmount.length; i++) {
-        let numberofQREachDistributer = Math.ceil(output.distributerWithAmount[i].amount / output.amountPerOne) + 1
+        let numberofQREachDistributer = output.distributerWithAmount[i].quantity
         let privateIdsEachDistributer = []
         numberOfQR += numberofQREachDistributer
         for (let j = 0; j < numberofQREachDistributer; j++) {
@@ -511,7 +502,7 @@ const ProjectOutput = () => {
       }
       const outputId = output.id
       const generateQRInfo = `Time: ${new Date()}, ProjectId: ${projectId}, OutputId: ${outputId}, DistributerWithAmount: ${output.distributerWithAmount
-        .map((item) => `${item.distributer.name} - ${Math.ceil(item.amount / output.amountPerOne) + 1}`)
+        .map((item) => `${item.distributer.name} - ${output.distributerWithAmount.quantity}`)
         .join('+ ')}`
 
       console.log('generateQRInfo: ', generateQRInfo)
@@ -535,12 +526,10 @@ const ProjectOutput = () => {
       }
       const data = {
         amount: output.amount,
-        amountPerOne: output.amountPerOne,
+        quantity: output.quantity,
         distributerWithAmount: output.distributerWithAmount.map((item) => {
           return {
             distributer: item.distributer._id,
-            amount: item.amount,
-            numberOfQR: Math.ceil(item.amount / output.amountPerOne) + 1,
             privateIdsEachDistributer: item.privateIdsEachDistributer.map((privateId) => md5(privateId))
           }
         }),
@@ -613,15 +602,6 @@ const ProjectOutput = () => {
               alllDistributer={alllDistributer}
             />
             <Modal title="Ảnh" open={isModalOpen} footer={null} onCancel={handleCancel} width={600}>
-              {/* {selectedOutputImages?.images ? (
-                selectedOutputImages?.images?.map((image) => (
-                  <span>
-                    <Image class={'process-img'} src={image} />
-                  </span>
-                ))
-              ) : (
-                <span>Không có ảnh</span>
-              )} */}
               {selectedOutputImages?.images ? (
                 <List
                   grid={{
@@ -670,7 +650,7 @@ const ProjectOutput = () => {
                 }
               />
               <Column title="Lượng (kg)" dataIndex="amount" key="amount" />
-              <Column title="Lượng trên 1 sản phẩm (kg)" dataIndex="amountPerOne" key="amountPerOne" />
+              <Column title="Số lượng sản phẩm" dataIndex="quantity" key="quantity" />
               <Column
                 title="Ảnh"
                 key="images"
@@ -696,7 +676,7 @@ const ProjectOutput = () => {
                       output.distributerWithAmount.map((npp_item) => (
                         <div key={npp_item?.distributer?.name}>
                           <p>
-                            {npp_item?.distributer?.name} cùng lượng {npp_item?.amount} (kg)
+                            {npp_item?.distributer?.name} cùng số lượng {npp_item?.quantity} sản phẩm
                           </p>
                         </div>
                       ))
