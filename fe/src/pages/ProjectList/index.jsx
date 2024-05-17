@@ -266,7 +266,7 @@ const ProjectList = () => {
                               title={`${item.title} - ${item.seed}`}
                               description={
                                 <Paragraph
-                                  style={{ height: '60px', overflow: 'hidden' }}
+                                  style={{ minHeight: '60px', overflow: 'hidden' }}
                                   ellipsis={{
                                     rows: 3,
                                     expandable: true,

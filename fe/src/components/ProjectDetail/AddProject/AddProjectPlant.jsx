@@ -63,11 +63,36 @@ const PlantModal = ({ open, onClose, selectedPlant, setSelectedPlant, handleAddP
       />
 
       <Space>
-        <Button onClick={() => handleFilter(null)}>Tất cả</Button>
-        <Button onClick={() => handleFilter('herb')}>Rau gia vị</Button>
-        <Button onClick={() => handleFilter('leafy')}>Rau ăn lá</Button>
-        <Button onClick={() => handleFilter('root')}>Củ</Button>
-        <Button onClick={() => handleFilter('fruit')}>Quả</Button>
+        <Button
+          onClick={() => handleFilter(null)}
+          style={{ boxShadow: selectedType === null ? '0 0 1px 1px #1890ff' : '' }}
+        >
+          Tất cả
+        </Button>
+        <Button
+          onClick={() => handleFilter('herb')}
+          style={{ boxShadow: selectedType === 'herb' ? '0 0 1px 1px #1890ff' : '' }}
+        >
+          Rau gia vị
+        </Button>
+        <Button
+          onClick={() => handleFilter('leafy')}
+          style={{ boxShadow: selectedType === 'leafy' ? '0 0 1px 1px #1890ff' : '' }}
+        >
+          Rau ăn lá
+        </Button>
+        <Button
+          onClick={() => handleFilter('root')}
+          style={{ boxShadow: selectedType === 'root' ? '0 0 1px 1px #1890ff' : '' }}
+        >
+          Củ
+        </Button>
+        <Button
+          onClick={() => handleFilter('fruit')}
+          style={{ boxShadow: selectedType === 'fruit' ? '0 0 1px 1px #1890ff' : '' }}
+        >
+          Quả
+        </Button>
       </Space>
 
       <Row gutter={16} style={{ marginTop: 16 }}>
