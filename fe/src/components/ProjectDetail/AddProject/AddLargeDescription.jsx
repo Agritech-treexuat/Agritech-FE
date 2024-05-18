@@ -22,7 +22,7 @@ const LargeDescriptionModal = ({
 
   return (
     <Modal
-      title="Nhập diện tích và mô tả"
+      title="Nhập các thông tin khác"
       open={visible}
       onCancel={onCancel}
       footer={[

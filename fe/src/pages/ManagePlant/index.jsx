@@ -197,7 +197,7 @@ const ManagePlant = () => {
             <Row>
               <Col span={8} style={{ marginRight: '2rem' }}>
                 <Search
-                  placeholder="Tìm kiếm cây"
+                  placeholder="Tìm kiếm cây theo tên"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={{ marginBottom: '30px' }}
@@ -338,9 +338,11 @@ const ManagePlant = () => {
                           cancelText="Không"
                           key="delete"
                         >
-                          <span onClick={(e) => e.stopPropagation()}>
-                            <DeleteOutlined />
-                          </span>
+                          <Tooltip title="Xóa">
+                            <span onClick={(e) => e.stopPropagation()}>
+                              <DeleteOutlined />
+                            </span>
+                          </Tooltip>
                         </Popconfirm>
                       ]}
                     >

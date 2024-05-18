@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useParams } from 'react-router'
 import Loading from '../../../pages/Loading'
 import { Col, Row, notification, Button, Modal, Tooltip, Divider, Form, Typography, Spin, Checkbox } from 'antd'
-import { formatDate, formatDateTime } from '../../../utils/helpers'
+import { formatDate, formatDateTime, formatTransactionHashTable } from '../../../utils/helpers'
 import useProjectInput from './useProjectInput'
 import SeedModal from '../AddProject/AddProjectSeed'
 import PROJECT from '../../../services/projectService'
@@ -370,9 +370,14 @@ const ProjectInput = () => {
                   <div style={{ marginBottom: '1rem' }}>
                     <label style={{ fontWeight: 'bold' }}>Transaction hash: </label>
                     <span>
-                      <a href={`https://escan.live/tx/${projectInfo.txHash}`} target="_blank" rel="noreferrer">
-                        {projectInfo?.txHash}
-                      </a>
+                      <p>
+                        {' '}
+                        {formatTransactionHashTable({
+                          str: projectInfo.txHash,
+                          a: 8,
+                          b: 5
+                        })}
+                      </p>
                     </span>
                   </div>
                   <Divider />

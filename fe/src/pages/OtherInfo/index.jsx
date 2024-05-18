@@ -201,7 +201,7 @@ const OtherInfo = () => {
         tip={loading ? 'Đang ghi lên Blockchain, làm ơn chờ chút ...' : ''}
       >
         <div>
-          <div>
+          {/* <div>
             <h2>Hãy chọn thời gian để xem thông tin tương ứng</h2>
             <DatePicker defaultValue={selectedTime} onChange={handleDateChange} showTime />
             <h2>Thông tin thời tiết</h2>
@@ -218,7 +218,7 @@ const OtherInfo = () => {
               ) : (
                 <p>Không có dữ liệu</p>
               ))}
-          </div>
+          </div> */}
           <h2>Thông tin hình ảnh từ camera</h2>
           <Button
             type="primary"

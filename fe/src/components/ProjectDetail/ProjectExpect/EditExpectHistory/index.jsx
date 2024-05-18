@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, Divider, Tooltip } from 'antd'
-import { formatDate, formatDateTime } from '../../../../utils/helpers'
+import { formatDate, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { HistoryOutlined } from '@ant-design/icons'
 const EditExpectHistory = ({ expect }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -33,9 +33,14 @@ const EditExpectHistory = ({ expect }) => {
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>
                 <strong>Transaction hash:</strong>{' '}
-                <a href={`https://escan.live/tx/${expect.tx}`} target="_blank" rel="noreferrer">
-                  {expect.tx}
-                </a>
+                <p>
+                  {' '}
+                  {formatTransactionHashTable({
+                    str: expect.tx,
+                    a: 8,
+                    b: 5
+                  })}
+                </p>
               </p>
               <p>
                 <strong>Thời gian: </strong> {formatDate(expect.time)}

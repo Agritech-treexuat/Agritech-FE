@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, Image, Divider, Tooltip, List } from 'antd'
-import { formatDateTime } from '../../../../utils/helpers'
+import { formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { HistoryOutlined } from '@ant-design/icons'
 
 const EditOutputHistory = ({ output }) => {
@@ -36,7 +36,14 @@ const EditOutputHistory = ({ output }) => {
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>
                 <strong>Transaction hash: </strong>{' '}
-                <a href={`https://escan.live/tx/${output.tx}`} target="_blank" rel="noreferrer">{`${output.tx}`}</a>
+                <p>
+                  {' '}
+                  {formatTransactionHashTable({
+                    str: output.tx,
+                    a: 8,
+                    b: 5
+                  })}
+                </p>
               </p>
               <p>
                 <strong>Thời gian: </strong> {output.time}

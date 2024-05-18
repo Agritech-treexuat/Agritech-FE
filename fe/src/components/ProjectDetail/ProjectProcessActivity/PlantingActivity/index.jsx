@@ -24,7 +24,14 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
               <p>
                 <span>
                   <strong>Transaction hash: </strong>{' '}
-                  <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                  <p>
+                    {' '}
+                    {formatTransactionHashTable({
+                      str: item.tx,
+                      a: 8,
+                      b: 5
+                    })}
+                  </p>
                 </span>
               </p>
             )}

@@ -156,7 +156,7 @@ const ProjectList = () => {
             <Row>
               <Col span={8} style={{ marginRight: '2rem' }}>
                 <Search
-                  placeholder="Tìm kiếm các dự án"
+                  placeholder="Tìm kiếm các dự án theo tên hoặc mô tả"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />

@@ -51,7 +51,7 @@ export function formatDateToInput(dateTime) {
 
 export const formatTransactionHash = ({ str }) => {
   return (
-    <a href={`https://escan.live/tx/${str}`} target="_blank" rel="noreferrer">
+    <a href={`https://traceabilityuser.onrender.com/search/transaction-hash/${str}`} target="_blank" rel="noreferrer">
       <Tooltip title={str}>{str}</Tooltip>
     </a>
   )
@@ -85,7 +85,7 @@ export function formatTransactionHashTable({ str, a, b }) {
   const suffix = str.slice(-b)
   const formatedFormatTransactionHash = prefix + '...' + suffix
   return (
-    <a href={`https://escan.live/tx/${str}`} target="_blank" rel="noreferrer">
+    <a href={`https://traceabilityuser.onrender.com/search/transaction-hash/${str}`} target="_blank" rel="noreferrer">
       <Tooltip title={str}>{formatedFormatTransactionHash}</Tooltip>
     </a>
   )

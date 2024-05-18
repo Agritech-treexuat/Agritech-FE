@@ -32,7 +32,14 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
               <p>
                 <span>
                   <strong>Transaction hash: </strong>
-                  <a href={`https://escan.live/tx/${item.tx}`} target="_blank" rel="noreferrer">{`${item.tx}`}</a>
+                  <p>
+                    {' '}
+                    {formatTransactionHashTable({
+                      str: item.tx,
+                      a: 8,
+                      b: 5
+                    })}
+                  </p>
                 </span>
               </p>
             )}
@@ -186,7 +193,9 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                       <Input.TextArea placeholder="Giải pháp" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
                     </Form.Item>
                     {fields.length > 1 ? (
-                      <MinusCircleOutlined className="dynamic-delete-button" onClick={() => remove(field.name)} />
+                      <Tooltip title="Xóa giải pháp này">
+                        <MinusCircleOutlined className="dynamic-delete-button" onClick={() => remove(field.name)} />
+                      </Tooltip>
                     ) : null}
                   </Form.Item>
                 ))}
