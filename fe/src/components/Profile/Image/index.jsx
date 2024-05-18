@@ -12,7 +12,7 @@ const ImagesProfile = ({
   setImageList,
   handleSave,
   profile,
-  text = 'Hình ảnh',
+  text = 'Hình ảnh giới thiệu về  trang trại',
   width = 220
 }) => {
   const getBase64 = (file) =>

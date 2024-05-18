@@ -85,7 +85,9 @@ const ContactProfile = ({
                       value={phone}
                       onChange={(e) => handlePhoneChange(index, e.target.value)}
                     />
-                    <Button onClick={() => handleRemovePhone(index)} icon={<MinusCircleOutlined />} />
+                    <Tooltip title="Xóa số điện thoại">
+                      <Button onClick={() => handleRemovePhone(index)} icon={<MinusCircleOutlined />} />
+                    </Tooltip>
                   </Input.Group>
                 ))}
                 <Button type="dashed" onClick={handleAddPhone} icon={<PlusOutlined />}>
@@ -100,11 +102,13 @@ const ContactProfile = ({
                 {emailList.map((email, index) => (
                   <Input.Group key={index} style={{ marginBottom: '8px', display: 'flex' }}>
                     <Input
-                      placeholder="Phone number"
+                      placeholder="Email"
                       value={email}
                       onChange={(e) => handleEmailChange(index, e.target.value)}
                     />
-                    <Button onClick={() => handleRemoveEmail(index)} icon={<MinusCircleOutlined />} />
+                    <Tooltip title="Xóa email">
+                      <Button onClick={() => handleRemoveEmail(index)} icon={<MinusCircleOutlined />} />
+                    </Tooltip>
                   </Input.Group>
                 ))}
                 <Button type="dashed" onClick={handleAddEmail} icon={<PlusOutlined />}>

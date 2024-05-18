@@ -60,9 +60,14 @@ const EditInputHistory = ({ historyInfo }) => {
                 <strong>Transaction hash: </strong>
               </label>
               <span>
-                <a href={`https://escan.live/tx/${input.txHash}`} target="_blank" rel="noreferrer">
-                  {input.txHash}
-                </a>
+                <p>
+                  {' '}
+                  {formatTransactionHashTable({
+                    str: input.txHash,
+                    a: 8,
+                    b: 5
+                  })}
+                </p>
               </span>
             </div>
             <div>

@@ -370,6 +370,7 @@ const PlantDetail = () => {
               })}
               {isUpdateDefaultSeed && (
                 <div style={{ marginTop: '16px', marginBottom: '16px' }}>
+                  <p>Chọn hạt giống mặc định mới</p>
                   <Select
                     style={{ width: 200, marginRight: '8px' }}
                     defaultValue={selectedDefaultSeed}
