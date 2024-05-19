@@ -21,7 +21,7 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
       open={historyModalVisible}
       onCancel={handleHistoryModalCancel}
       footer={null}
-      width={1000}
+      width={600}
     >
       {history &&
         history.map((item, index) => (

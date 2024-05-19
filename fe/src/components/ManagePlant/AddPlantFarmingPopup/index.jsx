@@ -4,16 +4,16 @@ import { CloseOutlined } from '@ant-design/icons'
 
 const PesticideItem = () => {
   return (
-    <Space direction="vertical" style={{ width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}>
+    <Space direction="vertical" style={{ width: '100%' }}>
       <h2 style={{ marginTop: '0' }}>Danh sách các hoạt động kiểm soát, phòng ngừa</h2>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Space direction="vertical" style={{ width: '100%', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
+        <Space direction="vertical" style={{ width: '100%' }}>
           <Form.List name="pestAndDiseaseControlActivities">
             {(fields, { add, remove }) => (
               <>
                 {fields.map((field, index) => (
                   <div key={`pestAndDiseaseControlActivities_${index}`}>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{ display: 'flex', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
                       <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
                         <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
                         <Form.Item
@@ -63,7 +63,6 @@ const PesticideItem = () => {
                           fieldKey={[field.key, 'solution']}
                           name={[field.name, 'solution']}
                           label={<strong>Giải pháp</strong>}
-                          style={{ width: '100%' }}
                         >
                           <Form.List name={[field.name, 'solution']}>
                             {(subFields, { add: addSolution, remove: removeSolution }) => (
@@ -78,26 +77,29 @@ const PesticideItem = () => {
                                       alignItems: 'flex-end'
                                     }}
                                   >
-                                    <CloseOutlined
-                                      style={{ float: 'right' }}
-                                      onClick={() => removeSolution(subField.name)}
-                                    />
-                                    <Form.Item fieldKey={[subField.key, 'solution']} name={[subField.name]} noStyle>
-                                      <Input.TextArea
-                                        placeholder="Giải pháp"
-                                        style={{ width: '50rem', float: 'right' }}
-                                        autoSize={{ minRows: 5 }}
+                                    <div style={{ display: 'flex', marginBottom: '16px' }}>
+                                      <Form.Item fieldKey={[subField.key, 'solution']} name={[subField.name]} noStyle>
+                                        <Input.TextArea
+                                          placeholder="Giải pháp"
+                                          style={{ width: '49rem', float: 'right', marginRight: '5px' }}
+                                          autoSize={{ minRows: 5 }}
+                                        />
+                                      </Form.Item>
+                                      <CloseOutlined
+                                        style={{ float: 'right' }}
+                                        onClick={() => removeSolution(subField.name)}
                                       />
-                                    </Form.Item>
+                                    </div>
                                   </div>
                                 ))}
                                 <Button
                                   style={{
-                                    width: '100%',
+                                    width: '49rem',
                                     float: 'right',
                                     backgroundColor: '#92a697',
                                     color: '#ffffff',
-                                    marginTop: '16px'
+                                    marginTop: '16px',
+                                    marginLeft: '57px'
                                   }}
                                   type="dashed"
                                   onClick={() => addSolution()}
@@ -133,18 +135,30 @@ const PesticideItem = () => {
 
 const CultivationItem = () => {
   return (
-    <Space direction="vertical" style={{ width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}>
+    <Space direction="vertical">
       <h2 style={{ marginTop: '0' }}>Hoạt động làm đất</h2>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Space direction="vertical" style={{ width: '100%', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
+        <Space direction="vertical" style={{ width: '100%' }}>
           <Form.List name="cultivationActivities">
             {(fields, { add, remove }) => (
               <>
                 {fields.map((field, index) => (
-                  <div key={`cultivationActivities_${index}`}>
-                    <div style={{ margin: '16px' }}>
-                      <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
-                      <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
+                  <div
+                    key={`cultivationActivities_${index}`}
+                    style={{ backgroundColor: '#e9f0ea', borderRadius: '8px' }}
+                  >
+                    <div style={{ margin: '16px', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
+                      <CloseOutlined style={{ float: 'right', marginTop: '10px' }} onClick={() => remove(field.name)} />
+                      <Space
+                        direction="vertical"
+                        style={{
+                          width: '100%',
+                          marginTop: '8px',
+                          padding: '8px',
+                          backgroundColor: '#e9f0ea',
+                          borderRadius: '8px'
+                        }}
+                      >
                         <Form.Item
                           fieldKey={[field.key, 'name']}
                           name={[field.name, 'name']}
@@ -189,7 +203,7 @@ const CultivationItem = () => {
 
 const PlantingActivity = () => {
   return (
-    <Space direction="vertical" style={{ width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}>
+    <Space direction="vertical" style={{ width: '100%' }}>
       <h2 style={{ marginTop: '10px' }}>Hoạt động gieo trồng</h2>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space direction="vertical" style={{ width: '100%', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
@@ -217,16 +231,16 @@ const PlantingActivity = () => {
 
 const FertilizeItem = () => {
   return (
-    <Space direction="vertical" style={{ width: '100%', margin: '8px', borderRadius: '8px', padding: '12px' }}>
+    <Space direction="vertical" style={{ width: '100%' }}>
       <h2 style={{ marginTop: '0' }}>Danh sách các hoạt động bón phân</h2>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Space direction="vertical" style={{ width: '100%', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
+        <Space direction="vertical" style={{ width: '100%' }}>
           <Form.List name="fertilizationActivities">
             {(fields, { add, remove }) => (
               <>
                 {fields.map((field, index) => (
                   <div key={`fertilizationActivities_${index}`}>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{ display: 'flex', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
                       <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
                         <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
                         <Form.Item
