@@ -5,7 +5,6 @@ import { HistoryOutlined } from '@ant-design/icons'
 
 const EditOutputHistory = ({ output }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  console.log('Output: ', output)
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -36,20 +35,17 @@ const EditOutputHistory = ({ output }) => {
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>
                 <strong>Transaction hash: </strong>{' '}
-                <p>
-                  {' '}
-                  {formatTransactionHashTable({
-                    str: output.tx,
-                    a: 8,
-                    b: 5
-                  })}
-                </p>
+                {formatTransactionHashTable({
+                  str: output.tx,
+                  a: 8,
+                  b: 5
+                })}
               </p>
               <p>
-                <strong>Thời gian: </strong> {output.time}
+                <strong>Thời gian: </strong> {formatDateTime(output.time)}
               </p>
               <p>
-                <strong>Lượng:</strong> {output.amount}
+                <strong>Lượng:</strong> {output.amount} (kg)
               </p>
               <p>
                 <strong>Số lượng sản phẩm:</strong> {output.quantity}

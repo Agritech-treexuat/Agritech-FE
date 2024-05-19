@@ -1,5 +1,4 @@
 import React, { useContext, createContext } from 'react'
-
 import { useAddress, useContract, useContractWrite, useConnect } from '@thirdweb-dev/react'
 
 const StateContext = createContext()
@@ -164,13 +163,17 @@ export const StateContextProvider = ({ children }) => {
   const _generateQR = async ({ projectId, numberOfQR, privateIds, generateQRInfo, timeGenerate }) => {
     try {
       const data = await generateQR({
-        args: [projectId, numberOfQR, privateIds, generateQRInfo, timeGenerate]
+        args: [projectId, numberOfQR, privateIds, generateQRInfo, timeGenerate],
+        overrides: {
+          gasLimit: 7920027
+        }
       })
 
       console.log('contract call success', data)
       return data.receipt
     } catch (error) {
-      console.log('contract call failure', error)
+      console.log('contract call failure', error.message)
+      console.error(error)
     }
   }
 

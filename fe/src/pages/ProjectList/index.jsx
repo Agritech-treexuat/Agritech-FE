@@ -253,7 +253,7 @@ const ProjectList = () => {
                     onChange: (page) => {
                       console.log(page)
                     },
-                    pageSize: 5
+                    pageSize: 8
                   }}
                   dataSource={filteredProjects}
                   style={{ marginTop: '2rem', width: '100%' }}

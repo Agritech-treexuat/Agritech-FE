@@ -32,14 +32,11 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
               <p>
                 <span>
                   <strong>Transaction hash: </strong>
-                  <p>
-                    {' '}
-                    {formatTransactionHashTable({
-                      str: item.tx,
-                      a: 8,
-                      b: 5
-                    })}
-                  </p>
+                  {formatTransactionHashTable({
+                    str: item.tx,
+                    a: 8,
+                    b: 5
+                  })}
                 </span>
               </p>
             )}
@@ -279,7 +276,7 @@ const PesticideTable = ({
             title: 'Transaction hash',
             dataIndex: 'tx',
             key: 'tx',
-            width: '150px',
+            width: 150,
             render: (text, record) =>
               formatTransactionHashTable({
                 str: record.tx,
@@ -413,7 +410,7 @@ const PesticideTable = ({
 
       {/* Modal 1 */}
       <Modal
-        title="Chọn loại canh tác"
+        title="Chọn tên hoạt động"
         open={modal1Visible}
         onOk={handleModal1Ok}
         onCancel={handleModal1Cancel}

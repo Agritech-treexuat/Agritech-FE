@@ -502,14 +502,16 @@ const ProjectOutput = () => {
       }
       const outputId = output.id
       const generateQRInfo = `Time: ${new Date()}, ProjectId: ${projectId}, OutputId: ${outputId}, DistributerWithAmount: ${output.distributerWithAmount
-        .map((item) => `${item.distributer.name} - ${output.distributerWithAmount.quantity}`)
-        .join('+ ')}`
+        .map((item) => `${item.distributer.name} - ${item.quantity}`)
+        .join(' + ')}`
 
       console.log('generateQRInfo: ', generateQRInfo)
 
       // timeGenerate = unix time stamp of current time
       const timeGenerate = Math.floor(new Date().getTime() / 1000)
-
+      console.log('info: ', projectId, numberOfQR, privateIds, generateQRInfo, timeGenerate)
+      console.log('privateIds: ', privateIds.length)
+      console.log('hello')
       const receip = await generateQR({
         projectId,
         numberOfQR,
@@ -724,6 +726,14 @@ const ProjectOutput = () => {
                       </Tooltip>
                     </Popconfirm>
                     <> {output.isEdited ? <EditOutputHistory output={output} /> : <></>}</>
+                  </Space>
+                )}
+              />
+              <Column
+                title="Xuất QR"
+                key="action_qr"
+                render={(_, output) => (
+                  <Space size="middle">
                     <Popconfirm
                       title="Xuất QR"
                       description={address ? 'Bạn có chắc chắn muốn xuất QR không' : 'Kết nối với ví để xuất QR'}
