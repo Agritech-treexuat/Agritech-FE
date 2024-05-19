@@ -21,7 +21,7 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
       open={historyModalVisible}
       onCancel={handleHistoryModalCancel}
       footer={null}
-      width={600}
+      width={1000}
     >
       {history &&
         history.map((item, index) => (
@@ -99,6 +99,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
       title={isUpdate ? 'Cập nhật hành động' : 'Thêm hành động'}
       okText={isUpdate ? 'Cập nhật' : 'Thêm'}
       cancelText="Hủy"
+      width={1000}
       onCancel={() => {
         form.resetFields()
         handleModal2Cancel()
@@ -187,11 +188,15 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                       ]}
                       noStyle
                     >
-                      <Input.TextArea placeholder="Giải pháp" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
+                      <Input.TextArea placeholder="Giải pháp" style={{ width: '95%' }} autoSize={{ minRows: 5 }} />
                     </Form.Item>
                     {fields.length > 1 ? (
                       <Tooltip title="Xóa giải pháp này">
-                        <MinusCircleOutlined className="dynamic-delete-button" onClick={() => remove(field.name)} />
+                        <MinusCircleOutlined
+                          className="dynamic-delete-button"
+                          onClick={() => remove(field.name)}
+                          style={{ marginBottom: '50px', marginLeft: '10px' }}
+                        />
                       </Tooltip>
                     ) : null}
                   </Form.Item>
@@ -201,7 +206,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                     type="dashed"
                     onClick={() => add()}
                     style={{
-                      width: '60%'
+                      width: '95%'
                     }}
                     icon={<PlusOutlined />}
                   >
