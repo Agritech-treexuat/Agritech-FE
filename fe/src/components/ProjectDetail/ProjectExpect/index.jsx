@@ -1,7 +1,20 @@
 import React, { useState } from 'react'
 import Loading from '../../../pages/Loading'
 import { useParams } from 'react-router'
-import { Button, DatePicker, Form, Input, Modal, Popconfirm, Space, Spin, Table, Tooltip, notification } from 'antd'
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Popconfirm,
+  Space,
+  Spin,
+  Table,
+  Tooltip,
+  notification
+} from 'antd'
 import EditExpectHistory from './EditExpectHistory'
 import { formatDateTime, formatTransactionHashTable } from '../../../utils/helpers'
 import useProjectExpect from './useProjectExpect'
@@ -67,15 +80,16 @@ const ExpectModal = ({ modalExpectVisible, handleModalOk, handleModalCancel, sel
         </Form.Item>
         <Form.Item
           name="amount"
-          label="Lượng (kg)"
+          label="Lượng"
           rules={[
             {
               required: true,
               message: 'Lượng không được để trống'
             }
           ]}
+          style={{ width: '100%' }}
         >
-          <Input />
+          <InputNumber addonAfter="kg" style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item name="note" label="Ghi chú">
           <Input.TextArea placeholder="Ghi chú" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />

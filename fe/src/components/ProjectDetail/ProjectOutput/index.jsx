@@ -187,8 +187,9 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
               required: true
             }
           ]}
+          style={{ width: '100%' }}
         >
-          <InputNumber addonAfter="kg" />
+          <InputNumber addonAfter="kg" style={{ width: '100%' }} />
         </Form.Item>
         {/* quantity */}
         <Form.Item
@@ -199,68 +200,79 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
               required: true
             }
           ]}
+          style={{ width: '100%' }}
         >
-          <InputNumber />
+          <InputNumber addonAfter="sản phẩm" style={{ width: '100%' }} />
         </Form.Item>
         {/* list npp */}
-        <Form.List name="npp">
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(({ key, name, ...restField }) => (
-                <Space
-                  key={key}
-                  style={{
-                    display: 'flex',
-                    marginBottom: 8
-                  }}
-                  align="baseline"
-                >
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'name']}
-                    value={[name, 'id']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Thiếu tên'
-                      }
-                    ]}
+        <Form.Item name="npp" label="Nhà phân phối cùng số lượng sản phẩm" style={{ width: '100%' }}>
+          <Form.List name="npp" label="Nhà phân phối cùng số lượng sản phẩm" style={{ width: '100%' }}>
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, name, ...restField }) => (
+                  <Space
+                    key={key}
+                    style={{
+                      display: 'flex',
+                      marginBottom: 8,
+                      width: '100%',
+                      alignItems: 'center'
+                    }}
+                    align="baseline"
                   >
-                    <Select
-                      showSearch
-                      placeholder="Lựa chọn nhà phân phối"
-                      optionFilterProp="children"
-                      filterOption={filterOption}
-                      options={alllDistributer.map((distributer) => ({
-                        value: distributer.id,
-                        label: distributer.name
-                      }))}
-                      style={{ width: 200 }}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'quantity']}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Thiếu số lượng'
-                      }
-                    ]}
-                  >
-                    <InputNumber />
-                  </Form.Item>
-                  <MinusCircleOutlined onClick={() => remove(name)} />
-                </Space>
-              ))}
-              <Form.Item>
-                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                  Thêm nhà phân phối cùng số lượng sản phẩm
-                </Button>
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
+                    <Form.Item
+                      {...restField}
+                      name={[name, 'name']}
+                      value={[name, 'id']}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Thiếu tên nhà phân phối'
+                        }
+                      ]}
+                      style={{ width: '250px' }}
+                    >
+                      <Select
+                        showSearch
+                        placeholder="Lựa chọn nhà phân phối"
+                        optionFilterProp="children"
+                        filterOption={filterOption}
+                        options={alllDistributer.map((distributer) => ({
+                          value: distributer.id,
+                          label: distributer.name
+                        }))}
+                        style={{ width: '100%' }}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      name={[name, 'quantity']}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Thiếu số lượng sản phẩm'
+                        }
+                      ]}
+                      style={{ width: '100%' }}
+                    >
+                      <InputNumber addonAfter="sản phẩm" style={{ width: '100%' }} />
+                    </Form.Item>
+                    <div style={{ marginBottom: '20px' }}>
+                      <Tooltip title="Xóa">
+                        <MinusCircleOutlined onClick={() => remove(name)} />
+                      </Tooltip>
+                    </div>
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    Thêm nhà phân phối cùng số lượng sản phẩm
+                  </Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+        </Form.Item>
       </Form>
     </Modal>
   )
