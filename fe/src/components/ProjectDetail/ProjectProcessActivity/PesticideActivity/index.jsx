@@ -32,14 +32,11 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
               <p>
                 <span>
                   <strong>Transaction hash: </strong>
-                  <p>
-                    {' '}
-                    {formatTransactionHashTable({
-                      str: item.tx,
-                      a: 8,
-                      b: 5
-                    })}
-                  </p>
+                  {formatTransactionHashTable({
+                    str: item.tx,
+                    a: 8,
+                    b: 5
+                  })}
                 </span>
               </p>
             )}
@@ -102,6 +99,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
       title={isUpdate ? 'Cập nhật hành động' : 'Thêm hành động'}
       okText={isUpdate ? 'Cập nhật' : 'Thêm'}
       cancelText="Hủy"
+      width={1000}
       onCancel={() => {
         form.resetFields()
         handleModal2Cancel()
@@ -190,11 +188,15 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                       ]}
                       noStyle
                     >
-                      <Input.TextArea placeholder="Giải pháp" style={{ width: '100%' }} autoSize={{ minRows: 5 }} />
+                      <Input.TextArea placeholder="Giải pháp" style={{ width: '95%' }} autoSize={{ minRows: 5 }} />
                     </Form.Item>
                     {fields.length > 1 ? (
                       <Tooltip title="Xóa giải pháp này">
-                        <MinusCircleOutlined className="dynamic-delete-button" onClick={() => remove(field.name)} />
+                        <MinusCircleOutlined
+                          className="dynamic-delete-button"
+                          onClick={() => remove(field.name)}
+                          style={{ marginBottom: '50px', marginLeft: '10px' }}
+                        />
                       </Tooltip>
                     ) : null}
                   </Form.Item>
@@ -204,7 +206,7 @@ const Modal2 = ({ modal2Visible, handleModal2Ok, handleModal2Cancel, selectedPla
                     type="dashed"
                     onClick={() => add()}
                     style={{
-                      width: '60%'
+                      width: '95%'
                     }}
                     icon={<PlusOutlined />}
                   >
@@ -279,7 +281,7 @@ const PesticideTable = ({
             title: 'Transaction hash',
             dataIndex: 'tx',
             key: 'tx',
-            width: '150px',
+            width: 150,
             render: (text, record) =>
               formatTransactionHashTable({
                 str: record.tx,
@@ -413,7 +415,7 @@ const PesticideTable = ({
 
       {/* Modal 1 */}
       <Modal
-        title="Chọn loại canh tác"
+        title="Chọn tên hoạt động"
         open={modal1Visible}
         onOk={handleModal1Ok}
         onCancel={handleModal1Cancel}

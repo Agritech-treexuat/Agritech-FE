@@ -19,7 +19,7 @@ const UpdateStatusModal = ({ visible, onCancel, onInProgressUpdate, onCancelUpda
     selectedItem && (
       <Modal
         open={visible}
-        title="Upate status"
+        title="Cập nhật trạng thái"
         onCancel={onCancel}
         footer={null}
         width={400} // Đặt độ rộng cho Modal
@@ -278,7 +278,7 @@ const ProjectInput = () => {
                 </Col>
                 <Col span={14} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <Modal
-                    title="Chỉnh sửa đầu vào"
+                    title="Chỉnh sửa thông tin khác"
                     open={isModalOpen}
                     onOk={() => {
                       form
@@ -370,14 +370,11 @@ const ProjectInput = () => {
                   <div style={{ marginBottom: '1rem' }}>
                     <label style={{ fontWeight: 'bold' }}>Transaction hash: </label>
                     <span>
-                      <p>
-                        {' '}
-                        {formatTransactionHashTable({
-                          str: projectInfo.txHash,
-                          a: 8,
-                          b: 5
-                        })}
-                      </p>
+                      {formatTransactionHashTable({
+                        str: projectInfo.txHash,
+                        a: 8,
+                        b: 5
+                      })}
                     </span>
                   </div>
                   <Divider />

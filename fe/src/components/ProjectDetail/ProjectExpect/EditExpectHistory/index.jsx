@@ -33,20 +33,17 @@ const EditExpectHistory = ({ expect }) => {
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>
                 <strong>Transaction hash:</strong>{' '}
-                <p>
-                  {' '}
-                  {formatTransactionHashTable({
-                    str: expect.tx,
-                    a: 8,
-                    b: 5
-                  })}
-                </p>
+                {formatTransactionHashTable({
+                  str: expect.tx,
+                  a: 8,
+                  b: 5
+                })}
               </p>
               <p>
-                <strong>Thời gian: </strong> {formatDate(expect.time)}
+                <strong>Thời gian: </strong> {formatDateTime(expect.time)}
               </p>
               <p>
-                <strong>Lượng:</strong> {expect.amount}
+                <strong>Lượng:</strong> {expect.amount} (kg)
               </p>
               <p>
                 <strong>Ghi chú:</strong> {expect.note}

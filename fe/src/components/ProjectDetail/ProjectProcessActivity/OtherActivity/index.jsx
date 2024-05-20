@@ -24,14 +24,11 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
               <p>
                 <span>
                   Transaction hash:{' '}
-                  <p>
-                    {' '}
-                    {formatTransactionHashTable({
-                      str: item.tx,
-                      a: 8,
-                      b: 5
-                    })}
-                  </p>
+                  {formatTransactionHashTable({
+                    str: item.tx,
+                    a: 8,
+                    b: 5
+                  })}
                 </span>
               </p>
             )}

@@ -60,14 +60,11 @@ const EditInputHistory = ({ historyInfo }) => {
                 <strong>Transaction hash: </strong>
               </label>
               <span>
-                <p>
-                  {' '}
-                  {formatTransactionHashTable({
-                    str: input.txHash,
-                    a: 8,
-                    b: 5
-                  })}
-                </p>
+                {formatTransactionHashTable({
+                  str: input.txHash,
+                  a: 8,
+                  b: 5
+                })}
               </span>
             </div>
             <div>

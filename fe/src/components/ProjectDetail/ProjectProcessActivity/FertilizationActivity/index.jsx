@@ -25,14 +25,11 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
               <p>
                 <span>
                   <strong>Transaction hash:</strong>{' '}
-                  <p>
-                    {' '}
-                    {formatTransactionHashTable({
-                      str: item.tx,
-                      a: 8,
-                      b: 5
-                    })}
-                  </p>
+                  {formatTransactionHashTable({
+                    str: item.tx,
+                    a: 8,
+                    b: 5
+                  })}
                 </span>
               </p>
             )}
@@ -53,7 +50,7 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
               <span>
                 <strong>Kiểu bón: </strong>
               </span>
-              {item.fertilizationActivity.type}
+              {item.fertilizationActivity.type === 'baseFertilizer' ? 'Bón lót' : 'Bón thúc'}
             </p>
             <p>
               <span>
@@ -328,7 +325,7 @@ const FertilizeTable = ({
       </Spin>
       {/* Modal 1 */}
       <Modal
-        title="Chọn loại canh tác"
+        title="Chọn tên hoạt động"
         open={modal1Visible}
         onOk={handleModal1Ok}
         onCancel={handleModal1Cancel}
