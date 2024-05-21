@@ -745,7 +745,7 @@ const ProjectOutput = () => {
                 title="Xuất QR"
                 key="action_qr"
                 render={(_, output) => (
-                  <Space size="middle">
+                  output.exportQR && <Space size="middle">
                     <Popconfirm
                       title="Xuất QR"
                       description={address ? 'Bạn có chắc chắn muốn xuất QR không' : 'Kết nối với ví để xuất QR'}
@@ -761,7 +761,7 @@ const ProjectOutput = () => {
                       okText="Xác nhận"
                       cancelText="Hủy"
                     >
-                      <Button type="primary" disabled={output.exportQR}>
+                      <Button type="primary">
                         Xuất QR
                       </Button>
                     </Popconfirm>
