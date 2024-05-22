@@ -744,29 +744,29 @@ const ProjectOutput = () => {
               <Column
                 title="Xuất QR"
                 key="action_qr"
-                render={(_, output) => (
-                  <Space size="middle">
-                    <Popconfirm
-                      title="Xuất QR"
-                      description={address ? 'Bạn có chắc chắn muốn xuất QR không' : 'Kết nối với ví để xuất QR'}
-                      onConfirm={
-                        address
-                          ? handleExportQR.bind(this, output)
-                          : async () => {
-                              setLoading(true)
-                              await connect(metamaskConfig)
-                              setLoading(false)
-                            }
-                      }
-                      okText="Xác nhận"
-                      cancelText="Hủy"
-                    >
-                      <Button type="primary" disabled={output.exportQR}>
-                        Xuất QR
-                      </Button>
-                    </Popconfirm>
-                  </Space>
-                )}
+                render={(_, output) =>
+                  output.exportQR && (
+                    <Space size="middle">
+                      <Popconfirm
+                        title="Xuất QR"
+                        description={address ? 'Bạn có chắc chắn muốn xuất QR không' : 'Kết nối với ví để xuất QR'}
+                        onConfirm={
+                          address
+                            ? handleExportQR.bind(this, output)
+                            : async () => {
+                                setLoading(true)
+                                await connect(metamaskConfig)
+                                setLoading(false)
+                              }
+                        }
+                        okText="Xác nhận"
+                        cancelText="Hủy"
+                      >
+                        <Button type="primary">Xuất QR</Button>
+                      </Popconfirm>
+                    </Space>
+                  )
+                }
               />
             </Table>
           </>

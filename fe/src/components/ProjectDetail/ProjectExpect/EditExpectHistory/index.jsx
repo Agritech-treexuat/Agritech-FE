@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, Divider, Tooltip } from 'antd'
-import { formatDate, formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
+import { formatDateTime, formatTransactionHashTable } from '../../../../utils/helpers'
 import { HistoryOutlined } from '@ant-design/icons'
 const EditExpectHistory = ({ expect }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -26,10 +26,33 @@ const EditExpectHistory = ({ expect }) => {
         footer={null}
         width={600}
       >
-        {expect.historyExpect.map((expect) => (
-          <div key={expect.tx}>
-            <Divider>Nhập lúc: {formatDateTime(expect.createdAtTime)}</Divider>
-            <Divider>Chỉnh sửa lúc: {formatDateTime(expect.modifiedAt)}</Divider>
+        <>
+          {expect.historyExpect.map((expect) => (
+            <div key={expect.tx}>
+              <Divider>{formatDateTime(expect.time)}</Divider>
+              <div style={{ width: 'fit-content', marginRight: '10px' }}>
+                <p>
+                  <strong>Transaction hash:</strong>{' '}
+                  {formatTransactionHashTable({
+                    str: expect.tx,
+                    a: 8,
+                    b: 5
+                  })}
+                </p>
+                <p>
+                  <strong>Thời gian: </strong> {formatDateTime(expect.time)}
+                </p>
+                <p>
+                  <strong>Lượng:</strong> {expect.amount} (kg)
+                </p>
+                <p>
+                  <strong>Ghi chú:</strong> {expect.note}
+                </p>
+              </div>
+            </div>
+          ))}
+          <div>
+            <Divider>{formatDateTime(expect.time)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>
                 <strong>Transaction hash:</strong>{' '}
@@ -50,7 +73,7 @@ const EditExpectHistory = ({ expect }) => {
               </p>
             </div>
           </div>
-        ))}
+        </>
       </Modal>
     </>
   )

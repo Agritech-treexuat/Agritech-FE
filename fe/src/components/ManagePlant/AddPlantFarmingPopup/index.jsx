@@ -122,7 +122,7 @@ const PesticideItem = () => {
                   onClick={() => add()}
                   block
                 >
-                  + Thêm thông tin
+                  + Thêm họat động
                 </Button>
               </>
             )}
@@ -136,7 +136,7 @@ const PesticideItem = () => {
 const CultivationItem = () => {
   return (
     <Space direction="vertical">
-      <h2 style={{ marginTop: '0' }}>Hoạt động làm đất</h2>
+      <h2 style={{ marginTop: '0' }}>Danh sách các hoạt động làm đất</h2>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space direction="vertical" style={{ width: '100%' }}>
           <Form.List name="cultivationActivities">
@@ -190,7 +190,7 @@ const CultivationItem = () => {
                   onClick={() => add()}
                   block
                 >
-                  + Thêm thông tin
+                  + Thêm họat động
                 </Button>
               </>
             )}
@@ -285,7 +285,7 @@ const FertilizeItem = () => {
                   onClick={() => add()}
                   block
                 >
-                  + Thêm thông tin
+                  + Thêm họat động
                 </Button>
               </>
             )}

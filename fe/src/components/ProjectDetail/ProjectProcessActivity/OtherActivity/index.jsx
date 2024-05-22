@@ -6,7 +6,7 @@ import { metamaskWallet } from '@thirdweb-dev/react'
 import { DeleteFilled, EditFilled, EditOutlined, HistoryOutlined } from '@ant-design/icons'
 const metamaskConfig = metamaskWallet()
 
-const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
+const HistoryModal = ({ history, item, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   return (
     <Modal
       title="Lịch sử chỉnh sửa"
@@ -18,8 +18,7 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
-            <Divider>Nhập lúc: {formatDateTime(item.createdAtTime)}</Divider>
-            <Divider>Chỉnh sửa lúc: {formatDateTime(item.modifiedAt)}</Divider>
+            <Divider>{formatDateTime(item.createdAtTime)}</Divider>
             {!isGarden && (
               <p>
                 <span>
@@ -48,6 +47,37 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
           </div>
         ))}
+      {item && (
+        <div style={{ marginBottom: '8px' }}>
+          <Divider>{formatDateTime(item.createdAtTime)}</Divider>
+          {!isGarden && (
+            <p>
+              <span>
+                Transaction hash:{' '}
+                {formatTransactionHashTable({
+                  str: item.tx,
+                  a: 8,
+                  b: 5
+                })}
+              </span>
+            </p>
+          )}
+          <p>
+            <span>
+              <strong>Thời gian: </strong>
+            </span>
+            {formatDateTime(item.time)}
+          </p>
+
+          <p>
+            <span>
+              <strong>Mô tả: </strong>
+            </span>
+            {/* {item.other.description} */}
+            <ParagraphWithEllipsis text={item.other?.description} rows={3} />
+          </p>
+        </div>
+      )}
     </Modal>
   )
 }
@@ -286,6 +316,7 @@ const OtherTable = ({
       {/* Modal history */}
       <HistoryModal
         history={selectedPlantFarming?.historyProcess}
+        item={selectedPlantFarming}
         historyModalVisible={modalHistoryVisible}
         handleHistoryModalCancel={() => setModalHistoryVisible(false)}
         isGarden={isGarden}

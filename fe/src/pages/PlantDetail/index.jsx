@@ -1,17 +1,5 @@
 import React, { useState } from 'react'
-import {
-  Collapse,
-  Button,
-  Divider,
-  Popconfirm,
-  Tooltip,
-  notification,
-  Select,
-  List,
-  Table,
-  Typography,
-  Spin
-} from 'antd'
+import { Collapse, Button, Divider, Popconfirm, Tooltip, notification, List, Table, Typography, Spin } from 'antd'
 import { useParams } from 'react-router-dom'
 import Loading from '../Loading'
 import usePlantDetail from './usePlantDetail'
@@ -22,7 +10,6 @@ import PLANT_FARMING from '../../services/plantFarmingService'
 import SEED from '../../services/seedService'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import UpdateSeedInfo from '../../components/ManagePlant/UpdateSeedInfo'
-const { Option } = Select
 
 const { Panel } = Collapse
 const { Paragraph } = Typography
@@ -51,11 +38,6 @@ const PlantDetail = () => {
     defaultPlant,
     isSuccessDefaultPlant
   } = usePlantDetail({ plantId, seedId: selectedSeed?.id, isDefaultPlantFarming })
-
-  const [selectedDefaultSeed, setSelectedDefaultSeed] = useState(
-    plans?.find((item) => item.isSeedDefault)?.seedId || ''
-  )
-  const [isUpdateDefaultSeed, setIsUpdateDefaultSeed] = useState(false)
 
   const [api, contextHolder] = notification.useNotification()
   const openNotificationWithIcon = (type, title, content) => {
@@ -208,23 +190,6 @@ const PlantDetail = () => {
     }
   }
 
-  const handleChange = (value) => {
-    setSelectedDefaultSeed(value)
-  }
-
-  const handleSave = () => {
-    if (selectedDefaultSeed) {
-      handleUpdateDefaultSeed(selectedDefaultSeed)
-      setSelectedDefaultSeed('')
-    }
-    setIsUpdateDefaultSeed(false)
-  }
-
-  const handleCancel = () => {
-    setSelectedDefaultSeed('')
-    setIsUpdateDefaultSeed(false)
-  }
-
   const handleUpdateSeed = async (values) => {
     try {
       setLoading(true)
@@ -347,50 +312,6 @@ const PlantDetail = () => {
         {isSuccessPlans && isSuccessCurrentPlant && isSuccessDefaultPlant ? (
           <>
             <h1>Thông tin cây trồng {currentPlant.name}</h1>
-            <>
-              {plans.map((item) => {
-                if (item.isSeedDefault) {
-                  return (
-                    <div key={item._id} style={{ display: 'flex' }}>
-                      <p style={{ marginRight: '1rem' }}>Hạt giống mặc định là: {item.name}</p>
-                      <Tooltip title="Cập nhật hạt giống mặc định">
-                        <Button
-                          shape="circle"
-                          icon={<EditOutlined />}
-                          onClick={() => {
-                            setSelectedDefaultSeed(item.seeedId)
-                            setIsUpdateDefaultSeed(true)
-                          }}
-                        />
-                      </Tooltip>
-                    </div>
-                  )
-                }
-                return null
-              })}
-              {isUpdateDefaultSeed && (
-                <div style={{ marginTop: '16px', marginBottom: '16px' }}>
-                  <p>Chọn hạt giống mặc định mới</p>
-                  <Select
-                    style={{ width: 200, marginRight: '8px' }}
-                    defaultValue={selectedDefaultSeed}
-                    onChange={handleChange}
-                    showSearch
-                    filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                  >
-                    {plans.map((item) => (
-                      <Option key={item._id} value={item.seedId}>
-                        {item.name}
-                      </Option>
-                    ))}
-                  </Select>
-                  <Button type="primary" onClick={handleSave} style={{ marginRight: '0.5rem' }}>
-                    Lưu
-                  </Button>
-                  <Button onClick={handleCancel}>Hủy</Button>
-                </div>
-              )}
-            </>
             <div>
               <Button
                 type="primary"
@@ -499,11 +420,25 @@ const PlantDetail = () => {
                       />
                     </Tooltip>
                   ]}
-                  extra={<img width={272} alt="logo" src={item.image} />}
+                  extra={<img width={150} alt="logo" src={item.image} />}
                   style={{ backgroundColor: '#f0f0f0', marginTop: '1rem', borderRadius: '15px' }}
                 >
                   <List.Item.Meta
-                    title={item.name}
+                    title={
+                      <span>
+                        {item.name}
+                        {item.isSeedDefault ? (
+                          ' (Hạt giống mặc định)'
+                        ) : (
+                          <Popconfirm
+                            title="Bạn có chắc chắn muốn đặt hạt giống này làm mặc định không?"
+                            onConfirm={() => handleUpdateDefaultSeed(item.seedId)}
+                          >
+                            <span style={{ cursor: 'pointer' }}> | Đặt làm hạt giống mặc định </span>
+                          </Popconfirm>
+                        )}
+                      </span>
+                    }
                     description={
                       <Paragraph
                         ellipsis={{
