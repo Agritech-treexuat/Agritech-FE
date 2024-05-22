@@ -30,8 +30,7 @@ const EditOutputHistory = ({ output }) => {
       >
         {output.historyOutput.map((output) => (
           <div key={output.tx}>
-            <Divider>Nhập lúc: {formatDateTime(output.createdAtTime)}</Divider>
-            <Divider>Chỉnh sửa lúc: {formatDateTime(output.modifiedAt)}</Divider>
+            <Divider>{formatDateTime(output.createdAtTime)}</Divider>
             <div style={{ width: 'fit-content', marginRight: '10px' }}>
               <p>
                 <strong>Transaction hash: </strong>{' '}
@@ -99,6 +98,74 @@ const EditOutputHistory = ({ output }) => {
             </div>
           </div>
         ))}
+        <div>
+          <Divider>{formatDateTime(output.createdAtTime)}</Divider>
+          <div style={{ width: 'fit-content', marginRight: '10px' }}>
+            <p>
+              <strong>Transaction hash: </strong>{' '}
+              {formatTransactionHashTable({
+                str: output.tx,
+                a: 8,
+                b: 5
+              })}
+            </p>
+            <p>
+              <strong>Thời gian: </strong> {formatDateTime(output.time)}
+            </p>
+            <p>
+              <strong>Lượng:</strong> {output.amount} (kg)
+            </p>
+            <p>
+              <strong>Số lượng sản phẩm:</strong> {output.quantity}
+            </p>
+
+            <div>
+              <p>
+                <strong>Danh sách nhà phân phối cùng lượng giao tương ứng: </strong>
+              </p>
+              <ul>
+                {output.distributerWithAmount ? (
+                  output.distributerWithAmount.map((npp_item) => (
+                    <li key={npp_item?.distributer?.name}>
+                      <p>
+                        {npp_item?.distributer?.name} cùng số lượng {npp_item?.quantity} sản phẩm
+                      </p>
+                    </li>
+                  ))
+                ) : (
+                  <li>Không có nhà phân phối</li>
+                )}
+              </ul>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <p>
+                <strong>Ảnh: </strong>
+              </p>
+              {output.images ? (
+                <List
+                  grid={{
+                    gutter: 4,
+                    xs: 1,
+                    sm: 2,
+                    md: 2,
+                    lg: 2,
+                    xl: 2,
+                    xxl: 2
+                  }}
+                  dataSource={output.images}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <Image className={'process-img'} src={item} width={200} style={{ borderRadius: '5px' }} />
+                    </List.Item>
+                  )}
+                />
+              ) : (
+                <span>Không có ảnh</span>
+              )}
+            </div>
+          </div>
+        </div>
       </Modal>
     </>
   )

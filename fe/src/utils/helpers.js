@@ -6,6 +6,7 @@ export const sleep = (ms) => {
 }
 
 export function formatDate(inputDate) {
+  if (!inputDate) return ''
   // Tạo một đối tượng Date từ chuỗi đầu vào
   const date = new Date(inputDate)
 
@@ -21,6 +22,7 @@ export function formatDate(inputDate) {
 }
 
 export function formatDateTime(inputDateTime) {
+  if (!inputDateTime) return ''
   // Tạo một đối tượng Date từ chuỗi đầu vào
   const date = new Date(inputDateTime)
 
@@ -78,6 +80,7 @@ export const ParagraphWithEllipsis = ({ text, rows }) => {
 }
 
 export function formatTransactionHashTable({ str, a, b }) {
+  if (!str) return ''
   if (a < 0 || b < 0 || a >= str.length || b >= str.length || a + b > str.length) {
     return 'Invalid input'
   }

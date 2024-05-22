@@ -14,7 +14,7 @@ import { metamaskWallet } from '@thirdweb-dev/react'
 const metamaskConfig = metamaskWallet()
 const { Option } = Select
 
-const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
+const HistoryModal = ({ history, item, historyModalVisible, handleHistoryModalCancel, isGarden }) => {
   return (
     <Modal
       title="Lịch sử chỉnh sửa"
@@ -26,8 +26,7 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
       {history &&
         history.map((item, index) => (
           <div key={index} style={{ marginBottom: '8px' }}>
-            <Divider>Nhập lúc: {formatDateTime(item.createdAtTime)}</Divider>
-            <Divider>Chỉnh sửa lúc: {formatDateTime(item.modifiedAt)}</Divider>
+            <Divider>{formatDateTime(item.createdAtTime)}</Divider>
             {!isGarden && (
               <p>
                 <span>
@@ -80,6 +79,61 @@ const HistoryModal = ({ history, historyModalVisible, handleHistoryModalCancel, 
             </p>
           </div>
         ))}
+      {item && (
+        <div style={{ marginBottom: '8px' }}>
+          <Divider>{formatDateTime(item.createdAtTime)}</Divider>
+          {!isGarden && (
+            <p>
+              <span>
+                <strong>Transaction hash: </strong>
+                {formatTransactionHashTable({
+                  str: item.tx,
+                  a: 8,
+                  b: 5
+                })}
+              </span>
+            </p>
+          )}
+          <p>
+            <span>
+              <strong>Thời gian: </strong>
+            </span>
+            {formatDateTime(item.time)}
+          </p>
+
+          <p>
+            <span>
+              <strong>Tên: </strong>
+            </span>
+            {item.pestAndDiseaseControlActivity?.name}
+          </p>
+          <p>
+            <span>
+              <strong>Tác nhân: </strong>
+            </span>
+            {item.pestAndDiseaseControlActivity?.type === 'pest' ? 'Sâu bệnh' : 'Dịch hại'}
+          </p>
+          <p>
+            <span>
+              <strong>Triệu chứng: </strong>
+            </span>
+            {/* {item.pestAndDiseaseControlActivity.symptoms} */}
+            <ParagraphWithEllipsis text={item.pestAndDiseaseControlActivity?.symptoms} rows={5} />
+          </p>
+          <p>
+            <span>
+              <strong>Giải pháp: </strong>
+            </span>
+            {item.pestAndDiseaseControlActivity?.solution.map((sol, index) => (
+              <ul>
+                <li key={index}>
+                  <ParagraphWithEllipsis text={sol} rows={5} />
+                </li>
+              </ul>
+            ))}
+          </p>
+        </div>
+      )}
     </Modal>
   )
 }
@@ -472,6 +526,7 @@ const PesticideTable = ({
       {/* Modal history */}
       <HistoryModal
         history={selectedPlantFarming?.historyProcess}
+        item={selectedPlantFarming}
         historyModalVisible={modalHistoryVisible}
         handleHistoryModalCancel={() => setModalHistoryVisible(false)}
         isGarden={isGarden}

@@ -274,7 +274,9 @@ const ProjectInput = () => {
                   <h2 style={{ margin: '0px' }}>
                     Thông tin dự án (cập nhật lúc {formatDateTime(projectInfo.createdAtTime)})
                   </h2>
-                  {projectInfo.isInfoEdited ? <EditInputHistory historyInfo={projectInfo.historyInfo} /> : null}
+                  {projectInfo && projectInfo.isInfoEdited ? (
+                    <EditInputHistory historyInfo={projectInfo.historyInfo} projectInfo={projectInfo} />
+                  ) : null}
                 </Col>
                 <Col span={14} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <Modal
