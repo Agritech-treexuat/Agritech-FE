@@ -1,16 +1,5 @@
 import React, { useState } from 'react'
-import {
-  Collapse,
-  Button,
-  Divider,
-  Popconfirm,
-  Tooltip,
-  notification,
-  List,
-  Table,
-  Typography,
-  Spin
-} from 'antd'
+import { Collapse, Button, Divider, Popconfirm, Tooltip, notification, List, Table, Typography, Spin } from 'antd'
 import { useParams } from 'react-router-dom'
 import Loading from '../Loading'
 import usePlantDetail from './usePlantDetail'
@@ -441,13 +430,11 @@ const PlantDetail = () => {
                         {item.isSeedDefault ? (
                           ' (Hạt giống mặc định)'
                         ) : (
-                          <Popconfirm title="Bạn có chắc chắn muốn đặt hạt giống này làm mặc định không?" onConfirm={() => handleUpdateDefaultSeed(item.seedId)}>
-                          <span
-                            style={{ cursor: 'pointer' }}
+                          <Popconfirm
+                            title="Bạn có chắc chắn muốn đặt hạt giống này làm mặc định không?"
+                            onConfirm={() => handleUpdateDefaultSeed(item.seedId)}
                           >
-                            {' '}
-                            | Đặt làm hạt giống mặc định{' '}
-                          </span>
+                            <span style={{ cursor: 'pointer' }}> | Đặt làm hạt giống mặc định </span>
                           </Popconfirm>
                         )}
                       </span>

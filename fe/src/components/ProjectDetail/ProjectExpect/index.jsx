@@ -67,18 +67,6 @@ const ExpectModal = ({ modalExpectVisible, handleModalOk, handleModalCancel, sel
     >
       <Form form={form} layout="vertical" name="form_in_modal">
         <Form.Item
-          name="date"
-          label="Thời gian"
-          rules={[
-            {
-              required: true,
-              message: 'Thời gian không được để trống'
-            }
-          ]}
-        >
-          <DatePicker showTime />
-        </Form.Item>
-        <Form.Item
           name="amount"
           label="Lượng"
           rules={[
@@ -118,7 +106,7 @@ const ProjectExpect = () => {
   }
 
   const handleModalAddOk = async (values) => {
-    const updatedValue = { ...values, time: values.date }
+    const updatedValue = { ...values, time: new Date() }
     delete updatedValue.date
     setLoading(true)
     try {
@@ -153,7 +141,7 @@ const ProjectExpect = () => {
 
   const handleModalUpdateOk = async (values) => {
     const data = {
-      time: values.date,
+      time: new Date(),
       amount: values.amount,
       note: values.note
     }
