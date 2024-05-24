@@ -16,9 +16,45 @@
 
 .ant-card-body {
   /* text-align: end !important; */
-  background-color: #f5f2eb !important;
+  background-color: #effdee !important;
 }
 
 .ant-btn-primary {
-  background-color: #476930 !important;
+  background-color: #022813 !important;
+}
+
+.ant-layout .ant-layout-sider {
+  background: #022813 !important;
+}
+
+.ant-layout .ant-layout-sider-trigger {
+  background: #022813 !important;
+}
+
+.ant-menu-dark {
+  background: #022813 !important;
+}
+
+.ant-menu-dark .ant-menu-item-selected {
+  background: #32cd32 !important;
+}
+
+.ant-typography .ant-typography-expand {
+  color: #08a045 !important;
+}
+
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #08a045 !important;
+}
+
+.ant-tabs .ant-tabs-tab:hover {
+  color: #08a045 !important;
+}
+
+.ant-tabs .ant-tabs-ink-bar {
+  background: #08a045 !important;
+}
+
+a {
+  color: #08a045 !important;
 }
