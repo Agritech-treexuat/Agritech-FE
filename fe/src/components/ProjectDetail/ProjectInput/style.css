@@ -20,7 +20,7 @@
 }
 
 .ant-btn-primary {
-  background-color: #022813 !important;
+  background-color: rgb(8, 160, 69) !important;
 }
 
 .ant-layout .ant-layout-sider {
@@ -57,4 +57,13 @@
 
 a {
   color: #08a045 !important;
+}
+
+.ant-pagination .ant-pagination-item-active {
+  color: #08a045 !important;
+  border-color: #08a045 !important;
+}
+
+.ant-input-search .ant-input:hover {
+  border-color: #08a045 !important;
 }
