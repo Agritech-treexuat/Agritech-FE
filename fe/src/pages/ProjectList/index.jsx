@@ -285,7 +285,7 @@ const ProjectList = () => {
                             />
                             <p>Ngày bắt đầu: {formatDate(item.startDate)}</p>
 
-                            <p style={{ color: '#19B5FE', fontWeight: 'bold' }}>{renderStatus(item.status)}</p>
+                            <p style={{ color: '#08A045', fontWeight: 'bold' }}>{renderStatus(item.status)}</p>
                           </Card>
                         </List.Item>
                       </Link>

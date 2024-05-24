@@ -13,7 +13,7 @@ const PesticideItem = () => {
               <>
                 {fields.map((field, index) => (
                   <div key={`pestAndDiseaseControlActivities_${index}`}>
-                    <div style={{ display: 'flex', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
+                    <div style={{ display: 'flex', backgroundColor: '#effdee', borderRadius: '8px' }}>
                       <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
                         <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
                         <Form.Item
@@ -145,9 +145,9 @@ const CultivationItem = () => {
                 {fields.map((field, index) => (
                   <div
                     key={`cultivationActivities_${index}`}
-                    style={{ backgroundColor: '#e9f0ea', borderRadius: '8px' }}
+                    style={{ backgroundColor: '#effdee', borderRadius: '8px' }}
                   >
-                    <div style={{ margin: '16px', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
+                    <div style={{ margin: '16px', backgroundColor: '#effdee', borderRadius: '8px' }}>
                       <CloseOutlined style={{ float: 'right', marginTop: '10px' }} onClick={() => remove(field.name)} />
                       <Space
                         direction="vertical"
@@ -155,7 +155,7 @@ const CultivationItem = () => {
                           width: '100%',
                           marginTop: '8px',
                           padding: '8px',
-                          backgroundColor: '#e9f0ea',
+                          backgroundColor: '#effdee',
                           borderRadius: '8px'
                         }}
                       >
@@ -185,12 +185,12 @@ const CultivationItem = () => {
                   </div>
                 ))}
                 <Button
-                  style={{ backgroundColor: '#92a697', color: '#ffffff' }}
+                  style={{ backgroundColor: '#effdee', color: 'rgba(0, 0, 0, 0.88)' }}
                   type="dashed"
                   onClick={() => add()}
                   block
                 >
-                  + Thêm họat động
+                  <strong>+ Thêm họat động</strong>
                 </Button>
               </>
             )}
@@ -206,7 +206,7 @@ const PlantingActivity = () => {
     <Space direction="vertical" style={{ width: '100%' }}>
       <h2 style={{ marginTop: '10px' }}>Hoạt động gieo trồng</h2>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Space direction="vertical" style={{ width: '100%', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
+        <Space direction="vertical" style={{ width: '100%', backgroundColor: '#effdee', borderRadius: '8px' }}>
           <Form.Item name="plantingActivity" style={{ marginRight: '16px', padding: '8px' }}>
             <Form.Item name={['plantingActivity', 'density']} label={<strong>Mật độ</strong>} style={{ width: '100%' }}>
               <Input placeholder="Mật độ" style={{ width: '54rem', float: 'right' }} />
@@ -240,7 +240,7 @@ const FertilizeItem = () => {
               <>
                 {fields.map((field, index) => (
                   <div key={`fertilizationActivities_${index}`}>
-                    <div style={{ display: 'flex', backgroundColor: '#e9f0ea', borderRadius: '8px' }}>
+                    <div style={{ display: 'flex', backgroundColor: '#effdee', borderRadius: '8px' }}>
                       <Space direction="vertical" style={{ width: '100%', marginTop: '8px', padding: '8px' }}>
                         <CloseOutlined style={{ float: 'right' }} onClick={() => remove(field.name)} />
                         <Form.Item
