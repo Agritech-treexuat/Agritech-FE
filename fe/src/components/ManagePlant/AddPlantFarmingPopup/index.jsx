@@ -342,7 +342,7 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
           })
       }}
     >
-      <Spin spinning={loading}>
+      <Spin spinning={loading} tip="Đang tải dữ liệu" size="large">
         <Form form={form} name="dynamic_form_complex" initialValues={recommendPlantFarming}>
           <Tabs defaultActiveKey="1" items={items} />
         </Form>

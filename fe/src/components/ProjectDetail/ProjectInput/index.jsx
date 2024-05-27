@@ -263,8 +263,8 @@ const ProjectInput = () => {
   }
 
   return (
-    <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
-      <Spin spinning={loadingCamera}>
+    <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ..." size="large">
+      <Spin spinning={loadingCamera} tip="Đang tải dữ liệu" size="large">
         <div>
           {contextHolder}
           {isSuccess && isSuccessCamera && isSuccessCameraInProject ? (

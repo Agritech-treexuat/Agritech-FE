@@ -188,10 +188,9 @@ const ManagePlant = () => {
 
   return (
     <>
-      <Spin spinning={loading}>
+      <Spin spinning={loading} tip="Đang tải dữ liệu" size="large">
         {contextHolder}
-        {isLoading && <Loading />}
-        {isSuccess && (
+        {isSuccess ? (
           <div>
             <h1>Danh sách các cây</h1>
             <Row>
@@ -376,6 +375,8 @@ const ManagePlant = () => {
               />
             </Row>
           </div>
+        ) : (
+          <Loading />
         )}
       </Spin>
     </>
