@@ -1,7 +1,35 @@
 const YouTubeEmbed = ({ videoUrl }) => {
-  if (!videoUrl) return null
+  if (!videoUrl) return
+  ;<div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      fontWeight: 'bold',
+      fontSize: '20px',
+      color: 'gray'
+    }}
+  >
+    <p>Link không hợp lệ</p>
+  </div>
   const videoId = videoUrl.split('v=')[1]
-  if (!videoId) return null
+  if (!videoId)
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+          fontWeight: 'bold',
+          fontSize: '20px',
+          color: 'gray'
+        }}
+      >
+        <p>Link không hợp lệ</p>
+      </div>
+    )
   const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`
   return (
     <>
