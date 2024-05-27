@@ -103,7 +103,7 @@ const ProjectQR = () => {
                           onClick={() => {
                             handleExportExcel(exportItem)
                           }}
-                          style={{ cursor: 'pointer', color: 'blue', fontSize: '16px' }}
+                          style={{ cursor: 'pointer', color: '#08a045', fontSize: '16px' }}
                         >
                           Xuất danh sách private QR dưới dạng excel
                         </span>
@@ -117,7 +117,7 @@ const ProjectQR = () => {
                         await connect(metamaskConfig)
                         setLoading(false)
                       }}
-                      style={{ cursor: 'pointer', color: 'blue', fontSize: '16px' }}
+                      style={{ cursor: 'pointer', color: '#08a045', fontSize: '16px' }}
                     >
                       Kết nối ví Metamask để xuất QR
                     </span>
