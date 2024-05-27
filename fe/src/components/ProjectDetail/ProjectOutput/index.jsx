@@ -582,7 +582,7 @@ const ProjectOutput = () => {
     <div>
       {contextHolder}
       {isSuccess && isSucessDistributer && isSuccessProjectInfo ? (
-        <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
+        <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ..." size="large">
           <>
             <Button
               type="primary"
@@ -597,7 +597,7 @@ const ProjectOutput = () => {
               }}
               style={{ marginBottom: '15px' }}
             >
-              {address ? 'Thêm đầu ra' : 'Kết nối với ví để thêm'}
+              {address ? 'Thêm đầu ra' : 'Kết nối với ví để thêm đầu ra'}
             </Button>
             <OutputModal
               modalVisible={openAddOutput}

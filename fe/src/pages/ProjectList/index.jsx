@@ -150,7 +150,7 @@ const ProjectList = () => {
     <div>
       {contextHolder}
       {isSuccess ? (
-        <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ...">
+        <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ..." size="large">
           <div>
             <h1>Danh sách các dự án</h1>
             <Row>

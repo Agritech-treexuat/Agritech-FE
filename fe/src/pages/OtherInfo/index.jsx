@@ -7,6 +7,7 @@ import CAMERA from '../../services/cameraService'
 import { metamaskWallet } from '@thirdweb-dev/react'
 import { useStateContext } from '../../context'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import Loading from '../Loading'
 
 const metamaskConfig = metamaskWallet()
 
@@ -199,6 +200,7 @@ const OtherInfo = () => {
       <Spin
         spinning={loading || loadingNotWriteBlockchain}
         tip={loading ? 'Đang ghi lên Blockchain, làm ơn chờ chút ...' : ''}
+        size="large"
       >
         <div>
           {/* <div>
@@ -239,7 +241,7 @@ const OtherInfo = () => {
             isUpdate={true}
           />
           {isLoadingCamera ? (
-            <Spin />
+            <Loading />
           ) : isSuccessCamera ? (
             <div style={{ marginTop: '10px' }}>
               <Row gutter={[16, 16]}>

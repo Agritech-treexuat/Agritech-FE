@@ -306,7 +306,7 @@ const PlantDetail = () => {
     }))
 
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading} tip="Đang tải dữ liệu" size="large">
       <div>
         {contextHolder}
         {isSuccessPlans && isSuccessCurrentPlant && isSuccessDefaultPlant ? (
