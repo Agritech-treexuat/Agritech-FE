@@ -299,7 +299,6 @@ const ProjectExpect = () => {
                 )}
               />
             </Table>
-            )
           </div>
         </Spin>
       ) : (

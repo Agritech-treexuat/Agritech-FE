@@ -25,7 +25,9 @@ const CameraList = ({ cameraData, handleCameraSelect, selectedCamera, handleEdit
             background: camera === selectedCamera ? '#f0f0f0' : 'transparent',
             padding: '10px',
             borderRadius: '5px',
-            paddingLeft: '20px'
+            paddingLeft: '20px',
+            border: '1px solid #f0f0f0',
+            marginBottom: '10px'
           }}
           actions={[
             <Tooltip title="Chỉnh sửa camera" key="edit">
@@ -60,6 +62,21 @@ const VideoPlayer = ({ selectedCamera }) => {
     <Card title={selectedCamera ? selectedCamera.name : 'Chọn camera'} style={{ height: '500px' }}>
       <div style={{ height: '400px' }}>
         {selectedCamera && <YouTubeEmbed videoUrl={selectedCamera.rtsp_link} style={{ height: '100%' }} />}
+        {!selectedCamera && (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%',
+              fontWeight: 'bold',
+              fontSize: '20px',
+              color: 'gray'
+            }}
+          >
+            <p>Hãy chọn camera để xem livestream tương ứng</p>
+          </div>
+        )}
       </div>
     </Card>
   )
