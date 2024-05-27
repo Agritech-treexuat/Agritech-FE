@@ -745,7 +745,7 @@ const ProjectOutput = () => {
                 title="Xuất QR"
                 key="action_qr"
                 render={(_, output) =>
-                  output.exportQR && (
+                  !output.exportQR && (
                     <Space size="middle">
                       <Popconfirm
                         title="Xuất QR"
