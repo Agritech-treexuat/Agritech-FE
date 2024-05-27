@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { DatePicker, Spin, Alert, Button, notification, List, Card, Row, Col, Popconfirm } from 'antd'
+import { DatePicker, Spin, Alert, Button, notification, List, Card, Row, Col, Popconfirm, Tooltip } from 'antd'
 import useProjectOtherInfo from './useProjectOtherInfo'
 import AddCameraModal from './AddCameraModal'
 import dayjs from 'dayjs'
@@ -8,6 +8,7 @@ import { metamaskWallet } from '@thirdweb-dev/react'
 import { useStateContext } from '../../context'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import Loading from '../Loading'
+import YouTubeEmbed from '../../components/YouTubeEmbed'
 
 const metamaskConfig = metamaskWallet()
 
@@ -23,26 +24,31 @@ const CameraList = ({ cameraData, handleCameraSelect, selectedCamera, handleEdit
             cursor: 'pointer',
             background: camera === selectedCamera ? '#f0f0f0' : 'transparent',
             padding: '10px',
-            borderRadius: '5px'
+            borderRadius: '5px',
+            paddingLeft: '20px'
           }}
           actions={[
-            <EditOutlined
-              key="edit"
-              onClick={(e) => handleEditCamera(e, camera)}
-              style={{ fontSize: '20px', color: 'blue', cursor: 'pointer' }}
-            />,
-            <Popconfirm
-              title="Bạn có chắc chắn muốn xóa camera này không?"
-              onConfirm={() => handleDeleteCamera(camera)}
-              onCancel={() => console.log('Cancel')}
-              okText="Có"
-              cancelText="Không"
-            >
-              <DeleteOutlined key="delete" style={{ fontSize: '20px', color: 'red', cursor: 'pointer' }} />
-            </Popconfirm>
+            <Tooltip title="Chỉnh sửa camera" key="edit">
+              <EditOutlined
+                key="edit"
+                onClick={(e) => handleEditCamera(e, camera)}
+                style={{ fontSize: '20px', cursor: 'pointer' }}
+              />
+            </Tooltip>,
+            <Tooltip title="Xóa camera" key="delete">
+              <Popconfirm
+                title="Bạn có chắc chắn muốn xóa camera này không?"
+                onConfirm={() => handleDeleteCamera(camera)}
+                onCancel={() => console.log('Cancel')}
+                okText="Có"
+                cancelText="Không"
+              >
+                <DeleteOutlined key="delete" style={{ fontSize: '20px', cursor: 'pointer' }} />
+              </Popconfirm>
+            </Tooltip>
           ]}
         >
-          <List.Item.Meta title={<p>Tên: {camera.name}</p>} description={<p>RTSP Link: {camera.rtsp_link}</p>} />
+          <List.Item.Meta title={<p>Tên: {camera.name}</p>} description={<p>Youtube Link: {camera.rtsp_link}</p>} />
         </List.Item>
       )}
     />
@@ -51,13 +57,10 @@ const CameraList = ({ cameraData, handleCameraSelect, selectedCamera, handleEdit
 
 const VideoPlayer = ({ selectedCamera }) => {
   return (
-    <Card title={selectedCamera ? selectedCamera.name : 'Chọn camera'}>
-      {selectedCamera && (
-        <video controls autoPlay>
-          <source src={selectedCamera.rtsp_link} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      )}
+    <Card title={selectedCamera ? selectedCamera.name : 'Chọn camera'} style={{ height: '500px' }}>
+      <div style={{ height: '400px' }}>
+        {selectedCamera && <YouTubeEmbed videoUrl={selectedCamera.rtsp_link} style={{ height: '100%' }} />}
+      </div>
     </Card>
   )
 }
@@ -254,8 +257,9 @@ const OtherInfo = () => {
                     handleDeleteCamera={handleDeleteCamera}
                   />
                 </Col>
-                <Col span={16}>
+                <Col span={16} style={{ height: '500px' }}>
                   <VideoPlayer selectedCamera={selectedCamera} />
+                  {/* <YouTubeEmbed videoUrl={selectedCamera?.rtsp_link} /> */}
                 </Col>
               </Row>
             </div>
