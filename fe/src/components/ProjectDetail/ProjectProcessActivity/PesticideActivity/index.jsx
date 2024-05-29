@@ -286,7 +286,8 @@ const PesticideTable = ({
   address,
   connect,
   isGarden,
-  loading
+  loading,
+  loadingNonBlockchain
 }) => {
   const [modal1Visible, setModal1Visible] = useState(false)
   const [modal2Visible, setModal2Visible] = useState(false)
@@ -464,8 +465,8 @@ const PesticideTable = ({
         </Button>
       </div>
       <Spin
-        spinning={loading}
-        tip={`${isGarden ? 'Đang xử lý' : 'Đang ghi lên Blockchain'}, làm ơn chờ chút ...`}
+        spinning={loading || loadingNonBlockchain}
+        tip={`${(loadingNonBlockchain && 'Đang xử lý') || (loading && 'Đang ghi lên Blockchain, làm ơn chờ chút ...')}`}
         size="large"
       >
         <Table dataSource={pesticide} columns={columns} pagination={false} />

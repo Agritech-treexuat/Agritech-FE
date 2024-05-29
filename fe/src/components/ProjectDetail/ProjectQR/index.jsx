@@ -79,7 +79,7 @@ const ProjectQR = () => {
     )
   }
   return (
-    <Spin spinning={loading} tip="Đang tải dữ liệu" size="large">
+    <Spin spinning={loading} size="large">
       <div>
         {isSuccess && (
           <div>

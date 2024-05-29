@@ -282,6 +282,7 @@ const ProjectOutput = () => {
   const params = useParams()
   const projectId = useParams().id
   const [loading, setLoading] = useState(false)
+  const [loadingNonBlockchain, setLoadingNonBlockchain] = useState(false)
   const { outputData, isSuccess, refetch, alllDistributer, isSucessDistributer, projectInfo, isSuccessProjectInfo } =
     useProjectOutput({
       projectId: params.id
@@ -569,11 +570,18 @@ const ProjectOutput = () => {
   }
 
   const handleDeleteOutput = async (outputId) => {
-    const res = await PROJECT.deleteOutput({ projectId: params.id, outputId: outputId })
-    if (res.status === 200) {
-      refetch()
-      openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
-    } else {
+    setLoadingNonBlockchain(true)
+    try {
+      const res = await PROJECT.deleteOutput({ projectId: params.id, outputId: outputId })
+      setLoadingNonBlockchain(false)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+      }
+    } catch (error) {
+      setLoadingNonBlockchain(false)
       openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
     }
   }
@@ -582,7 +590,11 @@ const ProjectOutput = () => {
     <div>
       {contextHolder}
       {isSuccess && isSucessDistributer && isSuccessProjectInfo ? (
-        <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ..." size="large">
+        <Spin
+          spinning={loading || loadingNonBlockchain}
+          tip={loading ? 'Đang ghi lên Blockchain, làm ơn chờ chút ...' : ''}
+          size="large"
+        >
           <>
             <Button
               type="primary"
