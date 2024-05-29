@@ -169,7 +169,8 @@ const OtherTable = ({
   address,
   connect,
   isGarden,
-  loading
+  loading,
+  loadingNonBlockchain
 }) => {
   const [modal2Visible, setModal2Visible] = useState(false)
   const [modalUpdateVisible, setModalUpdateVisible] = useState(false)
@@ -296,8 +297,8 @@ const OtherTable = ({
         </Button>
       </div>
       <Spin
-        spinning={loading}
-        tip={`${isGarden ? 'Đang xử lý' : 'Đang ghi lên Blockchain'}, làm ơn chờ chút ...`}
+        spinning={loading || loadingNonBlockchain}
+        tip={`${(loadingNonBlockchain && 'Đang xử lý') || (loading && 'Đang ghi lên Blockchain, làm ơn chờ chút ...')}`}
         size="large"
       >
         <Table dataSource={other} columns={columns} pagination={false} />

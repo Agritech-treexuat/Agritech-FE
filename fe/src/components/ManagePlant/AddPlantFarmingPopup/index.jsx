@@ -194,7 +194,7 @@ const CultivationItem = () => {
 const PlantingActivity = () => {
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <h2 style={{ marginTop: '10px' }}>Hoạt động gieo trồng</h2>
+      <h2 style={{ marginTop: '0' }}>Hoạt động gieo trồng</h2>
       <Space direction="vertical" style={{ width: '100%' }}>
         <Space direction="vertical" style={{ width: '100%', backgroundColor: '#effdee', borderRadius: '8px' }}>
           <Form.Item name="plantingActivity" style={{ marginRight: '16px', padding: '16px' }}>
@@ -342,7 +342,7 @@ const AddPlantFarmingPopup = ({ open, onCreate, onCancel, recommendPlantFarming,
           })
       }}
     >
-      <Spin spinning={loading} tip="Đang tải dữ liệu" size="large">
+      <Spin spinning={loading} size="large">
         <Form form={form} name="dynamic_form_complex" initialValues={recommendPlantFarming}>
           <Tabs defaultActiveKey="1" items={items} />
         </Form>

@@ -59,7 +59,7 @@ const ManagePlant = () => {
         if (resSeed.response && resSeed.response?.data?.message === 'Seed already exists') {
           setLoading(false)
           refetch()
-          openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công (Hạt giống đã tồn tại trong hệ thống)')
+          openNotificationWithIcon('success', 'Thông báo', 'Thêm thành công')
         } else {
           const res = await PLANT_FARMING.addPlantFarmingWithRecommendPlantIdAndSeedId({
             plantId: selectedPlant.id,
@@ -188,7 +188,7 @@ const ManagePlant = () => {
 
   return (
     <>
-      <Spin spinning={loading} tip="Đang tải dữ liệu" size="large">
+      <Spin spinning={loading} size="large">
         {contextHolder}
         {isSuccess ? (
           <div>

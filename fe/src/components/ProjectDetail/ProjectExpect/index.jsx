@@ -96,6 +96,16 @@ const ProjectExpect = () => {
   const [openUpdateExpect, setOpenUpdateExpect] = useState(false)
   const [selectedExpect, setSelectedExpect] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [loadingNonBlockchain, setLoadingNonBlockchain] = useState(false)
+
+  const [api, contextHolder] = notification.useNotification()
+  const openNotificationWithIcon = (type, title, content) => {
+    api[type]({
+      message: title,
+      description: content,
+      duration: 3.5
+    })
+  }
 
   const handleModalAddCancel = () => {
     setOpenAddExpect(false)
@@ -181,21 +191,19 @@ const ProjectExpect = () => {
     }
   }
 
-  const [api, contextHolder] = notification.useNotification()
-  const openNotificationWithIcon = (type, title, content) => {
-    api[type]({
-      message: title,
-      description: content,
-      duration: 3.5
-    })
-  }
-
   const handleDeleteExpect = async (expectId) => {
-    const res = await PROJECT.deleteExpect({ projectId, expectId: expectId })
-    if (res.status === 200) {
-      refetch()
-      openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
-    } else {
+    setLoadingNonBlockchain(true)
+    try {
+      const res = await PROJECT.deleteExpect({ projectId, expectId: expectId })
+      setLoadingNonBlockchain(false)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+      }
+    } catch (error) {
+      setLoadingNonBlockchain(false)
       openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
     }
   }
@@ -204,7 +212,11 @@ const ProjectExpect = () => {
     <div>
       {contextHolder}
       {isSuccess && isSuccessProjectInfo ? (
-        <Spin spinning={loading} tip="Đang ghi lên Blockchain, làm ơn chờ chút ..." size="large">
+        <Spin
+          spinning={loading || loadingNonBlockchain}
+          tip={loading ? 'Đang ghi lên Blockchain, làm ơn chờ chút ...' : ''}
+          size="large"
+        >
           <div>
             {contextHolder}
             <Button

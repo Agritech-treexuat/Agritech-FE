@@ -14,6 +14,7 @@ import { useStateContext } from '../../../context'
 const ProcessActivityPage = ({ projectId }) => {
   const { insertProcess, connect, address } = useStateContext()
   const [loading, setLoading] = useState(false)
+  const [loadingNonBlockchain, setLoadingNonBlockchain] = useState(false)
   const {
     cultivation,
     planting,
@@ -186,12 +187,18 @@ const ProcessActivityPage = ({ projectId }) => {
   }
 
   const handleDeleteProcess = async (processId) => {
-    console.log('Delete process: ', processId)
-    const res = await PROJECT.deleteProcess({ projectId, processId })
-    if (res.status === 200) {
-      refetch()
-      openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
-    } else {
+    setLoadingNonBlockchain(true)
+    try {
+      const res = await PROJECT.deleteProcess({ projectId, processId })
+      setLoadingNonBlockchain(false)
+      if (res.status === 200) {
+        refetch()
+        openNotificationWithIcon('success', 'Thông báo', 'Xóa thành công')
+      } else {
+        openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
+      }
+    } catch (error) {
+      setLoadingNonBlockchain(false)
       openNotificationWithIcon('error', 'Thông báo', 'Xóa thất bại')
     }
   }
@@ -215,6 +222,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 connect={connect}
                 isGarden={projectInfo.isGarden}
                 loading={loading}
+                loadingNonBlockchain={loadingNonBlockchain}
               />
             </Card>
           </Col>
@@ -233,6 +241,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 connect={connect}
                 isGarden={projectInfo.isGarden}
                 loading={loading}
+                loadingNonBlockchain={loadingNonBlockchain}
               />
             </Card>
           </Col>
@@ -251,6 +260,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 connect={connect}
                 isGarden={projectInfo.isGarden}
                 loading={loading}
+                loadingNonBlockchain={loadingNonBlockchain}
               />
             </Card>
           </Col>
@@ -269,6 +279,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 connect={connect}
                 isGarden={projectInfo.isGarden}
                 loading={loading}
+                loadingNonBlockchain={loadingNonBlockchain}
               />
             </Card>
           </Col>
@@ -286,6 +297,7 @@ const ProcessActivityPage = ({ projectId }) => {
                 connect={connect}
                 isGarden={projectInfo.isGarden}
                 loading={loading}
+                loadingNonBlockchain={loadingNonBlockchain}
               />
             </Card>
           </Col>
