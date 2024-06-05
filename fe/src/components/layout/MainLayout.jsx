@@ -93,7 +93,12 @@ const App = () => {
             }}
             key="8"
           >
-            <Popconfirm title="Bạn có chắc chắn muốn đăng xuất?" onConfirm={handleLogout} okText="Yes" cancelText="No">
+            <Popconfirm
+              title="Bạn có chắc chắn muốn đăng xuất?"
+              onConfirm={handleLogout}
+              okText="Có"
+              cancelText="Không"
+            >
               <LogoutOutlined />
               <span>Đăng xuất</span>
             </Popconfirm>
