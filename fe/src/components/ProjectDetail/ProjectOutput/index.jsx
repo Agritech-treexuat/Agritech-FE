@@ -184,7 +184,8 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
           label="Lượng"
           rules={[
             {
-              required: true
+              required: true,
+              message: 'Thiếu lượng sản phẩm'
             }
           ]}
           style={{ width: '100%' }}
@@ -194,10 +195,17 @@ const OutputModal = ({ modalVisible, handleModalOk, handleModalCancel, selectedO
         {/* quantity */}
         <Form.Item
           name="quantity"
-          label="Số lượng sản phẩm"
+          label="Số lượng sản phẩm (Tối đa 20 sản phẩm)"
           rules={[
             {
-              required: true
+              required: true,
+              message: 'Thiếu số lượng sản phẩm'
+            },
+            {
+              type: 'number',
+              min: 1,
+              max: 20,
+              message: 'Số lượng sản phẩm phải từ 1 đến 20'
             }
           ]}
           style={{ width: '100%' }}
