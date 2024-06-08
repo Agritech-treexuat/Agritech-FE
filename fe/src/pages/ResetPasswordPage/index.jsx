@@ -6,7 +6,7 @@ import farmerImage from '../../assets/images/farmer.jpg'
 import '../LoginPage/style.css'
 
 const ResetPasswordPage = () => {
-  const { resetText, email } = useParams()
+  const { resetText, text } = useParams()
   const [loading, setLoading] = useState(false)
   const [api, contextHolder] = notification.useNotification()
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ const ResetPasswordPage = () => {
 
     try {
       setLoading(true)
-      const res = await FARM.resetPassword({ resetToken: resetText, email, newPassword: password })
+      const res = await FARM.resetPassword({ resetToken: resetText, email: text, newPassword: password })
       if (res.status === 200) {
         openNotificationWithIcon('success', 'Thành công', 'Đặt lại mật khẩu thành công!')
         navigate('/login')
