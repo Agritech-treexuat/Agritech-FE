@@ -22,7 +22,7 @@ const App = () => {
           <Route index element={<Navigate to="/home" />} />
           <Route element={<LoginPage />} path="/login" />
           <Route element={<ForgotPasswordPage />} path="/forgot-password" />
-          <Route element={<ResetPasswordPage />} path="/reset-password/:resetText/:email" />
+          <Route element={<ResetPasswordPage />} path="/reset-password/:resetText/:text" />
         </Route>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Auth path={'/login'}>{<ProjectList />}</Auth>} path="home" />
