@@ -34,13 +34,17 @@ export default function useProjectOtherInfo({ selectedTime }) {
   })
 
   const parseDataCamera = useCallback((data) => {
-    const cameraData = data.map((camera) => {
+    const allCameraData = data.map((camera) => {
       return {
         _id: camera?._id,
         name: camera?.name,
-        rtsp_link: camera?.rtsp_link
+        rtsp_link: camera?.rtsp_link,
+        isDeleted: camera?.isDeleted,
       }
     })
+
+    const cameraData = allCameraData.filter((camera) => !camera.isDeleted)
+
     return {
       cameraData
     }
